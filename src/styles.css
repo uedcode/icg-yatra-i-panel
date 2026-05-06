@@ -1,0 +1,861 @@
+.dataTables_filter i {
+  position: absolute;
+  top: 8px;
+  left: 20px;
+  transform: rotate(80deg);
+  color: #bf7777;
+}
+
+.dataTables_filter .form-control {
+  padding-left: 30px;
+}
+
+/* .eye_adjust {
+  margin-top: 4px;
+} */
+
+.change_psd_sec .eye_adjust {
+  margin-top: 32px;
+  right: 25px;
+}
+
+#reset_password .eye_adjust {
+  margin-top: 23px;
+  right: 25px;
+}
+
+.app-content {
+  padding-bottom: 75px;
+}
+
+.ngx-select__placeholder {
+  padding-top: 2px !important;
+}
+
+.ngx-select__placeholder span {
+  font-size: 14px;
+}
+
+.fa-sort {
+  cursor: pointer;
+  float: right;
+}
+
+.file_p0 {
+  padding: 0px;
+}
+
+.pointer {
+  color: #2d66f7;
+  cursor: pointer;
+}
+
+table thead tr {
+  background: #2d66f7;
+}
+
+/* Playstore, mobile sidebar logo, sidebar scroll css start  */
+.play_store_logo img {
+  width: 200px !important;
+}
+
+.logo_in_sidebar {
+  position: absolute;
+  bottom: 15px;
+  width: 75%;
+  left: 12%;
+  display: none;
+}
+
+.sidebar_page_scroll {
+  min-height: auto;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+/* Playstore, mobile sidebar logo, sidebar scroll css end  */
+
+/* custome scrollbar css start */
+.sidebar_page_scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar_page_scroll::-webkit-scrollbar-track {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+.sidebar_page_scroll::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #ddd;
+}
+
+/* custome scrollbar css end */
+
+.form_label_btn {
+  visibility: hidden;
+}
+
+/* Adarsh some css add 13-Jan-2021 start */
+.cursor_pointer {
+  cursor: pointer;
+}
+
+.ngx-select__toggle.btn {
+  margin: 0px;
+}
+
+.terms_privacy a {
+  color: #fff;
+  padding-top: 15px;
+}
+
+.terms_privacy .privacy_policy {
+  float: left;
+  padding-left: 5px;
+}
+
+.terms_privacy .terms_conditions {
+  float: right;
+}
+
+.privacy_terms_sec img {
+  width: 100%;
+}
+
+.privacy_terms_text {
+  margin: 50px 0px;
+  border: 1px solid #ddd;
+  padding: 15px;
+}
+
+.privacy_terms_text h2 {
+  text-transform: uppercase;
+}
+
+.privacy_terms_text h3 {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.privacy_terms_text ul {
+  padding-left: 30px;
+  list-style: disc;
+}
+
+.pt_goto_back {
+  position: fixed;
+  top: 30px;
+  left: 30px;
+}
+
+/* Adarsh some css add 13-Jan-2021 end */
+
+/* adarsh some css add 23-Apr-2021 start */
+.app-header .header-brand {
+  font-size: 36px;
+  text-transform: uppercase;
+}
+
+.card_body_dashboard a {
+  margin-bottom: 15px;
+}
+
+.transaction_heading {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 15px;
+  background: #8080801f;
+  padding: 8px 15px;
+}
+
+.history_point_heading {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 15px;
+}
+
+.pr_0 {
+  padding-right: 0px;
+}
+
+.pl_0 {
+  padding-left: 0px;
+}
+
+#change_status_modal .modal-lg,
+#change_status_publish_modal .modal-lg {
+  max-width: 500px;
+}
+
+/* adarsh add some css 09-06-2021 */
+.ld_closing_balance {
+  margin-bottom: 8px;
+}
+
+.profit_logic_icon {
+  position: absolute;
+  top: 18px;
+  right: 25px;
+  cursor: pointer;
+}
+
+#profit_logic_modal p {
+  margin: 5px 0px;
+}
+
+.profit {
+  background: #ddd;
+  margin-top: 10px;
+  padding: 0px 5px;
+}
+
+/* Adarsh some css add 10-06-2021 start */
+.dataTables_length {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.dataTables_length .form-control {
+  height: 25px !important;
+  padding: 2px 10px;
+  width: auto;
+  margin: -2px 5px 0px 5px;
+}
+
+.form_line_btn {
+  padding-top: 28px;
+}
+
+.skeleton_image_input {
+  margin-top: -75px;
+  height: 75px;
+  opacity: 0;
+}
+
+.skeleton_image_card {
+  border: 1px dashed #a3a3b2;
+  width: 100%;
+  border-radius: 4px;
+  background: #fafafa;
+  cursor: pointer;
+  text-align: center;
+  padding: 20px;
+}
+
+.skeleton_image_card p {
+  margin: auto;
+}
+
+.publish_btn button {
+  margin: 0px 0px 20px 0px;
+  padding: 15px;
+}
+
+.quick_view_image {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.quick_view_image img {
+  width: 71px;
+  height: 71px;
+  border-radius: 2px;
+  margin: 1px;
+  border: 1px solid #acacb4;
+}
+
+.quick_view_image .btn-danger {
+  position: absolute;
+  top: 4px;
+  right: 0px;
+  padding: 0px;
+  display: none;
+  transition: 0.5s;
+}
+
+.quick_view_image:hover.quick_view_image .btn-danger {
+  display: block;
+  transition: 0.5s;
+}
+
+.login_right_area .eye_adjust {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 20px;
+  color: #6e6e6e;
+}
+
+/* Adarsh some css add 26-06-2021 start */
+.col_pr_0 {
+  padding-right: 0px;
+}
+
+.col_pl_0 {
+  padding-left: 0px;
+}
+
+.modal_product_img img {
+  margin-bottom: 15px;
+}
+
+/* adarsh some css add 28-06-2021 start */
+.hp_card {
+  box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 12%),
+    0 1px 5px 0 rgb(0 0 0 / 20%);
+}
+
+.hp_card h2 {
+  padding: 5px 15px;
+  background: #dddddd7d;
+  font-size: 22px;
+  margin: 0px;
+}
+
+.hp_card p {
+  border-bottom: 1px solid #ddd;
+  padding: 15px;
+  margin: 0px;
+}
+
+.border_none {
+  border: none !important;
+}
+
+.selectLength {
+  width: 5rem;
+}
+
+.document_check {
+  display: flex;
+  position: absolute;
+  top: 0px;
+  right: 14px;
+}
+
+.modal-body .document_check label {
+  margin-right: 10px;
+}
+
+.document_check input {
+  margin-top: 3px;
+}
+
+.link_color {
+  color: #2d66f7 !important;
+  cursor: pointer;
+}
+
+.row-red {
+  background-color: red !important;
+  color: #fff !important;
+}
+
+.row-blue {
+  background-color: blue !important;
+  color: #fff !important;
+}
+
+.row-green {
+  background-color: green !important;
+  color: #fff !important;
+}
+
+.row-orange {
+  background-color: orange !important;
+  color: #333 !important;
+}
+
+.row-yellow {
+  background-color: yellow !important;
+  color: #333 !important;
+}
+
+.row-grey {
+  background-color: grey !important;
+  color: #fff !important;
+}
+
+.row-red-light {
+  background-color: #ffc7ce !important;
+  /* color: #fff !important; */
+}
+
+.coupon_code {
+  display: flex;
+}
+
+.coupon_code .form-control {
+  width: 50%;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.coupon_code button {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  margin-left: 0px;
+}
+
+#view_product_modal p {
+  font-size: 12px;
+}
+
+#show_img_modal img {
+  width: 100%;
+}
+
+#show_img_modal .modal-body {
+  padding: 0px;
+}
+
+#show_img_modal button.close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #000;
+  opacity: 1;
+  z-index: 99999;
+  background: #fff;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  border-radius: 25px;
+  box-shadow: 0 16px 24px 2px rgb(0 0 0 / 14%), 0 6px 30px 5px rgb(0 0 0 / 12%),
+    0 8px 10px -7px rgb(0 0 0 / 20%);
+}
+
+#manage_user .modal-body h3 {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.img_in_table img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 2.5rem;
+  margin: 0px 2px;
+  cursor: pointer;
+}
+
+.card_header_search {
+  background: #00a559;
+  padding: 5px 15px;
+}
+
+.card_header_search div.dataTables_length label {
+  color: #fff;
+}
+
+.card_header_search .dataTables_length {
+  margin: 5px 0px 0px 0px;
+}
+
+.detail_in_card {
+  border-right: 1px solid #ddd;
+  padding-right: 15px;
+}
+
+.detail_in_card {
+  padding: 15px;
+}
+
+.img_in_card {
+  padding: 15px 0px;
+}
+
+.card_list {
+  border-bottom: 1px solid #ddd;
+}
+
+.card_list:last-child {
+  border: none;
+}
+
+.custome_card .card-body {
+  padding: 0px;
+}
+
+.img_in_card img {
+  width: 75px;
+  margin: 2px;
+}
+
+.margin_0 {
+  margin: 0px;
+}
+
+.no_list_inCard {
+  text-align: center;
+  margin: 10px 0px 0px 0px;
+}
+
+.no_img_available {
+  text-align: center;
+}
+
+.image_with_border {
+  width: 150px;
+  height: 150px;
+  border: 1px solid #ddd;
+  margin: 2px;
+}
+
+.main_img_list {
+  width: 100%;
+}
+
+.added_product {
+  margin-bottom: 15px;
+}
+
+.added_product p {
+  border-radius: 5px;
+  position: relative;
+  background: #ddd;
+  margin: 0px;
+  padding: 5px;
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 10px;
+}
+
+.added_product i {
+  position: absolute;
+  top: -5px;
+  right: 0px;
+  color: red;
+  cursor: pointer;
+}
+
+.user_detail_card {
+  padding: 15px 20px;
+}
+
+.width_20pr {
+  width: 20%;
+}
+
+.page_form h2 {
+  font-size: 18px;
+  margin-top: 20px;
+  background-color: #104e8d;
+  padding: 10px 5px;
+  border-radius: 5px;
+  color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-transform: uppercase;
+}
+
+.form_page_btn {
+  margin-top: 20px;
+}
+
+.td_list span {
+  background: #ddd;
+  border-radius: 5px;
+  margin-right: 5px;
+  padding: 2px 5px;
+}
+
+.user-pic {
+  display: none;
+}
+
+.ngx-select__item {
+  white-space: break-spaces !important;
+}
+
+#verify_otp_modal .verify_otp_modal_body {
+  text-align: center;
+}
+
+#verify_otp_modal .verify_otp_modal_body button {
+  margin-top: 30px;
+}
+
+.reset_otp {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.timer {
+  color: red;
+}
+
+.resetTimer {
+  color: blue;
+  cursor: pointer;
+}
+
+/* otp input start */
+.otp_modal .otp-input,
+.otp-input:hover,
+.otp-input:focus {
+  border: none !important;
+  border-bottom: 1px solid gray !important;
+  border-radius: 0px !important;
+  outline: none !important;
+  width: 40px !important;
+  height: 30px !important;
+  font-size: 20px !important;
+}
+
+.otp_modal .otp-input:not(:last-child) {
+  margin-right: 12px !important;
+}
+
+.otp_modal .otp-input:focus-visible {
+  border-bottom: 2px solid gray !important;
+}
+
+/* otp input end */
+
+.activeCustomeTab,
+.inactiveCustomeTab {
+  display: inline-block;
+  padding: 10px;
+  color: #000;
+  font-size: 14px;
+  background: #ddd;
+  font-weight: 600;
+  margin-right: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12),
+    0 2px 4px -1px rgba(0, 0, 0, 0.3);
+}
+
+.activeCustomeTab {
+  background: #104e8d;
+  color: #fff;
+  box-shadow: none;
+}
+
+.footer_faq {
+  position: fixed;
+  bottom: 10px;
+  right: 20px;
+}
+
+.faq_count {
+  background: #104e8d;
+  color: #fff;
+  border-radius: 2px;
+  padding: 5px;
+  margin-right: 8px;
+  font-weight: 600;
+}
+
+.faq_angle_icon {
+  position: absolute;
+  top: 20px;
+  right: 21px;
+}
+
+.faq_question_link {
+  width: 98%;
+  cursor: pointer;
+}
+
+.profit_destribution_note h4 {
+  margin: 0px;
+  background: #ddd;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.profit_destribution_note ol {
+  margin-left: 0px;
+  padding-left: 15px;
+}
+
+.table_checkbox {
+  display: flex;
+}
+
+.table_checkbox span {
+  margin: 2px 0px 0px 5px;
+}
+
+.ngx-pagination a:hover,
+.ngx-pagination button:hover {
+  color: #fff !important;
+}
+
+.form_password {
+  position: relative;
+}
+
+.form_password .eye_adjust {
+  position: absolute;
+  top: 40px;
+  right: 15px;
+}
+
+/* Strong password start */
+.strong_password {
+  display: flex;
+  font-size: 18px;
+  color: #008000;
+  margin-top: 8px;
+  opacity: 0.5;
+}
+
+.strong_password_right {
+  opacity: 1;
+}
+
+.strong_password i {
+  margin-right: 8px;
+}
+
+/* Strong password end */
+.change_password_form .form_password .eye_adjust {
+  top: 12px;
+}
+
+.amount_supply_details {
+  padding: 10px;
+  border-radius: 8px;
+  background: #2d66f7;
+  color: #fff;
+}
+
+.amount_supply_details p {
+  margin-bottom: 5px;
+}
+
+#viewPriceDetailsModal .row {
+  border-bottom: 1px solid #ddd9;
+  padding: 5px 0px;
+}
+
+#viewPriceDetailsModal .row:first-child {
+  padding-top: 0px;
+}
+
+#viewPriceDetailsModal .row:last-child {
+  border: none;
+}
+
+.dataTables_length_hidden {
+  display: none !important;
+}
+
+.text_upercase {
+  text-transform: uppercase;
+}
+
+.success_color {
+  color: #2dce89;
+}
+
+.bank_account_detail_modal .modal-lg {
+  max-width: 70%;
+}
+
+#view_error_modal .modal-body {
+  text-align: center;
+  padding: 0px;
+}
+
+#view_error_modal .close_modal {
+  background: #f65656;
+  position: relative;
+  float: left;
+  width: 100%;
+  color: #fff;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.errorMessage {
+  padding: 15px;
+}
+
+.errorMessage h2 {
+  padding-top: 15px;
+  margin-bottom: 8px;
+}
+
+#view_error_modal p {
+  font-size: 18px;
+  font-weight: 400;
+  color: #6e6e6e;
+}
+
+.tableBtn_inlineText {
+  display: flex;
+}
+
+.tableBtn_inlineText input {
+  margin-right: 5px;
+}
+
+.tbody_heading td {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.tbody_heading span {
+  font-weight: 400 !important;
+  font-size: 12px;
+}
+
+#update_bill_type_modal .modal-lg {
+  max-width: 90% !important;
+}
+
+.manage_dead_expandable {
+  display: flex;
+}
+
+.manage_dead_expandable p {
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-right: 15px;
+}
+
+.handleAxtionBreadcrum {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+}
+
+.new_device_card {
+  text-align: center;
+  width: 40%;
+  margin: auto;
+}
+
+.new_device_card div {
+  background: #fff;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.new_device_card button {
+  margin-top: 15px;
+}
+
+.settingPageCard {
+  background: #ddd !important;
+  cursor: pointer;
+}
+
+.totp_password{
+  position: relative;
+}
+.totp_password .eye_adjust {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+.ngx-select__toggle{
+  height: 38px !important;
+}

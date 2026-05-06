@@ -1,0 +1,69 @@
+<div class="app-header header top-header">
+  <div class="container-fluid">
+    <div class="d-flex">
+      <div class="dropdown   side-nav">
+        <a aria-label="Hide Sidebar" class="app-sidebar__toggle nav-link icon mt-1" data-toggle="sidebar" href="#">
+          <i class="fa fa-align-left" aria-hidden="true"></i>
+        </a>
+      </div>
+      <div class="ledger_logo">
+        <a class="header-brand" [routerLink]="['../dashboard']">
+          <img src="assets/images/logo.png" alt="" class="logo">
+        </a>
+      </div>
+
+      <div class="d-flex order-lg-2 ml-auto">
+        <a href="#" data-toggle="search"  title="Search" class="nav-link nav-link-lg d-md-none navsearch"><i
+            class="fa fa-search"></i></a>
+        <h2 class="admin_text">
+          <!-- <a [routerLink]="['../notification']">
+            <i class="fa fa-bell notification" aria-hidden="true"></i>
+          </a> -->
+          <span class="admin_text_span"> {{userIdDetails?.personName}}</span>
+          <span class="admin_text_span">
+            <span *ngIf="userIdDetails?.roleName"> ({{userIdDetails?.roleName}})</span>
+          </span>
+        </h2>
+        <div class="dropdown ">
+          <a href="#" class="nav-link pr-0 leading-none mt-2" data-toggle="dropdown">
+            <!-- <span>
+              <img src="assets/images/user.png" alt="img" class="avatar-md brround">
+            </span> -->
+            <i class="fa fa-angle-down"></i>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+            <!-- <a class="dropdown-item cursor_pointer" (click)="backToPanel('SB')" *ngIf="isbackToPanelStep">
+              <i class="dropdown-icon fa fa-home"></i> Step back Panel
+            </a>
+            <a class="dropdown-item cursor_pointer" (click)="backToPanel('RT')" *ngIf="isbackToPanelRoot">
+              <i class="dropdown-icon fa fa-home"></i> Home
+            </a> -->
+            <a class="dropdown-item cursor_pointer" *ngFor="let dataObj of dataList"
+              [hidden]="userIdDetails?.roleId==dataObj.id" (click)="roleSwitch(dataObj)">
+              {{ dataObj?.roleName }}
+              <span *ngIf="dataObj?.aclPilCodeDesignationDTO">
+                ({{ dataObj?.aclPilCodeDesignationDTO.descr }})
+              </span>
+              
+              <!-- <hr style="margin-top: 1px; margin-bottom: 0px; padding: 0px;height:1px;border-width:0;color:gray;background-color:gray"> -->
+            </a>
+            <!-- <hr style="margin-top: 0px; margin-bottom: 0px;margin-right: 10px; margin-left: 10px; height:2px;border-width:0;color:gray;background-color:gray"> -->
+            <!-- <a class="dropdown-item linefree" [routerLink]="['../profile-setting']">
+              <i class="dropdown-icon mdi mdi-account-key fa fa-cogs"></i> Setting
+            </a> -->
+            <!--<a class="dropdown-item linefree" [routerLink]="['../switch-module']">
+              <i class="dropdown-icon mdi mdi-account-key fa fa-cube"></i> Switch Module
+            </a>
+            <a class="dropdown-item linefree" [routerLink]="['../change-password']">
+              <i class="dropdown-icon mdi mdi-account-key fa fa-key"></i> Change Password
+            </a>-->
+            <a data-toggle="modal" data-target="#logoutModal" class="dropdown-item linefree" style="cursor: pointer;">
+              <i class="dropdown-icon mdi  mdi-logout-variant fa fa-sign-out"></i> Log out
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-logout-modal></app-logout-modal>

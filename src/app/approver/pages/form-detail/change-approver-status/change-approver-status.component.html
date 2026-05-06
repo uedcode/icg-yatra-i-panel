@@ -1,0 +1,42 @@
+<div class="modal fade modal_type1 bounceIn" id="change_status_approver_modal" tabindex="-1" role="dialog"
+  aria-labelledby="addAgent" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="manage_admin">
+          {{ changeStatusObj?.requestType }}
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body form_modal_body">
+        <form #requestForm="ngForm" novalidate>
+          <!-- Conditionally show this div -->
+
+          <div class="form-group">
+            <label>Remarks <sup class="required-msg">*</sup></label>
+            <textarea class="form-control r-0" rows="3" placeholder="Enter Remarks" maxlength="300"
+              appNotSpecialCharecter [(ngModel)]="formObj.remarks" #remarks="ngModel" name="remarks"
+              required></textarea>
+            <div *ngIf="remarks.touched || (requestForm.submitted && remarks.invalid)">
+              <div *ngIf="remarks.errors?.required" class="invalid-msg">
+                Remarks is Required
+              </div>
+            </div>
+          </div>
+
+          <div class="text-right">
+            <!-- Form submission without relying on validity -->
+            <button type="button" class="btn btn-success" (click)="changeStatusWithApprover()">
+              <i class="fa fa-check"></i> Yes
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+              <i class="fa fa-times"></i> No
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

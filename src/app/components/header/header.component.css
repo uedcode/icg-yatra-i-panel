@@ -1,0 +1,55 @@
+h1 {
+    margin: 0px;
+    margin-top: 8px;
+    font-weight: 600;
+    color: #2d66f7;
+    letter-spacing: 2px;
+}
+
+.fa-angle-down {
+    font-size: 25px;
+    margin-left: 5px;
+}
+
+.wallet_back img {
+    width: 30px;
+}
+
+.wallet_back {
+    padding-top: 10px;
+}
+
+.wallet_back i {
+    padding-left: 5px;
+}
+
+.wallet_back a {
+    font-weight: 600;
+}
+
+.wallet_back a {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    padding: 15px 25px;
+    margin: 15px 25px;
+}
+
+.header-brand img {
+    width: 100%;
+    /* margin-left: 10px; */
+    object-fit: contain;
+}
+
+.notification {
+    color: #fff;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.app-header .dropdown-menu {
+    font-size: 12px;
+}
+.logo{
+    height:55px;
+    /* width: 180px !important; */
+}

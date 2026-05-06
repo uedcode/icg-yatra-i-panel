@@ -1,0 +1,83 @@
+<!-- Manage FAQ Modal Starts -->
+<div class="modal fade" id="manage_faq" tabindex="-1" role="dialog"
+  aria-labelledby="manage_admin" data-keyboard="false"
+  data-backdrop="static" aria-hidden="true">
+  <div class="modal-dialog modal-lg " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="manage_admin">{{recordObj.faqId ? "UPDATE":"ADD"}}
+          FAQ</h5>
+        <button type="button" class="close" data-dismiss="modal"
+          aria-label="Close" (click)="resetForm()">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <form autocomplete="off"
+        (ngSubmit)="recordForm.form.valid && saveRecord();" #recordForm="ngForm"
+        novalidate>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-label">Question <sup class="required-msg">*</sup>
+                  <small
+                    class="text-muted">(minlength: 8
+                    maxlength: 1000) Characters</small></label>
+                <input type="text" class="form-control"
+                  [(ngModel)]="recordObj.ques" name="ques" #ques="ngModel"
+                  required minlength="8" maxlength="1000"
+                  placeholder="Enter Question">
+                <div
+                  *ngIf="ques.touched || (recordForm.submitted && ques.invalid)">
+                  <div *ngIf="ques.errors?.required" class="invalid-msg">Question
+                    is
+                    required
+                  </div>
+                </div>
+                <div
+                  *ngIf="recordObj.ques && ques.invalid"
+                  class="invalid-msg">
+                  Question Should not be
+                  less than 8 Characters
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-label">Answer <sup class="required-msg">*</sup>
+                  <small class="text-muted">(minlength:
+                    8 Characters)</small></label>
+                <angular-editor [placeholder]="'Enter text here...'"
+                  #ans="ngModel" name="ans"
+                  [(ngModel)]="recordObj.ans" minlength="8" maxlength="1000"
+                  [config]="editorConfig" required>
+                </angular-editor>
+                <div
+                  *ngIf="ans.touched || (recordForm.submitted && ans.invalid)">
+                  <div *ngIf="ans.errors?.required" class="invalid-msg">Answer
+                    is
+                    required
+                  </div>
+                </div>
+                <div
+                  *ngIf="recordObj.ans && ans.invalid"
+                  class="invalid-msg">
+                  Answer Should not be
+                  less than 8 Characters</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button  type="submit" title="Submit" class="btn btn-primary" title="{{recordObj.faqId ? 'Update' :
+          'Submit'}}">{{recordObj.faqId ? 'Update' :
+            'Submit'}}</button>
+          <button type="button" class="btn btn-danger" title="Reset" (click)="resetForm()">Reset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Manage FAQ Modal Ends -->

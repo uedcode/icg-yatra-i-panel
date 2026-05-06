@@ -1,0 +1,180 @@
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <app-sidebar></app-sidebar>
+    <div class="app-content">
+      <div class="side-app">
+        <!--Page header-->
+        <div class="page-header">
+          <div class="page-leftheader">
+            <h4 class="page-title">Imported</h4>
+            <ol class="breadcrumb pl-0">
+              <li class="breadcrumb-item">
+                <a [routerLink]="['../dashboard']">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Imported
+              </li>
+            </ol>
+          </div>
+          <div>
+            <!-- <div>
+              <button type="button" class="btn btn-info request_view_back" title="Back to Page" (click)="exportAudit('Selected')">Export
+														Selected</button>
+              <button type="button" class="btn btn-info request_view_back" title="Back to Page" (click)="exportAudit('All')">Export All</button>
+            </div> -->
+            <!-- <div class="breadcrumb_right">
+              <button  type="submit" title="Submit" class="btn btn-dark"  (click)="openAddMapping()">+</button>
+            </div> -->
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-12 col-md-6">
+                    <div class="dataTables_length">
+                      <label>Show</label>
+                      <select class="form-control" name="noOfPage1" aria-controls="example" [(ngModel)]="noOfPage1"
+                        (ngModelChange)="p1 = 1">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="100000">All</option>
+                      </select>
+                      <label>entries</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-12 col-md-3 offset-3">
+                    <div class="dataTables_filter" title="Search">
+                      <i class="fa fa-search"></i>
+                      <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p1 = 1"
+                        [(ngModel)]="searchObj1" name="searchObj1" aria-controls="example" />
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table id="exportData" class="table table-bordered" style="width: 100%">
+                    <thead>
+                      <tr>
+                        <th>S.No.</th>
+                        <th>Batch-ID</th>
+                        <th>Imported Date</th>
+                        <th>Total Records</th>
+                        <th>Archive</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        *ngFor="let batchObj of batchList | filterComplex : searchObj1 | orderBy : key : reverse | paginate : { id: 'pagination1', itemsPerPage: noOfPage1, currentPage: p1 }; let i = index">
+                        <td>{{ (p1 - 1) * noOfPage1 + i + 1 }}.</td>
+                        <td>
+                          <a href="#" (click)="getAllBatchChilds(batchObj);$event.preventDefault()"
+                            style="color: blue">{{ batchObj.batchNo }}</a>
+                        </td>
+                        <td>
+                          {{ batchObj.updatedOn | showDate : "medium" }}
+                        </td>
+                        <td>{{ batchObj.noOfRecords }}</td>
+                        <td>
+                          <button type="button" class="btn btn-info"
+                            (click)="changeBatchStatus('1',batchObj.importExportId,i)">
+                            Archive
+                          </button>
+                        </td>
+                      </tr>
+                      <tr *ngIf="!batchList.length" class="text-center">
+                        <td colspan="20">No Records Available</td>
+                      </tr>
+                      <tr class="noExl pagination_area" *ngIf="batchList?.length">
+                        <td colspan="20">
+                          <pagination-controls id="pagination1" (pageChange)="p1 = $event"
+                            [responsive]="true"></pagination-controls>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div *ngIf="showBatchChilds">
+                  <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                      <div class="dataTables_length">
+                        <label>Show</label>
+                        <select class="form-control" name="noOfPage2" aria-controls="example" [(ngModel)]="noOfPage2"
+                          (ngModelChange)="p2 = 1">
+                          <option value="10">10</option>
+                          <option value="25">25</option>
+                          <option value="50">50</option>
+                          <option value="100">100</option>
+                          <option value="100000">All</option>
+                        </select>
+                        <label>entries</label>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3 offset-3">
+                      <div class="dataTables_filter" title="Search">
+                        <i class="fa fa-search"></i>
+                        <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p2 = 1"
+                          [(ngModel)]="searchObj2" name="searchObj2" aria-controls="example" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th>S.No.</th>
+                          <th>Batch ID</th>
+                          <th>Process Name</th>
+                          <th>Form No</th>
+                          <th>Form Date</th>
+                          <th>Form Description</th>
+                          <th>Form Unit</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                      <tbody>
+                        <tr
+                          *ngFor="let batchChildObject of batchChildList | filterComplex : searchObj2 | paginate : { id: 'pagination2', itemsPerPage: noOfPage2, currentPage: p2 }; let i = index">
+                          <td>{{ (p2 - 1) * noOfPage2 + i + 1 }}.</td>
+                          <td>{{ batchNo }}</td>
+                          <td>
+                            {{batchChildObject?.codeProcessDTO?.process || "-"}}
+                          </td>
+                          <td>{{ batchChildObject?.formNo || "-" }}</td>
+                          <td>
+                            {{batchChildObject?.sysAdminFormDate | showDate : "medium"}}
+                          </td>
+                          <td>{{ batchChildObject?.formName || "-" }}</td>
+                          <td>
+                            {{ batchChildObject?.formUnitDTO?.descr || "-" }}
+                          </td>
+                        </tr>
+
+                        <tr *ngIf="!batchChildList.length" class="text-center">
+                          <td colspan="20">No Records Available</td>
+                        </tr>
+                        <tr class="noExl pagination_area" *ngIf="batchChildList?.length">
+                          <td colspan="20">
+                            <pagination-controls id="pagination2" (pageChange)="p2 = $event"
+                              [responsive]="true"></pagination-controls>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>
+<app-change-batch-status [changeData]="'1'" (changeStatusConfirmed)="changeStatus($event)"></app-change-batch-status>

@@ -1,0 +1,60 @@
+<!-- Change Status Modal Starts -->
+<div class="modal fade delete_modal_" id="portRateModal" tabindex="-1" role="dialog" aria-labelledby="addAgent"
+   aria-hidden="true">
+   <div class="modal-dialog modal-lg " role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="row">
+               <div class="col-md-12 col-lg-12">
+                  <div class="table-responsive">
+                     <table id="exportData" class="table table-bordered" style="width: 100%">
+                        <thead>
+                           <tr>
+                              <th class="wd-5p">SL</th>
+                              <th class="wd-20p">Port Name </th>
+                              <th class="wd-20p">Parent Port Name </th>
+                              <th class="wd-20p">GRT No </th>
+                              <th class="wd-20p">In/Out Day Amount </th>
+                              <th class="wd-20p">In/Out Night Amount </th>
+                              <th class="wd-20p">Shifting Day Amount </th>
+                              <th class="wd-20p">Shifting Night Amount </th>
+                              <th class="wd-20p">Effective Date </th>
+                              <th class="wd-20p">Action </th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr *ngFor="let dataObj of portRateList;let i = index">
+                              <td>{{ i + 1 }}</td>
+                              <td>{{ dataObj?.masterPortDTO?.portName | showHypen }}</td>
+                              <td>{{ dataObj?.parentMasterPortDTO?.portName | showHypen }}</td>
+                              <td>{{ dataObj?.unitGrtNo | showHypen }}</td>
+                              <td>{{ dataObj?.inOutDayAmount | showHypen }}</td>
+                              <td>{{ dataObj?.inOutNightAmount | showHypen }}</td>
+                              <td>{{ dataObj?.shiftingDayAmount | showHypen }}</td>
+                              <td>{{ dataObj?.shiftingNightAmount | showHypen }}</td>
+                              <td>{{ dataObj?.effectiveDate |  showDate:"short" }}</td>
+                              <td>
+                                <button type="button" class="btn btn-success" title="Select"
+                                  (click)="selectPilotageRate(dataObj)">
+                                  <i class="fa fa-check-circle"></i> Select
+                                </button>
+                              </td>
+                           </tr>
+                           <tr *ngIf="!portRateList.length" class="text-center">
+                              <td colspan="20">No Records Available</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Change Status Modal Ends -->

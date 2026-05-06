@@ -1,0 +1,73 @@
+<div class="modal fade" id="unitMapping" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false"
+  data-backdrop="static">
+  <div class="modal-dialog modal-lg " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="manage_admin">{{formObj.id ? 'Update' :
+          'Add'}} Unit Mapping</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body form_modal_body">
+        <form autocomplete="off" (ngSubmit)="mainForm.form.valid && saveRecord();" #mainForm="ngForm" novalidate>
+          <div class="modal_form_sec">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label">Unit<sup class="required-msg">*</sup></label>
+                  <ngx-select [items]="unitList" optionTextField="descr" optionValueField="unit" name="codeHrUnitId"
+                    #codeHrUnitId="ngModel" [(ngModel)]="formObj.codeHrUnitId" [allowClear]="true" required
+                    placeholder="Select Unit">
+                  </ngx-select>
+                  <div *ngIf="codeHrUnitId.touched || (mainForm.submitted && codeHrUnitId.invalid)">
+                    <div *ngIf="codeHrUnitId.errors?.required" class="invalid-msg">Unit
+                      is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Parent Unit<sup class="required-msg">*</sup></label>
+                  <ngx-select [items]="unitList" optionTextField="descr" optionValueField="unit" name="parentHrUnitId"
+                    #parentHrUnitId="ngModel" [(ngModel)]="formObj.parentHrUnitId" [allowClear]="true" required
+                    placeholder="Select Parent Unit">
+                  </ngx-select>
+                  <div *ngIf="parentHrUnitId.touched || (mainForm.submitted && parentHrUnitId.invalid)">
+                    <div *ngIf="parentHrUnitId.errors?.required" class="invalid-msg">
+                      Parent Unit is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Type</label>
+                  <ngx-select [items]="mappingTypeList" optionTextField="descr" optionValueField="id" name="type"
+                  #type="ngModel" [(ngModel)]="formObj.type" [allowClear]="true" required
+                  placeholder="Select Type">
+
+                </ngx-select>
+                <div *ngIf="type.touched || (mainForm.submitted && type.invalid)">
+                  <div *ngIf="type.errors?.required" class="invalid-msg">
+                    Type is required
+                  </div>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="text-right">
+              <button  type="submit" title="Submit" class="btn btn-primary" title="{{formObj.id ? 'Update' :
+              'Submit'}}">{{formObj.id ? 'Update' :
+                'Submit'}}</button>
+              <button type="button" class="btn btn-danger" title="Reset" (click)="reset()"  title="Reset">Reset</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

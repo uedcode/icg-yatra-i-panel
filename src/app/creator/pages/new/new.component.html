@@ -1,0 +1,63 @@
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <app-sidebar></app-sidebar>
+
+    <div class="app-content">
+      <div class="side-app">
+        <!--Page header-->
+        <div class="page-header">
+          <div class="page-leftheader">
+            <h4 class="page-title">New </h4>
+            <ol class="breadcrumb pl-0">
+              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">
+                New
+              </li>
+            </ol>
+          </div>
+          <div>
+            <div>
+              <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
+                  class="fa fa-chevron-left" style="display: inline-block;"></i></button>
+
+
+              <!-- <button  type="submit" title="Submit" class="btn btn-dark" title="Add" (click)="openAddMapping()"><i class="fa fa-plus" aria-hidden="true"></i></button> -->
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table id="exportData" class="table table-bordered" style="width:100%">
+                    <thead>
+                      <tr>
+                        <th class="wd-5p">SL</th>
+                        <th class="wd-20p">Form Name </th>
+
+                        <th class="actionBtnWidth">Action</th>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let dataObj of dataList;let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{dataObj?.descr}}</td>
+                        <td>
+                          <button class="btn btn-primary" (click)="actionPage(dataObj)" title="Create" [disabled]="dataObj?.isAllowed == 0"> Create</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "GS",
+    "descr": "General (Sailors)"
+  },
+  {
+    "id": "GO",
+    "descr": "General (Officers)"
+  },
+  {
+    "id": "SS",
+    "descr": "Submarine (Sailors)"
+  },
+  {
+    "id": "SO",
+    "descr": "Submarine (Officers)"
+  },
+  {
+    "id": "AS",
+    "descr": "Aviator (Sailors)"
+  },
+  {
+    "id": "AO",
+    "descr": "Aviator (Officers)"
+  }
+]

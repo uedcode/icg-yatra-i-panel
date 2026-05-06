@@ -1,0 +1,46 @@
+/* sidebar start */
+.theme_red a:hover,
+.theme_red .breadcrumb-item a,
+.theme_red .side-menu__item.active,
+.theme_red .side-menu__item.active .side-menu__icon,
+.theme_red .side-menu__item:hover .side-menu__label,
+.theme_red .side-menu__item:hover .side-menu__icon,
+.theme_red .side-menu__item:hover .angle,
+.theme_red .slide.is-expanded .slide-menu li a:hover,
+.theme_red .slide-menu a.active{
+      color: #dd4c39 !important;
+}
+/* sidebar end */
+
+/* header start */
+.theme_red .ledger_logo{
+  width: 175px;
+  background: #fff;
+  text-align: center;
+  margin-right: 15px;
+  border-radius: 2px;
+  margin-left: 10px;
+}
+.theme_red span.admin_text_span,
+.theme_red .wallet_back,
+.theme_red .top-header a,
+.theme_red .icon i{
+  color: #fff !important;
+}
+.theme_red .nav-link.icon{
+  border: 1px solid #fff;
+}
+.theme_red .top-header .dropdown.show a{
+    color: #031938 !important;
+}
+.theme_red .header.top-header{
+    background: #dd4c39 !important;
+}
+/* header end */
+
+/* table strt */
+.theme_red table thead tr,
+.theme_red .pagination_area .ngx-pagination .current{
+    background: #dd4c39 !important;
+}
+/* table end */

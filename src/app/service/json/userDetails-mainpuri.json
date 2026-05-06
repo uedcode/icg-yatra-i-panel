@@ -1,0 +1,78 @@
+[
+  {
+    "userId": "PU",
+    "username": "sa001",
+    "name": "system-admin",
+    "email": "systemadmin@gmail.com",
+    "phone": "1111111111",
+    "roleTypeId": "SY",
+    
+    "roleId" : "SY",
+    "roleName": "systemadmin",
+
+    "unitId" : "CR",
+    "unitName" : "001",
+
+    "groupTypeId" : "001",
+    "groupName" : "001",
+    
+    "password": "qwerty"
+  },
+  {
+   "userId": "PU",
+   "username": "ua001",
+   "name": "unit-admin",
+   "email": "unitadmin@gmail.com",
+   "phone": "2222222222",
+   "roleTypeId": "UN",
+   
+   "roleId" : "UN",
+   "roleName": "unitadmin",
+
+   "unitId" : "CR",
+   "unitName" : "002",
+
+   "groupTypeId" : "002",
+   "groupName" : "002",
+   
+   "password": "qwerty"
+  },
+  {
+   "userId": "PU",
+   "username": "ap001",
+   "name": "approver",
+   "email": "approver@gmail.com",
+   "phone": "3333333333",
+   "roleTypeId": "AP",
+   
+   "roleId" : "AP",
+   "roleName": "approver",
+
+   "unitId" : "CR",
+   "unitName" : "003",
+
+   "groupTypeId" : "003",
+   "groupName" : "003",
+   
+   "password": "qwerty"
+  },
+  {
+   "userId": "PU",
+   "username": "ca001",
+   "name": "creator",
+   "email": "creator@gmail.com",
+   "phone": "4444444444",
+   "roleTypeId": "CR",
+   
+   "roleId" : "CR",
+   "roleName": "creator",
+
+   "unitId" : "CR",
+   "unitName" : "004",
+
+   "groupTypeId" : "004",
+   "groupName" : "004",
+   
+   "password": "qwerty"
+  }
+]

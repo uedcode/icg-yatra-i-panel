@@ -1,0 +1,30 @@
+[
+    {
+      "id": 1,
+      "descr": "Self Construction"
+    },
+    {
+      "id": 2,
+      "descr": "Ready Build/Resale"
+    },
+    {
+      "id": 3,
+      "descr": "Private Builder"
+    },
+    {
+      "id": 4,
+      "descr": "AFNHB/AWHO"
+    },
+    {
+      "id": 5,
+      "descr": "State Govt"
+    },
+    {
+      "id": 6,
+      "descr": "State Govt Society"
+    },
+    {
+      "id": 7,
+      "descr": "Additions/Alteration"
+    }
+  ]

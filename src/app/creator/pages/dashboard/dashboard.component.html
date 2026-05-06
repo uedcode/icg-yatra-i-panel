@@ -1,0 +1,342 @@
+<!---Global-loader-->
+
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <!--aside open-->
+    <app-sidebar></app-sidebar>
+    <!--aside closed-->
+
+    <div class="app-content" (click)="$auth.closeSidebar()">
+      <div class="side-app">
+        <!--Page header-->
+        <div class="page-header mobile_page_header">
+          <div class="page-leftheader">
+            <h4 class="page-title">
+              <!-- <span *ngIf="userIdDetails?.groupName"> {{userIdDetails?.groupName}}</span>
+              <span *ngIf="userIdDetails?.roleName"> ({{userIdDetails?.roleName}})</span> -->
+              Dashboard
+            </h4>
+            <ol class="breadcrumb pl-0">
+              <li class="breadcrumb-item">
+                <a [routerLink]="['../dashboard']">Home</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Dashboard
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <!-- <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="custom_card">
+                  <div class="custom_card_body">
+                    <i class="fa fa-users icon_bg_user" aria-hidden="true"></i>
+                    <h2>{{countObj?.new}}</h2>
+                    <p>New</p>
+                  </div>
+                </div>
+              </div> -->
+
+              <div class="col-sm-6 col-md-4 col-lg-3">
+                <a [routerLink]="['../inbox']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i
+                        class="fa fa-inbox icon_bg_user"
+                        aria-hidden="true"
+                      ></i>
+                      <h2>{{ countObj?.inbox }}</h2>
+                      <p>Inbox</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../outbox']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i
+                        class="fa fa-envelope-open icon_bg_user"
+                        aria-hidden="true"
+                      ></i>
+                      <h2>{{ countObj?.outbox }}</h2>
+                      <p>Outbox</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-sm-6 col-md-4 col-lg-3">
+                <a [routerLink]="['../draft']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i
+                        class="fa fa-file-o icon_bg_user"
+                        aria-hidden="true"
+                      ></i>
+                      <h2>{{ countObj?.draft }}</h2>
+                      <p>Draft</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../approved']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i
+                        class="fa fa-check-circle icon_bg_user"
+                        aria-hidden="true"
+                      ></i>
+                      <h2>{{ countObj?.approved }}</h2>
+                      <p>Approved</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../rejected']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i
+                        class="fa fa-window-close icon_bg_user"
+                        aria-hidden="true"
+                      ></i>
+                      <h2>{{ countObj?.rejected }}</h2>
+                      <p>Rejected</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../passed']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i
+                        class="fa fa-check icon_bg_user"
+                        aria-hidden="true"
+                      ></i>
+                      <h2>{{ countObj?.passed }}</h2>
+                      <p>Passed</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../not-passed']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i
+                        class="fa fa-times-circle icon_bg_user"
+                        aria-hidden="true"
+                      ></i>
+                      <h2>{{ countObj?.notPassed }}</h2>
+                      <p>Not Passed</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="row">
+          <div class="col-md-4 card1 m-5">
+            <div class="card-body">
+              <div class="icon">
+                <h1>0</h1>
+                <i class="fa fa-sticky-note" aria-hidden="true"></i>
+              </div>
+              <p class="card-text">Show Count of Forms Submitted</p>
+            </div>
+          </div>
+
+          <div class="col-md-4 card2 m-5">
+
+
+            <div class="card-body">
+              <div class="icon">
+                <h1>0</h1>
+                <i class="fa fa-money" aria-hidden="true"></i>
+              </div>
+              <p class="card-text">The Total Amount Disbursed</p>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- <div class="page-rightheader ml-auto d-lg-flex d-none">
+
+            <div class="btn-group mb-0">
+              <button type="button" class="btn btn-outline-default btn-sm dropdown-toggle" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">Filter</button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" (click)="initDashboardService('-1')">All</a>
+                <a class="dropdown-item" (click)="initDashboardService('1')">Today</a>
+                <a class="dropdown-item" (click)="initDashboardService('2')">Yesterday</a>
+                <a class="dropdown-item" (click)="initDashboardService('3')">Last 3 Days</a>
+                <a class="dropdown-item" (click)="initDashboardService('7')">Last 1 Week</a>
+                <a class="dropdown-item" (click)="initDashboardService('30')">Last 1 Month</a>
+              </div>
+            </div>
+          </div> 
+
+        </div>
+        End Page header
+
+        Main Starts
+        <div class="row">
+          <div class="col-xl-6 col-md-6 col-lg-6">
+            <div class="card-header">
+                <h3 class="card-title">Overview of Demand Orders - SubDepot</h3>
+                <div class="card-options ">
+                  <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i
+                      class="fa fa-angle-up"></i></a>
+                </div>
+              </div>
+
+           
+          <a [routerLink]="['../instructions']" class="col-xl-3 col-lg-6 col-md-12 border-right dash1">
+                  <p class=" mb-0 "><b>Show Count of Forms Submitted</b></p>
+                  <h2 class="mb-2">{{dashboardObj?.depo?.instruction | showZero}}</h2>
+          <div class="progress progress-xs mb-0">
+                    <div class="progress-bar bg-primary" style="width: 78%"></div>
+                  </div>
+          </a>
+
+
+
+          <div class="card">
+            <div class="col-xl-6 col-md-6 col-lg-6">
+              <div class="card-body card_body_dashboard">
+
+
+                <a [routerLink]="['../instructions']" class="col-xl-3 col-lg-6 col-md-12 border-right dash1">
+                  <p class=" mb-0 "><b>Show Count of Forms Submitted</b></p>
+                  <h2 class="mb-2">{{dashboardObj?.depo?.instruction | showZero}}</h2>
+                  <div class="progress progress-xs mb-0">
+                    <div class="progress-bar bg-primary" style="width: 78%"></div>
+                  </div>
+                </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      Main Ends
+
+      Demand Order Depot-Firm Starts
+     <div class="row">
+          <div class="col-xl-12 col-md-12 col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Overview of Demand Orders</h3>
+                <div class="card-options ">
+                  <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i
+                      class="fa fa-angle-up"></i></a>
+                </div>
+              </div>
+              <div class="card-body card_body_dashboard">
+                <div class="row">
+                  <a [routerLink]="['../demand-depo-firm-status']" [queryParams]="{ state: 'IB' }"
+                    class="col-xl-3 col-lg-6 col-md-12 border-right dash1">
+                    <p class=" mb-0 "><b>Show Count of Forms Submitted</b></p>
+                    <h2 class="mb-2">{{dashboardObj?.depo?.demandFirm?.inbox | showZero}}</h2>
+                    <div class="progress progress-xs mb-0">
+                      <div class="progress-bar bg-primary" style="width: 78%"></div>
+                    </div>
+                  </a>
+                  <a [routerLink]="['../demand-depo-firm-status']" [queryParams]="{ state: 'OB' }"
+                    class="col-xl-3 col-lg-6 col-md-12 border-right dash1">
+                    <p class=" mb-0 "><b>The Total Amount Disbursed</b></p>
+                    <h2 class="mb-2">{{dashboardObj?.depo?.demandFirm?.outbox | showZero}}</h2>
+                    <div class="progress progress-xs mb-0">
+                      <div class="progress-bar bg-primary" style="width: 78%"></div>
+                    </div>
+                  </a> 
+                <a [routerLink]="['../demand-depo-firm-status']" [queryParams]="{ state: 'AP' }"
+                    class="col-xl-3 col-lg-6 col-md-12 border-right dash1">
+                    <p class=" mb-0 "><b>Approved</b></p>
+                    <h2 class="mb-2">{{dashboardObj?.depo?.demandFirm?.approved | showZero}}</h2>
+                    <div class="progress progress-xs mb-0">
+                      <div class="progress-bar bg-primary" style="width: 78%"></div>
+                    </div>
+                  </a>
+                  <a [routerLink]="['../demand-depo-firm-status']" [queryParams]="{ state: 'RJ' }"
+                    class="col-xl-3 col-lg-6 col-md-12 border-right dash1">
+                    <p class=" mb-0 "><b>Rejected</b></p>
+                    <h2 class="mb-2">{{dashboardObj?.depo?.demandFirm?.rejected | showZero}}</h2>
+                    <div class="progress progress-xs mb-0">
+                      <div class="progress-bar bg-primary" style="width: 78%"></div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>  
+      Demand Order Depot-Firm Ends
+
+      Group User Starts
+      <div class="row">
+          <div class="col-xl-12 col-md-12 col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Overview of Group User</h3>
+                <div class="card-options ">
+                  <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i
+                      class="fa fa-angle-up"></i></a>
+                </div>
+              </div>
+              <div class="card-body card_body_dashboard">
+                <div class="row">
+                  <a [routerLink]="['../chairman']" class="col-xl-3 col-lg-6 col-md-12 border-right dash1">
+                    <p class=" mb-0 "><b>Chairman</b></p>
+                    <h2 class="mb-2">{{dashboardObj?.depo?.userRole?.chairman | showZero}}</h2>
+                    <div class="progress progress-xs mb-0">
+                      <div class="progress-bar bg-primary" style="width: 78%"></div>
+                    </div>
+                  </a>
+                  <a [routerLink]="['../vice-chairman']" class="col-xl-3 col-lg-6 col-md-12 border-right dash1">
+                    <p class=" mb-0 "><b>Vice-chairman</b></p>
+                    <h2 class="mb-2">{{dashboardObj?.depo?.userRole?.viceChairman | showZero}}</h2>
+                    <div class="progress progress-xs mb-0">
+                      <div class="progress-bar bg-primary" style="width: 78%"></div>
+                    </div>
+                  </a>
+                  <a [routerLink]="['../manager']" class="col-xl-3 col-lg-6 col-md-12 border-right dash1">
+                    <p class=" mb-0 "><b>Manager</b></p>
+                    <h2 class="mb-2">{{dashboardObj?.depo?.userRole?.manager | showZero}}</h2>
+                    <div class="progress progress-xs mb-0">
+                      <div class="progress-bar bg-primary" style="width: 78%"></div>
+                    </div>
+                  </a>
+                  <a [routerLink]="['../salesman']" class="col-xl-3 col-lg-6 col-md-12 border-right dash1">
+                    <p class=" mb-0 "><b>Salesman</b></p>
+                    <h2 class="mb-2">{{dashboardObj?.depo?.userRole?.salesman | showZero}}</h2>
+                    <div class="progress progress-xs mb-0">
+                      <div class="progress-bar bg-primary" style="width: 78%"></div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      Group User Ends
+
+    </div>
+  </div>end app-content
+  </div>-->
+
+        <app-footer></app-footer>
+        <!-- </div>End Page -->
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,223 @@
+.login_sec {
+  /* Production */
+  /* background: url("/pilotage/assets/images/loginbackground.jpg"); */
+  
+  /* Local & Test Server */
+  background: url('../../../assets/images/loginbackground.jpg');
+
+  z-index: 999;
+  background-position: 90% 10%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+}
+
+.login_left_area {
+  width: 600px;
+  margin: auto;
+  padding-top: 40%;
+}
+
+.login_left_area h1 {
+  color: #fff;
+  margin-bottom: 40px;
+  font-size: 42px;
+  font-weight: 900;
+}
+
+.login_left_area h1 span {
+  color: #b99764;
+}
+
+.login_left_area p {
+  color: #e6e6e6;
+  line-height: 28px;
+}
+
+/* login right side start */
+.login_right_area {
+  min-height: 100vh;
+  border-radius: 100% 0 0 100%;
+  background: #fff;
+  border: solid 10px #104e8d;
+  padding-top: 15%;
+}
+
+.login_right_area form {
+  width: 500px !important;
+  height: 600px !important;
+  margin: auto;
+}
+
+.login_right_area img {
+  width: 150px;
+}
+
+.login_right_area h4 {
+  padding: 30px 0px;
+  font-size: 25px;
+}
+
+.login_right_logo {
+  text-align: center;
+}
+
+.login_forgot_password {
+  text-align: right;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.login_right_area .form-group {
+  position: relative;
+}
+
+.login_right_area .form-control {
+  padding: 13px 40px 13px 25px;
+  font-size: 16px;
+  outline: none;
+  color: #616161;
+  border-radius: 3px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  background: #fff;
+  box-shadow: 0 0 5px rgb(0 0 0 / 20%);
+}
+
+.login_right_area i {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 20px;
+  color: #6e6e6e;
+}
+
+.login_right_area button {
+  background-color: #104e8d;
+  border: none;
+  padding: 15px;
+  font-size: 16px;
+  margin: 30px 0px 0px 0px;
+}
+
+.build_no {
+  position: absolute;
+  bottom: 0px;
+  right: 25px;
+  z-index: 999;
+}
+
+.plr_0 {
+  padding: 0px;
+}
+
+.captcha_form {
+  position: relative;
+}
+
+.captcha_view p {
+  background: linear-gradient(
+      45deg,
+      rgba(245, 70, 66, 0.75),
+      rgba(8, 83, 156, 0.75)
+    ),
+    url(../../../assets/images/captcha.webp);
+
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  padding: 8px;
+  font-size: 25px;
+  color: #fff;
+  letter-spacing: 5px;
+  position: relative;
+}
+
+.captcha_view i {
+  position: absolute;
+  top: 16px;
+  right: 25px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* </////////////> */
+
+.background {
+  background-color: #101460;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom_card {
+  width: 350px;
+  padding: 25px;
+  border-radius: 10px;
+  text-align: center;
+  background-color: white;
+}
+
+.head_ing {
+  color: #2b1a5c;
+  font-size: 30px;
+  font-weight: 800;
+  margin: 0 0 10px 0;
+}
+
+.img-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.img-bg {
+  padding-top: 10px;
+  height: 120px;
+  width: 120px;
+}
+
+.img-bg img {
+  width: 50%;
+  height: 70px;
+}
+
+.login_button {
+  padding-left: 70px;
+  padding-right: 70px;
+  background-color: #2b1a5c;
+  color: white;
+}
+.butt-on {
+  margin-top: 10px;
+  padding-left: 60px;
+  padding-right: 80px;
+  color: rgb(23, 6, 45);
+}
+.input-icon {
+  text-align: left;
+}
+
+.forgot_password {
+  text-align: left;
+  margin-top: 2px;
+  cursor: pointer;
+  color: #14144e;
+}
+
+
+.icon_abs {
+  position: absolute;
+  top: 11px;
+  left: 10px;
+}
+.form-group input {
+  padding-left: 30px;
+}
+.form-group {
+  margin-bottom: 5px;
+}

@@ -1,0 +1,29 @@
+.image {
+    height: 100px;
+    width: 100px;
+}
+
+.text-heading {
+    color: rgb(82, 37, 151);
+    font-weight: bold;
+}
+
+.but-ton {
+
+    padding: 4px;
+}
+
+.head-ing {
+    color: rgb(27, 25, 25);
+    font-weight: bolder;
+}
+
+.butt-on {
+    margin-top: 10px;
+    padding-left: 60px;
+    padding-right: 80px;
+}
+
+.form_password .eye_adjust {
+    top: 8px !important;
+}

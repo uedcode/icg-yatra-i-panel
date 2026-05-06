@@ -1,0 +1,82 @@
+<!-- Change Status Modal Starts -->
+<div
+  class="modal fade delete_modal_"
+  id="excelImportModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="addAgent"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="modal-header">
+          <h3 class="modal-title">Import Excel</h3>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="resetForm()"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <h5 style="color: rgb(245, 52, 18)">
+            Download the sample file (Import-Batch-01.xlsx). Ensure that each
+            new upload uses an incremented number, e.g., Import-Batch-02.xlsx.
+          </h5>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label"
+                  >Choose File<sup class="required-msg">*</sup></label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  name="excelFile"
+                  id="uploadExcel"
+                  [(ngModel)]="formObj.excelFile"
+                  #excelFile="ngModel"
+                  accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer modal_footer_download">
+          <div class="float_right">
+            <a
+              href="assets/samples/Import-Batch-01.xlsx"
+              class="btn btn-primary no-hover-color"
+            >
+              Download Sample</a
+            >
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="resetForm()"
+              title="Cancel"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              [disabled]="disableBtn"
+              class="btn btn-primary"
+              (click)="uploadExcelFile()"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Change Status Modal Ends -->

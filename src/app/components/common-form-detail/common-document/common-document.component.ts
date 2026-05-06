@@ -1,0 +1,320 @@
+
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from 'src/app/service/auth.service';
+import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
+import { CommonService } from 'src/app/service/common.service';
+import { FormManageService } from 'src/app/service/formManage.service';
+import { environment } from 'src/environments/environment';
+
+@Component({
+    selector: 'app-common-document',
+    templateUrl: './common-document.component.html',
+    styleUrls: ['./common-document.component.scss'],
+    standalone: false
+})
+export class CommonDocumentComponent implements OnInit {
+  dataForTable: any[];
+  constructor(
+    private $common: CommonService,
+    public $auth: AuthService,
+    private route: ActivatedRoute,
+    public $formManage: FormManageService,
+    public $codeDocInfo: CodeDocInfoService
+  ) { }
+
+  fileUrl = environment.fileUrl;
+  tempObj;
+  subFormId;
+  formId;
+  isEdit = false;
+  supplementryId;
+  ngOnInit() {
+    this.route.queryParams.subscribe((params) => {
+      this.formId = params?.id;
+      this.supplementryId = params?.supId;
+      this.subFormId = params?.subFormId;
+      if (this.formId || this.supplementryId) {
+        this.getFormDetails();
+      } else if (this.subFormId) {
+        this.getDocument(null);
+      }
+    });
+  }
+
+  // for getting subFormId
+  getFormDetails() {
+    this.$formManage?.getSingleForm();
+    this.$formManage?.formDetail.subscribe((res) => {
+      if (res) {
+        this.tempObj = res;
+
+        // this.documentDtos = this.tempObj?.formDocsDTOs;
+        this.documentDtos = this.clearFormDTOIfSupplementry(
+          this.tempObj?.formDocsDTOs,
+          this.supplementryId
+        );
+        this.$codeDocInfo.setDocument(this.documentDtos);
+        this.subFormId = this.tempObj?.codeSubFormDTO?.subFormId;
+        this.getDocument(this.documentDtos);
+      }
+    });
+  }
+  clearFormDTOIfSupplementry(documents: any[], supplementryId: any): any[] {
+    if (!supplementryId || !Array.isArray(documents)) {
+      return documents;
+    }
+
+    return documents.map(doc => {
+      return {
+        ...doc,
+        formDocsId: null,
+        formDTO: null   // 👈 formDTO empty kar diya
+      };
+    });
+  }
+
+  // Get document start
+  documentList: any = [];
+  tempDocumentList: any = [];
+
+  // getDocument(list) {
+  //   this.$formManage?.getDocument(this.subFormId);
+  //   this.$formManage?.documentList.subscribe((res) => {
+  //     if (res) {
+  //       this.documentList = res;
+  //       this.tempDocumentList = res;
+
+  //       if (this.formId && list?.length > 0) {
+  //         list.map((item) => {
+  //           this.tempDocumentList = this.tempDocumentList.filter(
+  //             (elem) => elem?.docName != item?.codePilDocInfoDTO?.docName
+  //           );
+  //         })
+  //       }
+
+  //     }
+  //   });
+  // }
+
+  getDocument(list) {
+    this.$formManage?.getDocument(this.subFormId);
+    this.$formManage?.documentList.subscribe((res) => {
+      if (res) {
+        this.documentList = res;
+        this.tempDocumentList = res;
+
+        // Ensure "Other" document is always available
+        const otherDoc = this.documentList.find((doc) => doc?.docName === 'Other');
+        if (!this.tempDocumentList.some((doc) => doc?.docName === 'Other') && otherDoc) {
+          this.tempDocumentList.push(otherDoc);
+        }
+
+        if (this.formId && list?.length > 0) {
+          list.map((item) => {
+            this.tempDocumentList = this.tempDocumentList.filter(
+              (elem) => elem?.docName.toLowerCase() != item?.codePilDocInfoDTO?.docName.toLowerCase()
+            );
+          });
+
+          // Re-add "Other" document after filtering
+          if (!this.tempDocumentList.some((doc) => doc?.docName === 'Other') && otherDoc) {
+            this.tempDocumentList.push(otherDoc);
+          }
+        }
+      }
+    });
+  }
+
+  // Get document end
+
+  // Image upload and delet start
+  uploadImg(event, fileName) {
+    let isValidExtension = this.$common.checkForValidFile(event);
+    if (!isValidExtension) {
+      return (this.documentObj.url = null);
+    }
+    this.$formManage?.uploadImg(event);
+    this.$formManage?.docFileUrl.subscribe((res) => {
+      if (fileName == 'url') this.documentObj.url = res;
+    });
+  }
+
+
+  deleteDoc(fileName) {
+    if (fileName == 'url') this.$formManage?.deleteByUrl(this.documentObj.url);
+    this.$formManage?.docFileUrlDeleted.subscribe((res) => {
+      if (fileName == 'url') this.documentObj.url = null;
+    });
+  }
+  // Image upload and delet end
+
+  // Document add start
+  documentObj: any = {};
+  @Input() documentDtos: any = [];
+  docIndex: any = null;
+  isOtherDoc: any = false;
+
+  documentChange() {
+    let tempDocObj = this.tempDocumentList.find(
+      (e) => e?.docName === this.documentObj?.docName
+    );
+    ;
+    if (tempDocObj?.docName === 'Other') {
+      this.isOtherDoc = true;
+    } else {
+      this.isOtherDoc = false;
+      this.documentObj.otherDocName = '';
+    }
+  }
+
+
+  // addDocument() {
+
+  //   if(!this.documentObj?.docName){
+  //     return this.$common.showMessage("Please select Document Name", 'danger');
+  //   }
+  //   if(!this.documentObj?.url){
+  //     return this.$common.showMessage("Please choose Document", 'danger');
+  //   }
+  //   let tempDocObj = this.tempDocumentList.find(
+  //     (e) => e?.docName === this.documentObj?.docName
+  //   );
+  //   this.documentDtos= this.documentDtos.filter(
+  //     (e) => this.documentObj?.docName !== e?.codePilDocInfoDTO?.docName
+  //   );
+  //   let obj = {
+  //     ...this.documentObj,
+  //     codePilDocInfoDTO: {
+  //       id: tempDocObj?.id,
+  //       docName: tempDocObj?.docName,
+  //     },
+  //   };
+  //   if (obj) {
+  //     this.documentDtos.push(obj);
+  //   }
+  //   // if (this.docIndex == null && obj) {
+  //   //   this.documentDtos.push(obj);
+  //   // } else {
+  //   //   this.documentDtos[this.docIndex] = obj;
+  //   // }
+  //   if (tempDocObj?.docName != 'Other') {
+  //     this.tempDocumentList = this.tempDocumentList.filter(
+  //       (e) => e?.docName != this.documentObj?.docName
+  //     );
+  //   }
+  //   this.$codeDocInfo.setDocument(this.documentDtos);
+  //   this.resetDocument();
+  // }
+
+  addDocument() {
+
+    // Validation
+    if (!this.documentObj?.docName) {
+      this.$common.showMessage("Please select a document name.", 'danger');
+      return;
+    }
+    if (!this.documentObj?.url) {
+      this.$common.showMessage("Please upload the document before adding.", 'danger');
+      return;
+    }
+
+    const tempDocObj = this.tempDocumentList.find(
+      (e) => e?.docName === this.documentObj?.docName
+    );
+
+    if (!tempDocObj) {
+      this.$common.showMessage("Invalid document selection.", 'danger');
+      return;
+    }
+
+    const newObj = {
+      ...this.documentObj,
+      codePilDocInfoDTO: {
+        id: tempDocObj?.id,
+        docName: tempDocObj?.docName,
+        otherDocName: this.documentObj?.otherDocName || tempDocObj?.otherDocName,
+      },
+    };
+
+    // Check for duplicates
+    const isDuplicate = this.documentDtos.some((doc) => {
+      if (newObj.codePilDocInfoDTO?.docName === "Other") {
+        return (
+          doc.codePilDocInfoDTO?.otherDocName === newObj.codePilDocInfoDTO?.otherDocName
+        );
+      }
+      return doc.codePilDocInfoDTO?.docName === newObj.codePilDocInfoDTO?.docName;
+    });
+    if (!this.isEdit) {
+      if (isDuplicate) {
+        this.$common.showMessage("Document already added.", 'warning');
+        return;
+      }
+    }
+
+    // Add or update document
+    if (this.docIndex !== null) {
+      this.documentDtos[this.docIndex] = newObj;
+      this.docIndex = null;
+    } else {
+      this.documentDtos.push(newObj);
+      if (tempDocObj.docName !== "Other") {
+        this.tempDocumentList = this.tempDocumentList.filter(
+          (e) => e?.docName !== tempDocObj?.docName
+        );
+      }
+    }
+
+    if (this.isEdit) {
+      this.isEdit = false;
+    }
+    // Update the document list and reset the form
+    this.$codeDocInfo.setDocument(this.documentDtos);
+    this.resetDocument();
+  }
+
+
+
+
+  editDocument(data, i) {
+    const tempDocObj = this.documentList.find(
+      (e) => e?.id === data?.codePilDocInfoDTO?.id
+    );
+    if (tempDocObj?.docName !== 'Other') {
+      if (!this.tempDocumentList.some((e) => e?.id === tempDocObj?.id)) {
+        this.tempDocumentList.push(tempDocObj);
+      }
+      this.isOtherDoc = false;
+    } else {
+      this.isOtherDoc = true;
+    }
+    this.documentObj = {
+      docName: tempDocObj?.docName || data?.codePilDocInfoDTO?.docName,
+      otherDocName: tempDocObj?.otherDocName || data?.otherDocName || '',
+      url: data?.url || '',
+    };
+    this.docIndex = i;
+    this.isEdit = true;
+  }
+
+
+  deleteDocument(data, i) {
+
+    let tempDocObj = this.documentList.find(
+      (e) => e?.id === data?.codePilDocInfoDTO?.id
+    );
+    if (tempDocObj?.docName != 'Other') {
+      this.tempDocumentList?.push(tempDocObj);
+    }
+    this.documentDtos.splice(i, 1);
+    this.$codeDocInfo.setDocument(this.documentDtos);
+  }
+
+  resetDocument() {
+
+    this.documentObj = {};
+    this.docIndex = null;
+  }
+  // Document add end
+}

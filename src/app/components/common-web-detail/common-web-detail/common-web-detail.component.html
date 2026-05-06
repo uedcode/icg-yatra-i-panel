@@ -1,0 +1,45 @@
+<div class="img-flex">
+
+  <div class="img-bg">
+    <img src="assets/images/logo.png">
+  </div>
+
+  <div class="img-bg">
+    <img src="assets/images/logo2.jpg">
+  </div>
+  <div class="img-bg">
+    <img src="assets/images/logo3.png">
+  </div>
+</div>
+
+<div class="common-bg">
+  <div class="container"></div>
+  <div class="card-flex">
+    
+    <div class="card-design" (click)="openUserManualModal()">
+      <div class="logo-design">
+        <i class="fa fa-user" aria-hidden="true"></i>
+      </div>
+      <h4>User Manual</h4>
+    </div>
+   
+    <!-- <div class="card-design" (click)="openContactDetail()">
+      <div class="logo-design">
+        <i class="fa fa-phone" aria-hidden="true"></i>
+      </div>
+      <h4>Contact Us</h4>
+    </div> -->
+    
+    <div class="card-design">
+      <div class="logo-design" (click)="openFaqModal()">
+        <i class="fa fa-question"></i>
+      </div>
+      <h4>FAQ</h4>
+    </div>
+
+  </div>
+  <app-login-footer></app-login-footer>
+</div>
+
+<app-common-user-manual-modal></app-common-user-manual-modal>
+<app-common-contact-detail-modal></app-common-contact-detail-modal>

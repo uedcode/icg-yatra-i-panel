@@ -1,0 +1,182 @@
+<div class="app-content">
+  <div class="side-app">
+    <!--Page header-->
+    <div class="page-header">
+      <div class="page-leftheader">
+        <h4 class="page-title">
+          {{ pageType }}
+          {{ supplementryClaim ? supplementryClaim : "" }}Pilotage Claim
+        </h4>
+        <ol class="breadcrumb pl-0">
+          <li class="breadcrumb-item">
+            <a [routerLink]="['../dashboard']">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ pageType }}
+            {{ supplementryClaim ? supplementryClaim : "" }}Pilotage Claim
+          </li>
+        </ol>
+      </div>
+      <div class="handleAxtionBreadcrum">
+        <app-common-change-status-action [isSignRequired]="isSignRequired" [claimAmt]="claimAmt" *ngIf="
+            codeRoleList?.creator != userIdDetails?.roleTypeId &&
+            buttonVisibility == '1'
+          ">
+        </app-common-change-status-action>
+
+        <!-- <button type="button" class="btn btn-primary butn" (click)="downloadReport()"
+            data-toggle="tooltip">Download</button> -->
+
+        <!--
+        <button *ngIf="canResubmit()" type="button" class="btn btn-success request_view_back" title="Resubmit"
+          [disabled]="resubmitLoading" (click)="resubmitForm()">
+          {{ resubmitLoading ? 'Resubmitting...' : 'Resubmit' }}
+        </button>
+        -->
+
+        <button *ngIf="canSaveAsDraft()" type="button" class="btn btn-info request_view_back" title="Save as Draft"
+          [disabled]="saveAsDraftLoading" (click)="saveAsDraft()">
+          {{ saveAsDraftLoading ? 'Saving...' : 'Save as Draft' }}
+        </button>
+
+        <button type="button" class="btn btn-primary request_view_back" title="Download"
+          (click)="getFormDownloadLink()">
+          Download Form
+        </button>
+
+        <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()">
+          <i class="fa fa-chevron-left" style="display: inline-block"></i>
+        </button>
+      </div>
+    </div>
+
+    <!--End Page header-->
+    <!-- <div *ngIf="viewDetails"> -->
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12">
+            <h4 class="folder">PERSONAL DETAILS</h4>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label">Personal Number</label>
+              <p>{{ formObj?.pno | showHypen }}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label">Name</label>
+              <p>{{ formObj?.name | showHypen }}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label">Rank</label>
+              <p>{{ formObj?.rank | showHypen }}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label">Unit</label>
+              <p>{{ formObj?.codeUnitDTO?.descr | showHypen }}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label">Claim Type</label>
+              <p>{{ formObj?.claimType | showHypen }}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label">Claim No</label>
+              <p *ngIf="formObj?.claimNo">
+                {{ supplementryClaim ? 'Supplementary ' : '' }}{{ formObj?.claimNo | showHypen }}
+              </p>
+              <span *ngIf="!formObj?.claimNo">-</span>
+              <!-- <p>{{ formObj?.claimNo | showHypen }}</p> -->
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label">Ship GRT No.</label>
+              <p>{{ formObj?.unitGrtNo | showHypen }}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label">Ship Name</label>
+              <p>{{ formObj?.shipName | showHypen }}</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="form-label">File No</label>
+              <p>{{ formObj?.fileNo | showHypen }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <h4 class="folder">PILOTAGE DETAILS</h4>
+          </div>
+          <div class="col-md-12 col-lg-12">
+            <div class="table-responsive">
+              <table id="exportData" class="table table-bordered" style="width: 100%">
+                <thead>
+                  <tr>
+                    <th class="wd-5p">SL</th>
+                    <th class="wd-20p">Channel/Port / Anchor Bearing</th>
+                    <th class="wd-20p">Authority for movements (Letter No. & Dated, Signal DTG)</th>
+                    <th class="wd-20p">Date and time of completion movement</th>
+                    <th class="wd-20p">Day/Night</th>
+                    <th class="wd-20p">IN/OUT passage</th>
+                    <th class="wd-20p">Maximum Draught at time of movement in meters and feet</th>
+                    <th class="wd-20p">Total number of similar movementsdadf</th>
+                    <th class="wd-20p">Port Rate</th>
+                    <th class="wd-20p">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let dataObj of formObj.formChildPilotageDTOs;let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td [ngStyle]="{ 'white-space': 'pre-wrap' }">
+                      {{ dataObj?.portName | showHypen }} <br />
+                      {{ dataObj?.anchorBearing | showHypen }}
+                    </td>
+                    <td [ngStyle]="{ 'white-space': 'pre-wrap' }">
+                      {{ dataObj?.entryAuth | showHypen }}
+                    </td>
+                    <td>
+                      {{$auth.formatEntryDate(dataObj?.entryDate, dataObj?.entryTime) }}
+                      <span [innerHTML]="$auth.formatOperation(dataObj?.operationType, dataObj?.operationTime)"></span>
+                    </td>
+                    <td>{{ dataObj?.movementTime | showHypen }}</td>
+                    <td>{{ dataObj?.puaPassage | showHypen }}</td>
+                    <td>{{ dataObj?.maxDraughtInMtr | showHypen }} Mtr/{{ dataObj?.maxDraughtInFt | showHypen }} ft</td>
+                    <td>{{ dataObj?.noOfSimilarMovement | numToWord }}</td>
+                    <td>{{ dataObj?.portRate | showHypen }}</td>
+                    <td>{{ dataObj?.amount | showHypen }}</td>
+                  </tr>
+                  <tr *ngIf="!formObj.formChildPilotageDTOs || !formObj.formChildPilotageDTOs.length"
+                    class="text-center">
+                    <td colspan="20">No Records Available</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <app-common-document-detail [formDocsDTOs]="formDocsDTOs"></app-common-document-detail>
+        <div *ngIf="formObj?.formRemark">
+          <strong>Remarks:</strong><br />
+          {{ formObj?.formRemark || 'No remarks provided' }}
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>

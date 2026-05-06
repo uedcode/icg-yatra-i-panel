@@ -1,0 +1,130 @@
+<!---Global-loader-->
+
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <!--aside open-->
+    <app-sidebar></app-sidebar>
+    <!--aside closed-->
+
+    <div class="app-content" (click)="$auth.closeSidebar()">
+      <div class="side-app">
+        <!--Page header-->
+        <div class="page-header mobile_page_header">
+          <div class="page-leftheader">
+            <h4 class="page-title">
+              <!-- <span *ngIf="userIdDetails?.groupName"> {{userIdDetails?.groupName}}</span>
+              <span *ngIf="userIdDetails?.roleName"> ({{userIdDetails?.roleName}})</span> -->
+              Dashboard
+            </h4>
+            <ol class="breadcrumb pl-0">
+              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+            </ol>
+          </div>
+        </div>
+
+
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../mapping-unit']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-map-marker icon_bg_map" aria-hidden="true"></i>
+                      <p>Unit Mapping</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../system-admin']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-users icon_bg_user" aria-hidden="true"></i>
+                      <p>System Admin</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../unit-admin']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-user-secret icon_bg_user" aria-hidden="true"></i>
+                      <p>Unit Admin</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../manage-role']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-arrows icon_bg_user" aria-hidden="true"></i>
+                      <p>Manage Role</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <!--<div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../manage-approver']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-check-circle icon_bg_user" aria-hidden="true"></i>
+                      <p>Manage approver</p>
+                    </div>
+                  </div>
+                </a>
+              </div>-->
+              <!--<div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../mapping-approver-form']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-check-circle icon_bg_user" aria-hidden="true"></i>
+                      <p>Mapping Approver Form</p>
+                    </div>
+                  </div>
+                </a>
+              </div>-->
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../documents']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-file icon_bg_user" aria-hidden="true"></i>
+                      <p>Manage Master</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <!--<div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../hrcdf-import']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-database icon_bg_user" aria-hidden="true"></i>
+                      <p>HRCDF Data</p>
+                    </div>
+                  </div>
+                </a>
+              </div>-->
+              <!-- <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../web-detail']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-life-ring icon_bg_user" aria-hidden="true"></i>
+                      <p>Support</p>
+                    </div>
+                  </div>
+                </a>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
+<!-- </div>End Page -->

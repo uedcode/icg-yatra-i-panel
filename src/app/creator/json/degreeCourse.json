@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "descr": "Higher education of children(degree course)"
+  },
+  {
+    "id": 2,
+    "descr": "Higher education of spouse(degree course)"
+  },
+  {
+    "id": 2,
+    "descr": "Higher education of self(degree course)"
+  },
+  {
+    "id": 3,
+    "descr": "Higher education of children(diploma course)"
+  },
+  {
+    "id": 4,
+    "descr": "Higher education for dependent sister(degree course)"
+  }
+]

@@ -1,0 +1,15 @@
+#verify_totp_modal .modal-dialog {
+    width: 375px;
+}
+
+#verify_totp_modal .modal-content {
+    border-radius: 20px;
+}
+
+#verify_totp_modal .modal-header {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    border: none;
+    z-index: 999999;
+}

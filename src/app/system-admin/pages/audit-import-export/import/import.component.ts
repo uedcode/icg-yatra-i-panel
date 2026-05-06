@@ -1,0 +1,214 @@
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { CommonService } from 'src/app/service/common.service';
+import { NgForm } from '@angular/forms';
+import { Location } from '@angular/common';
+
+import { AuthService } from 'src/app/service/auth.service';
+import { FormService } from 'src/app/service/form.service';
+import { ImportExportAuditService } from 'src/app/service/importExportAudit.service';
+import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
+declare var $: any;
+
+@Component({
+    selector: 'app-import',
+    templateUrl: './import.component.html',
+    styleUrls: ['./import.component.css'],
+    standalone: false
+})
+export class ImportComponent implements OnInit {
+
+
+  codeStatus: { imported: string; exported: string; pending: string; approved: string; rejected: string; success: string; processing: string; cancel: string; outbox: string; draft: string; inbox: string; };
+  userIdDetails: any;
+  constructor(
+    private location: Location,
+    public $auth: AuthService,
+    private $common: CommonService,
+    public $importExport: ImportExportAuditService,
+  ) { }
+
+  @Input() dataList: Array<any> = [];
+  @ViewChild('requiredForm', { static: true }) requiredForm: NgForm;
+
+  id: any;
+  pageType: any;
+  config: any;
+  formObj: any = {};
+  
+  searchObj1: any;
+  searchObj2: any;
+  noOfPage1: any = 10;
+  noOfPage2: any = 10;
+  p1: any = 1;
+  p2: any = 1;
+
+  allAdminForm: any = [];
+  batchList: any = [];
+  batchChildList: any = [];
+  newBatchList: any = [];
+  fileUrl = environment.fileUrl;
+  ngOnInit() {
+    this.userIdDetails = this.$auth.getUserDetails();
+    this.codeStatus = this.$auth.codeStatus();
+    this.getExportedBatch();
+  }
+  getExportedBatch() {
+    try {
+      this.$common.showLoader();
+      let config = {
+        headers: {
+          'type': "IM",
+          'isArchived': "0",
+          'isStaging': "1"
+        }
+      }
+      this.$importExport.getAllExported(config).subscribe(
+        (response: any) => {
+          if (response.status == true) {
+            this.batchList = response.object;
+          }
+        }, err => {
+          this.$common.hideLoader();
+        })
+    } catch (error) {
+      this.$common.hideLoader();
+      console.log(error);
+    }
+  }
+
+  showBatchChilds = false;
+  batchNo;
+  viewingImportExportId;
+  getAllBatchChilds(importExportObject) {
+    try {
+      this.$common.showLoader();
+      let config: any = {
+        headers: {}
+      }
+      this.batchNo = importExportObject.batchNo;
+      this.viewingImportExportId = importExportObject.importExportId;
+      // config.headers.batchType = $rootScope.codeBatchType.auditBatch;
+      if (importExportObject.type == this.codeStatus.imported) {
+        config.headers.importBatchId = importExportObject.importExportId;
+      } else if (importExportObject.type == this.codeStatus.exported) {
+        config.headers.exportBatchId = importExportObject.importExportId;
+      }
+      this.$importExport.batchChilds(config).subscribe(
+        (response: any) => {
+          if (response.status) {
+            this.showBatchChilds = true;
+            this.batchChildList = response.object;
+          }
+          this.$common.hideLoader();
+        }, err => {
+          this.$common.hideLoader();
+        })
+    } catch (error) {
+      this.$common.hideLoader();
+      console.log(error);
+    }
+  }
+
+
+  filterDataObj
+  exportType;
+  submitBtn = false;
+
+  ids;
+  isArchive;
+  index;
+  importExportId;
+  changeData;
+  changeStagingStatus(importExportId, indexOnPage) {
+    this.importExportId = importExportId;
+    const actualIndex = indexOnPage + (this.p1 - 1) * this.noOfPage1;
+    this.index = actualIndex;
+    $('#stagingChangeStatusModal').modal('show');
+  }
+  deleteBatchStaging(importExportId, indexOnPage) {
+    this.importExportId = importExportId;
+    const actualIndex = indexOnPage + (this.p1 - 1) * this.noOfPage1;
+    this.index = actualIndex;
+    $('#stagingDeleteModal').modal('show');
+  }
+
+  changeStagingStatusFinally() {
+    try {
+
+      this.$common.showLoader();
+      var config = {
+        headers: {
+          "importExportId": this.importExportId
+        }
+      }
+      this.$importExport.importBatch({}, config).subscribe((response: any) => {
+        if (response.status == true) {
+          // this.getStateCount();
+          this.batchList.splice(this.index, 1);
+          if (this.viewingImportExportId == this.importExportId) {
+            this.showBatchChilds = false;
+          }
+          $('#stagingChangeStatusModal').modal('hide');
+        }
+        this.$common.hideLoader();
+      },
+        (err) => {
+          this.$common.hideLoader();
+          console.error(err);
+        }
+      );
+    } catch (error) {
+      this.$common.hideLoader();
+      console.error(error);
+    }
+  }
+  deleteRow() {
+    try {
+      this.$common.showLoader();
+      var config = {
+        headers: {
+          'ids': this.importExportId
+        }
+      };
+      this.$importExport.delete(config).subscribe((response: any) => {
+        if (response.status == true) {
+          this.batchList.splice(this.index, 1);
+          if (this.viewingImportExportId == this.importExportId) {
+            this.showBatchChilds = false;
+          }
+
+          // this.getStateCount();
+          $("#stagingDeleteModal").modal('hide');
+          this.$common.hideLoader();
+        }
+        this.$common.hideLoader();
+      }, err => {
+        this.$common.hideLoader();
+      })
+    } catch (error) {
+      this.$common.hideLoader();
+      console.log(error);
+    }
+  }
+  updateData(Object) {
+    this.batchList.push(Object[0]);
+  }
+
+
+  goBack() {
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      window.close();
+    }
+  }
+
+  key: string = 'descr';
+  reverse: boolean = false;
+  sort(key) {
+    this.key = key;
+    this.reverse = !this.reverse;
+  }
+
+}

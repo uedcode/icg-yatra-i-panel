@@ -1,0 +1,47 @@
+<!--Page header-->
+
+<div class="page-header">
+  <div class="page-leftheader">
+    <h4 class="page-title">SETTINGS</h4>
+    <ol class="breadcrumb pl-0">
+      <li class="breadcrumb-item">Setting</li>
+      <li class="breadcrumb-item active" aria-current="page">
+        You can manage your settings</li>
+    </ol>
+  </div>
+</div>
+<!--End Page header-->
+
+
+<div class="row">
+  <div class="col-md-3">
+    <div class="card-design settingPageCard" (click)="openProfileModal()">
+      <div class="logo-design">
+        <i class="fa fa-info" aria-hidden="true"></i>
+      </div>
+      <h4 class="text">{{totpStatusText}} T-OTP <i class="fa fa-question-circle" aria-hidden="true"></i></h4>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card-design settingPageCard" (click)="openDeviceModal()">
+      <div class="logo-design">
+        <i class="fa fa-desktop" aria-hidden="true"></i>
+      </div>
+      <h4 class="text">Manage Devices</h4>
+    </div>
+  </div>
+  <!-- <div class="col-md-3" *ngIf="codeRoleList?.creator == userIdDetails?.roleTypeId">
+    <a [routerLink]="['../creator-profile']">
+      <div class="card-design settingPageCard">
+        <div class="logo-design">
+          <i class="fa fa-user" aria-hidden="true"></i>
+        </div>
+        <h4 class="text">Profile</h4>
+      </div>
+    </a>
+  </div> -->
+</div>
+<app-common-enable-t-otp-modal [hitApi]="hitApi"
+  (totpStatusTextChange)="manageTotpStatusText($event)"></app-common-enable-t-otp-modal>
+<app-common-manage-device-modal></app-common-manage-device-modal>
+<app-delete-modal (deleteConfirmed)="disableTOtp($event)"></app-delete-modal>

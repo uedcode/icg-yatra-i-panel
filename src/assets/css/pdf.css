@@ -1,0 +1,333 @@
+body {
+	background-color: #fff;
+	color: #363A5C;
+   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  /*  border: 1px solid #363A5C;  */
+   margin-right:70px;
+}
+
+.container_preview {
+	/* width: 95%; */
+	margin: auto;
+	background: #fff;
+	padding: 10px;
+	margin-top: 20px;
+	border-radius: 5px;
+}
+/* .minH{
+min-height:380px;
+}
+.minHl{
+min-height:350px;
+}
+.minHxl{
+min-height:600px;
+} */
+
+.preview_ad1 strong {
+	padding-left: 25px;
+}
+
+.preview_ad1 h4 {
+	margin: 25px;
+}
+
+.preview_ad2 {
+	padding-left: 40px;
+}
+
+.preview_ad2 strong {
+	padding-left: 15px;
+}
+
+.preview_ad2 h4 {
+	margin: 0px;
+	padding-top: 10px;
+}
+
+.preview_ad3_men {
+	padding-left: 10px;
+	margin-top: 10px;
+}
+
+.preview_ad4 {
+	padding-top: 0px;
+	display: inline-block;
+	width: 18%;
+}
+
+.col-md-31 {
+	padding-top: 60px;
+	display: inline-block;
+	width: 32%;
+	text-align: center;
+}
+
+.col-md-32 {
+	width: 45%;
+	text-align: right;
+}
+
+.text-left {
+	text-align: left;
+}
+
+.preview_ad4 p {
+	color: #72728D;
+	font-size: 14px;
+	margin-bottom: 10px;
+}
+
+.preview_ad45 {
+	padding-top: 0px;
+	display: inline-block;
+	width: 15%;
+}
+
+.preview_ad45 p {
+	color: #72728D;
+	font-size: 14px;
+	margin-bottom: 10px;
+}
+
+.padleft0ad {
+	padding-left: 0px;
+}
+
+.preview_ad6 {
+	display: inline-block;
+	padding-top: 10px;
+	width: 73%;
+}
+
+.preview_ad7 {
+	width: 10%;
+	display: inline-block;
+	padding-top: 10px;
+}
+
+.preview_ad5 {
+	padding-left: 40px;
+}
+
+.preview_btn {
+	text-align: center;
+	padding: 20px;
+}
+
+.preview_btn a {
+	border-radius: 2px;
+	background: #FFC017;
+	color: #fff;
+	font-size: 12px;
+	padding: 5px 10px;
+}
+
+.tabel_previewleft {
+	padding: 0px 40px;
+}
+
+.preview_ad71 {
+	display: inline-block;
+	width: 40%;
+	padding-top: 10px;
+}
+
+.preview_ad72 {
+	display: inline-block;
+	width: 9%;
+	padding-top: 10px;
+}
+
+.preview_ad71_men {
+	padding-left: 40px;
+}
+
+.preview_ad6 p {
+	color: #72728D;
+	font-size: 14px;
+}
+
+.preview_ad7 p {
+	color: #72728D;
+	font-size: 14px;
+}
+
+.preview_ad71 p {
+	color: #72728D;
+	font-size: 14px;
+}
+
+.preview_ad72 p {
+	color: #72728D;
+	font-size: 14px;
+}
+
+.preview_ty_ad1 {
+	display: inline-block;
+	width: 60%;
+	padding-top: 0px;
+}
+
+.preview_ad4 {
+	margin: 0;
+}
+
+.preview_ad4 p {
+	margin: 0;
+	margin-bottom: 5px;
+}
+
+.preview_ty_ad1 p {
+	color: #72728D;
+	font-size: 14px;
+	margin-bottom: 5px;
+}
+
+.preview_ty_ad2 {
+	display: inline-block;
+	width: 30%;
+	padding-top: 5px;
+}
+
+.preview_ty_ad2 p {
+	color: #72728D;
+	font-size: 14px;
+	margin-bottom: 5px;
+}
+
+.preview_ty_admen {
+	padding-left: 40px;
+}
+
+sign_clerk p {
+	font-size: 10px;
+	margin: 0;
+}
+
+table, td, th, tr {
+	border: 1px solid black;
+	padding: 5px;
+	border-collapse: collapse;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+th {
+	text-align: left;
+}
+
+.row {
+	display: block;
+	overflow: hidden;
+}
+
+.td_width_md {
+	width: 200px;
+}
+
+.td_width_lg {
+	width: 100px;
+}
+
+.td_width_sm {
+	width: 60px;
+}
+
+.display_inline {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+}
+
+@page {
+	size: A4;
+	margin-left: 12mm;
+	margin-right: 0mm;
+}
+
+body {
+	zoom: 101%;
+}
+
+.breakWord {
+	overflow-wrap: break-word;
+	width: 47px;
+}
+
+table {
+	page-break-inside: auto
+}
+
+tr {
+	page-break-inside: avoid;
+	page-break-after: auto;
+}
+
+tbody {
+	border: 1.5px solid black;
+}
+
+thead {
+	border: 1.5px solid black;
+}
+
+table tr {
+	border: 1.5px solid black;
+}
+
+table tr th {
+	border: 1.5px solid black;
+}
+
+table th {
+	border: 1.5px solid black;
+}
+
+table td {
+	border: 1.5px solid black;
+}
+
+.head_ing {
+	font-size: 24px;
+	font-weight: 600;
+	margin-bottom: 30px
+}
+
+p strong {
+	color: #363A5C;
+}
+
+.sub_heading {
+	font-size: 20px;
+	font-weight: 600;
+}
+
+/* .page_break_before {
+	page-break-before: always;
+} */
+.pb_2{
+padding-bottom:2px;
+}
+.custome_card{
+border: 1px solid #ddd;
+padding: 15px;
+margin-bottom: 15px;
+}
+  .custome_card_head {
+         border: 1px solid #ddd;
+         padding: 15px;
+         border-bottom: none;
+      }
+      .custome_card_head p{
+      margin-bottom: 0px;
+      }
+
+ @page { margin: 50px 0px; padding-bottom: 10%; height: 75%; }
+
+ .sig_nature{
+	margin-left: 800px;
+ }

@@ -1,0 +1,117 @@
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <app-sidebar></app-sidebar>
+    <div class="app-content">
+      <div class="side-app">
+        <!--Page header-->
+        <div class="page-header">
+          <div class="page-leftheader">
+            <h4 class="page-title">Approved</h4>
+            <ol class="breadcrumb pl-0">
+              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Approved</li>
+            </ol>
+          </div>
+          <div>
+            <div>
+              <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
+                  class="fa fa-chevron-left" style="display: inline-block;"></i></button>
+            </div>
+
+            <!-- <div class="breadcrumb_right">
+              <button  type="submit" title="Submit" class="btn btn-dark"  (click)="openAddMapping()">+</button>
+            </div> -->
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-12 col-md-6">
+                    <div class="dataTables_length">
+                      <label>Show</label>
+                      <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
+                        (ngModelChange)="p=1">
+                        <option value="10">10</option>
+                        <!-- <option value="25">25</option> -->
+                        <!-- <option value="50">50</option> -->
+                        <option value="100">100</option>
+                        <option value="100000">All</option>
+                      </select>
+                      <label>entries</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-12 col-md-3 offset-3">
+                    <div class="dataTables_filter"  title="Search">
+                      <i class="fa fa-search"></i>
+                      <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
+                        [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table id="exportData" class="table table-bordered" style="width:100%">
+                    <thead>
+                      <tr>
+                        <th class="wd-5p">S No.</th>
+                        <th class="wd-20p">Form ID <i class="fa fa-sort" (click)="sort('customId')"></i></th>
+                        <th class="wd-20p">Form Type <i class="fa fa-sort" (click)="sort('customId')"></i></th>
+                        <th class="wd-20p">Unit<i class="fa fa-sort" (click)="sort('unit')"></i></th>
+                        <th class="wd-20p">PNO/Name/Rank <i class="fa fa-sort" (click)="sort('fullDescr')"></i></th>
+                        <th class="wd-20p">HQ AMOUNT <i class="fa fa-sort" (click)="sort('recommendedAmount')"></i></th>
+                        <th class="wd-20p">HQ Remark <i class="fa fa-sort" (click)="sort('remarks')"></i></th>
+                        <th class="wd-20p">View History</th>
+                        <!-- <th class="wd-20p">On work<i class="fa fa-sort" (click)="sort('onWork')"></i></th> -->
+                        <th class="wd-15p">Created On <i class="fa fa-sort" (click)="sort('createdOn')"></i></th>
+                        <th class="wd-15p">Updated On <i class="fa fa-sort" (click)="sort('updatedOn')"></i></th>
+                        <th class="actionBtnWidth">Action </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
+                        <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
+                        <td>{{dataObj?.customId | showHypen}} </td>
+                        <td>{{dataObj?.formName | showHypen}} </td>
+                        <td>{{dataObj?.unit | showHypen}}</td>
+                        <td>{{dataObj?.fullDescr | showHypen}}</td>
+                        <td>{{dataObj?.recommendedAmount | showHypen}}</td>
+                        <td>{{dataObj?.remarks | showHypen}}</td>
+                         <td>
+                            <button class="btn btn-warning" title="View History" data-target="#viewHistoryModal"
+                              (click)="viewHistory(dataObj?.formId)">View History</button>
+                          </td>
+                        <!-- <td>{{dataObj?.onWork | showHypen}}</td>   -->
+                        <td>{{dataObj?.createdOn | showDate:"medium"}}</td>
+                        <td>{{dataObj?.updatedOn | showDate:"medium"}}</td>
+                        <td class="switch_in_table">
+                          <button class="btn btn-warning" title="View" (click)="viewForm(dataObj)"><i
+                              class="fa fa-eye"></i></button>
+                        </td>
+                      </tr>
+
+                      <tr *ngIf="!dataList.length" class="text-center">
+                        <td colspan="20">No Records Available</td>
+                      </tr>
+                      <tr class="noExl pagination_area" *ngIf="dataList?.length">
+                        <td colspan="20">
+                          <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>
+<!-- <app-add-mapping-unit></app-add-mapping-unit> -->
+  <app-common-view-form-history-modal [formId]="formId"></app-common-view-form-history-modal>

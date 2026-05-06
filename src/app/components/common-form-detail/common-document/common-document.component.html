@@ -1,0 +1,101 @@
+<div *ngIf="documentList?.length > 0">
+  <form class="page_form" autocomplete="off" #documentForm="ngForm" novalidate>
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Documents</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group purchase_product_name">
+          <label class="form-label">Document Name </label>
+          <ngx-select placeholder="Document Name" [items]="tempDocumentList" optionTextField="docName"
+            optionValueField="docName" name="docName" #docName="ngModel" [(ngModel)]="documentObj.docName"
+            [allowClear]="true" (ngModelChange)="documentChange()">
+          </ngx-select>
+          <!-- <div *ngIf="docName.touched || (documentForm.submitted && docName.invalid)">
+            <div *ngIf="docName.errors?.required" class="invalid-msg">
+              Document Name is required
+            </div>
+          </div> -->
+        </div>
+      </div>
+      <div class="col-md-6" *ngIf="isOtherDoc">
+        <div class="form-group">
+          <label class="form-label">Other Document Name <sup class="required-msg">*</sup></label>
+          <input type="text" class="form-control" placeholder="Other Document Name" maxlength="50"
+            [(ngModel)]="documentObj.otherDocName" #otherDocName="ngModel" name="otherDocName" appNotSpecialCharecter>
+          <!-- <div *ngIf="otherDocName.touched || (documentForm.submitted && otherDoc.invalid)">
+            <div *ngIf="otherDocName.errors?.required" class="invalid-msg">Other Document Name
+              is required
+            </div>
+          </div> -->
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label">Upload Document<small class="text-info">.pdf (20 mb)</small></label>
+          <input [hidden]="documentObj.url != null" type="file" class="form-control form_file"
+            [(ngModel)]="documentObj.url" name="url" #url="ngModel" (change)="uploadImg($event, 'url')"
+            accept=".pdf">
+          <!-- <div *ngIf="url.touched || (documentForm.submitted && url.invalid)">
+            <div *ngIf="url.errors?.required" class="invalid-msg">Upload Document is required
+            </div>
+          </div> -->
+          <div *ngIf="documentObj?.url != null">
+            <button type="button" title="View" class="btn btn-warning btn-sm py-2"
+              (click)="$auth.viewFile(documentObj?.url)">
+              <i class='fa fa-eye'></i>View
+            </button>
+            &nbsp;
+            <button type="button" title="Delete" class="btn btn-danger btn-sm py-2" (click)="deleteDoc('url')"><i
+                class='fa fa-times'></i>Delete</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 my-3">
+        <button type="button" class="btn btn-primary" title="Add" (click)="addDocument();">
+          <i class="fa fa-plus"></i>Add</button>
+        <button type="button" class="btn btn-danger" title="Reset" (click)="resetDocument()">
+          <i class="fa fa-refresh"></i> Reset</button>
+      </div>
+    </div>
+  </form>
+  <div class="row">
+    <div class="col-md-12 col-lg-12">
+      <div class="table-responsive">
+        <table id="exportData" class="table table-bordered" style="width:100%">
+          <thead>
+            <tr>
+              <th class="wd-5p">SL</th>
+              <th class="wd-20p">Document Name</th>
+              <th class="wd-20p">Upload Document</th>
+              <th class="actionBtnWidth">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let dataObj of documentDtos; let i=index">
+              <td>{{ i + 1}}</td>
+              <td>
+                {{dataObj?.codePilDocInfoDTO?.docName | showHypen}}
+                <span *ngIf="dataObj?.codePilDocInfoDTO?.docName == 'Other'">({{dataObj?.otherDocName}})</span>
+              </td>
+              <td>
+                <button type="button" title="View" class="btn btn-warning" (click)="$auth.viewFile(dataObj?.url)">
+                  <i class='fa fa-eye'></i>View
+                </button>
+              </td>
+              <td>
+                <!--<button type="button" class="btn btn-primary" title="Edit" (click)="editDocument(dataObj, i)"><i
+                    class="fa fa-edit"></i></button>-->
+                <button type="button" class="btn btn-danger" title="Delete" data-toggle="modal"
+                  data-target="#delete_modal" (click)="deleteDocument(dataObj, i)"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr *ngIf="!documentDtos?.length" class="text-center">
+              <td colspan="20">No Records Available</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

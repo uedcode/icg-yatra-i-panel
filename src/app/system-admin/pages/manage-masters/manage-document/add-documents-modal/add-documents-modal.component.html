@@ -1,0 +1,129 @@
+<div class="modal fade" id="adddocuments" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false"
+  data-backdrop="static">
+  <div class="modal-dialog modal-lg " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="manage_admin">{{formObj.id ? 'Update' :
+          'Add'}} Document</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body form_modal_body">
+        <form autocomplete="off" (ngSubmit)="mainForm.form.valid && saveRecord();" #mainForm="ngForm" novalidate>
+          <div class="modal_form_sec">
+            <div class="row">
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Form<sup class="required-msg">*</sup></label>
+                  <ngx-select [items]="dropdownList" optionTextField="descr" optionValueField="subFormId"
+                    name="subFormId" #subFormId="ngModel" [(ngModel)]="formObj.subFormId" [allowClear]="true" required
+                    placeholder="Select Form">
+                  </ngx-select>
+                  <div *ngIf="subFormId.touched || (mainForm.submitted && subFormId.invalid)">
+                    <div *ngIf="subFormId.errors?.required" class="invalid-msg">
+                      Form is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Document Name<sup class="required-msg">*</sup></label>
+                  <input type="text" class="form-control" placeholder="Document Name" maxlength="100"
+                    [(ngModel)]="formObj.docName" #docName="ngModel" name="docName" required appNotSpecialCharecter>
+                  <div *ngIf="docName.touched || (mainForm.submitted && docName.invalid)">
+                    <div *ngIf="docName.errors?.required" class="invalid-msg">Document
+                      Name is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">SAP Document Type<sup class="required-msg">*</sup></label>
+                  <input type="text" class="form-control" placeholder="SAP Document Type" maxlength="2"
+                    [(ngModel)]="formObj.sapDocumentType" #sapDocumentType="ngModel" name="sapDocumentType" required appNotSpecialCharecter>
+                  <div *ngIf="sapDocumentType.touched || (mainForm.submitted && sapDocumentType.invalid)">
+                    <div *ngIf="sapDocumentType.errors?.required" class="invalid-msg">SAP Document Type is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">SAP Document Name<sup class="required-msg">*</sup></label>
+                  <input type="text" class="form-control" placeholder="SAP Document Name" maxlength="50"
+                    [(ngModel)]="formObj.sapDocumentName" #sapDocumentName="ngModel" name="sapDocumentName" required appNotSpecialCharecter>
+                  <div *ngIf="sapDocumentName.touched || (mainForm.submitted && sapDocumentName.invalid)">
+                    <div *ngIf="sapDocumentName.errors?.required" class="invalid-msg">SAP Document Name is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Document Required?<sup class="required-msg">*</sup></label>
+                  <ngx-select placeholder="Select" [items]="documentStatusList" optionTextField="descr"
+                    optionValueField="descr" name="isRequired" #isRequired="ngModel" [(ngModel)]="formObj.isRequired"
+                    [allowClear]="true" required>
+                  </ngx-select>
+                  <div *ngIf="isRequired.touched || (mainForm.submitted && isRequired.invalid)">
+                    <div *ngIf="isRequired.errors?.required" class="invalid-msg"> Document Required is
+                      required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">ESign Required?<sup class="required-msg">*</sup></label>
+                  <ngx-select placeholder="Select" [items]="documentStatusList" optionTextField="descr"
+                    optionValueField="descr" name="isEsignRequired" #isEsignRequired="ngModel" [(ngModel)]="formObj.isEsignRequired"
+                    [allowClear]="true" required>
+                  </ngx-select>
+                  <div *ngIf="isEsignRequired.touched || (mainForm.submitted && isEsignRequired.invalid)">
+                    <div *ngIf="isEsignRequired.errors?.required" class="invalid-msg"> Document Required is
+                      required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Visibility Indicator?<sup class="required-msg">*</sup></label>
+                  <ngx-select placeholder="Select" [items]="visibilityIndicatorList"   optionValueField="id" optionTextField="descr"
+                   name="visibilityIndicator" #visibilityIndicator="ngModel" [(ngModel)]="formObj.visibilityIndicator"
+                    [allowClear]="true" required>
+                  </ngx-select>
+                  <div *ngIf="visibilityIndicator.touched || (mainForm.submitted && visibilityIndicator.invalid)">
+                    <div *ngIf="visibilityIndicator.errors?.required" class="invalid-msg"> Visibility Indicator is
+                      required
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <div class="text-right">
+              <button  type="submit" title="Submit" class="btn btn-primary" title="{{formObj.id ? 'Update' :
+              'Submit'}}">{{formObj.id ? 'Update' :
+                'Submit'}}</button>
+              <button type="button" class="btn btn-danger" title="Reset" (click)="reset()"  title="Reset">Reset</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

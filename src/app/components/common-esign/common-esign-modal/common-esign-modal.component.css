@@ -1,0 +1,9 @@
+.modal-body {
+                    text-align: center;
+}
+
+.modal-body span,
+.modal-body p {
+                    font-size: 16px;
+                    margin: 15px;
+}

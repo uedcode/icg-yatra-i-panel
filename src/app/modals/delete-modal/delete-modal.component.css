@@ -1,0 +1,14 @@
+.delete_modal_ .modal-header{
+    border: 0px;
+    padding: 1rem 1rem 0;
+}
+.delete_modal_ .modal-footer{
+  border: none;
+}
+.deleteText{
+    text-align: center;
+    border: 0px;
+}
+.deleteText h4{
+       color: #2d66f7;
+}

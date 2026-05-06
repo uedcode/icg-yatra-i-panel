@@ -1,0 +1,126 @@
+[
+  {
+    "id": 1,
+    "descr": "Andhra Pradesh"
+  },
+  {
+    "id": 2,
+    "descr": "Arunachal Pradesh"
+  },
+  {
+    "id": 3,
+    "descr": "Assam"
+  },
+  {
+    "id": 4,
+    "descr": "Bihar"
+  },
+  {
+    "id": 5,
+    "descr": "Chhattisgarh"
+  },
+  {
+    "id": 6,
+    "descr": "Delhi"
+  },
+  {
+    "id": 31,
+    "descr": "New Delhi"
+  },
+  {
+    "id": 7,
+    "descr": "Goa"
+  },
+  {
+    "id": 8,
+    "descr": "Gujarat"
+  },
+  {
+    "id": 9,
+    "descr": "Haryana"
+  },
+  {
+    "id": 10,
+    "descr": "Himachal Pradesh"
+  },
+  {
+    "id": 11,
+    "descr": "Jammu & Kashmir"
+  },
+  {
+    "id": 12,
+    "descr": "Jharkhand"
+  },
+  {
+    "id": 13,
+    "descr": "Karnataka"
+  },
+  {
+    "id": 14,
+    "descr": "Kerala"
+  },
+  {
+    "id": 15,
+    "descr": "Maharashtra"
+  },
+  {
+    "id": 16,
+    "descr": "Madhya Pradesh"
+  },
+  {
+    "id": 17,
+    "descr": "Manipur"
+  },
+  {
+    "id": 18,
+    "descr": "Meghalaya"
+  },
+  {
+    "id": 19,
+    "descr": "Mizoram"
+  },
+  {
+    "id": 20,
+    "descr": "Nagaland"
+  },
+  {
+    "id": 21,
+    "descr": "Odisha"
+  },
+  {
+    "id": 22,
+    "descr": "Punjab"
+  },
+  {
+    "id": 23,
+    "descr": "Rajasthan"
+  },
+  {
+    "id": 24,
+    "descr": "Sikkim"
+  },
+  {
+    "id": 25,
+    "descr": "Tamil Nadu"
+  },
+  {
+    "id": 26,
+    "descr": "Tripura"
+  },
+  {
+    "id": 27,
+    "descr": "Telangana"
+  },
+  {
+    "id": 28,
+    "descr": "Uttar Pradesh"
+  },
+  {
+    "id": 29,
+    "descr": "Uttarakhand"
+  },
+  {
+    "id": 30,
+    "descr": "West Bengal"
+  }
+]

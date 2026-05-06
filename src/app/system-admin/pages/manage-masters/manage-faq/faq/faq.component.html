@@ -1,0 +1,122 @@
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <app-sidebar></app-sidebar>
+    <div class="app-content" (click)="closeSidebar()">
+      <div class="side-app">
+        <div class="page-header">
+          <div class="page-leftheader">
+            <h4 class="page-title">FAQs</h4>
+            <ol class="breadcrumb pl-0">
+              <li class="breadcrumb-item"><a [routerLink]="['/dashboard']">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">FAQs</li>
+            </ol>
+          </div>
+          <div>
+            <button type="button" class="btn btn-primary" data-toggle="modal"
+              data-target="#manage_faq"><i
+                class="fa fa-plus" aria-hidden="true" data-toggle="tooltip"
+                title="Add"></i></button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-12 col-md-6">
+                    <div class="dataTables_length"><label>Show <select
+                          name="noOfPage" aria-controls="example"
+                          class="display_inline_block form-control form-control-sm selectLength"
+                          [(ngModel)]="noOfPage"
+                          (ngModelChange)="p=1">
+                          <option value="10">10</option>
+                          <option value="25">25</option>
+                          <option value="50">50</option>
+                          <option value="100">100</option>
+                          <option value="1000">1000</option>
+                        </select> entries</label></div>
+                  </div>
+                  <div class="col-sm-12 col-md-3 offset-3">
+                    <div class="dataTables_filter"  title="Search">
+                      <i class="fa fa-search"></i>
+                      <input type="search" class="form-control form-control-sm"
+                        placeholder="Search" (keyup)="p=1"
+                        [(ngModel)]="searchObj" name="searchObj"
+                        aria-controls="example">
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table id="exportData"
+                    class="table table-striped table-bordered"
+                    style="width:100%">
+                    <thead>
+                      <tr>
+                        <th class="wd-15p">SL</th>
+                        <th class="wd-15p">Question <i class="fa fa-sort"
+                            (click)="sort('ques')"></i></th>
+                        <th class="wd-15p">Answer <i class="fa fa-sort"
+                            (click)="sort('ans')"></i></th>
+                        <th class="wd-15p">Created On <i class="fa fa-sort"
+                            (click)="sort('ans')"></i></th>
+                        <th class="wd-15p">Updated On <i class="fa fa-sort"
+                            (click)="sort('ans')"></i></th>
+                            <th class="actionBtnWidth">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
+                        <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
+                        <td>{{dataObj?.ques | showHypen}}</td>
+                        <td>
+                          <div [innerHTML]="dataObj?.ans"></div>
+                        </td>
+                        <td>{{dataObj?.createdOn | showDate:"medium"}}</td>
+                        <td>{{dataObj?.updatedOn | showDate:"medium"}}</td>
+                        <td class="noExl">
+                          <button [disabled]="dataObj.isFixed==1"
+                            class="btn btn-primary"
+                            (click)="editRecord(dataObj)"
+                            data-toggle="tooltip" title="Edit"><i
+                              class="fa fa-pencil" aria-hidden="true"></i></button>
+                          <button [disabled]="dataObj.isFixed==1"
+                            class="btn btn-danger" data-toggle="modal"
+                            data-target="#delete_modal" title="Delete"
+                            (click)="primaryId=dataObj.faqId"><i
+                              class="fa fa-trash" aria-hidden="true"
+                              data-toggle="tooltip"></i></button>
+                        </td>
+                      </tr>
+                      <tr *ngIf="!dataList.length" class="text-center noExl">
+                        <td colspan="10"> No Records</td>
+                      </tr>
+                      <tr class="pagination_area noExl">
+                        <td colspan="20">
+                          <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- table-wrapper -->
+            </div>
+            <!-- section-wrapper -->
+
+          </div>
+        </div>
+
+        <app-delete-modal [deleteData]="primaryId"
+          (deleteConfirmed)="deleteRecord($event)"></app-delete-modal>
+        <app-add-faq-modal [editRecord]="recordObj" [dataList]="dataList"
+          (setRecordData)="dataList = $event">
+        </app-add-faq-modal>
+
+      </div>
+    </div>
+  </div>
+  <app-footer></app-footer>
+
+</div>

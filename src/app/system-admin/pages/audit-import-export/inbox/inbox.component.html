@@ -1,0 +1,105 @@
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <app-sidebar></app-sidebar>
+    <div class="app-content">
+      <div class="side-app">
+        <!--Page header-->
+        <div class="page-header">
+          <div class="page-leftheader">
+            <h4 class="page-title">Inbox</h4>
+            <ol class="breadcrumb pl-0">
+              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Inbox
+              </li>
+            </ol>
+          </div>
+          <div>
+            <div>
+              <!-- <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
+                  class="fa fa-chevron-left" style="display: inline-block;"></i></button> -->
+              <button type="button" class="btn btn-info request_view_back" title="Back to Page" (click)="exportAudit('Selected')">Export
+														Selected</button>
+              <button type="button" class="btn btn-info request_view_back" title="Back to Page" (click)="exportAudit('All')">Export All</button>
+            </div>
+            <!-- <div class="breadcrumb_right">
+              <button  type="submit" title="Submit" class="btn btn-dark"  (click)="openAddMapping()">+</button>
+            </div> -->
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-12 col-md-6">
+                    <div class="dataTables_length">
+                      <label>Show</label>
+                      <!-- Show entries -->
+                      <select class="form-control" name="noOfPage" aria-controls="example"
+                              [(ngModel)]="noOfPage" (ngModelChange)="p = 1">
+                        <option [ngValue]="10">10</option>
+                        <option [ngValue]="100">100</option>
+                        <option [ngValue]="100000">All</option>
+                      </select>
+                      <label>entries</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-12 col-md-3 offset-3">
+                    <div class="dataTables_filter"  title="Search">
+                      <i class="fa fa-search"></i>
+                      <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
+                        [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table id="exportData" class="table table-bordered" style="width:100%">
+                    <thead>
+                     <tr>
+														<th>S.No.</th>
+														<th width="25%">Process Name</th>
+														<th>Form No</th>
+														<th>Form Date</th>
+														<th width="25%">Form Description</th>
+														<th>Form Unit</th>
+														<th>Export</th>
+													</tr>
+                    </thead>
+                    <tbody>
+                    <!-- iterate filtered + paginated list -->
+                    <tr *ngFor="let obj of filteredAdminForm | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                      <!-- global serial number -->
+                      <td>{{ ((p - 1) * noOfPage) + i + 1 }}</td>
+                      <td>{{ obj?.codeProcessDTO.process | showHypen }}</td>
+                      <td>{{ obj?.formNo | showHypen }}</td>
+                      <td>{{ obj?.sysAdminFormDate | showDate:'medium' }}</td>
+                      <td>{{ obj?.formName | showHypen }}</td>
+                      <td>{{ obj?.formUnitDTO.descr | showHypen }}</td>
+                      <td><input type="checkbox" [(ngModel)]="obj.checked"></td>
+                    </tr>
+
+                    <tr *ngIf="!(filteredAdminForm?.length)" class="text-center">
+                      <td colspan="20">No Records Available</td>
+                    </tr>
+
+                    <tr class="noExl pagination_area" *ngIf="filteredAdminForm?.length">
+                      <td colspan="20">
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                      </td>
+                    </tr>
+                  </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>
+<app-export-form-modal [changeData]="exportType" (changeStatusConfirmed)="createExportFinally($event)"></app-export-form-modal>

@@ -1,0 +1,40 @@
+<div class="modal fade bounceIn" id="viewHistoryModal" tabindex="-1" role="dialog" aria-hidden="true"
+  data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg" role="about">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body form_modal_body">
+        <div class="table-responsive">
+          <table id="exportData" class="table table-bordered" style="width:100%">
+            <thead>
+              <tr>
+                <th class="wd-5p">S.No.</th>
+                <th class="wd-20p">Role Name</th>
+                <th class="wd-20p">State</th>
+                <th class="wd-20p">Unit Name</th>
+                <th class="wd-20p">Created On</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let dataObj of stateList |  filterComplex : searchObj  |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
+                <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
+                <td>{{dataObj?.roleTypeName | showHypen}}</td>
+                <td>{{dataObj?.formState | showHypen }}</td>
+                <td>{{dataObj?.unitName | showHypen }}</td>
+                <td>{{dataObj?.createdOn | showDate:"medium"}}</td>
+              </tr>
+              <tr *ngIf="!stateList.length" class="text-center">
+                <td colspan="20">No Records Available</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,245 @@
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <app-sidebar></app-sidebar>
+
+    <div class="app-content">
+      <div class="side-app">
+        <!--Page header-->
+        <div class="page-header">
+          <div class="page-leftheader">
+            <h4 class="page-title">Manage Approver</h4>
+            <ol class="breadcrumb pl-0">
+              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Manage Approver
+              </li>
+            </ol>
+          </div>
+          <!-- <div>
+            <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
+                class="fa fa-chevron-left" style="display: inline-block;"></i></button>
+          </div> -->
+        </div>
+        <!--End Page header-->
+
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <div class="card">
+              <div class="card-body">
+
+                <form class="page_form" autocomplete="off" (ngSubmit)="requiredForm.form.valid && saveRecord();"
+                  #requiredForm="ngForm" novalidate>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="form-label">Name </label>
+                        <input type="text" class="form-control" placeholder="Name" maxlength="50"
+                          [(ngModel)]="formObj.personName" name="personName" #personName="ngModel"
+                          appNotSpecialCharecter required>
+                        <div *ngIf="personName.touched || (requiredForm.submitted && personName.invalid)">
+                          <div *ngIf="personName.errors?.required" class="invalid-msg">
+                            Name is required
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="form-label">Username </label>
+                        <input type="text" class="form-control" placeholder="Username" maxlength="50"
+                          [(ngModel)]="formObj.username" name="username" #username="ngModel" appNotSpecialCharecter
+                          required>
+                        <div *ngIf="username.touched || (requiredForm.submitted && username.invalid)">
+                          <div *ngIf="username.errors?.required" class="invalid-msg">
+                            Username is required
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="form-label">Phone Number<sup class="required-msg">*</sup></label>
+                        <input type="text" class="form-control" placeholder="Phone Number" minlength="10" maxlength="10"
+                          [(ngModel)]="formObj.mobileNo" #mobileNo="ngModel" name="mobileNo" appNumberOnly required>
+                        <div *ngIf="mobileNo.touched || (requiredForm.submitted && mobileNo.invalid)">
+                          <div *ngIf="mobileNo.errors?.required" class="invalid-msg">Phone Number is required
+                          </div>
+                        </div>
+                        <div *ngIf="formObj.mobileNo && mobileNo.invalid" class="invalid-msg"> Phone Number Should not
+                          be
+                          less than 10 digits</div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="form-label">Email </label>
+                        <input type="text" class="form-control" placeholder="Email" maxlength="50"
+                          [(ngModel)]="formObj.email" name="email" #email="ngModel" appValidateEmail required>
+                        <div *ngIf="email.touched || (requiredForm.submitted && email.invalid)">
+                          <div *ngIf="email.errors?.required" class="invalid-msg">
+                            Email is required
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-3">
+                      <div class="form-group form_password">
+                        <label class="form-label">Password </label>
+                        <input type="password" class="form-control" placeholder="Password" maxlength="50"
+                          [(ngModel)]="formObj.passwordHelp" name="passwordHelp" #passwordHelp="ngModel"
+                          appShowHidePassword (keyup)="handleNewPassword()" required>
+                        <div *ngIf="passwordHelp.touched || (requiredForm.submitted && passwordHelp.invalid)">
+                          <div *ngIf="passwordHelp.errors?.required" class="invalid-msg">
+                            Password is required
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div>
+                        <div class="strong_password"
+                          [ngClass]="strongPasswordObj?.checkSamll == 1 ? 'strong_password_right': 'strong_password' ">
+                          <i
+                            [ngClass]="strongPasswordObj?.checkSamll == 1 ? 'fa fa-check-circle': 'fa fa-times-circle' "></i>
+                          <h5>At least one small letter (a-z)</h5>
+                        </div>
+                        <div class="strong_password"
+                          [ngClass]="strongPasswordObj?.checkCaptial == 1 ? 'strong_password_right': 'strong_password' ">
+                          <i
+                            [ngClass]="strongPasswordObj?.checkCaptial == 1 ? 'fa fa-check-circle': 'fa fa-times-circle' "></i>
+                          <h5>At least one capital letter (A-Z)</h5>
+                        </div>
+                        <div class="strong_password"
+                          [ngClass]="strongPasswordObj?.checkNumber == 1 ? 'strong_password_right': 'strong_password' ">
+                          <i
+                            [ngClass]="strongPasswordObj?.checkNumber == 1 ? 'fa fa-check-circle': 'fa fa-times-circle' "></i>
+                          <h5>At least one number (0-9)</h5>
+                        </div>
+                        <div class="strong_password"
+                          [ngClass]="strongPasswordObj?.checkSpecial == 1 ? 'strong_password_right': 'strong_password' ">
+                          <i
+                            [ngClass]="strongPasswordObj?.checkSpecial == 1 ? 'fa fa-check-circle': 'fa fa-times-circle' "></i>
+                          <h5>At least one special character (!, &#64;, #, $, %, ^, &, *)</h5>
+                        </div>
+                        <div class="strong_password"
+                          [ngClass]="strongPasswordObj?.checkLength == 1 ? 'strong_password_right': 'strong_password' ">
+                          <i
+                            [ngClass]="strongPasswordObj?.checkLength == 1 ? 'fa fa-check-circle': 'fa fa-times-circle' "></i>
+                          <h5>At least 8 characters</h5>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <button  type="submit" title="Submit" class="btn btn-space btn-primary"
+                        [disabled]="strongPasswordObj?.isDisabled">Submit
+                      </button>
+                      <button class="btn btn-space btn-warning" type="button" (click)="reset()"  title="Reset">Reset</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 col-lg-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-sm-12 col-md-6">
+                        <div class="dataTables_length">
+                          <label>Show</label>
+                          <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
+                            (ngModelChange)="p=1">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="100000">All</option>
+                          </select>
+                          <label>entries</label>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-12 col-md-3 offset-3">
+                        <div class="dataTables_filter" title="Search">
+                          <i class="fa fa-search"></i>
+                          <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
+                            [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="table-responsive">
+                      <table id="exportData" class="table table-bordered" style="width:100%">
+                        <thead>
+                          <tr>
+                            <th class="wd-5p">SL</th>
+                            <th class="wd-20p">Name <i class="fa fa-sort" (click)="sort('personName')"></i></th>
+                            <th class="wd-20p">Username <i class="fa fa-sort" (click)="sort('username')"></i></th>
+                            <th class="wd-20p">
+                              <input type="checkbox" [(ngModel)]="showPassword">
+                              Password<i class="fa fa-sort" (click)="sort('name')"></i>
+                            </th>
+                            <th class="wd-20p">Phone Number<i class="fa fa-sort" (click)="sort('mobileNo')"></i></th>
+                            <th class="wd-20p">Email <i class="fa fa-sort" (click)="sort('email')"></i></th>
+                            <th class="actionBtnWidth">Action <i class="fa fa-sort" (click)="sort('action')"></i></th>
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
+                            <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
+                            <td>{{dataObj?.personName | showHypen}}</td>
+                            <td>{{dataObj?.username | showHypen}}</td>
+                            <td>
+                              <span *ngIf="showPassword">{{dataObj.passwordHelp | showHypen}}</span>
+                              <span *ngIf="!showPassword">********</span>
+                            </td>
+                            <!-- <td>{{dataObj?.passwordHelp | showHypen}}</td> -->
+                            <td>{{dataObj?.mobileNo | showHypen}}</td>
+                            <td>{{dataObj?.email | showHypen}}</td>
+                            <td>
+                              <img src="assets/images/switch-on.png" alt=""
+                                *ngIf="dataObj.codeStatusDTO?.id==codeStatusList.activate"
+                                (click)="openChangeStatusModal(dataObj,codeStatusList.deactivate)" data-toggle="modal"
+                                data-target="#change_status_modal" title="Enable" style="width: 45px; cursor: pointer;">
+                              <img src="assets/images/switch-off.png" alt=""
+                                *ngIf="dataObj.codeStatusDTO?.id==codeStatusList.deactivate"
+                                (click)="openChangeStatusModal(dataObj,codeStatusList.activate)" data-toggle="modal"
+                                data-target="#change_status_modal" title="Disable"
+                                style="width: 45px; cursor: pointer;">
+                            </td>
+                          </tr>
+                          <tr *ngIf="!dataList.length" class="text-center">
+                            <td colspan="20">No Records Available</td>
+                          </tr>
+                          <tr class="noExl pagination_area" *ngIf="dataList?.length">
+                            <td colspan="20">
+                              <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <app-footer></app-footer>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<app-change-status-modal [changeData]="tempObj" (changeStatusConfirmed)="changeStatus($event)">
+</app-change-status-modal>

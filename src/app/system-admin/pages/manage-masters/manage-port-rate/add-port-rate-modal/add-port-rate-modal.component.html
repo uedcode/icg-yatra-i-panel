@@ -1,0 +1,144 @@
+<div class="modal fade" id="addportrate" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false"
+  data-backdrop="static">
+  <div class="modal-dialog modal-lg " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="manage_admin">{{formObj.id ? 'Update' :
+          'Add'}} Port Rates</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body form_modal_body">
+        <form autocomplete="off" (ngSubmit)="mainForm.form.valid && saveRecord();" #mainForm="ngForm" novalidate>
+          <div class="modal_form_sec">
+            <div class="row">
+             <!-- <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Port Name<sup class="required-msg">*</sup></label>
+                  <input type="text" class="form-control" placeholder="Port Name" maxlength="100"
+                    [(ngModel)]="formObj.portName" #portName="ngModel" name="portName" required appNotSpecialCharecter>
+                  <div *ngIf="portName.touched || (mainForm.submitted && portName.invalid)">
+                    <div *ngIf="portName.errors?.required" class="invalid-msg">Port Name is required
+                    </div>
+                  </div>
+                </div>
+              </div>-->
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Port Name<sup class="required-msg">*</sup></label>
+                  <ngx-select [items]="dropdownList" optionTextField="portName" optionValueField="id"  
+                    name="portId" #portId="ngModel" [(ngModel)]="formObj.portId" [allowClear]="true" required
+                    placeholder="Select Port Name">
+                  </ngx-select>
+                  <div *ngIf="portId.touched || (mainForm.submitted && portId.invalid)">
+                    <div *ngIf="portId.errors?.required" class="invalid-msg">
+                      Form is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Parent Port Name</label>
+                  <ngx-select [items]="dropdownList" optionTextField="portName" optionValueField="id"  
+                    name="parentId" #parentId="ngModel" [(ngModel)]="formObj.parentId" [allowClear]="true"
+                    placeholder="Select Parent Port Name">
+                  </ngx-select>
+                  <div *ngIf="parentId.touched || (mainForm.submitted && parentId.invalid)">
+                    <div *ngIf="parentId.errors?.required" class="invalid-msg">
+                      Form is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">GRT No <sup class="required-msg">*</sup></label>
+                  <input type="text" class="form-control" placeholder="GRT No" maxlength="100"
+                    [(ngModel)]="formObj.unitGrtNo" #unitGrtNo="ngModel" name="unitGrtNo" required appNotSpecialCharacter>
+                  <div *ngIf="unitGrtNo.touched || (mainForm.submitted && unitGrtNo.invalid)">
+                    <div *ngIf="unitGrtNo.errors?.required" class="invalid-msg">GRT No is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">In/ Out Movement (Day) <sup class="required-msg">*</sup></label>
+                  <input type="text" class="form-control" placeholder="In/ Out Movement (Day)" maxlength="100"
+                    [(ngModel)]="formObj.inOutDayAmount" #inOutDayAmount="ngModel" name="inOutDayAmount" required appNegativeDecimaNumber>
+                  <div *ngIf="inOutDayAmount.touched || (mainForm.submitted && inOutDayAmount.invalid)">
+                    <div *ngIf="inOutDayAmount.errors?.required" class="invalid-msg">In/ Out Movement (Day) is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">In/ Out Movement (Night)<sup class="required-msg">*</sup></label>
+                  <input type="text" class="form-control" placeholder="In/ Out Movement (Night)" maxlength="100"
+                    [(ngModel)]="formObj.inOutNightAmount" #inOutNightAmount="ngModel" name="inOutNightAmount" required appNegativeDecimaNumber>
+                  <div *ngIf="inOutNightAmount.touched || (mainForm.submitted && inOutNightAmount.invalid)">
+                    <div *ngIf="inOutNightAmount.errors?.required" class="invalid-msg">In/ Out Movement (Night) is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Shifting berth Day<sup class="required-msg">*</sup></label>
+                  <input type="text" class="form-control" placeholder="Shifting berth Day" maxlength="100"
+                    [(ngModel)]="formObj.shiftingDayAmount" #shiftingDayAmount="ngModel" name="shiftingDayAmount" required appNegativeDecimaNumber>
+                  <div *ngIf="shiftingDayAmount.touched || (mainForm.submitted && shiftingDayAmount.invalid)">
+                    <div *ngIf="shiftingDayAmount.errors?.required" class="invalid-msg">Shifting berth Day is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Shifting berth Night<sup class="required-msg">*</sup></label>
+                  <input type="text" class="form-control" placeholder="Shifting berth Night" maxlength="100"
+                    [(ngModel)]="formObj.shiftingNightAmount" #shiftingNightAmount="ngModel" name="shiftingNightAmount" required appNegativeDecimaNumber>
+                  <div *ngIf="shiftingNightAmount.touched || (mainForm.submitted && shiftingNightAmount.invalid)">
+                    <div *ngIf="shiftingNightAmount.errors?.required" class="invalid-msg">Shifting berth Night is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Effective Date<sup class="required-msg">*</sup></label>
+                  <input type="date" class="form-control" [(ngModel)]="formObj.effectiveDate"
+                                #effectiveDate="ngModel" name="effectiveDate"
+                                min="1000-01-01" required />
+                  <div *ngIf="effectiveDate.touched || (mainForm.submitted && effectiveDate.invalid)">
+                    <div *ngIf="effectiveDate.errors?.required" class="invalid-msg">Effective Date is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="text-right">
+              <button  type="submit" title="Submit" class="btn btn-primary" title="{{formObj.id ? 'Update' :
+              'Submit'}}">{{formObj.id ? 'Update' :
+                'Submit'}}</button>
+              <button type="button" class="btn btn-danger" title="Reset" (click)="reset()"  title="Reset">Reset</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

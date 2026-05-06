@@ -1,0 +1,16 @@
+<!-- sidebar start -->
+<div class="sidebar" data-background-color="white" data-active-color="danger">
+  <div id="snackbar_module">
+    <h2 id="snack_msg" style="text-transform: capitalize !important;"></h2>
+  </div>
+  <!-- Tip 1: you can change the color of the sidebar's background using:
+  data-background-color="white | black" Tip 2: you can change the color of the
+  active button using the data-active-color="primary | info | success | warning |
+  danger" -->
+</div>
+<div [class]="storedTheme">
+  <router-outlet></router-outlet>
+</div>
+<ngx-spinner bdColor="rgb(0 60 193 / 70%)">
+  <img src="assets/images/loder.gif" alt="">
+</ngx-spinner>

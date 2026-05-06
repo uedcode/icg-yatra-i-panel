@@ -1,0 +1,250 @@
+<!--aside open-->
+<aside class="app-sidebar">
+  <div class="app-sidebar__user">
+    <div class="dropdown user-pro-body text-center">
+      <div class="user-pic">
+        <img
+          src="assets/images/user.png"
+          alt="user-img"
+          class="avatar-xl rounded-circle mb-1"
+        />
+      </div>
+      <div class="user-info">
+        <h6 class="mb-1 text-dark">{{ userIdDetails?.formId }}</h6>
+        <h6 class="mb-1 text-dark">{{ userIdDetails?.unitName }}</h6>
+        <!-- <h6 class="mb-1 text-dark">{{userIdDetails?.unitId}}</h6> -->
+      </div>
+    </div>
+  </div>
+  <ul class="side-menu sidebar_page_scroll">
+    <li>
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../dashboard']"
+        ><i class="side-menu__icon fa fa-th"></i
+        ><span class="side-menu__label">Dashboard</span></a
+      >
+    </li>
+    <li>
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../mapping-unit']"
+        ><i class="side-menu__icon fa fa-map-marker"></i
+        ><span class="side-menu__label">Manage Unit Mapping </span></a
+      >
+    </li>
+
+    <li>
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../system-admin']"
+        ><i class="side-menu__icon fa fa-users"></i
+        ><span class="side-menu__label">Manage System Admin </span></a
+      >
+    </li>
+    <li>
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../unit-admin']"
+        ><i class="side-menu__icon fa fa-user-secret"></i
+        ><span class="side-menu__label">Manage Unit Admin </span></a
+      >
+    </li>
+    <li>
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../manage-role']"
+        ><i class="side-menu__icon fa fa-arrows"></i
+        ><span class="side-menu__label">Manage Role </span></a
+      >
+    </li>
+
+    <!-- <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../manage-approver']"><i class="side-menu__icon fa fa-check-circle"></i><span
+          class="side-menu__label">Manage Approver </span></a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../mapping-approver-form']"><i class="side-menu__icon fa fa-check-circle"></i><span
+          class="side-menu__label">Mapping Approver Form </span></a>
+    </li>-->
+
+    <li routerLinkActive="is-expanded" class="slide">
+      <a class="side-menu__item" data-toggle="slide"
+        ><i class="side-menu__icon fa fa-file"></i>
+        <span class="side-menu__label">Manage Master</span
+        ><i class="angle fa fa-angle-right"></i>
+      </a>
+      <ul class="slide-menu">
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../documents']"
+          >
+            Manage Documents
+          </a>
+        </li>
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../ports']"
+          >
+            Manage Ports
+          </a>
+        </li>
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../port-rate']"
+          >
+            Manage Port Rates
+          </a>
+        </li>
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../ships']"
+          >
+            Manage Ships
+          </a>
+        </li>
+
+        <!-- <li>
+          <a (click)="$auth.closeSidebar()" class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../faq']">
+            Manage FAQs
+          </a>
+        </li>
+        <li>
+          <a (click)="$auth.closeSidebar()" class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../version-history']">
+            Manage Version History
+          </a>
+        </li>-->
+      </ul>
+    </li>
+    <li routerLinkActive="is-expanded" class="slide">
+      <a class="side-menu__item" data-toggle="slide"
+        ><i class="side-menu__icon fa fa-upload"></i>
+        <span class="side-menu__label">Audit Export</span
+        ><i class="angle fa fa-angle-right"></i>
+      </a>
+      <ul class="slide-menu">
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../inbox']"
+          >
+            Inbox
+          </a>
+        </li>
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../exported']"
+          >
+            Exported
+          </a>
+        </li>
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../archived']"
+          >
+            Archived
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li routerLinkActive="is-expanded" class="slide">
+      <a class="side-menu__item" data-toggle="slide"
+        ><i class="side-menu__icon fa fa-download"></i>
+        <span class="side-menu__label">Audit Import</span
+        ><i class="angle fa fa-angle-right"></i>
+      </a>
+      <ul class="slide-menu">
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../import']"
+          >
+            Import
+          </a>
+        </li>
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../imported']"
+          >
+            Imported
+          </a>
+        </li>
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../archived-import']"
+          >
+            Archived
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <!--<a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../web-detail']"><i class="side-menu__icon fa fa-life-ring"></i><span class="side-menu__label">
+          Support
+        </span>
+      </a>-->
+      <a
+        (click)="openUserManualModal()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+      >
+        <i class="side-menu__icon fa fa-th"></i>
+        <span class="side-menu__label">User Manual</span>
+      </a>
+    </li>
+  </ul>
+
+  <img
+    src="assets/images/logo.png"
+    alt="pilotage Logo"
+    class="logo_in_sidebar"
+  />
+</aside>
+
+<!--aside closed-->
+<app-common-user-manual-modal></app-common-user-manual-modal>

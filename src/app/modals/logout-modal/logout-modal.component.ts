@@ -1,0 +1,19 @@
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/service/auth.service';
+
+@Component({
+    selector: 'app-logout-modal',
+    templateUrl: './logout-modal.component.html',
+    styleUrls: ['./logout-modal.component.css'],
+    standalone: false
+})
+export class LogoutModalComponent implements OnInit {
+
+  constructor(private $auth : AuthService) { }
+
+  ngOnInit(): void {   
+  }
+  logout() {
+    this.$auth.destroySession("1");
+  }
+}

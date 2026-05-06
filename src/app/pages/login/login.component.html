@@ -1,0 +1,111 @@
+<section class="login_sec">
+  <p class="build_no">{{buildNo}}
+    <!-- <span style="margin: 0px 8px">|</span> -->
+    <!-- <a [routerLink]="['../faq']">FAQ</a> -->
+  </p>
+  <div class="container-fluid plr_0">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="login_left_area">
+          <!-- <h1>Welcome to <span>ICG Pilotage</span></h1> -->
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="login_right_area">
+          <!-- Login start -->
+          <form autocomplete="off" (ngSubmit)="loginValidation.form.valid && login()" #loginValidation="ngForm"
+            novalidate>
+            <div class="login_right_logo">
+              <img src="assets/images/logo.png" alt="">
+              <h4>Login</h4>
+            </div>
+            <div class="form-group">
+              <div>
+                <input type="text" class="form-control" [(ngModel)]="loginForm.username" name="username" type="text"
+                  #username="ngModel" placeholder="Enter Username" maxlength="70" required>
+                <i class="fa fa-envelope" aria-hidden="true"></i>
+              </div>
+              <div *ngIf="username.touched || loginValidation.submitted">
+                <div *ngIf="username.errors?.required" class="invalid-msg mb-3">Username is required
+                </div>
+              </div>
+              <!-- <div *ngIf="loginForm.username && username.invalid" class="invalid-msg"> Mobile must be
+                between 4 and 10 characters</div> -->
+            </div>
+            <div class="form-group">
+              <div>
+                <input type="password" appShowHidePassword class="form-control" placeholder="Password"
+                  [(ngModel)]="loginForm.password" name="password" type="password" #password="ngModel" minlength="4"
+                  maxlength="30" placeholder="Enter Password" required>
+              </div>
+              <div *ngIf="password.touched || loginValidation.submitted ">
+                <div *ngIf="password.errors?.required" class="invalid-msg mb-3">Password
+                  is required
+                </div>
+              </div>
+              <div *ngIf="loginForm.password && password.invalid" class="invalid-msg"> Password must be
+                between 4 and 30 characters</div>
+            </div>
+
+            <div class="form-group">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="captcha_view">
+                    <p>{{yourCaptcha}}</p>
+                    <i class="fa fa-refresh" title="Refresh" aria-hidden="true" (click)="captchaGenerate()"></i>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="captcha_form">
+                    <input type="text" class="form-control" [(ngModel)]="loginForm.captcha" name="captcha"
+                      #captcha="ngModel" maxlength="20" placeholder="Enter Captcha" (paste)="onPaste($event)" required>
+                  </div>
+                  <div *ngIf="captcha.touched || loginValidation.submitted">
+                    <div *ngIf="captcha.errors?.required" class="invalid-msg mb-3">Captcha is required</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" *ngIf="isRecaptcha">
+              <div class="row">
+                <div class="col-md-12">
+                  <re-captcha id="recaptcha" name="recaptcha" #recaptcha="ngModel" [(ngModel)]="loginForm.captcha"
+                    required [class.is-invalid]="recaptcha.invalid && (recaptcha.dirty || recaptcha.touched)">
+                  </re-captcha>
+                  <div *ngIf="recaptcha.touched || loginValidation.submitted">
+                    <div *ngIf="recaptcha.errors?.required" class="invalid-msg mb-3">Captcha is required</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="form-group">
+              <div class="input-icon">
+                <input type="radio" class="rdobox-list" name="loginType" [(ngModel)]="loginForm.loginType" value="SMS">
+                SMS OTP
+                <input type="radio" class="rdobox-list" name="loginType" [(ngModel)]="loginForm.loginType"
+                  value="EMAIL"> EMAIL OTP
+                <input type="radio" class="rdobox-list" name="loginType" [(ngModel)]="loginForm.loginType" value="TOTP">
+                T-OTP
+              </div>
+            </div> -->
+
+            <button  type="submit" title="Submit" class="btn btn-primary btn-block" [disabled]="disableBtn">Login</button>
+            <!--<p class="login_forgot_password">
+              <span (click)="forgotPassword()">Forgot Password ?</span>
+            </p>-->
+          </form>
+          <br />
+          <br />
+          <br />
+          <!-- Login end -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <app-verify-otp-modal [record]="recordObj" (setRecordData)="mainLogin($event)"></app-verify-otp-modal> -->
+<!-- <app-verify-totp-modal [record]="recordObj" (setRecordData)="mainLogin($event)"></app-verify-totp-modal> -->
+<app-forgot-password-modal></app-forgot-password-modal>

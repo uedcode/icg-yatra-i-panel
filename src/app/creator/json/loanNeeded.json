@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "descr": "Purchase of Plot and construction of house on it/Construction of a new house on already purchased plot"
+      },
+      {
+        "id": 2,
+        "descr": "If loan is required for purchasing an under construction on ready built house/flat directly from AFNHB/State Govt./Builder/Society or through resale"
+      },
+      {
+        "id": 3,
+        "descr":"Addition/Alteration/Enhancement/Modification for house owned by the member"
+      }
+]

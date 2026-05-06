@@ -1,0 +1,53 @@
+<div class="modal fade" id="addport" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false"
+  data-backdrop="static">
+  <div class="modal-dialog modal-lg " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="manage_admin">{{formObj.id ? 'Update' :
+          'Add'}} Port</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body form_modal_body">
+        <form autocomplete="off" (ngSubmit)="mainForm.form.valid && saveRecord();" #mainForm="ngForm" novalidate>
+          <div class="modal_form_sec">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Port Name<sup class="required-msg">*</sup></label>
+                  <input type="text" class="form-control" placeholder="Port Name" maxlength="100"
+                    [(ngModel)]="formObj.portName" #portName="ngModel" name="portName" required appNotSpecialCharecter>
+                  <div *ngIf="portName.touched || (mainForm.submitted && portName.invalid)">
+                    <div *ngIf="portName.errors?.required" class="invalid-msg">Port Name is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Visibility Indicator<sup class="required-msg">*</sup></label>
+                  <input type="text" class="form-control" placeholder="Visibility Indicator" maxlength="1"
+                    [(ngModel)]="formObj.visibilityIndicator" #visibilityIndicator="ngModel" name="visibilityIndicator" required appNumberOnly>
+                  <div *ngIf="visibilityIndicator.touched || (mainForm.submitted && visibilityIndicator.invalid)">
+                    <div *ngIf="visibilityIndicator.errors?.required" class="invalid-msg">Visibility Indicator is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="text-right">
+              <button  type="submit" title="Submit" class="btn btn-primary" title="{{formObj.id ? 'Update' :
+              'Submit'}}">{{formObj.id ? 'Update' :
+                'Submit'}}</button>
+              <button type="button" class="btn btn-danger" title="Reset" (click)="reset()"  title="Reset">Reset</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

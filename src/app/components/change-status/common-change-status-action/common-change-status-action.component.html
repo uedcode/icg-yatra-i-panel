@@ -1,0 +1,136 @@
+<div *ngIf="actionBtnShow">
+  <button *ngIf="userIdDetails.roleTypeId=='AP'" type="button" class="btn btn-primary" title="Approve"
+    (click)="sureForChangeStatus(codeStatus?.outbox, 'AP')">Approve</button>
+  <button *ngIf="userIdDetails.roleTypeId=='IHQAP'" type="button" class="btn btn-primary" title="Approve"
+    (click)="sureForChangeStatus(codeStatus?.outbox, 'AP')">Approve</button>
+  <button *ngIf="userIdDetails.roleTypeId=='VE'" type="button" class="btn btn-primary" title="Verify"
+    (click)="sureForChangeStatus(codeStatus?.outbox, 'VE')">Verify</button>
+  <button *ngIf="userIdDetails.desigId=='CSOOPS'" type="button" class="btn btn-info" title="Verify"
+    (click)="sureForChangeStatus(codeStatus?.forward, 'FW')">Forward</button>
+  <button type="button" class="btn btn-danger" title="Return"
+    (click)="sureForChangeStatus(codeStatus?.returned, 'RT')">Return</button>
+  <button type="button" class="btn btn-danger" title="Reject"
+    (click)="sureForChangeStatus(codeStatus?.rejected, 'RJ')">Reject</button>
+</div>
+
+<!-- Change Status Modal Starts -->
+<div class="modal fade sureModal" id="form_change_status_modal" tabindex="-1" role="dialog" aria-labelledby="addAgent"
+  aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 *ngIf="userIdDetails.roleTypeId=='AP' && actionType == 'AP' ">Approve</h4>
+        <h4 *ngIf="userIdDetails.roleTypeId=='IHQAP' && actionType == 'AP' ">Approve</h4>
+        <h4 *ngIf="userIdDetails.roleTypeId=='VE' && actionType == 'VE'">Verify</h4>
+        <h4 *ngIf="state=='RT'">Return</h4>
+        <h4 *ngIf="state=='RJ'">Reject</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form autocomplete="off" (ngSubmit)="requestForm.form.valid && handelChangeStatus();" #requestForm="ngForm"
+          novalidate>
+          <div class="form-group"
+            *ngIf="this.codeRoleList?.approver == this.userIdDetails?.roleTypeId && actionType == 'AP'">
+            <label class="form-label">Budget Alloted<sup class="required-msg">*</sup></label>
+            <input class="form-control" type="text" placeholder="Budget Alloted" maxlength="10"
+              [(ngModel)]="formObj.allotedBudget" name="allotedBudget" #allotedBudget="ngModel" appDecimalNumber
+              required>
+            <div *ngIf="allotedBudget.touched || (requestForm.submitted && allotedBudget.invalid)">
+              <div *ngIf="allotedBudget.errors?.required" class="invalid-msg">
+                Budget Alloted is Required
+              </div>
+            </div>
+            <label class="form-label">Balance Amount<sup class="required-msg">*</sup></label>
+            <input class="form-control" type="text" (input)="calculateBalance()" placeholder="Balance Amount"
+              maxlength="10" [(ngModel)]="formObj.balanceAmount" name="balanceAmount" #balanceAmount="ngModel"
+              appDecimalNumber required>
+            <div *ngIf="balanceAmount.touched || (requestForm.submitted && balanceAmount.invalid)">
+              <div *ngIf="balanceAmount.errors?.required" class="invalid-msg">
+                Balance Amount is Required
+              </div>
+            </div>
+
+            <label class="form-label">Amount of this bill<sup class="required-msg">*</sup></label>
+            <input class="form-control" type="text" placeholder="Amount of this bill" maxlength="10"
+              [(ngModel)]="formObj.billAmount" (input)="calculateBalance()" name="billAmount" #billAmount="ngModel"
+              appDecimalNumber required>
+            <div *ngIf="billAmount.touched || (requestForm.submitted && billAmount.invalid)">
+              <div *ngIf="billAmount.errors?.required" class="invalid-msg">
+                Amount of this bill is Required
+              </div>
+            </div>
+            <label class="form-label">Progressive Expenditure Amount including this bill<sup
+                class="required-msg">*</sup></label>
+            <input class="form-control" type="text" placeholder="Progressive Expenditure Amount including this bill"
+              maxlength="10" [(ngModel)]="formObj.progressiveExpenditureAmt" name="progressiveExpenditureAmt"
+              #progressiveExpenditureAmt="ngModel" appDecimalNumber required>
+            <div
+              *ngIf="progressiveExpenditureAmt.touched || (requestForm.submitted && progressiveExpenditureAmt.invalid)">
+              <div *ngIf="progressiveExpenditureAmt.errors?.required" class="invalid-msg">
+                Progressive Expenditure Amount is Required
+              </div>
+            </div>
+            <label class="form-label">Balance <sup class="required-msg">*</sup></label>
+            <input class="form-control" type="text" placeholder="Balance " maxlength="10" [(ngModel)]="formObj.balance"
+              name="balance" #balance="ngModel" appDecimalNumber required>
+            <div *ngIf="balance.touched || (requestForm.submitted && balance.invalid)">
+              <div *ngIf="balance.errors?.required" class="invalid-msg">
+                Balance is Required
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div
+              *ngIf="(this.codeRoleList?.approver == this.userIdDetails?.roleTypeId || this.codeRoleList?.verifier == this.userIdDetails?.roleTypeId) && actionType == 'RT'">
+              <div class="form-group">
+                <label class="form-label">Return To<sup class="required-msg">*</sup></label>
+                <ngx-select [items]="returnUserList" optionTextField="roleName" optionValueField="roleDesigId"
+                  name="roleDesigId" #roleDesigId="ngModel" [(ngModel)]="formObj.roleDesigId" [allowClear]="true"
+                  required placeholder="Return To">
+                </ngx-select>
+                <div *ngIf="roleDesigId.touched || (requestForm.submitted && roleDesigId.invalid)">
+                  <div *ngIf="roleDesigId.errors?.required" class="invalid-msg">
+                    Return To is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="userIdDetails.desigId=='CSOOPS' && actionType=='FW'">
+              <div class=" form-group">
+                <label class="form-label">Forward To<sup class="required-msg">*</sup></label>
+                <ngx-select [items]="forwardToList" optionTextField="roleName" optionValueField="roleDesigId"
+                  name="roleDesigId" #roleDesigId="ngModel" [(ngModel)]="formObj.roleDesigId" [allowClear]="true"
+                  required placeholder="Forward To">
+                </ngx-select>
+                <div *ngIf="roleDesigId.touched || (requestForm.submitted && roleDesigId.invalid)">
+                  <div *ngIf="roleDesigId.errors?.required" class="invalid-msg">
+                    Forward To is required
+                  </div>
+                </div>
+              </div>
+            </div>
+            <label class="form-label">Remark <sup class="required-msg">*</sup></label>
+            <textarea class="form-control" type="text" placeholder="Enter Remarks" rows="4" maxlength="300"
+              [(ngModel)]="formObj.remark" name="remark" #remark="ngModel" required></textarea>
+            <div *ngIf="remark.touched || (requestForm.submitted && remark.invalid)">
+              <div *ngIf="remark.errors?.required" class="invalid-msg">
+                Remark is Required
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" title="Submit" class="btn btn-primary mr-3" data-toggle="tooltip" title="Yes"><i
+              class="fa fa-check" aria-hidden="true"></i> Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" title="No"><i class="fa fa-times"></i>
+            No</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Change Status Modal Ends -->
+
+<app-common-esign-modal [tempFormObj]="tempFormObj"></app-common-esign-modal>
