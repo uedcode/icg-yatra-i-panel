@@ -47,6 +47,7 @@ const routes: Routes = [
   { path: 'unit-admin', loadChildren: () => import('./unit-admin/unit-admin.module').then(m => m.UnitAdminModule) },
   { path: 'creator', loadChildren: () => import('./creator/creator.module').then(m => m.CreatorModule) },
   { path: 'approver', loadChildren: () => import('./approver/approver.module').then(m => m.ApproverModule) },
+  { path: 'executor', loadChildren: () => import('./executor/executor.module').then(m => m.ExecutorModule) },
 ];
 
 @NgModule({

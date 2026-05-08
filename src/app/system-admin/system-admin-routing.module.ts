@@ -219,10 +219,22 @@ const routes: Routes = [
     data: { title: 'Audit Export Queue' },
   },
   {
+    path: 'export',
+    component: InboxComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Audit Export Queue' },
+  },
+  {
     path: 'exported',
     component: ExportedComponent,
     canActivate: [AuthGuard],
     data: { title: 'Exported Batches' },
+  },
+  {
+    path: 'backup-Export',
+    component: ExportedComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Backup Export' },
   },
   {
     path: 'archived',
@@ -237,16 +249,46 @@ const routes: Routes = [
     data: { title: 'Audit Import Queue' },
   },
   {
+    path: 'backup-Import',
+    component: ImportComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Backup Import' },
+  },
+  {
+    path: 'excel-import',
+    component: ImportComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Excel Import' },
+  },
+  {
+    path: 'diary-import',
+    component: ImportComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Diary Import' },
+  },
+  {
     path: 'imported',
     component: ImportedComponent,
     canActivate: [AuthGuard],
     data: { title: 'Imported Batches' },
   },
   {
+    path: 'diary-imported',
+    component: ImportedComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Diary Imported' },
+  },
+  {
     path: 'archived-import',
     component: ArchivedImportComponent,
     canActivate: [AuthGuard],
     data: { title: 'Archived Imports' },
+  },
+  {
+    path: 'diary-imported-backup',
+    component: ArchivedImportComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Diary Imported Backup' },
   },
   {
     path: 'esign-report',

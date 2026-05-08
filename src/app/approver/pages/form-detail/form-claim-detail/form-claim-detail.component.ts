@@ -22,6 +22,7 @@ export class FormClaimDetailComponent implements OnInit {
   claimRemarkSummary: any = null;
   remark = '';
   actionLoading = false;
+  isLegacyPreviewContext = false;
   userIdDetails: any;
   codeStatus: any;
   codeRoleType: any;
@@ -41,11 +42,16 @@ export class FormClaimDetailComponent implements OnInit {
     this.codeStatus = this.$auth.codeStatus();
     this.codeRoleType = this.$auth.codeRoleType();
 
+    this.isLegacyPreviewContext = this.checkLegacyPreviewContext();
+
     this.route.queryParamMap.subscribe((params) => {
-      this.claimId = params.get('claimId');
-      this.subFormId = params.get('subFormId');
-      this.statusId = params.get('statusId');
-      this.actionable = params.get('actionable') === '1';
+      const routeParams = this.route.snapshot.paramMap;
+      this.claimId = params.get('claimId') || params.get('id') || routeParams.get('claimId');
+      this.subFormId = params.get('subFormId') || routeParams.get('subFormId');
+      this.statusId = params.get('statusId') || routeParams.get('statusId');
+      this.actionable =
+        (params.get('actionable') === '1' || routeParams.get('actionable') === '1') &&
+        !this.isLegacyPreviewContext;
       if (this.claimId && this.subFormId) {
         this.loadClaim();
         this.loadStateHistory();
@@ -134,17 +140,57 @@ export class FormClaimDetailComponent implements OnInit {
 
   getActionLabel(): string {
     if (this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier) {
-      return 'Verify';
+      return 'Verify & Forward';
     }
     return 'Approve';
   }
 
+  getTertiaryActionStatus(): string {
+    if (this.isVerifierResettlementMode()) {
+      return this.codeStatus?.notPassed;
+    }
+    return this.codeStatus?.rejected;
+  }
+
+  getTertiaryActionLabel(): string {
+    if (this.isVerifierResettlementMode()) {
+      return 'Not Passed';
+    }
+    return 'Reject';
+  }
+
+  private checkLegacyPreviewContext(): boolean {
+    const path = this.route.snapshot.routeConfig?.path || '';
+    const previewPaths = [
+      'preview-voucher',
+      'movement-update-claim',
+      'preview-pmt-duty-claim',
+      'preview-ty-duty-claim',
+      'preview-fte-claim',
+      'preview-ltc-claim',
+      'preview-resettlement-claim',
+      'preview-resettlement',
+      'preview-pm-resettlementaim',
+    ];
+    return previewPaths.includes(path);
+  }
+
+  private isResettlementSubForm(): boolean {
+    const id = (this.subFormId || '').toUpperCase();
+    return id === 'RS' || id === 'RES' || id === 'R';
+  }
+
+  isVerifierResettlementMode(): boolean {
+    return (
+      this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier &&
+      this.isResettlementSubForm()
+    );
+  }
+
   private isLocallyAllowedTargetStatus(status: string): boolean {
-    const allowed = [
-      this.codeStatus?.outbox,
-      this.codeStatus?.returned,
-      this.codeStatus?.rejected,
-    ].filter(Boolean);
+    const allowed = this.isVerifierResettlementMode()
+      ? [this.codeStatus?.outbox, this.codeStatus?.returned, this.codeStatus?.notPassed]
+      : [this.codeStatus?.outbox, this.codeStatus?.returned, this.codeStatus?.rejected];
     return allowed.includes(status);
   }
 

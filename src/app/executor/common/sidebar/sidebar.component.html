@@ -1,0 +1,55 @@
+<aside class="app-sidebar">
+  <div class="app-sidebar__user">
+    <div class="dropdown user-pro-body text-center">
+      <div class="user-pic">
+        <img src="assets/images/user.png" alt="user-img" class="avatar-xl rounded-circle mb-1" />
+      </div>
+      <div class="user-info">
+        <h6 class="mb-1 text-dark">{{ userIdDetails?.formId }}</h6>
+        <h6 class="mb-1 text-dark">{{ userIdDetails?.unitName }}</h6>
+      </div>
+    </div>
+  </div>
+  <ul class="side-menu sidebar_page_scroll">
+    <li>
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../dashboard']"
+      >
+        <i class="side-menu__icon fa fa-th"></i><span class="side-menu__label">Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../search-by-pno']"
+      >
+        <i class="side-menu__icon fa fa-search"></i><span class="side-menu__label">Search By PNO</span>
+      </a>
+    </li>
+    <li>
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../esign-report']"
+      >
+        <i class="side-menu__icon fa fa-file-text-o"></i><span class="side-menu__label">eSign Report</span>
+      </a>
+    </li>
+    <li>
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../pie-chart']"
+      >
+        <i class="side-menu__icon fa fa-pie-chart"></i><span class="side-menu__label">Pie Chart</span>
+      </a>
+    </li>
+  </ul>
+</aside>

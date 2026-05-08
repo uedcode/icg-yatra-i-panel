@@ -301,6 +301,8 @@ export class AuthService {
       return '/creator';
     } else if (roleTypeId == codeRoleList.ihqStaff) {
       return '/ihq-staff';
+    } else if (roleTypeId == codeRoleList.executor) {
+      return '/executor';
     } else if (
       roleTypeId == codeRoleList.verifier ||
       roleTypeId == codeRoleList.approver
@@ -351,6 +353,7 @@ export class AuthService {
       systemAdmin: 'SY',
       unitAdmin: 'UN',
       creator: 'CR',
+      executor: 'EX',
       verifier: 'VE',
       approver: 'AP',
       ihqStaff: 'IHQAP',
@@ -444,6 +447,8 @@ export class AuthService {
       return 'Unit Admin';
     } else if (roleTypeId == codeRoleList.creator) {
       return 'Creator';
+    } else if (roleTypeId == codeRoleList.executor) {
+      return 'Executor';
     } else if (roleTypeId == codeRoleList.approver) {
       return 'Approver';
     }

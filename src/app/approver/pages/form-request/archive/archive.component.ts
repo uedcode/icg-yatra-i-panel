@@ -39,6 +39,11 @@ export class ArchiveComponent implements OnInit {
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
+    if (this.userIdDetails?.roleTypeId !== 'VE') {
+      this.$common.showMessage('Claim Archive is available for verifier role only.', 'danger');
+      this.router.navigateByUrl(this.$auth.getModuleName() + '/dashboard');
+      return;
+    }
     this.codeStatus = this.$auth.codeStatus();
     this.getState();
   }

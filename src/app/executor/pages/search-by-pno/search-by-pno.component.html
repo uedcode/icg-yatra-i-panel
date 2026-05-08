@@ -1,0 +1,66 @@
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <app-executor-sidebar></app-executor-sidebar>
+    <div class="app-content">
+      <div class="side-app">
+        <div class="page-header">
+          <div class="page-leftheader">
+            <h4 class="page-title">Search By PNO</h4>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label">PNO</label>
+                <input class="form-control" [(ngModel)]="pno" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Name</label>
+                <input class="form-control" [(ngModel)]="searchName" />
+              </div>
+              <div class="col-md-4 d-flex align-items-end">
+                <button class="btn btn-primary" (click)="search()">Search</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Claim ID</th>
+                  <th>Sub Form</th>
+                  <th>PNO/Name</th>
+                  <th>Unit</th>
+                  <th>Created On</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of rows">
+                  <td>{{ row?.yatClaimDTO?.claimId || row?.claimId || '-' }}</td>
+                  <td>{{ row?.yatClaimDTO?.codeSubFormDTO?.descr || row?.yatClaimDTO?.codeSubFormDTO?.subFormName || '-' }}</td>
+                  <td>{{ row?.fullName || row?.fullDescr || '-' }}</td>
+                  <td>{{ row?.yatClaimDTO?.codeUnitDTO?.descr || '-' }}</td>
+                  <td>{{ row?.createdOn | showDate : 'medium' }}</td>
+                  <td>
+                    <button class="btn btn-warning btn-sm" (click)="openPreview(row)">View</button>
+                  </td>
+                </tr>
+                <tr *ngIf="!rows.length">
+                  <td colspan="6" class="text-center">No records found.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

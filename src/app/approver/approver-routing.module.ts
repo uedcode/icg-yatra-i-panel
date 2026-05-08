@@ -66,6 +66,60 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { title: 'Claim Detail' }
   },
+  {
+    path: 'preview-voucher',
+    component: FormClaimDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Voucher Preview' }
+  },
+  {
+    path: 'movement-update-claim',
+    component: FormClaimDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Movement Update Claim' }
+  },
+  {
+    path: 'preview-pmt-duty-claim',
+    component: FormClaimDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'PMT Claim Preview' }
+  },
+  {
+    path: 'preview-ty-duty-claim',
+    component: FormClaimDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'TY Duty Claim Preview' }
+  },
+  {
+    path: 'preview-fte-claim',
+    component: FormClaimDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'FTE Claim Preview' }
+  },
+  {
+    path: 'preview-ltc-claim',
+    component: FormClaimDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'LTC Claim Preview' }
+  },
+  {
+    path: 'preview-resettlement-claim',
+    component: FormClaimDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Resettlement Claim Preview' }
+  },
+  {
+    path: 'preview-resettlement',
+    component: FormClaimDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Resettlement Preview' }
+  },
+  {
+    path: 'preview-pm-resettlementaim',
+    component: FormClaimDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Resettlement Preview (Legacy Alias)' }
+  },
 
   {
     path: 'inbox',
