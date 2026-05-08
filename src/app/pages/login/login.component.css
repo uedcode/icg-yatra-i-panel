@@ -1,6 +1,6 @@
 .login_sec {
   /* Production */
-  /* background: url("/pilotage/assets/images/loginbackground.jpg"); */
+  /* background: url("/app/assets/images/loginbackground.jpg"); */
   
   /* Local & Test Server */
   background: url('../../../assets/images/loginbackground.jpg');

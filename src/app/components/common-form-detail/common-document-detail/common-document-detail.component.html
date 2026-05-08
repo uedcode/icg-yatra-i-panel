@@ -17,8 +17,8 @@
             <tr *ngFor="let dataObj of formDocsDTOs; let i=index">
               <td>{{ i + 1}}</td>
               <td>
-                {{dataObj?.codePilDocInfoDTO?.docName | showHypen}}
-               <span *ngIf="dataObj?.codePilDocInfoDTO?.docName == 'Other'">({{dataObj?.otherDocName}})</span>
+                {{dataObj?.codeDocInfoDTO?.docName | showHypen}}
+               <span *ngIf="dataObj?.codeDocInfoDTO?.docName == 'Other'">({{dataObj?.otherDocName}})</span>
               </td>
               <td>
                 <button type="button" title="View" class="btn btn-warning" (click)="$auth.viewFile(dataObj?.url)">

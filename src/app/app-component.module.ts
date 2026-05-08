@@ -49,7 +49,6 @@ import { CommonEsignModalComponent } from './components/common-esign/common-esig
 import { CommonRedirectComponent } from './components/common-esign/common-redirect/common-redirect.component';
 import { CommonViewFileComponent } from './components/common-view-file/common-view-file.component';
 
-import { CommonPilotageDetailComponent } from './components/common-form-detail/common-pilotage-detail/common-pilotage-detail.component';
 import { ExportFormModalComponent } from './modals/export-form-modal/export-form-modal.component';
 import { ChangeBatchStatusComponent } from './modals/change-batch-status/change-batch-status.component';
 import { ExcelImportModalComponent } from './modals/excel-import-modal/excel-import-modal.component';
@@ -103,7 +102,6 @@ const CustomSelectOptions: INgxSelectOptions = {
     CommonChangeStatusActionComponent,
 
     /** Form Detail Starts */
-    CommonPilotageDetailComponent,
     CommonTydutyDetailComponent,
     CommonFteDetailComponent,
     /** Form Detail Ends */
@@ -153,7 +151,6 @@ const CustomSelectOptions: INgxSelectOptions = {
     CommonChangeStatusActionComponent,
 
     /** Form Detail Starts */
-    CommonPilotageDetailComponent,
     CommonTydutyDetailComponent,
     CommonFteDetailComponent,
 

@@ -82,7 +82,7 @@
                       <tbody>
                         <tr *ngFor="let dataObj of documentDtos; let i = index">
                           <td>{{ i + 1 }}</td>
-                          <td>{{ display(dataObj?.codeDocInfoDTO?.docName || dataObj?.codePilDocInfoDTO?.docName) }}</td>
+                          <td>{{ display(dataObj?.codeDocInfoDTO?.docName) }}</td>
                           <td>{{ (dataObj?.url || dataObj?.fileUrl || dataObj?.docUrl) ? 'Uploaded' : '-' }}</td>
                           <td>
                             <button type="button" class="btn btn-warning btn-sm" *ngIf="dataObj?.url || dataObj?.fileUrl || dataObj?.docUrl" (click)="$auth.viewFile(dataObj?.url || dataObj?.fileUrl || dataObj?.docUrl)">

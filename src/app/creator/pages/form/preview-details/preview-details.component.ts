@@ -48,7 +48,6 @@ export class PreviewDetailsComponent implements OnInit {
 
   @Input() dataList: Array<any> = [];
   @ViewChild('requiredForm', { static: true }) requiredForm: NgForm;
-  @ViewChild('pilotageForm', { static: true }) pilotageForm: NgForm;
 
   id: any;
   searchObj: any;
@@ -87,7 +86,7 @@ export class PreviewDetailsComponent implements OnInit {
     this.getFormDetails();
     // this.getPortDetails();
   }
-  formChildPilotageDTOs: any = [];
+  formChildMovementDTOs: any = [];
   formdate: any;
   // Get single start
   getFormDetails() {
@@ -100,7 +99,7 @@ export class PreviewDetailsComponent implements OnInit {
         }
         this.onSelectClaimTypeDefault();
         this.documentDtos = this.formObj?.formDocsDTOs;
-        this.formChildPilotageDTOs = this.formObj?.formChildPilotageDTOs;
+        this.formChildMovementDTOs = this.formObj?.formChildPilotageDTOs;
       }
     });
   }
@@ -267,6 +266,7 @@ export class PreviewDetailsComponent implements OnInit {
           if (response.status === true) {
             let list = response.object[0];
             this.dataList = response.object[0]?.formChildPilotageDTOs;
+            this.formChildMovementDTOs = response.object[0]?.formChildPilotageDTOs;
             this.dataObj = list;
           }
         },

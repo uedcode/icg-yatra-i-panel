@@ -16,12 +16,12 @@ export const environment = {
   authConfig: {
     basicClientAuth: 'Basic VVNFUl9DTElFTlRfQVBQOnBhc3N3b3Jk',
     storageKeys: {
-      accessToken: 'pilotageAccessToken',
-      refreshToken: 'pilotageRefreshToken',
-      expiresIn: 'pilotageExpiresIn',
-      accessCount: 'pilotageAccessCount',
-      userDetails: 'pilotageUserDetails',
-      deviceId: 'pilotageDeviceId',
+      accessToken: 'yatraAccessToken',
+      refreshToken: 'yatraRefreshToken',
+      expiresIn: 'yatraExpiresIn',
+      accessCount: 'yatraAccessCount',
+      userDetails: 'yatraUserDetails',
+      deviceId: 'yatraDeviceId',
       isDashboard: 'isDashboard',
     },
   },
@@ -31,11 +31,11 @@ export const environment = {
     redirectStorageKey: 'esignRedirectPath',
   },
   appConfig: {
-    id: 'PILOTAGE',
+    id: 'YATRA',
     logo: 'assets/images/logo.png',
     favicon: 'assets/images/logo.png',
-    name: 'ICG Pilotage',
-    slogan: 'ICG Pilotage',
+    name: 'ICG Yatra',
+    slogan: 'ICG Yatra',
     buildNo: 'Version v1.1.0 Build 20251227_1000',
   },
 };

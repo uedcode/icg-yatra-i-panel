@@ -20,7 +20,7 @@ export class PortRateModalComponent implements OnInit {
 
 
   portRateObj: any;
-  selectPilotageRate(dataObj: any) {
+  selectPortRate(dataObj: any) {
     
     this.portRateObj = dataObj;
     this.selectedPortRate.emit(this.portRateObj); // Emit the selected object

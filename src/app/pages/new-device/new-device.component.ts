@@ -45,10 +45,10 @@ export class NewDeviceComponent implements OnInit {
         descr: this.deviceName,
       }
 
-      this.$device.createOrUpdate(req).subscribe((response: any) => {
+        this.$device.createOrUpdate(req).subscribe((response: any) => {
         this.$common.hideLoader();
         if (response.status === true) {
-          // localStorage.setItem("pilotageDeviceId", browserId);
+          // Device key is managed centrally in auth/storage flow.
           this.router.navigate(['/switch-module']);
         }
       }, err => {

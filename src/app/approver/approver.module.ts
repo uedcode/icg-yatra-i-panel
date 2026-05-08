@@ -32,12 +32,8 @@ import { EsignComponent } from './pages/manage-esign/esign/esign.component';
 import { RedirectComponent } from './pages/manage-esign/redirect/redirect.component';
 import { FaqComponent } from './pages/faq/faq.component';
 import { WebDetailComponent } from './pages/web-detail/web-detail.component';
-import { FormPilotageDetailComponent } from './pages/form-detail/form-pilotage-detail/form-pilotage-detail.component';
 import { NotPassedComponent } from './pages/form-request/not-passed/not-passed.component';
 import { PassedComponent } from './pages/form-request/passed/passed.component';
-import { PilotageHistoryStatusComponent } from './pages/form-detail/pilotage-history-status/pilotage-history-status.component';
-import { PilotageChildModalComponent } from './pages/form-detail/pilotage-child-modal/pilotage-child-modal.component';
-import { ChangeApproverStatusComponent } from './pages/form-detail/change-approver-status/change-approver-status.component';
 import { FormClaimDetailComponent } from './pages/form-detail/form-claim-detail/form-claim-detail.component';
 import { PayInboxComponent } from './pages/pay-request/pay-inbox/pay-inbox.component';
 import { PayOutboxComponent } from './pages/pay-request/pay-outbox/pay-outbox.component';
@@ -59,7 +55,6 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         DashboardComponent,
         ChangePasswordComponent,
         ApproverComponent,
-        FormPilotageDetailComponent,
         InboxComponent,
         OutboxComponent,
         ApprovedComponent,
@@ -72,9 +67,6 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         RedirectComponent,
         PassedComponent,
         NotPassedComponent,
-        PilotageHistoryStatusComponent,
-        PilotageChildModalComponent,
-        ChangeApproverStatusComponent,
         FormClaimDetailComponent,
         PayInboxComponent,
         PayOutboxComponent,

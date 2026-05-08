@@ -3,14 +3,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { of, Observable, config } from 'rxjs';
 import { catchError, mapTo, tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthTokenService {
 
-    private readonly JWT_TOKEN = 'pilotageAccessToken';
-    private readonly REFRESH_TOKEN = 'pilotageRefreshToken';
+    private readonly storageKeys = environment.authConfig.storageKeys;
+    private readonly JWT_TOKEN = this.storageKeys.accessToken;
+    private readonly REFRESH_TOKEN = this.storageKeys.refreshToken;
+    private readonly LEGACY_JWT_TOKEN = 'pilotageAccessToken';
+    private readonly LEGACY_REFRESH_TOKEN = 'pilotageRefreshToken';
     private loggedUser: string;
 
     constructor(private http: HttpClient) { }
@@ -58,7 +62,7 @@ export class AuthTokenService {
     }
 
     getJwtToken() {
-        return localStorage.getItem(this.JWT_TOKEN);
+        return localStorage.getItem(this.JWT_TOKEN) || localStorage.getItem(this.LEGACY_JWT_TOKEN);
     }
 
     private doLoginUser(username: string, tokens: Tokens) {
@@ -72,16 +76,21 @@ export class AuthTokenService {
     }
 
     private getRefreshToken() {
-        return localStorage.getItem(this.REFRESH_TOKEN);
+        return localStorage.getItem(this.REFRESH_TOKEN) || localStorage.getItem(this.LEGACY_REFRESH_TOKEN);
     }
 
     private storeTokens(tokens: Tokens) {
         localStorage.setItem(this.JWT_TOKEN, tokens.access_token);
         localStorage.setItem(this.REFRESH_TOKEN, tokens.refresh_token);
+        // Keep legacy keys in sync during transition.
+        localStorage.setItem(this.LEGACY_JWT_TOKEN, tokens.access_token);
+        localStorage.setItem(this.LEGACY_REFRESH_TOKEN, tokens.refresh_token);
     }
 
     private removeTokens() {
         localStorage.removeItem(this.JWT_TOKEN);
         localStorage.removeItem(this.REFRESH_TOKEN);
+        localStorage.removeItem(this.LEGACY_JWT_TOKEN);
+        localStorage.removeItem(this.LEGACY_REFRESH_TOKEN);
     }
 }

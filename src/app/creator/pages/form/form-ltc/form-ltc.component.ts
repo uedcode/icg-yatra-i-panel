@@ -1019,7 +1019,7 @@ export class FormLtcAdvanceComponent implements OnInit {
 
   private mapClaimDocumentsForSave(documents: any[]): any[] {
     return (documents || []).map((doc) => {
-      const codeDocInfoDTO = doc?.codeDocInfoDTO || doc?.codePilDocInfoDTO || null;
+      const codeDocInfoDTO = doc?.codeDocInfoDTO || null;
       return {
         ...doc,
         codeDocInfoDTO: codeDocInfoDTO

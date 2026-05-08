@@ -13,11 +13,11 @@ export const environment = {
     siteKey: '6LcWzLIkAAAAABYAhcISETEWai7sTdufc9nZQ6bW',
   },
   appConfig: {
-    id: 'PILOTAGE',
+    id: 'YATRA',
     logo: 'assets/images/logo.png',
     favicon: 'assets/images/logo.png',
-    name: 'ICG Pilotage',
-    slogan: 'ICG Pilotage',
+    name: 'ICG Yatra',
+    slogan: 'ICG Yatra',
     buildNo: 'Version v1.1.0 Build 20251227_1000',
   },
 };

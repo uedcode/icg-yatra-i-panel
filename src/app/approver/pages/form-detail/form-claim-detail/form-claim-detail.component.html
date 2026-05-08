@@ -189,7 +189,7 @@
               </thead>
               <tbody>
                 <tr *ngFor="let doc of documentDtos">
-                  <td>{{ display(doc?.codeDocInfoDTO?.docName || doc?.codePilDocInfoDTO?.docName) }}</td>
+                  <td>{{ display(doc?.codeDocInfoDTO?.docName) }}</td>
                   <td>{{ display(doc?.descr || doc?.otherDocName) }}</td>
                   <td>{{ display((doc?.url || doc?.fileUrl || doc?.docUrl) ? 'Uploaded' : 'Missing') }}</td>
                   <td>

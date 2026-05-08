@@ -18,7 +18,7 @@
             <th>Description</th>
             <th>View</th>
           </tr>
-          <tr *ngFor="let dataObj of transaction.eSignPilDocTransactionDTOs; let i=index">
+          <tr *ngFor="let dataObj of getSignedDocumentList(); let i=index">
             <td>{{ i + 1}}</td>
             <td>{{dataObj?.docName}}</td>
             <td>

@@ -82,7 +82,7 @@ export class CommonEsignModalComponent implements OnInit {
         "codeFormId": "",
         "formId": this.tempFormObj?.id,
         "name": this.userIdDetails?.personName,
-        "eSignPilTransDocDTOs": this.documentList,
+        "eSignTransDocDTOs": this.documentList,
         "recommendedAmount": this.tempFormObj?.recommendedAmount,
         "allotedBudget": this.tempFormObj?.allotedBudget ,
         "balanceAmt": this.tempFormObj?.balanceAmount,

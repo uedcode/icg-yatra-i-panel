@@ -28,7 +28,7 @@
                   <div class="col-md-12 claim">
                     <h4 class="ml-3">
                       <b>
-                        {{ supplementryClaim ? supplementryClaim : "" }}Pilotage
+                        {{ supplementryClaim ? supplementryClaim : "" }}Yatra
                         Claim</b>
                     </h4>
                     <div class="PersonalDetail container">
@@ -94,7 +94,7 @@
                       </div>
                     </div>
                     <div class="PersonalDetail container">
-                      <h4>Pilotage Details</h4>
+                      <h4>Yatra Details</h4>
                       <div class="table-responsive">
                         <table id="exportData" class="table table-bordered" style="width: 100%">
                           <thead>
@@ -168,11 +168,11 @@
                                     <td>{{ i + 1 }}</td>
                                     <td>
                                       {{
-                                      dataObj?.codePilDocInfoDTO?.docName
+                                      dataObj?.codeDocInfoDTO?.docName
                                       | showHypen
                                       }}
                                       <span *ngIf="
-                                          dataObj?.codePilDocInfoDTO?.docName ==
+                                          dataObj?.codeDocInfoDTO?.docName ==
                                           'Other'
                                         ">({{ dataObj?.otherDocName }})</span>
                                     </td>

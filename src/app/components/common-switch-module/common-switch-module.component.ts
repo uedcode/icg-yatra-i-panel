@@ -5,6 +5,7 @@ import { UserService } from 'src/app/service/user.service';
 import * as crypto from 'crypto-js';
 import { HttpParams } from '@angular/common/http';
 import { DeviceService } from 'src/app/service/acl/device.service';
+import { environment } from 'src/environments/environment';
 declare var $: any;
 
 @Component({
@@ -14,6 +15,7 @@ declare var $: any;
     standalone: false
 })
 export class CommonSwitchModuleComponent implements OnInit {
+  private readonly storageKeys = environment.authConfig.storageKeys;
 
   constructor(
     private $common: CommonService,
@@ -68,7 +70,7 @@ export class CommonSwitchModuleComponent implements OnInit {
         this.$auth.createSession(response, 'LOGIN');
 
         let browserId = this.deviceService.generateBrowserId();
-        localStorage.setItem("pilotageDeviceId", browserId);
+        localStorage.setItem(this.storageKeys.deviceId, browserId);
         this.$common.hideLoader();
       }, (err) => {
         console.log(err);

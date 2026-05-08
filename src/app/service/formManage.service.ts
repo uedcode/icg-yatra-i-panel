@@ -48,6 +48,10 @@ export class FormManageService {
   docList = [];
   documentListTemp = [];
 
+  private getUploadedDocInfo(uploadedDoc: any) {
+    return uploadedDoc?.codeDocInfoDTO || null;
+  }
+
   // Form submit start
   handleSubmit(req) {
     try {
@@ -55,10 +59,10 @@ export class FormManageService {
       if (req?.formStateInputDTO?.status == 'OB') {
         if (this.documentListTemp.length > 0) {
           let requiredDocList = [... this.documentListTemp]
-          // let pendingDocumentList = requiredDocList.filter(doc => doc.isRequired == "Yes" && !this.docList.find(upDoc => upDoc.codePilDocInfoDTO?.id === doc.id))
+          // let pendingDocumentList = requiredDocList.filter(doc => doc.isRequired == "Yes" && !this.docList.find(upDoc => upDoc.codeDocInfoDTO?.id === doc.id))
           //   .map(doc => doc.docName);
 
-          let pendingDocumentList = requiredDocList.filter(doc => doc.isRequired === "Yes" && !this.docList.find(upDoc => upDoc.codePilDocInfoDTO?.id === doc.id || upDoc.codePilDocInfoDTO?.docName?.toLowerCase() === doc.docName?.toLowerCase()))
+          let pendingDocumentList = requiredDocList.filter(doc => doc.isRequired === "Yes" && !this.docList.find(upDoc => this.getUploadedDocInfo(upDoc)?.id === doc.id || this.getUploadedDocInfo(upDoc)?.docName?.toLowerCase() === doc.docName?.toLowerCase()))
             .map(doc => doc.docName);
           if (pendingDocumentList.length > 0) {
             let pendingDocName = pendingDocumentList.join(', ');

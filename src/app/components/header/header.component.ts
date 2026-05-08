@@ -3,6 +3,7 @@ import { Component, Inject, OnInit, DOCUMENT } from '@angular/core';
 import { UserService } from 'src/app/service/user.service';
 import { CommonService } from 'src/app/service/common.service';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 import { HttpParams } from '@angular/common/http';
 //import { Location } from '@angular/common';
@@ -14,13 +15,14 @@ import { HttpParams } from '@angular/common/http';
     standalone: false
 })
 export class HeaderComponent implements OnInit {
+  private readonly storageKeys = environment.authConfig.storageKeys;
 
   constructor(private $common: CommonService, public $auth: AuthService, private $user: UserService, private route: Router, private router: Router, @Inject(DOCUMENT) document: any) { }
 
   userIdDetails;
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
-    let accessCount = parseInt(localStorage.getItem("pilotageAccessCount"));
+    let accessCount = parseInt(localStorage.getItem(this.storageKeys.accessCount));
     if (accessCount == 0) {
       // this.checkAccountStatus();
     }
@@ -69,8 +71,8 @@ export class HeaderComponent implements OnInit {
   roleSwitch(dataObj) {
     try {
       this.$common.showLoader();
-      const designation = dataObj?.aclCodeDesignationDTO || dataObj?.aclPilCodeDesignationDTO;
-      const roleType = dataObj?.aclCodeRoleTypeDTO || dataObj?.aclPilCodeRoleTypeDTO;
+      const designation = dataObj?.aclCodeDesignationDTO;
+      const roleType = dataObj?.aclCodeRoleTypeDTO;
       this.config = {
         headers: {
           moduleId:'PIL'

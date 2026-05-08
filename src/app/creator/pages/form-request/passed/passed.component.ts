@@ -123,24 +123,6 @@ export class PassedComponent implements OnInit {
     return null;
   }
 
-  createSupplementry(data) {
-    const claim = data?.yatClaimDTO || {};
-    const subFormId =
-      claim?.codeSubFormDTO?.subFormId ||
-      data?.subFormId ||
-      data?.codeSubFormDTO?.subFormId;
-    const claimId = claim?.claimId || data?.claimId || data?.formId;
-
-    if (subFormId && subFormId.toUpperCase() !== 'PL') {
-      this.$common.showMessage('Supplementary flow is only available for Pilotage records right now.', 'danger');
-      return;
-    }
-
-    let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(
-      `${moduleUrl}/form-pilotage?subFormId=${subFormId || data.subFormId}&supId=${claimId || data.formId}`
-    );
-  }
   viewForm(data) {
     const payId = data?.yatPayDetailsDTO?.id || data?.id;
     if (payId && (data?.yatPayDetailsDTO || data?.viewUrl === 'form-pay-details' || data?.formUrl === 'form-pay-details')) {

@@ -59,7 +59,7 @@ export class SystemAdminService {
     );
   }
   getForwardTo(config) {
-    return this.http.get<any>(`aclPilRole/getForwardTo`, config).pipe(
+    return this.http.get<any>(`role/byUser`, config).pipe(
       map((response: any) => {
 
         this.$common.parseResponse(response);

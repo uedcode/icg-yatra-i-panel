@@ -117,17 +117,6 @@
         </span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == 'VE' && userIdDetails?.desigId == 'CO'">
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../pilotage-history-status']">
-        <i class="side-menu__icon fa fa-times-circle"></i>
-        <span class="side-menu__label">Pilotage History Status
-        </span>
-      </a>
-    </li>
     <li *ngIf="userIdDetails?.roleTypeId == 'VE'">
       <a
         (click)="$auth.closeSidebar()"
@@ -222,7 +211,7 @@
       </a>
     </li>
   </ul>
-  <!-- <img src="assets/images/logo.png" alt="pilotage Logo" class="logo_in_sidebar"> -->
+  <!-- <img src="assets/images/logo.png" alt="Yatra Logo" class="logo_in_sidebar"> -->
 </aside>
 <!--aside closed-->
 <app-common-user-manual-modal></app-common-user-manual-modal>

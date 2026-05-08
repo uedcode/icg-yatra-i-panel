@@ -1,4 +1,0 @@
-.text {
-    white-space: pre-wrap; /* Yeh line breaks aur spaces ko preserve karega */
-    word-wrap: break-word; /* Long words ko wrap hone dega */
-  }

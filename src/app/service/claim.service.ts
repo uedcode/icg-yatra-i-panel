@@ -24,7 +24,7 @@ export class ClaimService {
   // ==========================
 
   /**
-   * Create or update a claim (all claim types – LTC, Pilotage, TY, FTE, etc.).
+   * Create or update a claim (all claim types – LTC, Yatra, TY, FTE, etc.).
    * Old JS: $http.post(url + "/createOrUpdateClaim", $scope.claim)
    * url = ApiUrl + "claim"
    */
@@ -110,7 +110,7 @@ export class ClaimService {
   }
 
   /**
-   * Get single movement (Pilotage / movement-based forms).
+   * Get single movement (Yatra / movement-based forms).
    * Old JS: $http.get(url + "/getSingleMovement", config)
    */
   getSingleMovement(config: any) {
@@ -225,7 +225,7 @@ export class ClaimService {
   }
 
   /**
-   * Sub form master (Pilotage, TY Advance, FTE, LTC etc.).
+   * Sub form master (Yatra, TY Advance, FTE, LTC etc.).
    * Old JS: codeSubFormUrl = ApiUrl + "codeSubForm"; /all
    */
   getSubForms(config?: any) {

@@ -193,4 +193,8 @@ export class CommonRedirectComponent implements OnInit {
     return `${this.redirectPath}${separator}${params.join('&')}`;
   }
 
+  getSignedDocumentList(): any[] {
+    return this.transaction?.eSignDocTransactionDTOs || [];
+  }
+
 }

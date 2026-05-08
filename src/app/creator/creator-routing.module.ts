@@ -22,13 +22,9 @@ import { RedirectComponent } from './pages/manage-esign/redirect/redirect.compon
 import { ViewFileComponent } from './pages/view-file/view-file.component';
 import { FaqComponent } from './pages/faq/faq.component';
 import { WebDetailComponent } from './pages/web-detail/web-detail.component';
-import { FormPilotageComponent } from './pages/form/form-pilotage/form-pilotage.component';
-import { FormPilotageDetailComponent } from './pages/form-detail/form-pilotage-detail/form-pilotage-detail.component';
 import { PreviewDetailsComponent } from './pages/form/preview-details/preview-details.component';
 import { PassedComponent } from './pages/form-request/passed/passed.component';
 import { NotPassedComponent } from './pages/form-request/not-passed/not-passed.component';
-import { PilotageHistoryComponent } from './pages/form/pilotage-history-pages/pilotage-history/pilotage-history.component';
-import { PilotageHistoryStatusComponent } from './pages/form/pilotage-history-pages/pilotage-history-status/pilotage-history-status.component';
 import { FormTydutyDetailComponent } from './pages/form-detail/form-tyduty-detail/form-tyduty-detail.component';
 import { FormTydutyComponent } from './pages/form/form-tyduty/form-tyduty.component';
 import { FormFteDetailComponent } from './pages/form-detail/form-fte-detail/form-fte-detail.component';
@@ -79,12 +75,6 @@ const routes: Routes = [
     data: { title: 'Switch Module' },
   },
 
-  {
-    path: 'form-pilotage',
-    component: FormPilotageComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Form Pilotage' },
-  },
   {
     path: 'inbox',
     component: InboxComponent,
@@ -173,12 +163,6 @@ const routes: Routes = [
 
   // Detail Pages
   {
-    path: 'form-pilotage-detail',
-    component: FormPilotageDetailComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Pilotage Detail' },
-  },
-  {
     path: 'creator-profile',
     component: CreatorProfileComponent,
     //canActivate: [AuthGuard],
@@ -198,12 +182,6 @@ const routes: Routes = [
   },
   {
     path: 'redirect',
-    component: RedirectComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'eSign Redirect' },
-  },
-  {
-    path: 'redirectPil',
     component: RedirectComponent,
     canActivate: [AuthGuard],
     data: { title: 'eSign Redirect' },
@@ -230,7 +208,7 @@ const routes: Routes = [
     path: 'preview-details',
     component: PreviewDetailsComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Preview Pilotage' },
+    data: { title: 'Preview Yatra' },
   },
   {
     path: 'passed',
@@ -267,18 +245,6 @@ const routes: Routes = [
     component: ArchiveComponent,
     canActivate: [AuthGuard],
     data: { title: 'Claim Archive' },
-  },
-  {
-    path: 'pilotage-history',
-    component: PilotageHistoryComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Pilotage History' },
-  },
-  {
-    path: 'pilotage-history-status',
-    component: PilotageHistoryStatusComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Pilotage History Status' },
   },
   {
     path: 'form-tyduty-detail',

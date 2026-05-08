@@ -131,7 +131,6 @@
                           <i class="fa fa-sort" (click)="sort('updatedOn')"></i>
                         </th>
                         <th class="actionBtnWidth">Action</th>
-                        <th class="actionBtnWidth">Supplementary</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -171,12 +170,6 @@
                               class="fa"
                               [ngClass]="archiveLoadingMap[dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId || dataObj?.claimStateId] ? 'fa-spinner fa-spin' : 'fa-archive'"
                             ></i>
-                          </button>
-                        </td>
-                        <td>
-                          <button *ngIf="!dataObj?.supClaimId && dataObj?.formName =='Pilotage Claim'"
-                            class="btn btn-info" title="View" (click)="createSupplementry(dataObj)">
-                            Create
                           </button>
                         </td>
                       </tr>

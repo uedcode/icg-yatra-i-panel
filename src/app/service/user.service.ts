@@ -43,7 +43,7 @@ export class UserService {
     );
   }
   roleSwitch(config) {
-    return this.http.post<any>(`user/roleSwitchPil`, null, config).pipe(
+    return this.http.put<any>(`user/roleSwitch`, null, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;

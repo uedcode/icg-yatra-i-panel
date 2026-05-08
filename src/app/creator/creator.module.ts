@@ -42,14 +42,9 @@ import { ViewFileComponent } from './pages/view-file/view-file.component';
 import { FaqComponent } from './pages/faq/faq.component';
 import { WebDetailComponent } from './pages/web-detail/web-detail.component';
 
-import { FormPilotageComponent } from './pages/form/form-pilotage/form-pilotage.component';
-import { FormPilotageDetailComponent } from './pages/form-detail/form-pilotage-detail/form-pilotage-detail.component';
 import { PreviewDetailsComponent } from './pages/form/preview-details/preview-details.component';
 import { PassedComponent } from './pages/form-request/passed/passed.component';
 import { NotPassedComponent } from './pages/form-request/not-passed/not-passed.component';
-import { PilotageHistoryComponent } from './pages/form/pilotage-history-pages/pilotage-history/pilotage-history.component';
-import { PilotageHistoryStatusComponent } from './pages/form/pilotage-history-pages/pilotage-history-status/pilotage-history-status.component';
-import { PilotageChildModalComponent } from './pages/form/pilotage-history-pages/pilotage-child-modal/pilotage-child-modal.component';
 import { PortRateModalComponent } from './pages/form/port-rate-modal/port-rate-modal.component';
 import { FormTydutyComponent } from './pages/form/form-tyduty/form-tyduty.component';
 import { FormFteComponent } from './pages/form/form-fte/form-fte.component';
@@ -85,13 +80,11 @@ const CustomSelectOptions: INgxSelectOptions = {
     CreatorComponent,
     SwitchModuleComponent,
     // new component add here
-    FormPilotageComponent,
     InboxComponent,
     OutboxComponent,
     DraftComponent,
     ApprovedComponent,
     ReturnedComponent,
-    FormPilotageDetailComponent,
     NewComponent,
     CreatorProfileComponent,
     ProfileSettingComponent,
@@ -103,9 +96,6 @@ const CustomSelectOptions: INgxSelectOptions = {
     PreviewDetailsComponent,
     PassedComponent,
     NotPassedComponent,
-    PilotageHistoryComponent,
-    PilotageHistoryStatusComponent,
-    PilotageChildModalComponent,
     PortRateModalComponent,
 
     FormTydutyComponent,

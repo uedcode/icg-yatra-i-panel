@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth.service';
 import { CommonService } from 'src/app/service/common.service';
 import { DevicetService } from 'src/app/service/device.service';
+import { environment } from 'src/environments/environment';
 declare var $: any;
 
 @Component({
@@ -11,6 +12,7 @@ declare var $: any;
     standalone: false
 })
 export class CommonManageDeviceModalComponent implements OnInit {
+  private readonly storageKeys = environment.authConfig.storageKeys;
 
   constructor(
     private $common: CommonService,
@@ -42,7 +44,7 @@ export class CommonManageDeviceModalComponent implements OnInit {
           let list = response.object;
           this.dataList = list;
 
-          let deviceId = localStorage.getItem("pilotageDeviceId");
+          let deviceId = localStorage.getItem(this.storageKeys.deviceId);
           this.dataList?.map((item) => {
             if (deviceId == item?.deviceId) item.isDisabled = true;
             else item.isDisabled = false;

@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { CommonService } from 'src/app/service/common.service';
-import userJson from 'src/app/service/json/userDetails.json';
 import { UserTokenService } from './userToken.service';
 import { environment } from 'src/environments/environment';
 import { DatePipe } from '@angular/common';
@@ -16,6 +15,14 @@ declare var $: any;
 export class AuthService {
   getUserId: any;
   private readonly storageKeys = environment.authConfig.storageKeys;
+  private readonly legacyStorageKeys = {
+    accessToken: 'pilotageAccessToken',
+    refreshToken: 'pilotageRefreshToken',
+    expiresIn: 'pilotageExpiresIn',
+    accessCount: 'pilotageAccessCount',
+    userDetails: 'pilotageUserDetails',
+    deviceId: 'pilotageDeviceId',
+  };
   constructor(
     private http: HttpClient,
     private route: Router,
@@ -172,9 +179,13 @@ export class AuthService {
     localStorage.setItem(this.storageKeys.accessToken, data.access_token);
     localStorage.setItem(this.storageKeys.refreshToken, data.refresh_token);
     localStorage.setItem(this.storageKeys.expiresIn, data.expires_in);
+    localStorage.setItem(this.legacyStorageKeys.accessToken, data.access_token);
+    localStorage.setItem(this.legacyStorageKeys.refreshToken, data.refresh_token);
+    localStorage.setItem(this.legacyStorageKeys.expiresIn, data.expires_in);
     // if (isLogin) {
     localStorage.setItem(this.storageKeys.isDashboard, '1');
     localStorage.setItem(this.storageKeys.accessCount, '0');
+    localStorage.setItem(this.legacyStorageKeys.accessCount, '0');
     // }
 
     let accessData = {
@@ -200,6 +211,10 @@ export class AuthService {
     userDetailsArray.push(accessData);
     localStorage.setItem(
       this.storageKeys.userDetails,
+      JSON.stringify(userDetailsArray)
+    );
+    localStorage.setItem(
+      this.legacyStorageKeys.userDetails,
       JSON.stringify(userDetailsArray)
     );
     if (redirectType) {
@@ -241,6 +256,12 @@ export class AuthService {
     localStorage.removeItem(this.storageKeys.accessCount);
     localStorage.removeItem(this.storageKeys.userDetails);
     localStorage.removeItem(this.storageKeys.deviceId);
+    localStorage.removeItem(this.legacyStorageKeys.accessToken);
+    localStorage.removeItem(this.legacyStorageKeys.refreshToken);
+    localStorage.removeItem(this.legacyStorageKeys.expiresIn);
+    localStorage.removeItem(this.legacyStorageKeys.accessCount);
+    localStorage.removeItem(this.legacyStorageKeys.userDetails);
+    localStorage.removeItem(this.legacyStorageKeys.deviceId);
     setTimeout(() => {
       this.$common.hideLoader();
       location.href = 'login';
@@ -256,24 +277,37 @@ export class AuthService {
   }
 
   getAccessToken() {
-    return localStorage.getItem(this.storageKeys.accessToken) || '';
+    return (
+      localStorage.getItem(this.storageKeys.accessToken) ||
+      localStorage.getItem(this.legacyStorageKeys.accessToken) ||
+      ''
+    );
   }
 
   getRefreshToken() {
-    return localStorage.getItem(this.storageKeys.refreshToken) || '';
+    return (
+      localStorage.getItem(this.storageKeys.refreshToken) ||
+      localStorage.getItem(this.legacyStorageKeys.refreshToken) ||
+      ''
+    );
   }
 
   getDeviceFingerprint() {
-    return localStorage.getItem(this.storageKeys.deviceId) || '';
+    return (
+      localStorage.getItem(this.storageKeys.deviceId) ||
+      localStorage.getItem(this.legacyStorageKeys.deviceId) ||
+      ''
+    );
   }
 
   getUserDetails() {
-    if (localStorage.getItem(this.storageKeys.userDetails) === null) {
+    const userDetailsText =
+      localStorage.getItem(this.storageKeys.userDetails) ||
+      localStorage.getItem(this.legacyStorageKeys.userDetails);
+    if (userDetailsText === null) {
       return null;
     }
-    let userDetailsArray = JSON.parse(
-      localStorage.getItem(this.storageKeys.userDetails)
-    );
+    let userDetailsArray = JSON.parse(userDetailsText);
     let userDetails = userDetailsArray[userDetailsArray.length - 1];
     if (userDetails?.userPermission) {
       userDetails.userPermission = JSON.parse(userDetails.userPermission);
@@ -314,12 +348,10 @@ export class AuthService {
   }
 
   openPageInNewTab() {
-    let url = '';
-    // Check if the current URL contains test.aptimyst.com
     if (window.location.hostname.includes('test.aptimyst.com')) {
-      url = '/pilotage';
+      return this.getBasePathPrefix();
     }
-    return url;
+    return '';
   }
 
   codeStatus() {
@@ -419,13 +451,22 @@ export class AuthService {
     if (href.includes('test.aptimyst.com')) {
       path = arr[3] + '/' + path;
     } else if (href.includes('icg.net.in')) {
-      path = 'pilotage' + '/' + path;
+      const basePrefix = this.getBasePathPrefix().replace(/^\/+/, '');
+      path = (basePrefix ? basePrefix + '/' : '') + path;
     }
     let url = this.route.serializeUrl(this.route.createUrlTree([`/${path}`]));
     if (queryParams) {
       url = url + '?' + queryParams;
     }
     window.open(url, '_blank');
+  }
+
+  private getBasePathPrefix(): string {
+    const baseHref = (environment.baseHref || '/').trim();
+    if (!baseHref || baseHref === '/') {
+      return '';
+    }
+    return '/' + baseHref.replace(/^\/+|\/+$/g, '');
   }
 
   openDownloadLink(path) {
@@ -454,49 +495,6 @@ export class AuthService {
     }
     return '-';
   }
-
-  // login with localStorage starts here
-  // private readonly USER_KEY = 'pilotageUserDetails';
-  // private readonly usersData = userJson;
-  // login(username: string, password: string): boolean {
-
-  //   // Perform authentication logic here (e.g., call an API to check credentials).
-  //   // For the sake of example, let's assume the user "admin" with password "admin" can login.
-  //   const data = this.usersData.find(u => u.username === username && u.password === password);
-  //   if (data) {
-  //     const userData = {
-  //       "userId": data.userId,
-  //       "username": data.username,
-  //       "name": data.name,
-
-  //       "roleId": data.roleId,
-  //       "roleTypeId": data.roleTypeId,
-  //       "roleName": data.roleName,
-
-  //       "unitId": data.unitId,
-  //       "userGroupName": data.userGroupName,
-  //       "groupTypeId": data.groupTypeId,
-  //       "groupName": data.groupName,getFormDetails
-
-  //       "parentUserId": data.parentUserId,
-  //       "sessionTime": data.sessionTime,
-
-  //       "permissionChangeDt": data.permissionChangeDt,
-  //       "userPermission": ""
-  //     };
-
-  //     let userDetailsArray = [];
-  //     userDetailsArray.push(userData);
-  //     localStorage.setItem("pilotageUserDetails", JSON.stringify(userDetailsArray));
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  // logout(): void {
-  //   localStorage.removeItem(this.USER_KEY);
-  // }
-  // login with localStorage ends here
 
   getFormDetails(subFormId, actionType) {
     this.userIdDetails = this.getUserDetails();

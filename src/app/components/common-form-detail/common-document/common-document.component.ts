@@ -75,7 +75,7 @@ export class CommonDocumentComponent implements OnInit {
   }
 
   private getDocInfo(data: any) {
-    return data?.codeDocInfoDTO || data?.codePilDocInfoDTO || null;
+    return data?.codeDocInfoDTO || null;
   }
 
   // Get document start
@@ -92,7 +92,7 @@ export class CommonDocumentComponent implements OnInit {
   //       if (this.formId && list?.length > 0) {
   //         list.map((item) => {
   //           this.tempDocumentList = this.tempDocumentList.filter(
-  //             (elem) => elem?.docName != item?.codePilDocInfoDTO?.docName
+  //             (elem) => elem?.docName != item?.codeDocInfoDTO?.docName
   //           );
   //         })
   //       }
@@ -185,11 +185,11 @@ export class CommonDocumentComponent implements OnInit {
   //     (e) => e?.docName === this.documentObj?.docName
   //   );
   //   this.documentDtos= this.documentDtos.filter(
-  //     (e) => this.documentObj?.docName !== e?.codePilDocInfoDTO?.docName
+  //     (e) => this.documentObj?.docName !== e?.codeDocInfoDTO?.docName
   //   );
   //   let obj = {
   //     ...this.documentObj,
-  //     codePilDocInfoDTO: {
+  //     codeDocInfoDTO: {
   //       id: tempDocObj?.id,
   //       docName: tempDocObj?.docName,
   //     },
@@ -246,15 +246,11 @@ export class CommonDocumentComponent implements OnInit {
         id: tempDocObj?.id,
         docName: tempDocObj?.docName,
       },
-      codePilDocInfoDTO: {
-        id: tempDocObj?.id,
-        docName: tempDocObj?.docName,
-      },
     };
 
     // Check for duplicates
     const isDuplicate = this.documentDtos.some((doc) => {
-      if (newObj.codePilDocInfoDTO?.docName === "Other") {
+      if (newObj.codeDocInfoDTO?.docName === "Other") {
         return (
           String(doc.otherDocName || doc.descr || '').trim().toLowerCase() ===
           newObj.otherDocName.toLowerCase()
