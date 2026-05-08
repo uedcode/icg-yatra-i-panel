@@ -69,17 +69,19 @@ export class HeaderComponent implements OnInit {
   roleSwitch(dataObj) {
     try {
       this.$common.showLoader();
+      const designation = dataObj?.aclCodeDesignationDTO || dataObj?.aclPilCodeDesignationDTO;
+      const roleType = dataObj?.aclCodeRoleTypeDTO || dataObj?.aclPilCodeRoleTypeDTO;
       this.config = {
         headers: {
           moduleId:'PIL'
         }
       }
       
-      if (dataObj?.aclPilCodeDesignationDTO?.id) {
-        this.config.headers.desigId = dataObj?.aclPilCodeDesignationDTO?.id;
+      if (designation?.id) {
+        this.config.headers.desigId = designation.id;
       }
-      if (dataObj?.aclPilCodeRoleTypeDTO?.id) {
-        this.config.headers.roleTypeId= dataObj?.aclPilCodeRoleTypeDTO?.id;
+      if (roleType?.id) {
+        this.config.headers.roleTypeId= roleType.id;
       }
       // if (dataObj?.userGroupDTO?.id) {
       //   this.config.headers.userGroupId = dataObj?.userGroupDTO?.id;
@@ -87,8 +89,8 @@ export class HeaderComponent implements OnInit {
       if (this.userIdDetails?.userId) {
         this.config.headers.userId = this.userIdDetails?.userId;
       }
-      if (dataObj?.id) {
-        this.config.headers.roleId = dataObj?.id;
+      if (this.getRoleId(dataObj)) {
+        this.config.headers.roleId = this.getRoleId(dataObj);
       }
       // if (this.userIdDetails?.formId) {
       //   this.config.headers.formId = this.userIdDetails?.formId;
@@ -130,6 +132,10 @@ export class HeaderComponent implements OnInit {
       this.$common.hideLoader();
       console.log(error);
     }
+  }
+
+  getRoleId(dataObj: any) {
+    return dataObj?.roleId || dataObj?.id;
   }
 
 }

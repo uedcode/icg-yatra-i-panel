@@ -12,6 +12,7 @@ import { UserService } from 'src/app/service/user.service';
 import { CommonService } from 'src/app/service/common.service';
 import { ClaimService } from 'src/app/service/claim.service';
 import { ClaimUtilService } from 'src/app/service/claimUtil.service';
+import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
 
 /* ========= BASIC DTOs YOU ALREADY STARTED ========= */
 
@@ -148,6 +149,7 @@ interface Claims {
   yatTempDutyAdvDTOs: YatTempDutyAdvDTO[];
   yatDtsDetailDTOs: YatDtsDetailDTO[];
   yatClaimBankDetailDTO: YatClaimBankDetailDTO;
+  yatDocsDTOs?: any[];
 
   internalRemarks?: string | null;
   claimAmt?: number | null;
@@ -275,7 +277,8 @@ export class FormTydutyComponent implements OnInit {
     private $user: UserService,
     private $common: CommonService,
     private $claim: ClaimService,
-    private $util: ClaimUtilService
+    private $util: ClaimUtilService,
+    private $codeDocInfo: CodeDocInfoService
   ) {}
 
   userIdDetails: any;
@@ -301,6 +304,9 @@ export class FormTydutyComponent implements OnInit {
     //   this.claims.signWith = this.codeSignType.eSign;
     // }
     this.getPurposeTypes();
+    this.$codeDocInfo.documentDtos.subscribe((docs: any) => {
+      this.documentDtos = Array.isArray(docs) ? docs : [];
+    });
     this.route.queryParams.subscribe((params) => {
       this.formId = params?.id;
       this.subFormId = params?.subFormId;
@@ -459,6 +465,7 @@ export class FormTydutyComponent implements OnInit {
       claimAmt: null,
       codeSubFormDTO: { subFormId: 'T' } as any,
       codeUnitDTO: { unit: '', descr: '' } as any,
+      yatDocsDTOs: [],
     };
   }
 
@@ -1018,7 +1025,7 @@ export class FormTydutyComponent implements OnInit {
         gxUnitId: this.userIdDetails?.unitId ?? '',
         userId: this.userIdDetails?.userId ?? '',
         subFormId: 'T',
-        isfetch: 'true',
+        isFetch: 'true',
         claimId: '',
       };
 
@@ -1167,9 +1174,12 @@ export class FormTydutyComponent implements OnInit {
               ...obj,
               yatTempDutyAdvDTOs: [{ ...adv }],
               yatDtsDetailDTOs: obj.yatDtsDetailDTOs || [],
+              yatDocsDTOs: obj.yatDocsDTOs || [],
             };
 
             this.claims.signWith = this.codeSignType.eSign;
+            this.documentDtos = this.claims.yatDocsDTOs || [];
+            this.$codeDocInfo.setDocument(this.documentDtos as []);
           } else if (obj.userBasicDetailDTO) {
             const user = obj.userBasicDetailDTO;
 
@@ -1272,9 +1282,41 @@ export class FormTydutyComponent implements OnInit {
   checkValidSignType(signWith: string | null, appliedTo: string | null): void {
     // Add sign/appliedTo validation if needed
   }
-  navigatePreview(type, id) {}
+  navigatePreview(type, id) {
+    this.router.navigate(['../form-tyduty-detail'], {
+      queryParams: {
+        claimId: id || this.claims.claimId || this.claimIdParam,
+        subFormId: 'T',
+      },
+    });
+  }
   checkEsignAvailability(): void {
-    // backend-driven ESIGN availability check
+    if (this.claims?.signWith !== this.codeSignType.eSign) {
+      return;
+    }
+
+    const config = {
+      headers: {
+        userId: this.userIdDetails?.userId || '',
+        gxUnitId: String(this.gxUnitId || this.userIdDetails?.unitId || ''),
+      },
+    };
+
+    this.$claim.checkEsignAvailability(config).subscribe({
+      next: (response: any) => {
+        if (response?.status === false) {
+          this.claims.signWith = this.codeSignType.inkSign;
+          this.$common.showMessage(
+            response?.message || 'eSign is not available for this TY Duty claim.',
+            'danger'
+          );
+        }
+      },
+      error: () => {
+        this.claims.signWith = this.codeSignType.inkSign;
+        this.$common.showMessage('Unable to verify eSign availability.', 'danger');
+      },
+    });
   }
 
   openGxFormModel(type): void {
@@ -1511,7 +1553,6 @@ export class FormTydutyComponent implements OnInit {
           subFormId: this.claims?.codeSubFormDTO?.subFormId ?? 'T',
         };
       }
-      debugger;
       if (tempClaim.codeUnitDTO && this.claims?.codeUnitDTO?.unit) {
         tempClaim.codeUnitDTO = {
           unit: this.claims.codeUnitDTO.unit,
@@ -1521,6 +1562,7 @@ export class FormTydutyComponent implements OnInit {
       if (!tempClaim.signWith) {
         tempClaim.signWith = 'ES';
       }
+      tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
 
       tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
 
@@ -1555,9 +1597,10 @@ export class FormTydutyComponent implements OnInit {
             return;
           }
 
-          const obj = res.obj || res.object || res;
-          const formStateInputDTO = obj.formStateInputDTO || {};
-          const respStatus = formStateInputDTO.status || status;
+          const obj = Array.isArray(res?.object)
+            ? res.object[0]
+            : res?.object || res?.obj || res;
+          const respStatus = status;
           const moduleUrl = this.$auth.getModuleName
             ? this.$auth.getModuleName()
             : '';
@@ -1567,31 +1610,20 @@ export class FormTydutyComponent implements OnInit {
           }
 
           if (respStatus === this.codeClaimState.outbox) {
-            this.tempFormObj = obj;
-
-            if ((this as any).validationStateMgt) {
-              (this as any)
-                .validationStateMgt(formStateInputDTO)
-                .then(() => {
-                  if ((window as any).$) {
-                    (window as any)('#esign_modal').modal('show');
-                  }
-                })
-                .catch((e: any) => console.error(e));
-            } else if ((window as any).$) {
-              (window as any)('#esign_modal').modal('show');
-            }
-          } else if (respStatus === this.codeClaimState.draft) {
-            if (moduleUrl) {
-              this.router.navigateByUrl(moduleUrl + `/draft`);
-            }
-          } else if (respStatus === 'SB') {
             this.$common.showMessage(
-              'Claim submitted successfully!',
+              res?.message || 'TY Duty claim submitted successfully!',
               'success'
             );
             if (moduleUrl) {
               this.router.navigateByUrl(moduleUrl + `/submitted`);
+            }
+          } else if (respStatus === this.codeClaimState.draft) {
+            this.$common.showMessage(
+              res?.message || 'TY Duty draft saved successfully.',
+              'success'
+            );
+            if (moduleUrl) {
+              this.router.navigateByUrl(moduleUrl + `/draft`);
             }
           }
 
@@ -2042,5 +2074,21 @@ export class FormTydutyComponent implements OnInit {
     }
 
     return true;
+  }
+
+  private mapClaimDocumentsForSave(documents: any[]): any[] {
+    return (documents || []).map((doc) => {
+      const codeDocInfoDTO = doc?.codeDocInfoDTO || doc?.codePilDocInfoDTO || null;
+      return {
+        ...doc,
+        codeDocInfoDTO: codeDocInfoDTO
+          ? {
+              id: codeDocInfoDTO.id,
+              docName: codeDocInfoDTO.docName,
+            }
+          : null,
+        descr: doc?.otherDocName || doc?.descr || null,
+      };
+    });
   }
 }

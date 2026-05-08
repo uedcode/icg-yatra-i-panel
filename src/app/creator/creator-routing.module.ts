@@ -37,6 +37,8 @@ import { FormPmtDetailComponent } from './pages/form-detail/form-pmt-detail/form
 import { FormPmtDutyComponent } from './pages/form/form-pmt/form-pmt.component';
 import { FormLtcDetailComponent } from './pages/form-detail/form-ltc-detail/form-ltc-detail.component';
 import { FormLtcAdvanceComponent } from './pages/form/form-ltc/form-ltc.component';
+import { FormManualAdvComponent } from './pages/form/form-manual-adv/form-manual-adv.component';
+import { FormManualAdvDetailComponent } from './pages/form-detail/form-manual-adv-detail/form-manual-adv-detail.component';
 
 const routes: Routes = [
   {
@@ -109,19 +111,19 @@ const routes: Routes = [
     path: 'new',
     component: NewComponent,
     canActivate: [AuthGuard],
-    data: { title: ' New Page' },
+    data: { title: 'New Claim' },
   },
   {
     path: 'form-tyduty',
     component: FormTydutyComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Form Tyduty' },
+    data: { title: 'TY Duty Advance' },
   },
   {
     path: 'form-fte',
     component: FormFteComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Form Fte' },
+    data: { title: 'FTE Advance' },
   },
 
   // Detail Pages
@@ -135,7 +137,7 @@ const routes: Routes = [
     path: 'creator-profile',
     component: CreatorProfileComponent,
     //canActivate: [AuthGuard],
-    data: { title: 'Creator profile' },
+    data: { title: 'Creator Profile' },
   },
   {
     path: 'profile-setting',
@@ -150,10 +152,16 @@ const routes: Routes = [
     data: { title: 'Esign' },
   },
   {
+    path: 'redirect',
+    component: RedirectComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'eSign Redirect' },
+  },
+  {
     path: 'redirectPil',
     component: RedirectComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Redirect' },
+    data: { title: 'eSign Redirect' },
   },
   {
     path: 'view-file/:id',
@@ -165,7 +173,7 @@ const routes: Routes = [
     path: 'faq',
     component: FaqComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Faq' },
+    data: { title: 'FAQ' },
   },
   {
     path: 'web-detail',
@@ -207,7 +215,7 @@ const routes: Routes = [
     path: 'form-tyduty-detail',
     component: FormTydutyDetailComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Tyduty Detail' },
+    data: { title: 'TY Duty Detail' },
   },
   {
     path: 'form-tyduty',
@@ -225,31 +233,43 @@ const routes: Routes = [
     path: 'form-fte-detail',
     component: FormFteDetailComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Fte Detail' },
+    data: { title: 'FTE Detail' },
   },
   {
     path: 'form-pmt-detail',
     component: FormPmtDetailComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Pmt Detail' },
+    data: { title: 'PMT Detail' },
   },
   {
     path: 'form-pmt',
     component: FormPmtDutyComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Pmt Advance' },
+    data: { title: 'PMT Advance' },
   },
   {
     path: 'form-ltc-detail',
     component: FormLtcDetailComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Ltc Detail' },
+    data: { title: 'LTC Detail' },
   },
   {
     path: 'form-ltc',
     component: FormLtcAdvanceComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Ltc Advance' },
+    data: { title: 'LTC Advance' },
+  },
+  {
+    path: 'form-manual-adv',
+    component: FormManualAdvComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Manual Advance' },
+  },
+  {
+    path: 'form-manual-adv-detail',
+    component: FormManualAdvDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Manual Advance Detail' },
   },
 ];
 

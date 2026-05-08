@@ -15,6 +15,7 @@ declare var $: any;
 })
 export class AuthService {
   getUserId: any;
+  private readonly storageKeys = environment.authConfig.storageKeys;
   constructor(
     private http: HttpClient,
     private route: Router,
@@ -144,7 +145,7 @@ export class AuthService {
   // userToken delete start
   async deleteUserToken() {
     let userDetails = this.getUserDetails();
-    let token = localStorage.getItem('pilotageAccessToken');
+    let token = this.getAccessToken();
     this.config = {
       headers: {
         // userId: userDetails?.userId,
@@ -168,12 +169,12 @@ export class AuthService {
     // this.updateUserToken(data);
 
     let moduleUrlOld = this.getModuleName();
-    localStorage.pilotageAccessToken = data.access_token;
-    localStorage.pilotageRefreshToken = data.refresh_token;
-    localStorage.pilotageExpiresIn = data.expires_in;
+    localStorage.setItem(this.storageKeys.accessToken, data.access_token);
+    localStorage.setItem(this.storageKeys.refreshToken, data.refresh_token);
+    localStorage.setItem(this.storageKeys.expiresIn, data.expires_in);
     // if (isLogin) {
-    localStorage.isDashboard = 1;
-    localStorage.setItem('pilotageAccessCount', '0');
+    localStorage.setItem(this.storageKeys.isDashboard, '1');
+    localStorage.setItem(this.storageKeys.accessCount, '0');
     // }
 
     let accessData = {
@@ -198,7 +199,7 @@ export class AuthService {
     let userDetailsArray = [];
     userDetailsArray.push(accessData);
     localStorage.setItem(
-      'pilotageUserDetails',
+      this.storageKeys.userDetails,
       JSON.stringify(userDetailsArray)
     );
     if (redirectType) {
@@ -234,12 +235,12 @@ export class AuthService {
       this.$common.showMessage(`Session updated kindly Login again`, 'danger');
     }
     this.$common.showLoader();
-    localStorage.removeItem('pilotageAccessToken');
-    localStorage.removeItem('pilotageRefreshToken');
-    localStorage.removeItem('pilotageExpiresIn');
-    localStorage.removeItem('pilotageAccessCount');
-    localStorage.removeItem('pilotageUserDetails');
-    localStorage.removeItem('pilotageDeviceId');
+    localStorage.removeItem(this.storageKeys.accessToken);
+    localStorage.removeItem(this.storageKeys.refreshToken);
+    localStorage.removeItem(this.storageKeys.expiresIn);
+    localStorage.removeItem(this.storageKeys.accessCount);
+    localStorage.removeItem(this.storageKeys.userDetails);
+    localStorage.removeItem(this.storageKeys.deviceId);
     setTimeout(() => {
       this.$common.hideLoader();
       location.href = 'login';
@@ -248,18 +249,30 @@ export class AuthService {
 
   getTokenDetails() {
     var localObject = {
-      accessToken: localStorage.pilotageAccessToken,
-      refreshToken: localStorage.pilotageRefreshToken,
+      accessToken: this.getAccessToken(),
+      refreshToken: this.getRefreshToken(),
     };
     return localObject;
   }
 
+  getAccessToken() {
+    return localStorage.getItem(this.storageKeys.accessToken) || '';
+  }
+
+  getRefreshToken() {
+    return localStorage.getItem(this.storageKeys.refreshToken) || '';
+  }
+
+  getDeviceFingerprint() {
+    return localStorage.getItem(this.storageKeys.deviceId) || '';
+  }
+
   getUserDetails() {
-    if (localStorage.getItem('pilotageUserDetails') === null) {
+    if (localStorage.getItem(this.storageKeys.userDetails) === null) {
       return null;
     }
     let userDetailsArray = JSON.parse(
-      localStorage.getItem('pilotageUserDetails')
+      localStorage.getItem(this.storageKeys.userDetails)
     );
     let userDetails = userDetailsArray[userDetailsArray.length - 1];
     if (userDetails?.userPermission) {
@@ -551,15 +564,31 @@ export class AuthService {
 
   fileUrl = environment.fileUrl;
   viewFile(url) {
-    // let moduleUrl = this.getModuleName();
-    // let fileUrl = btoa(this.fileUrl + url);
-    // this.openLink(moduleUrl + "/view-file/" + fileUrl);
+    const normalizedUrl = this.normalizeFileUrl(url);
+    if (!normalizedUrl) {
+      this.$common.showMessage('File URL is not available.', 'danger');
+      return;
+    }
 
-    const timestamp = new Date().getTime();
-    const fileUrlWithTimestamp = `${this.fileUrl}${url}?t=${timestamp}`;
-    window.open(fileUrlWithTimestamp, '_blank');
+    const viewerPath = this.route.serializeUrl(
+      this.route.createUrlTree(['/view-file', btoa(normalizedUrl)])
+    );
+    window.open(viewerPath, '_blank');
+  }
 
-    // window.open(this.fileUrl + url, '_blank');
+  private normalizeFileUrl(url: any): string {
+    if (this.isNullOrEmpty(url)) {
+      return '';
+    }
+
+    const rawUrl = String(url).trim();
+    const baseUrl = this.fileUrl.endsWith('/') ? this.fileUrl : `${this.fileUrl}/`;
+    const absoluteUrl = /^https?:\/\//i.test(rawUrl)
+      ? rawUrl
+      : new URL(rawUrl.replace(/^\/+/, ''), baseUrl).toString();
+
+    const separator = absoluteUrl.includes('?') ? '&' : '?';
+    return `${absoluteUrl}${separator}t=${Date.now()}`;
   }
 
   formatEntryDate(entryDate: Date, entryTime: string): string {

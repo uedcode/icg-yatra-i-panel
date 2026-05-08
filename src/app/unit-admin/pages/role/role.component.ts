@@ -111,10 +111,10 @@ export class RoleComponent implements OnInit {
     try {
       this.$common.showLoader();
       let req = {
-        "aclPilCodeRoleTypeDTO": {
+        "aclCodeRoleTypeDTO": {
           "id": this.formObj.role
         },
-        "aclPilCodeDesignationDTO": {
+        "aclCodeDesignationDTO": {
           "id": this.formObj.desig
         },
         "aclCodeStatusDTO": {
@@ -196,12 +196,12 @@ export class RoleComponent implements OnInit {
   changeStatus(tempObj) {
 
     try {
-      if (tempObj?.id == this.userIdDetails?.roleId) {
+      if (this.getRoleId(tempObj) == this.userIdDetails?.roleId) {
         return this.$common.showMessage("You can't Deactivate yourself.", 'danger');
       }
       var config = {
         headers: {
-          "id": tempObj.id,
+          "roleId": this.getRoleId(tempObj),
           "statusId": tempObj.currentStatus
         }
       }
@@ -258,8 +258,7 @@ export class RoleComponent implements OnInit {
       this.config = {
         headers: {
           visibilityIndicator: '1',
-          roleType: this.formObj?.role,
-          unitId: this.userIdDetails?.unitId
+          roleTypeId: this.formObj?.role
         },
       };
       this.$dropdown.getCodeDesignation(this.config).subscribe(
@@ -300,6 +299,10 @@ export class RoleComponent implements OnInit {
   sort(key) {
     this.key = key;
     this.reverse = !this.reverse;
+  }
+
+  getRoleId(dataObj: any) {
+    return dataObj?.roleId || dataObj?.id;
   }
   // data shorting ends
 }

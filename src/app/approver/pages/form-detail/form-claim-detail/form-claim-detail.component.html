@@ -1,0 +1,267 @@
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <app-sidebar></app-sidebar>
+    <div class="app-content">
+      <div class="side-app" *ngIf="formObj">
+        <div class="page-header">
+          <div class="page-leftheader">
+            <h4 class="page-title">Claim Detail</h4>
+          </div>
+          <div>
+            <button type="button" class="btn btn-dark request_view_back" (click)="goBack()">
+              <i class="fa fa-chevron-left"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="card mb-3" *ngIf="canTakeAction()">
+          <div class="card-header">
+            <strong>Verification / Approval Action</strong>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Remark</label>
+              <textarea
+                class="form-control"
+                rows="4"
+                [(ngModel)]="remark"
+                name="remark"
+                placeholder="Enter remark"
+              ></textarea>
+            </div>
+            <div class="mt-3">
+              <button
+                type="button"
+                class="btn btn-primary mr-2"
+                [disabled]="actionLoading"
+                (click)="submitAction(codeStatus?.outbox)"
+              >
+                {{ getActionLabel() }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-warning mr-2"
+                [disabled]="actionLoading"
+                (click)="submitAction(codeStatus?.returned)"
+              >
+                Return
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                [disabled]="actionLoading"
+                (click)="submitAction(codeStatus?.rejected)"
+              >
+                Reject
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header">
+            <strong>Claim Summary</strong>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3"><strong>Claim ID:</strong> {{ display(formObj?.claimId) }}</div>
+              <div class="col-md-3"><strong>Sub Form:</strong> {{ display(formObj?.codeSubFormDTO?.subFormName || formObj?.codeSubFormDTO?.descr || subForm()) }}</div>
+              <div class="col-md-3"><strong>State:</strong> {{ display(formObj?.claimState || statusId) }}</div>
+              <div class="col-md-3"><strong>Sign With:</strong> {{ display(formObj?.signWith) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header">
+            <strong>Personal Details</strong>
+          </div>
+          <div class="card-body">
+            <div class="row" [ngSwitch]="subForm()">
+              <ng-container *ngSwitchCase="'P'">
+                <div class="col-md-3"><strong>Name:</strong> {{ display(formObj?.yatPermDutyAdvDTOs?.[0]?.name) }}</div>
+                <div class="col-md-3"><strong>Rank:</strong> {{ display(formObj?.yatPermDutyAdvDTOs?.[0]?.rank) }}</div>
+                <div class="col-md-3"><strong>PNO:</strong> {{ display(formObj?.yatPermDutyAdvDTOs?.[0]?.pno) }}</div>
+                <div class="col-md-3"><strong>GX No:</strong> {{ display(formObj?.yatPermDutyAdvDTOs?.[0]?.gxNumber) }}</div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'T'">
+                <div class="col-md-3"><strong>Name:</strong> {{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.name) }}</div>
+                <div class="col-md-3"><strong>Rank:</strong> {{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.rank) }}</div>
+                <div class="col-md-3"><strong>PNO:</strong> {{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.pno) }}</div>
+                <div class="col-md-3"><strong>GX No:</strong> {{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.gxNumber) }}</div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'F'">
+                <div class="col-md-3"><strong>Name:</strong> {{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.name) }}</div>
+                <div class="col-md-3"><strong>Rank:</strong> {{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.rank) }}</div>
+                <div class="col-md-3"><strong>PNO:</strong> {{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.pno) }}</div>
+                <div class="col-md-3"><strong>GX No:</strong> {{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.gxNumber) }}</div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'L'">
+                <div class="col-md-3"><strong>Name:</strong> {{ display(formObj?.yatLtcAdvDTOs?.[0]?.name) }}</div>
+                <div class="col-md-3"><strong>Rank:</strong> {{ display(formObj?.yatLtcAdvDTOs?.[0]?.rank) }}</div>
+                <div class="col-md-3"><strong>PNO:</strong> {{ display(formObj?.yatLtcAdvDTOs?.[0]?.pno) }}</div>
+                <div class="col-md-3"><strong>GX No:</strong> {{ display(formObj?.yatLtcAdvDTOs?.[0]?.gxNumber) }}</div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3" [ngSwitch]="subForm()">
+          <div class="card-header">
+            <strong>Advance Details</strong>
+          </div>
+          <div class="card-body">
+            <div class="row" *ngSwitchCase="'P'">
+              <div class="col-md-3"><strong>PMT Type:</strong> {{ display(formObj?.yatPermDutyAdvDTOs?.[0]?.pmtType) }}</div>
+              <div class="col-md-3"><strong>Station From:</strong> {{ display(formObj?.yatPermDutyAdvDTOs?.[0]?.stationFrom) }}</div>
+              <div class="col-md-3"><strong>Station To:</strong> {{ display(formObj?.yatPermDutyAdvDTOs?.[0]?.stationTo) }}</div>
+              <div class="col-md-3"><strong>Advance Amt:</strong> {{ display(formObj?.yatPermDutyAdvDTOs?.[0]?.advAmt) }}</div>
+            </div>
+            <div class="row" *ngSwitchCase="'T'">
+              <div class="col-md-3"><strong>Purpose:</strong> {{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.purpose) }}</div>
+              <div class="col-md-3"><strong>Proceeding To:</strong> {{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.stationProceedingTo) }}</div>
+              <div class="col-md-3"><strong>Advance Amt:</strong> {{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.advAmt) }}</div>
+              <div class="col-md-3"><strong>DTS Amt:</strong> {{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.dtsAmount) }}</div>
+            </div>
+            <div class="row" *ngSwitchCase="'F'">
+              <div class="col-md-3"><strong>Purpose:</strong> {{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.purpose) }}</div>
+              <div class="col-md-3"><strong>Proceeding To:</strong> {{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.stationProceedingTo) }}</div>
+              <div class="col-md-3"><strong>Advance Amt:</strong> {{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.advAmt) }}</div>
+              <div class="col-md-3"><strong>DTS Amt:</strong> {{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.dtsAmount) }}</div>
+            </div>
+            <div class="row" *ngSwitchCase="'L'">
+              <div class="col-md-3"><strong>LTC Type:</strong> {{ display(formObj?.yatLtcAdvDTOs?.[0]?.ltcType) }}</div>
+              <div class="col-md-3"><strong>Block Year:</strong> {{ display(formObj?.yatLtcAdvDTOs?.[0]?.blockYear) }}</div>
+              <div class="col-md-3"><strong>Place Visit:</strong> {{ display(formObj?.yatLtcAdvDTOs?.[0]?.placeOfVisit) }}</div>
+              <div class="col-md-3"><strong>Advance Amt:</strong> {{ display(formObj?.yatLtcAdvDTOs?.[0]?.advAmt) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header">
+            <strong>Travel Details</strong>
+          </div>
+          <div class="card-body table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Mode</th>
+                  <th>DTS</th>
+                  <th>Amount</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of formObj?.yatDtsDetailDTOs">
+                  <td>{{ display(row.source) }}</td>
+                  <td>{{ display(row.destination) }}</td>
+                  <td>{{ display(row.modeOfTravel) }}</td>
+                  <td>{{ display(row.isDts) }}</td>
+                  <td>{{ display(row.amount || row.tempAmount) }}</td>
+                  <td>{{ display(row.reasonForNoDts || row.reasonDts) }}</td>
+                </tr>
+                <tr *ngIf="!formObj?.yatDtsDetailDTOs?.length">
+                  <td colspan="6" class="text-center">No travel details available.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header">
+            <strong>Documents</strong>
+          </div>
+          <div class="card-body table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Document</th>
+                  <th>Description</th>
+                  <th>File Status</th>
+                  <th>File</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let doc of documentDtos">
+                  <td>{{ display(doc?.codeDocInfoDTO?.docName || doc?.codePilDocInfoDTO?.docName) }}</td>
+                  <td>{{ display(doc?.descr || doc?.otherDocName) }}</td>
+                  <td>{{ display((doc?.url || doc?.fileUrl || doc?.docUrl) ? 'Uploaded' : 'Missing') }}</td>
+                  <td>
+                    <button
+                      *ngIf="doc?.url || doc?.fileUrl || doc?.docUrl"
+                      type="button"
+                      class="btn btn-warning btn-sm"
+                      (click)="$auth.viewFile(doc?.url || doc?.fileUrl || doc?.docUrl)"
+                    >
+                      <i class="fa fa-eye"></i> View
+                    </button>
+                    <span *ngIf="!(doc?.url || doc?.fileUrl || doc?.docUrl)">-</span>
+                  </td>
+                </tr>
+                <tr *ngIf="!documentDtos?.length">
+                  <td colspan="4" class="text-center">No documents available.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <strong>Remarks</strong>
+          </div>
+          <div class="card-body">
+            {{ display(formObj?.internalRemarks || formObj?.remark) }}
+          </div>
+        </div>
+
+        <div class="card mt-3" *ngIf="claimRemarkSummary">
+          <div class="card-header">
+            <strong>Claim Remark Summary</strong>
+          </div>
+          <div class="card-body">
+            <div><strong>Latest Remark:</strong> {{ display(claimRemarkSummary?.title) }}</div>
+            <div class="mt-2" *ngIf="claimRemarkSummary?.previewUrl">
+              <strong>Legacy Preview Path:</strong> {{ display(claimRemarkSummary?.previewUrl) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <div class="card-header">
+            <strong>Workflow History</strong>
+          </div>
+          <div class="card-body table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Role</th>
+                  <th>State</th>
+                  <th>Unit</th>
+                  <th>Created On</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of stateHistory">
+                  <td>{{ display(row?.roleTypeName || row?.aclCodeRoleTypeDTO?.roleTypeName || row?.aclCodeRoleTypeDTO?.descr) }}</td>
+                  <td>{{ display(historyStateLabel(row)) }}</td>
+                  <td>{{ display(row?.unitName || row?.yatClaimDTO?.codeUnitDTO?.descr || row?.yatClaimDTO?.codeUnitDTO?.unit) }}</td>
+                  <td>{{ asDate(row?.createdOn) }}</td>
+                </tr>
+                <tr *ngIf="!stateHistory?.length">
+                  <td colspan="4" class="text-center">No workflow history available.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

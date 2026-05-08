@@ -6,11 +6,38 @@ import { CommonService } from './common.service';
   providedIn: 'root',
 })
 export class FormService {
-  getFormDownloadLink(formId: string, arg1: string) {
-    throw new Error('Method not implemented.');
+  constructor(private http: HttpClient, private $common: CommonService) {}
+
+  getFormDownloadLink(formId: string, extraHeaders: Record<string, any> = {}) {
+    const config = {
+      headers: {
+        formId,
+        ...extraHeaders,
+      },
+    };
+
+    return this.http.get<any>(`form/downloadSingleForm`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
   }
 
-  constructor(private http: HttpClient, private $common: CommonService) {}
+  getSignedFormDownloadLink(formId: string) {
+    return this.getFormDownloadLink(formId, { type: 'SignedDoc' });
+  }
+
+  downloadFormFromResponse(responseObject: any) {
+    const downloadUrl =
+      responseObject?.formFileUrl ||
+      responseObject?.url ||
+      responseObject?.fileUrl;
+
+    if (downloadUrl) {
+      this.$common.download(downloadUrl);
+    }
+  }
 
   createOrUpdate(object) {
     return this.http.post<any>(`form/createOrUpdate`, object).pipe(
@@ -45,12 +72,8 @@ export class FormService {
     );
   }
   getFromDownloadUrl(config) {
-    return this.http.get<any>(`form/downloadSingleForm`, config).pipe(
-      map((response: any) => {
-        this.$common.parseResponse(response);
-        return response;
-      })
-    );
+    const headers = config?.headers || {};
+    return this.getFormDownloadLink(headers.formId, headers);
   }
   getWardList(config) {
     return this.http.get<any>(`form/getListOfWards`, config).pipe(

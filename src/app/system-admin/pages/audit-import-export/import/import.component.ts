@@ -51,9 +51,9 @@ export class ImportComponent implements OnInit {
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
-    this.getExportedBatch();
+    this.loadBatchList();
   }
-  getExportedBatch() {
+  loadBatchList() {
     try {
       this.$common.showLoader();
       let config = {
@@ -63,7 +63,7 @@ export class ImportComponent implements OnInit {
           'isStaging': "1"
         }
       }
-      this.$importExport.getAllExported(config).subscribe(
+      this.$importExport.getBatchList(config).subscribe(
         (response: any) => {
           if (response.status == true) {
             this.batchList = response.object;
@@ -83,18 +83,9 @@ export class ImportComponent implements OnInit {
   getAllBatchChilds(importExportObject) {
     try {
       this.$common.showLoader();
-      let config: any = {
-        headers: {}
-      }
       this.batchNo = importExportObject.batchNo;
       this.viewingImportExportId = importExportObject.importExportId;
-      // config.headers.batchType = $rootScope.codeBatchType.auditBatch;
-      if (importExportObject.type == this.codeStatus.imported) {
-        config.headers.importBatchId = importExportObject.importExportId;
-      } else if (importExportObject.type == this.codeStatus.exported) {
-        config.headers.exportBatchId = importExportObject.importExportId;
-      }
-      this.$importExport.batchChilds(config).subscribe(
+      this.$importExport.getBatchChildren(importExportObject, this.codeStatus).subscribe(
         (response: any) => {
           if (response.status) {
             this.showBatchChilds = true;

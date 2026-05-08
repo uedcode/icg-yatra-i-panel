@@ -49,6 +49,18 @@ import { ArchivedImportComponent } from './pages/audit-import-export/archived-im
 import { PortRateComponent } from './pages/manage-masters/manage-port-rate/port-rate/port-rate.component';
 import { AddPortRateModalComponent } from './pages/manage-masters/manage-port-rate/add-port-rate-modal/add-port-rate-modal.component';
 import { ManageRoleComponent } from './pages/manage-role/manage-role.component';
+import { ReasonComponent } from './pages/manage-masters/manage-reason/reason/reason.component';
+import { AddReasonModalComponent } from './pages/manage-masters/manage-reason/add-reason-modal/add-reason-modal.component';
+import { BusinessRuleComponent } from './pages/manage-masters/manage-business-rule/business-rule/business-rule.component';
+import { AddBusinessRuleModalComponent } from './pages/manage-masters/manage-business-rule/add-business-rule-modal/add-business-rule-modal.component';
+import { MessageComponent } from './pages/manage-masters/manage-message/message/message.component';
+import { AddMessageModalComponent } from './pages/manage-masters/manage-message/add-message-modal/add-message-modal.component';
+import { PayLevelComponent } from './pages/manage-masters/manage-pay-level/pay-level/pay-level.component';
+import { AddPayLevelModalComponent } from './pages/manage-masters/manage-pay-level/add-pay-level-modal/add-pay-level-modal.component';
+import { TyDutyPurposeComponent } from './pages/manage-masters/manage-ty-duty-purpose/ty-duty-purpose/ty-duty-purpose.component';
+import { AddTyDutyPurposeModalComponent } from './pages/manage-masters/manage-ty-duty-purpose/add-ty-duty-purpose-modal/add-ty-duty-purpose-modal.component';
+import { EsignReportComponent } from './pages/reports/esign-report/esign-report.component';
+import { StatisticsComponent } from './pages/reports/statistics/statistics.component';
 
 
 const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more options
@@ -78,6 +90,18 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         ShipComponent,
         AddShipModalComponent,
         FaqComponent,
+        ReasonComponent,
+        AddReasonModalComponent,
+        BusinessRuleComponent,
+        AddBusinessRuleModalComponent,
+        MessageComponent,
+        AddMessageModalComponent,
+        PayLevelComponent,
+        AddPayLevelModalComponent,
+        TyDutyPurposeComponent,
+        AddTyDutyPurposeModalComponent,
+        EsignReportComponent,
+        StatisticsComponent,
         SwitchModuleComponent,
         ProfileSettingComponent,
         ManageApproverComponent,

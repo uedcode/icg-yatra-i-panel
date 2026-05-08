@@ -13,12 +13,10 @@
         <div class="page-header mobile_page_header">
           <div class="page-leftheader">
             <h4 class="page-title">
-              <!-- <span *ngIf="userIdDetails?.groupName"> {{userIdDetails?.groupName}}</span>
-              <span *ngIf="userIdDetails?.roleName"> ({{userIdDetails?.roleName}})</span> -->
-              Dashboard
+              System Administration
             </h4>
             <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Home</a></li>
+              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
               <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
             </ol>
           </div>
@@ -33,7 +31,7 @@
                   <div class="custom_card">
                     <div class="custom_card_body">
                       <i class="fa fa-map-marker icon_bg_map" aria-hidden="true"></i>
-                      <p>Unit Mapping</p>
+                      <p>Manage Unit Mappings</p>
                     </div>
                   </div>
                 </a>
@@ -43,7 +41,7 @@
                   <div class="custom_card">
                     <div class="custom_card_body">
                       <i class="fa fa-users icon_bg_user" aria-hidden="true"></i>
-                      <p>System Admin</p>
+                      <p>Manage System Admins</p>
                     </div>
                   </div>
                 </a>
@@ -53,7 +51,7 @@
                   <div class="custom_card">
                     <div class="custom_card_body">
                       <i class="fa fa-user-secret icon_bg_user" aria-hidden="true"></i>
-                      <p>Unit Admin</p>
+                      <p>Manage Unit Admins</p>
                     </div>
                   </div>
                 </a>
@@ -63,7 +61,7 @@
                   <div class="custom_card">
                     <div class="custom_card_body">
                       <i class="fa fa-arrows icon_bg_user" aria-hidden="true"></i>
-                      <p>Manage Role</p>
+                      <p>Manage Roles</p>
                     </div>
                   </div>
                 </a>
@@ -93,7 +91,67 @@
                   <div class="custom_card">
                     <div class="custom_card_body">
                       <i class="fa fa-file icon_bg_user" aria-hidden="true"></i>
-                      <p>Manage Master</p>
+                      <p>Manage Masters</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../faq']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-question-circle icon_bg_user" aria-hidden="true"></i>
+                      <p>Manage FAQs</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../version-history']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-history icon_bg_user" aria-hidden="true"></i>
+                      <p>Version History</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../inbox']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-upload icon_bg_user" aria-hidden="true"></i>
+                      <p>Audit Export Queue</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../import']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-download icon_bg_user" aria-hidden="true"></i>
+                      <p>Audit Import Queue</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../statistics']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-pie-chart icon_bg_user" aria-hidden="true"></i>
+                      <p>Statistics</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../esign-report']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-file-text-o icon_bg_user" aria-hidden="true"></i>
+                      <p>eSign Report</p>
                     </div>
                   </div>
                 </a>

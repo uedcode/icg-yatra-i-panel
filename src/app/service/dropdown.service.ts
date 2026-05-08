@@ -86,7 +86,7 @@ export class DropdownService {
   }
 
   getCodeRoleType(config) {
-    return this.http.get<any>(`aclPilCodeRoleType/all`, config).pipe(
+    return this.http.get<any>(`roleType/all`, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -95,7 +95,7 @@ export class DropdownService {
   }
 
   getCodeDesignation(config) {
-    return this.http.get<any>(`aclPilCodeDesignation/all`, config).pipe(
+    return this.http.get<any>(`designation/all`, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;

@@ -48,6 +48,11 @@ export class CommonManageFaqComponent implements OnInit {
       console.log(error);
     }
   }
+  openAddModal() {
+    this.recordObj = {};
+    $("#manage_faq").modal('show');
+  }
+
   editRecord(object) {
     $("#manage_faq").modal('show');
     this.recordObj = { ...object };
@@ -59,6 +64,7 @@ export class CommonManageFaqComponent implements OnInit {
         "ids": primaryId,
       }
     }
+    this.$common.showLoader();
     this.$faq.delete(config).subscribe((response: any) => {
       this.$common.hideLoader();
       if (response.status === true) {

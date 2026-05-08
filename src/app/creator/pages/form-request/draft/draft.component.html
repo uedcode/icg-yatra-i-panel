@@ -85,11 +85,11 @@
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse  | paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
                        <!-- <td>{{dataObj?.formId | showHypen}} </td>-->
-                        <td>{{dataObj?.formName | showHypen}} </td>
-                        <td>{{dataObj?.unit | showHypen}}</td>
-                        <td>{{dataObj?.fullDescr | showHypen}}</td>
-                        <td>{{dataObj?.createdOn | showDate:"medium" }}</td>
-                        <td>{{dataObj?.updatedOn | showDate:"medium" }}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.formName) | showHypen}} </td>
+                        <td>{{(dataObj?.yatClaimDTO?.codeUnitDTO?.descr || dataObj?.yatClaimDTO?.codeUnitDTO?.unit || dataObj?.unit) | showHypen}}</td>
+                        <td>{{(dataObj?.fullName || dataObj?.yatClaimDTO?.remark || dataObj?.fullDescr) | showHypen}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:"medium" }}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.updatedOn || dataObj?.updatedOn) | showDate:"medium" }}</td>
                         <td class="switch_in_table">
                           <!-- <button class="btn btn-warning" title="View"
                             (click)="viewForm(dataObj)"><i
@@ -99,7 +99,7 @@
                               class="fa fa-edit"></i></button>
                           <button [disabled]="dataObj.isFixed==1"
                             class="btn btn-danger"
-                            (click)="id=dataObj.formId"
+                            (click)="setDeleteTarget(dataObj)"
                             data-toggle="modal" data-target="#delete_modal"
                             title="Delete"><i class="fa fa-trash"
                               aria-hidden="true" data-toggle="tooltip"></i></button>

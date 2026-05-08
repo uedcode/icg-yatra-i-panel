@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormService } from 'src/app/service/form.service';
 import { FormManageService } from 'src/app/service/formManage.service';
+import { ClaimService } from 'src/app/service/claim.service';
 declare var $: any;
 
 @Component({
@@ -26,6 +27,7 @@ export class ApprovedComponent implements OnInit {
     private $form: FormService,
     public $formManage: FormManageService,
     private router: Router,
+    private $claim: ClaimService,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -47,20 +49,48 @@ export class ApprovedComponent implements OnInit {
 
   filterDataObj;
   getState() {
-    this.$formManage?.getState(this.codeStatus?.approved);
-    this.$formManage?.formStateList.subscribe(res => {
-      if (res) {
-        this.dataList = res;
-      }
-    })
+    const config = {
+      headers: {
+        roleTypeId: this.userIdDetails?.roleTypeId,
+        userId: this.userIdDetails?.userId,
+        unitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.unitId,
+        claimState: this.codeStatus?.approved,
+      },
+    };
+    this.$claim.getClaimStates(config).subscribe((res: any) => {
+      this.dataList = Array.isArray(res?.object) ? res.object : [];
+    });
+  }
+
+  private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
+    const id = (subFormId || '').toUpperCase();
+    if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
+    if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
+    if (id === 'F') return detail ? 'form-fte-detail' : 'form-fte';
+    if (id === 'L') return detail ? 'form-ltc-detail' : 'form-ltc';
+    return null;
   }
 
   viewForm(data) {
+    const claim = data?.yatClaimDTO || {};
+    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    const subFormId =
+      claim?.codeSubFormDTO?.subFormId ||
+      data?.subFormId ||
+      data?.codeSubFormDTO?.subFormId;
+    const route = this.getCreatorClaimRoute(subFormId, true);
+
+    if (claimId && route) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() +
+          `/${route}?claimId=${claimId}&subFormId=${subFormId}`
+      );
+      return;
+    }
 
     let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(
-      moduleUrl + `/${data?.viewUrl}?id=${data.formId}`
-    );
+    this.router.navigateByUrl(moduleUrl + `/${data?.viewUrl}?id=${data.formId}`);
   }
 
   goBack() {
@@ -71,9 +101,10 @@ export class ApprovedComponent implements OnInit {
     }
   }
  formId;
-  viewHistory(formId: any): void {
-    
-    this.formId = formId; // just set formId
+ claimId;
+  viewHistory(formId: any, claimId: any = null): void {
+    this.formId = formId;
+    this.claimId = claimId || null;
     setTimeout(() => {
       $('#viewHistoryModal').modal('show');
     }, 0);

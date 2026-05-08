@@ -1,3 +1,177 @@
-<p>
-  form-pmt-detail works!
-</p>
+<div class="wrapper">
+  <div class="container">
+    <div class="aligned">
+      <button type="button" class="btn btn-warning request_view_back" title="Back to Page" (click)="goBack()">
+        Back <i class="fa fa-chevron-left" style="display: inline-block"></i>
+      </button>
+    </div>
+
+    <div class="main-content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+              <div class="col-md-12 claim">
+                <h4 class="ml-3"><b>PMT Duty Claim Preview</b></h4>
+
+                <div class="PersonalDetail container">
+                  <h4>Personal Details</h4>
+                  <div class="container row">
+                    <div class="col-md-4">
+                      <label class="form-label">Name</label>
+                      <p>{{ formObj?.name | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Personal Number</label>
+                      <p>{{ formObj?.pno | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Rank</label>
+                      <p>{{ formObj?.rank | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Claim No</label>
+                      <p>{{ formObj?.claimNo | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Unit</label>
+                      <p>{{ formObj?.codeUnitDTO?.descr | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">GX Form</label>
+                      <p>
+                        <button *ngIf="formObj?.gxFormFileUrl" type="button" class="btn btn-warning btn-sm"
+                          (click)="$auth.viewFile(formObj?.gxFormFileUrl)">
+                          <i class="fa fa-eye"></i> View
+                        </button>
+                        <span *ngIf="!formObj?.gxFormFileUrl">-</span>
+                      </p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Sign Mode</label>
+                      <p>{{ formObj?.signWith | showHypen }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="PersonalDetail container" *ngIf="formObj?.yatPermDutyAdvDTOs?.length">
+                  <h4>PMT Advance Details</h4>
+                  <div class="container row">
+                    <div class="col-md-4">
+                      <label class="form-label">Transfer To</label>
+                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.permTransTo | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Applied To</label>
+                      <p>{{ formObj?.codeUnitDTO?.descr | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">W.E.F Date</label>
+                      <p>{{ asDate(formObj?.yatPermDutyAdvDTOs?.[0]?.wefDate) | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Station From</label>
+                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.stnFrom | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Station To</label>
+                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.stnTo | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Distance</label>
+                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.distance | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">PMT Type</label>
+                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.pmtType | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Family Type</label>
+                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.familyType | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Advance Amount</label>
+                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.advAmt | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Total Amount</label>
+                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.totalAmt | showHypen }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Total Budgeted Amount</label>
+                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.totalBudgetedAmt | showHypen }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="PersonalDetail container" *ngIf="formObj?.yatDtsDetailDTOs?.length">
+                  <h4>Travel Details</h4>
+                  <div class="table-responsive">
+                    <table class="table table-bordered" style="width: 100%">
+                      <thead>
+                        <tr>
+                          <th>SL</th>
+                          <th>Source</th>
+                          <th>Destination</th>
+                          <th>Mode</th>
+                          <th>Class</th>
+                          <th>DTS</th>
+                          <th>Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let dataObj of formObj?.yatDtsDetailDTOs; let i = index">
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ dataObj?.source | showHypen }}</td>
+                          <td>{{ dataObj?.destination | showHypen }}</td>
+                          <td>{{ dataObj?.modeOfTravel | showHypen }}</td>
+                          <td>{{ dataObj?.classOfTravel | showHypen }}</td>
+                          <td>{{ dataObj?.isDts | showHypen }}</td>
+                          <td>{{ dataObj?.amount | showHypen }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="PersonalDetail container" *ngIf="documentDtos?.length">
+                  <h4>Documents</h4>
+                  <div class="table-responsive">
+                    <table class="table table-bordered" style="width: 100%">
+                      <thead>
+                        <tr>
+                          <th>SL</th>
+                          <th>Document Name</th>
+                          <th>Status</th>
+                          <th>File</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let dataObj of documentDtos; let i = index">
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ (dataObj?.codeDocInfoDTO?.docName || dataObj?.codePilDocInfoDTO?.docName) | showHypen }}</td>
+                          <td>{{ (dataObj?.url || dataObj?.fileUrl || dataObj?.docUrl) ? 'Uploaded' : '-' }}</td>
+                          <td>
+                            <button type="button" class="btn btn-warning btn-sm" *ngIf="dataObj?.url || dataObj?.fileUrl || dataObj?.docUrl" (click)="$auth.viewFile(dataObj?.url || dataObj?.fileUrl || dataObj?.docUrl)">
+                              <i class="fa fa-eye"></i> View
+                            </button>
+                            <span *ngIf="!(dataObj?.url || dataObj?.fileUrl || dataObj?.docUrl)">-</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="PersonalDetail container" *ngIf="formObj?.internalRemarks">
+                  <h4>Remarks</h4>
+                  <p>{{ formObj?.internalRemarks }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

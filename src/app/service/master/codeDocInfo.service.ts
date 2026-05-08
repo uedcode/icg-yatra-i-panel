@@ -15,7 +15,7 @@ export class CodeDocInfoService {
 
   getDocument(config) {
     
-    return this.http.get<any>(`codePilDocInfo/all`, config).pipe(
+    return this.http.get<any>(`codeDocInfo/all`, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;

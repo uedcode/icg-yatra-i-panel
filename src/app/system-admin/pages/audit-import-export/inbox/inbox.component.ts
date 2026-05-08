@@ -7,7 +7,6 @@ import { AuthService } from 'src/app/service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormService } from 'src/app/service/form.service';
 import { ImportExportAuditService } from 'src/app/service/importExportAudit.service';
-import { environment } from 'src/environments/environment';
 declare var $: any;
 
 @Component({
@@ -31,9 +30,6 @@ export class InboxComponent implements OnInit {
 
   @Input() dataList: Array<any> = [];
   @ViewChild('requiredForm', { static: true }) requiredForm: NgForm;
-
-  fileUrl = environment.fileUrl;
-
   id: any;
   pageType: any;
   config: any;
@@ -113,7 +109,7 @@ export class InboxComponent implements OnInit {
         }
       });
       if (procIds.length == 0) {
-        return this.$common.showMessage("Please select form to be Exported.", 'danger');
+        return this.$common.showMessage("Please select at least one record to export.", 'danger');
       }
       this.$common.showLoader();
       this.downloadForms(procIds);
@@ -139,8 +135,7 @@ export class InboxComponent implements OnInit {
       // }
       this.$importExport.createExport(config).subscribe((response: any) => {
         if (response.status === true) {
-          let object = response.object;
-          this.downloadExportBatch(object[0].importExportId, 1, procIds);
+          this.handleExportCreation(response.object, procIds);
         }
       })
     } catch (err) {
@@ -149,7 +144,16 @@ export class InboxComponent implements OnInit {
     }
 
   }
-  downloadExportBatch = function (importExportId, firstTimeIndicator = 0, procIds) {
+  handleExportCreation(exportObjects, procIds = []) {
+    const createdExport = exportObjects?.[0];
+    if (!createdExport?.importExportId) {
+      this.$common.hideLoader();
+      return;
+    }
+    this.downloadExportBatch(createdExport.importExportId, 1, procIds);
+  }
+
+  downloadExportBatch(importExportId, firstTimeIndicator = 0, procIds) {
     try {
 
       this.$common.showLoader();
@@ -182,14 +186,7 @@ export class InboxComponent implements OnInit {
               }
             }
             var responseObject = object[0];
-            var fullUrl = this.fileUrl + responseObject.batchUrl;
-            var element = document.createElement('a');
-            element.setAttribute('href', fullUrl);
-            element.setAttribute('download', responseObject.batchNo + ".zip");
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
+            this.$importExport.downloadBatchFromResponse(responseObject);
 
             this.$common.hideLoader();
           }
@@ -203,7 +200,7 @@ export class InboxComponent implements OnInit {
     }
   }
 
-  createExportAuditAll = function () {
+  createExportAuditAll() {
     try {
       if (this.allAdminForm.length == 0) {
         this.$common.hideLoader();
@@ -219,8 +216,7 @@ export class InboxComponent implements OnInit {
       // }
       this.$importExport.createExportAll(config).subscribe((response: any) => {
         if (response.status == true) {
-          let object = response.object;
-          this.downloadExportBatch(object[0].importExportId, "1");
+          this.handleExportCreation(response.object);
         }
       }, err => {
         this.$common.hideLoader();

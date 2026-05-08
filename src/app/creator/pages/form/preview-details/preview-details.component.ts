@@ -343,16 +343,11 @@ export class PreviewDetailsComponent implements OnInit {
   getFormDownloadLink() {
     try {
       this.$common.showLoader();
-      this.config = {
-        headers: {
-          formId: this.formId,
-        },
-      };
-      this.$form?.getFromDownloadUrl(this.config).subscribe(
+      this.$form?.getFormDownloadLink(this.formId).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
-            this.$common.download(response?.object.formFileUrl);
+            this.$form.downloadFormFromResponse(response?.object);
           }
         },
         (err) => {

@@ -31,7 +31,7 @@ constructor(private $common: CommonService, private http: HttpClient) { }
   }
 
   delete(ids) {
-    return this.http.get<any>(`versionHistory/deleteByIds`, ids).pipe(
+    return this.http.delete<any>(`versionHistory`, ids).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;

@@ -58,6 +58,8 @@ import { FormPmtDutyComponent } from './pages/form/form-pmt/form-pmt.component';
 import { FormPmtDetailComponent } from './pages/form-detail/form-pmt-detail/form-pmt-detail.component';
 import { FormLtcAdvanceComponent } from './pages/form/form-ltc/form-ltc.component';
 import { FormLtcDetailComponent } from './pages/form-detail/form-ltc-detail/form-ltc-detail.component';
+import { FormManualAdvComponent } from './pages/form/form-manual-adv/form-manual-adv.component';
+import { FormManualAdvDetailComponent } from './pages/form-detail/form-manual-adv-detail/form-manual-adv-detail.component';
 
 const CustomSelectOptions: INgxSelectOptions = {
   // Check the interface for more options
@@ -104,6 +106,8 @@ const CustomSelectOptions: INgxSelectOptions = {
     FormPmtDetailComponent,
     FormLtcAdvanceComponent,
     FormLtcDetailComponent,
+    FormManualAdvComponent,
+    FormManualAdvDetailComponent,
   ],
   imports: [
     RouterModule,

@@ -8,11 +8,11 @@
         <!--Page header-->
         <div class="page-header">
           <div class="page-leftheader">
-            <h4 class="page-title">System Admin</h4>
+            <h4 class="page-title">Manage System Admins</h4>
             <ol class="breadcrumb pl-0">
               <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
               <li class="breadcrumb-item active" aria-current="page">{{pageType}}
-                System Admin
+                Manage System Admins
               </li>
             </ol>
           </div>
@@ -156,7 +156,7 @@
                                 style="width: 45px; cursor: pointer;">
                             </td>
                             <td> 
-                              <button class="btn btn-danger" (click)="primaryId=dataObj.id"
+                              <button class="btn btn-danger" (click)="primaryId=getRoleId(dataObj)"
                                 data-toggle="modal" data-target="#delete_modal" title="Delete"><i class="fa fa-trash"
                                 aria-hidden="true" data-toggle="tooltip"></i>
                               </button>

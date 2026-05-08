@@ -175,7 +175,7 @@
                                 <td>{{dataObj?.pno | showHypen}}</td>
                                 <td>{{dataObj?.name | showHypen}}</td>
                                 <td>{{dataObj?.rank | showHypen}}</td>
-                                <td>{{dataObj?.aclPilCodeRoleTypeDTO?.roleType |
+                                <td>{{(dataObj?.aclCodeRoleTypeDTO?.roleType || dataObj?.aclPilCodeRoleTypeDTO?.roleType) |
                                   showHypen}}</td>
                                 <td>
                                   <img src="assets/images/switch-on.png" alt

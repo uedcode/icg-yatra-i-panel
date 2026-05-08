@@ -9,6 +9,7 @@ import { DropdownManageService } from 'src/app/service/dropdownManage.service';
 import { FormManageService } from 'src/app/service/formManage.service';
 import { map, take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
 
 declare var $: any;
 
@@ -146,6 +147,7 @@ interface Claims {
   yatFamilyDetailDTOs: YatFamilyDetailDTO[];
   yatClaimBankDetailDTO: YatClaimBankDetailDTO;
   yatDtsDetailDTOs: YatDtsDetailDTO[];
+  yatDocsDTOs?: any[];
 
   ifscnull?: boolean;
 }
@@ -218,6 +220,7 @@ export class FormPmtDutyComponent implements OnInit {
 
   gxFormModel: any;
   gxFormUploading = false;
+  documentDtos: any[] = [];
 
   isCompositeChecked(): boolean {
     const adv = this.claims?.yatPermDutyAdvDTOs?.[0];
@@ -235,7 +238,8 @@ export class FormPmtDutyComponent implements OnInit {
     private $claim: ClaimService,
     private $dropdownManage: DropdownManageService,
     private $formManage: FormManageService,
-    private http: HttpClient
+    private http: HttpClient,
+    private $codeDocInfo: CodeDocInfoService
   ) {}
 
   ngOnInit(): void {
@@ -251,6 +255,9 @@ export class FormPmtDutyComponent implements OnInit {
     this.getUnits();
     this.getFormDetails();
     this.loadPayLevels();
+    this.$codeDocInfo.documentDtos.subscribe((docs: any) => {
+      this.documentDtos = Array.isArray(docs) ? docs : [];
+    });
   }
 
   /* ===================== INIT EMPTY ===================== */
@@ -264,6 +271,7 @@ export class FormPmtDutyComponent implements OnInit {
       yatPermDutyAdvDTOs: [this.createEmptyPmtAdv()],
       yatFamilyDetailDTOs: [],
       yatDtsDetailDTOs: [],
+      yatDocsDTOs: [],
       yatClaimBankDetailDTO: {
         claimBankId: null,
         bankAccNo: null,
@@ -376,7 +384,7 @@ export class FormPmtDutyComponent implements OnInit {
         gxUnitId: this.userIdDetails?.unitId ?? '',
         userId: this.userIdDetails?.userId ?? '',
         subFormId: 'P',
-        isfetch: 'true',
+        isFetch: 'true',
         claimId: this.claimIdParam || '',
       };
 
@@ -422,9 +430,13 @@ export class FormPmtDutyComponent implements OnInit {
             yatPermDutyAdvDTOs: [{ ...existingAdv, ...(dto || {}) }],
             yatDtsDetailDTOs: obj.yatDtsDetailDTOs || [],
             yatFamilyDetailDTOs: obj.yatFamilyDetailDTOs || [],
+            yatDocsDTOs: obj.yatDocsDTOs || [],
             yatClaimBankDetailDTO:
               obj.yatClaimBankDetailDTO || this.claims.yatClaimBankDetailDTO,
           };
+          this.claimId = this.claims.claimId;
+          this.documentDtos = this.claims.yatDocsDTOs || [];
+          this.$codeDocInfo.setDocument(this.documentDtos as []);
 
           this.ensureDefaultPmtValues();
 
@@ -1096,7 +1108,11 @@ export class FormPmtDutyComponent implements OnInit {
         tempClaim.aclUserDTO = { userId: this.userIdDetails.userId };
       if (!tempClaim.codeSubFormDTO)
         tempClaim.codeSubFormDTO = { subFormId: 'P' };
+      if (tempClaim.codeUnitDTO?.unit) {
+        tempClaim.codeUnitDTO = { unit: tempClaim.codeUnitDTO.unit };
+      }
       if (!tempClaim.signWith) tempClaim.signWith = 'ES';
+      tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
 
       tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
 
@@ -1120,11 +1136,30 @@ export class FormPmtDutyComponent implements OnInit {
           this.$common.hideLoader();
           this.disableBtn = false;
 
-          const obj = res?.obj || res?.object || res;
-          if (obj?.claimId) this.claims.claimId = obj.claimId;
+          const obj = Array.isArray(res?.object)
+            ? res.object[0]
+            : res?.object || res?.obj || res;
+          if (obj?.claimId) {
+            this.claims.claimId = obj.claimId;
+            this.claimId = obj.claimId;
+          }
 
-          if (showToast)
-            this.$common.showMessage('Saved successfully.', 'success');
+          if (showToast) {
+            const successMsg =
+              status === this.codeClaimState.outbox
+                ? res?.message || 'PMT Duty claim submitted successfully.'
+                : res?.message || 'PMT Duty draft saved successfully.';
+            this.$common.showMessage(successMsg, 'success');
+          }
+
+          if (status === this.codeClaimState.outbox) {
+            const moduleUrl = this.$auth.getModuleName
+              ? this.$auth.getModuleName()
+              : '';
+            if (moduleUrl) {
+              this.router.navigateByUrl(moduleUrl + `/submitted`);
+            }
+          }
           this.checkForPreviewBtn();
         },
         (err: any) => {
@@ -1151,6 +1186,12 @@ export class FormPmtDutyComponent implements OnInit {
 
   submitPmt(): void {
     this.showErrors = true;
+
+    const okSections = this.runPmtClientValidationOnly();
+    if (!okSections) return;
+
+    const okBusiness = this.validatePmtBusinessFields();
+    if (!okBusiness) return;
 
     if (!this.claims?.gxFormFileUrl) {
       this.$common.showMessage('Please upload Gx Form (PDF).', 'danger');
@@ -1266,6 +1307,25 @@ export class FormPmtDutyComponent implements OnInit {
   }
 
   validatePmt(type?: string): void {
+    if (type && type !== this.codeClaim.pmtAdv) return;
+
+    try {
+      const okSections = this.runPmtClientValidationOnly();
+      if (!okSections) return;
+
+      const okBusiness = this.validatePmtBusinessFields(false);
+      if (!okBusiness) return;
+
+      this.$common.showMessage(
+        'Validation successful. Please submit the form to proceed.',
+        'success'
+      );
+    } catch (err) {
+      console.error('Error during PMT validation', err);
+    }
+  }
+
+  private runPmtClientValidationOnly(): boolean {
     const sectionIds = ['ship', 'ship2', 'ship3', 'ship4'];
     let firstInvalid: string | null = null;
     let allValid = true;
@@ -1281,19 +1341,85 @@ export class FormPmtDutyComponent implements OnInit {
     if (!allValid) {
       if (firstInvalid) this.activateTab(firstInvalid);
       this.$common.showMessage('Please fill required fields.', 'danger');
-      return;
+      return false;
     }
 
-    this.$common.showMessage('Validation successful.', 'success');
+    return true;
+  }
+
+  private validatePmtBusinessFields(showSuccessMessage = false): boolean {
+    const adv = this.claims?.yatPermDutyAdvDTOs?.[0];
+    if (!adv) {
+      this.$common.showMessage('PMT details are missing.', 'danger');
+      this.activateTab('ship');
+      return false;
+    }
+
+    if (!this.claims?.codeUnitDTO?.unit) {
+      this.$common.showMessage('Please select the applied to unit.', 'danger');
+      this.activateTab('ship');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.stnFrom) || this.isNullOrEmpty(adv.stnTo)) {
+      this.$common.showMessage(
+        'Please fill both Station From and Station To.',
+        'danger'
+      );
+      this.activateTab('ship');
+      return false;
+    }
+
+    if (!Array.isArray(this.claims.yatDtsDetailDTOs) || this.claims.yatDtsDetailDTOs.length === 0) {
+      this.$common.showMessage('Please add at least one travel detail row.', 'danger');
+      this.activateTab('ship4');
+      return false;
+    }
+
+    if (showSuccessMessage) {
+      this.$common.showMessage(
+        'Validation successful. Please submit the form to proceed.',
+        'success'
+      );
+    }
+
+    return true;
   }
 
   navigatePreview(type: string, id: string): void {
-    this.router.navigate(['../preview-pmt-duty'], {
-      queryParams: { claimId: this.claims.claimId },
+    this.router.navigate(['../form-pmt-detail'], {
+      queryParams: { claimId: this.claims.claimId || this.claimIdParam, subFormId: 'P' },
     });
   }
 
-  checkEsignAvailability(): void {}
+  checkEsignAvailability(): void {
+    if (this.claims?.signWith !== this.codeSignType.eSign) {
+      return;
+    }
+
+    const config = {
+      headers: {
+        userId: this.userIdDetails?.userId || '',
+        gxUnitId: String(this.gxUnitId || this.userIdDetails?.unitId || ''),
+      },
+    };
+
+    this.$claim.checkEsignAvailability(config).subscribe({
+      next: (response: any) => {
+        if (response?.status === false) {
+          this.claims.signWith = this.codeSignType.inkSign;
+          this.$common.showMessage(
+            response?.message || 'eSign is not available for this PMT claim.',
+            'danger'
+          );
+        }
+      },
+      error: () => {
+        this.claims.signWith = this.codeSignType.inkSign;
+        this.$common.showMessage('Unable to verify eSign availability.', 'danger');
+      },
+    });
+  }
   checkValidSignType(signWith: string | null, appliedTo: string | null): void {}
 
   goToTab(tabId: 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5'): void {
@@ -1595,6 +1721,22 @@ export class FormPmtDutyComponent implements OnInit {
         console.error('Error while updating IFSC:', err);
         this.$common.showMessage('Error while updating IFSC code.', 'danger');
       },
+    });
+  }
+
+  private mapClaimDocumentsForSave(documents: any[]): any[] {
+    return (documents || []).map((doc) => {
+      const codeDocInfoDTO = doc?.codeDocInfoDTO || doc?.codePilDocInfoDTO || null;
+      return {
+        ...doc,
+        codeDocInfoDTO: codeDocInfoDTO
+          ? {
+              id: codeDocInfoDTO.id,
+              docName: codeDocInfoDTO.docName,
+            }
+          : null,
+        descr: doc?.otherDocName || doc?.descr || null,
+      };
     });
   }
 }

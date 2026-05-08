@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
 import { FormManageService } from 'src/app/service/formManage.service';
 import { FormStateService } from 'src/app/service/formState.service';
+import { ClaimService } from 'src/app/service/claim.service';
 declare var $: any;
 
 @Component({
@@ -25,6 +26,7 @@ export class NotPassedComponent implements OnInit {
     private $common: CommonService,
     public $formManage: FormManageService,
     public $formState: FormStateService,
+    private $claim: ClaimService,
     private router: Router,
   ) { }
 
@@ -49,15 +51,45 @@ export class NotPassedComponent implements OnInit {
 
   filterDataObj;
   getState() {
-    this.$formManage?.getState(this.codeStatus?.notPassed);
-    this.$formManage?.formStateList.subscribe(res => {
-      if (res) {
-        this.dataList = res;
-      }
-    })
+    const config = {
+      headers: {
+        roleTypeId: this.userIdDetails?.roleTypeId,
+        userId: this.userIdDetails?.userId,
+        unitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.unitId,
+        claimState: this.codeStatus?.notPassed,
+      },
+    };
+    this.$claim.getClaimStates(config).subscribe((res: any) => {
+      this.dataList = Array.isArray(res?.object) ? res.object : [];
+    });
+  }
+
+  private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
+    const id = (subFormId || '').toUpperCase();
+    if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
+    if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
+    if (id === 'F') return detail ? 'form-fte-detail' : 'form-fte';
+    if (id === 'L') return detail ? 'form-ltc-detail' : 'form-ltc';
+    return null;
   }
 
   viewForm(data) {
+    const claim = data?.yatClaimDTO || {};
+    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    const subFormId =
+      claim?.codeSubFormDTO?.subFormId ||
+      data?.subFormId ||
+      data?.codeSubFormDTO?.subFormId;
+    const route = this.getCreatorClaimRoute(subFormId, false);
+
+    if (claimId && route) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() +
+          `/${route}?claimId=${claimId}&subFormId=${subFormId}&state=${this.codeStatus?.notPassed}`
+      );
+      return;
+    }
 
     let moduleUrl = this.$auth.getModuleName();
     const queryParams = [`id=${data.formId}`, `state=${this.codeStatus?.notPassed}`];
@@ -85,6 +117,16 @@ export class NotPassedComponent implements OnInit {
   sort(key) {
     this.key = key;
     this.reverse = !this.reverse;
+  }
+
+  formId;
+  claimId;
+  viewHistory(formId: any, claimId: any = null): void {
+    this.formId = formId;
+    this.claimId = claimId || null;
+    setTimeout(() => {
+      $('#viewHistoryModal').modal('show');
+    }, 0);
   }
 
   /*
@@ -146,11 +188,47 @@ export class NotPassedComponent implements OnInit {
   */
 
   saveAsDraft(data: any) {
-    if (!data?.formId || this.saveAsDraftLoadingMap[data.formId]) {
+    const draftKey = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    if (!draftKey || this.saveAsDraftLoadingMap[draftKey]) {
       return;
     }
 
-    this.saveAsDraftLoadingMap[data.formId] = true;
+    this.saveAsDraftLoadingMap[draftKey] = true;
+
+    const claimId = data?.yatClaimDTO?.claimId || data?.claimId;
+    if (claimId) {
+      const moveToDraftConfig: any = {
+        headers: {
+          id: claimId,
+        },
+      };
+
+      this.$claim.editClaim(moveToDraftConfig).subscribe({
+        next: (res: any) => {
+          this.saveAsDraftLoadingMap[draftKey] = false;
+
+          if (!res?.status) {
+            this.$common?.showMessage?.(res?.message || 'Save as draft failed.');
+            return;
+          }
+
+          this.dataList = this.dataList.filter(
+            (elem: any) =>
+              (elem?.yatClaimDTO?.claimId || elem?.claimId || elem?.formId) != claimId
+          );
+
+          this.$common?.showMessage?.(res?.message || 'Form saved to draft successfully.');
+          this.router.navigateByUrl(this.$auth.getModuleName() + `/draft`);
+        },
+        error: (err) => {
+          this.saveAsDraftLoadingMap[draftKey] = false;
+          this.$common?.showMessage?.('Something went wrong while moving the form to draft.');
+          console.error(err);
+        },
+      });
+      return;
+    }
+
     const moveToDraftConfig: any = {
       headers: {
         formId: data.formId,
@@ -159,7 +237,7 @@ export class NotPassedComponent implements OnInit {
 
     this.$formState.saveAsDraft(moveToDraftConfig).subscribe({
       next: (res: any) => {
-        this.saveAsDraftLoadingMap[data.formId] = false;
+        this.saveAsDraftLoadingMap[draftKey] = false;
 
         if (!res?.status) {
           this.$common?.showMessage?.(res?.message || 'Save as draft failed.');
@@ -193,7 +271,7 @@ export class NotPassedComponent implements OnInit {
         this.router.navigateByUrl(editUrl);
       },
       error: (err) => {
-        this.saveAsDraftLoadingMap[data.formId] = false;
+        this.saveAsDraftLoadingMap[draftKey] = false;
         this.$common?.showMessage?.('Something went wrong while moving the form to draft.');
         console.error(err);
       },

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AfterViewInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'app-common-view-file',
@@ -15,9 +16,13 @@ export class CommonViewFileComponent implements OnInit, AfterViewInit  {
   url;
   docUrl;
   imgUrl;
+  private readonly fileBaseUrl = environment.fileUrl;
   ngOnInit() {
     let id = this.route.snapshot.params['id'];
-    this.url = atob(id);
+    this.url = this.normalizeUrl(this.safeDecode(id));
+    if (!this.url) {
+      return;
+    }
     if (this.url.includes(".pdf") || this.url.includes(".PDF")) {
       this.docUrl = this.url
     } else {
@@ -27,7 +32,7 @@ export class CommonViewFileComponent implements OnInit, AfterViewInit  {
 
 
   getFileNameFromUrl(url: string): string {
-    const parsedUrl = new URL(url);
+    const parsedUrl = new URL(url, this.fileBaseUrl);
     const pathParts = parsedUrl.pathname.split('/');
     const fileName = pathParts[pathParts.length - 1];
     return fileName;
@@ -55,6 +60,27 @@ export class CommonViewFileComponent implements OnInit, AfterViewInit  {
       });
 
 
+  }
+
+  private safeDecode(value: string): string {
+    try {
+      return atob(value || '');
+    } catch {
+      return '';
+    }
+  }
+
+  private normalizeUrl(url: string): string {
+    if (!url) {
+      return '';
+    }
+
+    if (/^https?:\/\//i.test(url)) {
+      return url;
+    }
+
+    const baseUrl = this.fileBaseUrl.endsWith('/') ? this.fileBaseUrl : `${this.fileBaseUrl}/`;
+    return new URL(url.replace(/^\/+/, ''), baseUrl).toString();
   }
 
   ngAfterViewInit(): void {

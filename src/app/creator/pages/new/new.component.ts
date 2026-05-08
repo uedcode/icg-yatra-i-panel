@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth.service';
 import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 declare var $: any;
 
@@ -20,6 +20,7 @@ export class NewComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private $common: CommonService,
     private $codeSubForm: CodeSubFormService,
   ) { }
@@ -30,16 +31,58 @@ export class NewComponent implements OnInit {
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
+    this.handleEsignFeedback();
     this.getForm();
+  }
+
+  private handleEsignFeedback(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      const status = params.get('esignStatus');
+      const txnId = params.get('txnId');
+      if (!status) {
+        return;
+      }
+
+      if (status === 'SC') {
+        this.$common.showMessage(
+          txnId
+            ? `eSign completed successfully. Transaction ID: ${txnId}`
+            : 'eSign completed successfully.',
+          'success'
+        );
+      } else if (status === 'US' || status === 'ER') {
+        this.$common.showMessage(
+          txnId
+            ? `eSign could not be completed. Transaction ID: ${txnId}`
+            : 'eSign could not be completed.',
+          'danger'
+        );
+      } else {
+        this.$common.showMessage(
+          txnId
+            ? `eSign status is being processed. Transaction ID: ${txnId}`
+            : 'eSign status is being processed.',
+          'info'
+        );
+      }
+
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { esignStatus: null, txnId: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    });
   }
 
 
   getForm() {
     try {
       this.$common.showLoader();
+      const activeFormId = this.userIdDetails?.formId || 'PIL';
       this.config = {
         headers: {
-          formId: 'PIL'
+          formId: activeFormId
         }
       }
       this.$codeSubForm.get(this.config).subscribe((response: any) => {
@@ -57,8 +100,28 @@ export class NewComponent implements OnInit {
     }
   }
 
+  private getCreatorClaimRoute(subFormId: string | null): string | null {
+    const id = (subFormId || '').toUpperCase();
+    if (id === 'P') return 'form-pmt';
+    if (id === 'T') return 'form-tyduty';
+    if (id === 'F') return 'form-fte';
+    if (id === 'L') return 'form-ltc';
+    if (id === 'M') return 'form-manual-adv';
+    return null;
+  }
+
   actionPage(data) {
+    const subFormId = data?.subFormId || data?.codeSubFormDTO?.subFormId;
+    const yatraRoute = this.getCreatorClaimRoute(subFormId);
     let moduleUrl = this.$auth.getModuleName();
+
+    if (yatraRoute) {
+      this.router.navigateByUrl(
+        moduleUrl + `/${yatraRoute}?subFormId=${subFormId}`
+      );
+      return;
+    }
+
     this.router.navigateByUrl(
       moduleUrl + `/${data?.formUrl}?subFormId=${data.subFormId}`
     );

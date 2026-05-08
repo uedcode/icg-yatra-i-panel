@@ -11,7 +11,7 @@ export class SystemAdminService {
   constructor(private $common: CommonService, private http: HttpClient) { }
 
   getAll(config) {
-    return this.http.get<any>(`aclPilRole/all`, config).pipe(
+    return this.http.get<any>(`role/all`, config).pipe(
       map((response: any) => {
 
         this.$common.parseResponse(response);
@@ -21,7 +21,7 @@ export class SystemAdminService {
   }
 
   getUnitAdminRoles(config) {
-    return this.http.get<any>(`aclPilRole/getUnitAdminRoles`, config).pipe(
+    return this.http.get<any>(`role/all`, config).pipe(
       map((response: any) => {
 
         this.$common.parseResponse(response);
@@ -31,7 +31,9 @@ export class SystemAdminService {
   }
 
   createOrUpdate(object) {
-    return this.http.post<any>(`aclPilRole/createOrUpdate`, object).pipe(
+    const formData = new FormData();
+    formData.append('aclRoleDTO', JSON.stringify(object));
+    return this.http.post<any>(`role/createOrUpdate`, formData).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -40,7 +42,7 @@ export class SystemAdminService {
   }
 
   delete(ids) {
-    return this.http.get<any>(`aclPilRole/deleteByIds`, ids).pipe(
+    return this.http.delete<any>(`role`, ids).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -49,7 +51,7 @@ export class SystemAdminService {
   }
 
   changeStatus(config) {
-    return this.http.post<any>(`aclPilRole/statusById`, null, config).pipe(
+    return this.http.put<any>(`role/changeStatus`, null, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;

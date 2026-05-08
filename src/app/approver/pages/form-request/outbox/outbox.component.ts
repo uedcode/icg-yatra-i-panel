@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormService } from 'src/app/service/form.service';
 import { FormManageService } from 'src/app/service/formManage.service';
 import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
+import { ClaimService } from 'src/app/service/claim.service';
 declare var $: any;
 
 
@@ -29,7 +30,8 @@ export class OutboxComponent implements OnInit {
     private $form: FormService,
     private router: Router,
     public $formManage: FormManageService,
-    private $codeSubForm: CodeSubFormService
+    private $codeSubForm: CodeSubFormService,
+    private $claim: ClaimService
 
   ) {}
 
@@ -62,10 +64,18 @@ export class OutboxComponent implements OnInit {
       fromDate: new Date(this.filterObj?.fromDate).getTime(),
       toDate: new Date(this.filterObj?.toDate).getTime(),
     };
-    this.$formManage?.getState(this.codeStatus?.outbox);
-    this.$formManage?.formStateList.subscribe((res) => {
-      if (res) {
-        this.dataList = res;
+    const config = {
+      headers: {
+        roleTypeId: this.userIdDetails?.roleTypeId,
+        userId: this.userIdDetails?.userId,
+        unitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.unitId,
+        claimState: this.codeStatus?.outbox,
+      },
+    };
+    this.$claim.getClaimStates(config).subscribe((res: any) => {
+      if (res?.object) {
+        this.dataList = Array.isArray(res.object) ? res.object : [];
       }
     });
   }
@@ -96,11 +106,25 @@ export class OutboxComponent implements OnInit {
   }
 
   viewForm(data) {
-    
+    const claim = data?.yatClaimDTO || {};
+    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    const subFormId =
+      claim?.codeSubFormDTO?.subFormId ||
+      data?.subFormId ||
+      data?.codeSubFormDTO?.subFormId;
+
+    if (claimId && subFormId) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() +
+          `/form-claim-detail?claimId=${claimId}&subFormId=${subFormId}&statusId=${
+            data?.claimState || this.codeStatus?.outbox
+          }`
+      );
+      return;
+    }
+
     let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(
-      moduleUrl + `/${data?.viewUrl}?id=${data.formId}`
-    );
+    this.router.navigateByUrl(moduleUrl + `/${data?.viewUrl}?id=${data.formId}`);
   }
 
   reset() {

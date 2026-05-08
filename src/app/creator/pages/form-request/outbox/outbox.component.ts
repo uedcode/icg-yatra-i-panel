@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormService } from 'src/app/service/form.service';
 import { FormManageService } from 'src/app/service/formManage.service';
 import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
+import { ClaimService } from 'src/app/service/claim.service';
 declare var $: any;
 
 @Component({
@@ -28,7 +29,8 @@ export class OutboxComponent implements OnInit {
     private router: Router,
     private datePipe: DatePipe,
     public $formManage: FormManageService,
-    private $codeSubForm: CodeSubFormService
+    private $codeSubForm: CodeSubFormService,
+    private $claim: ClaimService
   ) {}
 
   @Input() dataList: Array<any> = [];
@@ -81,29 +83,81 @@ export class OutboxComponent implements OnInit {
   }
   filterDataObj;
   getState() {
-    this.filterDataObj = {
-      formName: this.filterObj?.formName,
-      fromDate: new Date(this.filterObj?.fromDate).getTime(),
-      toDate: new Date(this.filterObj?.toDate).getTime(),
+    const config = {
+      headers: {
+        roleTypeId: this.userIdDetails?.roleTypeId,
+        userId: this.userIdDetails?.userId,
+        unitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.unitId,
+        claimState: this.codeStatus?.outbox,
+      },
     };
-    this.$formManage?.getState(this.codeStatus?.outbox);
-    this.$formManage?.formStateList.subscribe((res) => {
-      if (res) {
-        this.dataList = res;
-      }
+    this.$claim.getClaimStates(config).subscribe((res: any) => {
+      const claimStates = Array.isArray(res?.object) ? res.object : [];
+      this.dataList = claimStates.filter((item: any) => this.matchesDateFilter(item));
     });
   }
 
+  private matchesDateFilter(item: any): boolean {
+    const createdOn = item?.yatClaimDTO?.createdOn || item?.createdOn;
+    const createdAt = createdOn ? new Date(createdOn).getTime() : null;
+    const fromDate = this.filterObj?.fromDate ? new Date(this.filterObj.fromDate).getTime() : null;
+    const toDate = this.filterObj?.toDate
+      ? new Date(this.filterObj.toDate).setHours(23, 59, 59, 999)
+      : null;
+
+    if (!createdAt) {
+      return !fromDate && !toDate;
+    }
+
+    if (fromDate && createdAt < fromDate) {
+      return false;
+    }
+
+    if (toDate && createdAt > toDate) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
+    const id = (subFormId || '').toUpperCase();
+    if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
+    if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
+    if (id === 'F') return detail ? 'form-fte-detail' : 'form-fte';
+    if (id === 'L') return detail ? 'form-ltc-detail' : 'form-ltc';
+    return null;
+  }
+
   viewForm(data) {
+    const claim = data?.yatClaimDTO || {};
+    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    const subFormId =
+      claim?.codeSubFormDTO?.subFormId ||
+      data?.subFormId ||
+      data?.codeSubFormDTO?.subFormId;
+    const route = this.getCreatorClaimRoute(subFormId, true);
+
+    if (claimId && route) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() +
+          `/${route}?claimId=${claimId}&subFormId=${subFormId}`
+      );
+      return;
+    }
+
     let moduleUrl = this.$auth.getModuleName();
     this.router.navigateByUrl(
       moduleUrl + `/${data?.viewUrl}?id=${data.formId}`
     );
   }
+
  formId;
-  viewHistory(formId: any): void {
-    
-    this.formId = formId; // just set formId
+ claimId;
+  viewHistory(formId: any, claimId: any = null): void {
+    this.formId = formId;
+    this.claimId = claimId || null;
     setTimeout(() => {
       $('#viewHistoryModal').modal('show');
     }, 0);

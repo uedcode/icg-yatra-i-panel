@@ -127,7 +127,7 @@ export class UnitAdminRoleComponent implements OnInit {
     try {
       this.$common.showLoader();
       let req = {
-        "aclPilCodeRoleTypeDTO": {
+        "aclCodeRoleTypeDTO": {
           "id": 'UN'
         },
         "aclCodeStatusDTO": {
@@ -210,7 +210,7 @@ export class UnitAdminRoleComponent implements OnInit {
       // }
       var config = {
         headers: {
-          "id": tempObj.id,
+          "roleId": this.getRoleId(tempObj),
           "statusId": tempObj.currentStatus,
         }
       }
@@ -301,6 +301,10 @@ export class UnitAdminRoleComponent implements OnInit {
   sort(key) {
     this.key = key;
     this.reverse = !this.reverse;
+  }
+
+  getRoleId(dataObj: any) {
+    return dataObj?.roleId || dataObj?.id;
   }
   // data shorting ends
 }

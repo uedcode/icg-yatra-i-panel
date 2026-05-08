@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormService } from 'src/app/service/form.service';
 import { FormManageService } from 'src/app/service/formManage.service';
+import { ClaimService } from 'src/app/service/claim.service';
 declare var $: any;
 
 @Component({
@@ -26,6 +27,8 @@ export class InboxComponent implements OnInit {
     private $form: FormService,
     public $formManage: FormManageService,
     private router: Router,
+    private $claim: ClaimService,
+    private route: ActivatedRoute
   ) {}
 
   @Input() dataList: Array<any> = [];
@@ -42,25 +45,86 @@ export class InboxComponent implements OnInit {
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
+    this.handleEsignFeedback();
     this.getState();
+  }
+
+  private handleEsignFeedback(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      const status = params.get('esignStatus');
+      const txnId = params.get('txnId');
+      if (!status) {
+        return;
+      }
+
+      if (status === 'SC') {
+        this.$common.showMessage(
+          txnId
+            ? `eSign completed successfully. Transaction ID: ${txnId}`
+            : 'eSign completed successfully.',
+          'success'
+        );
+      } else if (status === 'US' || status === 'ER') {
+        this.$common.showMessage(
+          txnId
+            ? `eSign could not be completed. Transaction ID: ${txnId}`
+            : 'eSign could not be completed.',
+          'danger'
+        );
+      } else {
+        this.$common.showMessage(
+          txnId
+            ? `eSign status is being processed. Transaction ID: ${txnId}`
+            : 'eSign status is being processed.',
+          'info'
+        );
+      }
+
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { esignStatus: null, txnId: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    });
   }
 
   filterDataObj;
   getState() {
-    this.$formManage?.getState(this.codeStatus?.inbox);
-    this.$formManage?.formStateList.subscribe(res => {
-      if (res) {
-        this.dataList = res;
-      }
-    })
+    const config = {
+      headers: {
+        roleTypeId: this.userIdDetails?.roleTypeId,
+        userId: this.userIdDetails?.userId,
+        unitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.unitId,
+        claimState: this.codeStatus?.inbox,
+      },
+    };
+    this.$claim.getClaimStates(config).subscribe((res: any) => {
+      this.dataList = Array.isArray(res?.object) ? res.object : [];
+    });
   }
 
   viewForm(data) {
+    const claim = data?.yatClaimDTO || {};
+    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    const subFormId =
+      claim?.codeSubFormDTO?.subFormId ||
+      data?.subFormId ||
+      data?.codeSubFormDTO?.subFormId;
 
-    let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(
-      moduleUrl + `/${data?.viewUrl}?id=${data.formId}`
-    );
+    if (claimId && subFormId) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() +
+          `/form-claim-detail?claimId=${claimId}&subFormId=${subFormId}&statusId=${
+            data?.claimState || this.codeStatus?.inbox
+          }&actionable=1`
+      );
+      return;
+    }
+
+    const moduleUrl = this.$auth.getModuleName();
+    this.router.navigateByUrl(moduleUrl + `/${data?.viewUrl}?id=${data.formId}`);
   }
 
   goBack() {

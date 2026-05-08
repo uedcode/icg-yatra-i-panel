@@ -1,7 +1,7 @@
 import { AuthService } from 'src/app/service/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/common.service';
-import { FormStateService } from 'src/app/service/formState.service';
+import { ClaimService } from 'src/app/service/claim.service';
 
 declare var $: any;
 
@@ -16,7 +16,7 @@ export class SidebarComponent implements OnInit {
   constructor(
     public $auth: AuthService,
     private $common: CommonService,
-    private $count: FormStateService
+    private $claim: ClaimService
   ) {}
 
   userIdDetails;
@@ -48,7 +48,7 @@ export class SidebarComponent implements OnInit {
       if (this.userIdDetails?.roleTypeId == this.codeRoleList?.creator) {
         this.config.headers.userId = this.userIdDetails?.userId;
       }
-      this.$count.getStateCount(this.config).subscribe(
+      this.$claim.getStatusCount(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {

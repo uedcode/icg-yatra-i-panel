@@ -51,19 +51,22 @@ export class HeaderInterceptor implements HttpInterceptor {
       }
       let dummyrequest;
       if (isAuthAPI) {
+        const basicClientAuth = environment.authConfig?.basicClientAuth;
+        if (!basicClientAuth) {
+          return throwError(() => new Error('Missing auth client configuration'));
+        }
         dummyrequest = req.clone({
           url: commonEndpoint + req.url,
           headers: req.headers
-            //.set('Authorization', `Basic VVNFUl9DTElFTlRfQVBQOnBhc3N3b3Jk`) // APP
-            .set('Authorization', `Basic VVNFUl9DTElFTlRfQVBQOnBhc3N3b3Jk`) // WEB
+            .set('Authorization', basicClientAuth)
             .set(
               'Content-type',
               `application/x-www-form-urlencoded;charset=utf-8`
             ),
         });
       } else if (isWebAPI) {
-        const userToken = localStorage.getItem('pilotageAccessToken');
-        const fingerPrint = localStorage.getItem('pilotageDeviceId');
+        const userToken = this.$auth.getAccessToken();
+        const fingerPrint = this.$auth.getDeviceFingerprint();
         dummyrequest = req.clone({
           url: commonEndpoint + req.url,
           headers: req.headers

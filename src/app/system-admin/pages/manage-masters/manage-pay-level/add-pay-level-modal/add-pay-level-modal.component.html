@@ -1,0 +1,70 @@
+<div class="modal" id="addPayLevel">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form #mainForm="ngForm" (ngSubmit)="mainForm.valid && saveRecord()">
+        <div class="modal-header">
+          <h4 class="modal-title">{{ record?.payLevel ? 'Update Pay Level' : 'Add Pay Level' }}</h4>
+          <button type="button" class="close" data-dismiss="modal" (click)="reset()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <label>Pay Level <span class="text-danger">*</span></label>
+              <input class="form-control" type="text" name="payLevel" [(ngModel)]="formObj.payLevel" #payLevel="ngModel" required />
+              <div *ngIf="payLevel.invalid && (payLevel.dirty || payLevel.touched || mainForm.submitted)" class="invalid-msg">
+                Pay Level is required.
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label>Description</label>
+              <input class="form-control" type="text" name="description" [(ngModel)]="formObj.description" />
+            </div>
+            <div class="col-md-4 mt-3">
+              <label>TY Accommodation</label>
+              <input class="form-control" type="number" name="tyAccommodation" [(ngModel)]="formObj.tyAccommodation" />
+            </div>
+            <div class="col-md-4 mt-3">
+              <label>TY Travel</label>
+              <input class="form-control" type="number" name="tyTravel" [(ngModel)]="formObj.tyTravel" />
+            </div>
+            <div class="col-md-4 mt-3">
+              <label>TY Food</label>
+              <input class="form-control" type="number" name="tyFood" [(ngModel)]="formObj.tyFood" />
+            </div>
+            <div class="col-md-4 mt-3">
+              <label>PMT KG</label>
+              <input class="form-control" type="number" name="pmtKg" [(ngModel)]="formObj.pmtKg" />
+            </div>
+            <div class="col-md-4 mt-3">
+              <label>PMT Per KG</label>
+              <input class="form-control" type="number" name="pmtPerKg" [(ngModel)]="formObj.pmtPerKg" />
+            </div>
+            <div class="col-md-4 mt-3">
+              <label>Availed Category</label>
+              <input class="form-control" type="number" name="availedCategory" [(ngModel)]="formObj.availedCategory" />
+            </div>
+            <div class="col-md-4 mt-3">
+              <label>Train Class</label>
+              <input class="form-control" type="text" name="trainClass" [(ngModel)]="formObj.trainClass" />
+            </div>
+            <div class="col-md-4 mt-3">
+              <label>Air Class</label>
+              <input class="form-control" type="text" name="airClass" [(ngModel)]="formObj.airClass" />
+            </div>
+            <div class="col-md-4 mt-3">
+              <label>Ship Class</label>
+              <input class="form-control" type="text" name="shipClass" [(ngModel)]="formObj.shipClass" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="reset()">Close</button>
+          <button type="submit" class="btn btn-primary" [disabled]="disableBtn">
+            {{ record?.payLevel ? 'Update' : 'Save' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

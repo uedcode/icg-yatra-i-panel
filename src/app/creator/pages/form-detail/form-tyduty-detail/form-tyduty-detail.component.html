@@ -1,7 +1,169 @@
-<!-- <div class="page">
-  <div class="page-main">
-    <app-header></app-header>
-    <app-sidebar></app-sidebar>
-    <app-common-tyduty-detail></app-common-tyduty-detail>
+<div class="wrapper">
+  <div class="container">
+    <div class="aligned">
+      <button type="button" class="btn btn-warning request_view_back" title="Back to Page" (click)="goBack()">
+        Back <i class="fa fa-chevron-left" style="display: inline-block"></i>
+      </button>
+    </div>
+
+    <div class="main-content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel">
+            <div class="panel-body">
+              <div class="col-md-12 claim">
+                <h4 class="ml-3"><b>TY Duty Claim Preview</b></h4>
+
+                <div class="PersonalDetail container">
+                  <h4>Personal Details</h4>
+                  <div class="container row">
+                    <div class="col-md-4">
+                      <label class="form-label">Name</label>
+                      <p>{{ display(formObj?.name) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Personal Number</label>
+                      <p>{{ display(formObj?.pno) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Rank</label>
+                      <p>{{ display(formObj?.rank) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Unit</label>
+                      <p>{{ display(formObj?.codeUnitDTO?.descr) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Claim No</label>
+                      <p>{{ display(formObj?.claimNo) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">GX Form</label>
+                      <p>
+                        <button *ngIf="formObj?.gxFormFileUrl" type="button" class="btn btn-warning btn-sm"
+                          (click)="$auth.viewFile(formObj?.gxFormFileUrl)">
+                          <i class="fa fa-eye"></i> View
+                        </button>
+                        <span *ngIf="!formObj?.gxFormFileUrl">-</span>
+                      </p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Sign Mode</label>
+                      <p>{{ display(formObj?.signWith) }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="PersonalDetail container" *ngIf="formObj?.yatTempDutyAdvDTOs?.length">
+                  <h4>TY Duty Advance Details</h4>
+                  <div class="container row">
+                    <div class="col-md-4">
+                      <label class="form-label">Transfer To</label>
+                      <p>{{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.tempTransTo) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Station Proceeding To</label>
+                      <p>{{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.stationProceedingTo) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Duty Station</label>
+                      <p>{{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.dutyStation) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Purpose Type</label>
+                      <p>{{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.purposeType) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Duration</label>
+                      <p>{{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.duration) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Advance Amount</label>
+                      <p>{{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.advAmt) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Total Amount</label>
+                      <p>{{ display(formObj?.yatTempDutyAdvDTOs?.[0]?.totalAmt) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">W.E.F Date</label>
+                      <p>{{ display(asDate(formObj?.yatTempDutyAdvDTOs?.[0]?.wefDate)) }}</p>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">GX Date</label>
+                      <p>{{ display(asDate(formObj?.yatTempDutyAdvDTOs?.[0]?.gxDate)) }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="PersonalDetail container" *ngIf="formObj?.yatDtsDetailDTOs?.length">
+                  <h4>Travel Details</h4>
+                  <div class="table-responsive">
+                    <table class="table table-bordered" style="width: 100%">
+                      <thead>
+                        <tr>
+                          <th>SL</th>
+                          <th>Source</th>
+                          <th>Destination</th>
+                          <th>Mode</th>
+                          <th>Class</th>
+                          <th>DTS</th>
+                          <th>Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let dataObj of formObj?.yatDtsDetailDTOs; let i = index">
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ display(dataObj?.source) }}</td>
+                          <td>{{ display(dataObj?.destination) }}</td>
+                          <td>{{ display(dataObj?.modeOfTravel) }}</td>
+                          <td>{{ display(dataObj?.classOfTravel) }}</td>
+                          <td>{{ display(dataObj?.isDts) }}</td>
+                          <td>{{ display(dataObj?.amount) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="PersonalDetail container" *ngIf="documentDtos?.length">
+                  <h4>Documents</h4>
+                  <div class="table-responsive">
+                    <table class="table table-bordered" style="width: 100%">
+                      <thead>
+                        <tr>
+                          <th>SL</th>
+                          <th>Document Name</th>
+                          <th>Status</th>
+                          <th>File</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let dataObj of documentDtos; let i = index">
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ display(dataObj?.codeDocInfoDTO?.docName || dataObj?.codePilDocInfoDTO?.docName) }}</td>
+                          <td>{{ (dataObj?.url || dataObj?.fileUrl || dataObj?.docUrl) ? 'Uploaded' : '-' }}</td>
+                          <td>
+                            <button type="button" class="btn btn-warning btn-sm" *ngIf="dataObj?.url || dataObj?.fileUrl || dataObj?.docUrl" (click)="$auth.viewFile(dataObj?.url || dataObj?.fileUrl || dataObj?.docUrl)">
+                              <i class="fa fa-eye"></i> View
+                            </button>
+                            <span *ngIf="!(dataObj?.url || dataObj?.fileUrl || dataObj?.docUrl)">-</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="PersonalDetail container" *ngIf="formObj?.internalRemarks">
+                  <h4>Remarks</h4>
+                  <p>{{ formObj?.internalRemarks }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div> -->
+</div>

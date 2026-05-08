@@ -11,7 +11,7 @@ export class EsignService {
   constructor(private http: HttpClient, private $common: CommonService) { }
 
   prepareForESign(body) {
-    return this.http.post<any>(`esignPil/prepareForESign`, body).pipe(
+    return this.http.post<any>(`esign/prepareForESign`, body).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -21,7 +21,7 @@ export class EsignService {
 
   
   performESign(body) {
-    return this.http.post<any>(`esignPil/performESign`, body).pipe(
+    return this.http.post<any>(`esign/performESign`, body).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;

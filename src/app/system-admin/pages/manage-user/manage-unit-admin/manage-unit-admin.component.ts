@@ -133,7 +133,7 @@ export class ManageUnitAdminComponent implements OnInit {
       if (!this.formObj?.pno) return;
       this.$common.showLoader();
       let req = {
-        "aclPilCodeRoleTypeDTO": {
+        "aclCodeRoleTypeDTO": {
           "id": "UN"
         },
         "aclCodeStatusDTO": {
@@ -246,6 +246,10 @@ export class ManageUnitAdminComponent implements OnInit {
   }
   // data shorting ends
 
+  getRoleId(dataObj: any) {
+    return dataObj?.roleId || dataObj?.id;
+  }
+
   tempObj;
   openChangeStatusModal(data, statusCode) {
     this.tempObj = { ...data };
@@ -259,9 +263,8 @@ export class ManageUnitAdminComponent implements OnInit {
       // }
       var config = {
         headers: {
-          "id": tempObj.id,
-          "statusId": tempObj.currentStatus,
-          "byRoleTypeId": this.userIdDetails.roleTypeId,
+          "roleId": this.getRoleId(tempObj),
+          "statusId": tempObj.currentStatus
         }
       }
       this.$systemAdmin.changeStatus(config).subscribe(response => {

@@ -7,11 +7,11 @@
         <!--Page header-->
         <div class="page-header">
           <div class="page-leftheader">
-            <h4 class="page-title">Inbox</h4>
+            <h4 class="page-title">Export Queue</h4>
             <ol class="breadcrumb pl-0">
               <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
               <li class="breadcrumb-item active" aria-current="page">
-                Inbox
+                Export Queue
               </li>
             </ol>
           </div>
@@ -19,8 +19,7 @@
             <div>
               <!-- <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
                   class="fa fa-chevron-left" style="display: inline-block;"></i></button> -->
-              <button type="button" class="btn btn-info request_view_back" title="Back to Page" (click)="exportAudit('Selected')">Export
-														Selected</button>
+              <button type="button" class="btn btn-info request_view_back" title="Back to Page" (click)="exportAudit('Selected')">Export Selected</button>
               <button type="button" class="btn btn-info request_view_back" title="Back to Page" (click)="exportAudit('All')">Export All</button>
             </div>
             <!-- <div class="breadcrumb_right">
@@ -63,8 +62,8 @@
 														<th width="25%">Process Name</th>
 														<th>Form No</th>
 														<th>Form Date</th>
-														<th width="25%">Form Description</th>
-														<th>Form Unit</th>
+														<th width="25%">Claim Type</th>
+														<th>Unit</th>
 														<th>Export</th>
 													</tr>
                     </thead>

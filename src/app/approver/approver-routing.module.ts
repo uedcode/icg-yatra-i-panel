@@ -19,6 +19,7 @@ import { FormPilotageDetailComponent } from './pages/form-detail/form-pilotage-d
 import { PassedComponent } from './pages/form-request/passed/passed.component';
 import { NotPassedComponent } from './pages/form-request/not-passed/not-passed.component';
 import { PilotageHistoryStatusComponent } from './pages/form-detail/pilotage-history-status/pilotage-history-status.component';
+import { FormClaimDetailComponent } from './pages/form-detail/form-claim-detail/form-claim-detail.component';
 
 const routes: Routes = [
   {
@@ -50,6 +51,12 @@ const routes: Routes = [
     component: FormPilotageDetailComponent,
     canActivate: [AuthGuard],
     data: { title: 'Pilotage Detail' }
+  },
+  {
+    path: 'form-claim-detail',
+    component: FormClaimDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Claim Detail' }
   },
 
   {
@@ -95,17 +102,23 @@ const routes: Routes = [
     data: { title: 'Esign' }
   },
   {
+    path: 'redirect',
+    component: RedirectComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'eSign Redirect' }
+  },
+  {
     path: 'redirectPil',
     component: RedirectComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Redirect' }
+    data: { title: 'eSign Redirect' }
   },
 
   {
     path: 'faq',
     component: FaqComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Faq' }
+    data: { title: 'FAQ' }
   },
   {
     path: 'web-detail',

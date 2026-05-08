@@ -5,7 +5,7 @@
       <div class="modal-header">
         <h5 class="modal-title" id="manage_admin">{{formObj.verHisId ? 'Update' :
           'Add'}} Version History</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="reset()">
           <span aria-hidden="true">×</span>
         </button>
       </div>
@@ -42,7 +42,7 @@
           </div>
           <div class="modal-footer">
             <div class="text-right">
-              <button  type="submit" title="Submit" class="btn btn-primary" title="{{formObj.verHisId ? 'Update' :
+              <button  type="submit" [disabled]="disableBtn" title="Submit" class="btn btn-primary" title="{{formObj.verHisId ? 'Update' :
               'Submit'}}">{{formObj.verHisId ? 'Update' :
                 'Submit'}}</button>
               <button type="button" class="btn btn-danger" title="Reset" (click)="reset()"  title="Reset">Reset</button>

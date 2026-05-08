@@ -13,6 +13,8 @@ declare var $: any;
     standalone: false
 })
 export class CommonEsignModalComponent implements OnInit {
+  private readonly gatewayStorageKey = environment.esignConfig.gatewayStorageKey;
+  private readonly redirectStorageKey = environment.esignConfig.redirectStorageKey;
 
   constructor(
     private router: Router,
@@ -95,7 +97,11 @@ export class CommonEsignModalComponent implements OnInit {
             $("#esign_modal").modal("hide");
             let moduleUrl = this.$auth.getModuleName();
             if (response?.object) {
-              localStorage.setItem('gateway', response?.object);
+              localStorage.setItem(this.gatewayStorageKey, response?.object);
+              localStorage.setItem(
+                this.redirectStorageKey,
+                this.router.url || (moduleUrl ? `${moduleUrl}/dashboard` : '/login')
+              );
               this.router.navigateByUrl(moduleUrl + `/esign`);
             }
           }

@@ -1,0 +1,26 @@
+<div class="modal" id="addTyDutyPurpose">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form #mainForm="ngForm" (ngSubmit)="mainForm.valid && saveRecord()">
+        <div class="modal-header">
+          <h4 class="modal-title">{{ formObj.id ? 'Update TY Duty Purpose' : 'Add TY Duty Purpose' }}</h4>
+          <button type="button" class="close" data-dismiss="modal" (click)="reset()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <label>Description <span class="text-danger">*</span></label>
+          <input class="form-control" type="text" name="descr" [(ngModel)]="formObj.descr" #descr="ngModel" required />
+          <div *ngIf="descr.invalid && (descr.dirty || descr.touched || mainForm.submitted)" class="invalid-msg">
+            Description is required.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="reset()">Close</button>
+          <button type="submit" class="btn btn-primary" [disabled]="disableBtn">
+            {{ formObj.id ? 'Update' : 'Save' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

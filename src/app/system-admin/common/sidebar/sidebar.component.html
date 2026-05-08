@@ -34,7 +34,7 @@
         routerLinkActive="active current"
         [routerLink]="['../mapping-unit']"
         ><i class="side-menu__icon fa fa-map-marker"></i
-        ><span class="side-menu__label">Manage Unit Mapping </span></a
+        ><span class="side-menu__label">Manage Unit Mappings</span></a
       >
     </li>
 
@@ -45,7 +45,7 @@
         routerLinkActive="active current"
         [routerLink]="['../system-admin']"
         ><i class="side-menu__icon fa fa-users"></i
-        ><span class="side-menu__label">Manage System Admin </span></a
+        ><span class="side-menu__label">Manage System Admins</span></a
       >
     </li>
     <li>
@@ -55,7 +55,7 @@
         routerLinkActive="active current"
         [routerLink]="['../unit-admin']"
         ><i class="side-menu__icon fa fa-user-secret"></i
-        ><span class="side-menu__label">Manage Unit Admin </span></a
+        ><span class="side-menu__label">Manage Unit Admins</span></a
       >
     </li>
     <li>
@@ -65,7 +65,7 @@
         routerLinkActive="active current"
         [routerLink]="['../manage-role']"
         ><i class="side-menu__icon fa fa-arrows"></i
-        ><span class="side-menu__label">Manage Role </span></a
+        ><span class="side-menu__label">Manage Roles</span></a
       >
     </li>
 
@@ -83,7 +83,7 @@
     <li routerLinkActive="is-expanded" class="slide">
       <a class="side-menu__item" data-toggle="slide"
         ><i class="side-menu__icon fa fa-file"></i>
-        <span class="side-menu__label">Manage Master</span
+        <span class="side-menu__label">Manage Masters</span
         ><i class="angle fa fa-angle-right"></i>
       </a>
       <ul class="slide-menu">
@@ -122,13 +122,63 @@
             (click)="$auth.closeSidebar()"
             class="slide-item"
             routerLinkActive="active current"
+            [routerLink]="['../business-rule']"
+          >
+            Manage Business Rule
+          </a>
+        </li>
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../message']"
+          >
+            Manage Messages
+          </a>
+        </li>
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../pay-level']"
+          >
+            Manage Pay Levels
+          </a>
+        </li>
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../ty-duty-purpose']"
+          >
+            Manage TY Duty Purpose
+          </a>
+        </li>
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
+            [routerLink]="['../reason']"
+          >
+            Manage Reason
+          </a>
+        </li>
+        <li>
+          <a
+            (click)="$auth.closeSidebar()"
+            class="slide-item"
+            routerLinkActive="active current"
             [routerLink]="['../ships']"
           >
             Manage Ships
           </a>
         </li>
 
-        <!-- <li>
+        <li>
           <a (click)="$auth.closeSidebar()" class="slide-item"
             routerLinkActive="active current"
             [routerLink]="['../faq']">
@@ -141,7 +191,7 @@
             [routerLink]="['../version-history']">
             Manage Version History
           </a>
-        </li>-->
+        </li>
       </ul>
     </li>
     <li routerLinkActive="is-expanded" class="slide">
@@ -158,7 +208,7 @@
             routerLinkActive="active current"
             [routerLink]="['../inbox']"
           >
-            Inbox
+            Export Queue
           </a>
         </li>
         <li>
@@ -168,7 +218,7 @@
             routerLinkActive="active current"
             [routerLink]="['../exported']"
           >
-            Exported
+            Exported Batches
           </a>
         </li>
         <li>
@@ -178,7 +228,7 @@
             routerLinkActive="active current"
             [routerLink]="['../archived']"
           >
-            Archived
+            Archived Exports
           </a>
         </li>
       </ul>
@@ -197,7 +247,7 @@
             routerLinkActive="active current"
             [routerLink]="['../import']"
           >
-            Import
+            Import Queue
           </a>
         </li>
         <li>
@@ -207,7 +257,7 @@
             routerLinkActive="active current"
             [routerLink]="['../imported']"
           >
-            Imported
+            Imported Batches
           </a>
         </li>
         <li>
@@ -217,10 +267,32 @@
             routerLinkActive="active current"
             [routerLink]="['../archived-import']"
           >
-            Archived
+            Archived Imports
           </a>
         </li>
       </ul>
+    </li>
+    <li>
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../statistics']"
+      >
+        <i class="side-menu__icon fa fa-pie-chart"></i>
+        <span class="side-menu__label">Statistics</span>
+      </a>
+    </li>
+    <li>
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../esign-report']"
+      >
+        <i class="side-menu__icon fa fa-file-text-o"></i>
+        <span class="side-menu__label">eSign Report</span>
+      </a>
     </li>
     <li>
       <!--<a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"

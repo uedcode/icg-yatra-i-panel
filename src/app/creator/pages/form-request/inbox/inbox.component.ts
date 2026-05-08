@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormService } from 'src/app/service/form.service';
 import { FormManageService } from 'src/app/service/formManage.service';
 import { FormStateService } from 'src/app/service/formState.service';
+import { ClaimService } from 'src/app/service/claim.service';
 declare var $: any;
 
 @Component({
@@ -28,6 +29,8 @@ export class InboxComponent implements OnInit {
     public $formManage: FormManageService,
     private router: Router,
     public $formState: FormStateService,
+    private $claim: ClaimService,
+    private route: ActivatedRoute,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -44,32 +47,127 @@ export class InboxComponent implements OnInit {
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
+    this.handleEsignFeedback();
     this.getState();
+  }
+
+  private handleEsignFeedback(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      const status = params.get('esignStatus');
+      const txnId = params.get('txnId');
+      if (!status) {
+        return;
+      }
+
+      if (status === 'SC') {
+        this.$common.showMessage(
+          txnId
+            ? `eSign completed successfully. Transaction ID: ${txnId}`
+            : 'eSign completed successfully.',
+          'success'
+        );
+      } else if (status === 'US' || status === 'ER') {
+        this.$common.showMessage(
+          txnId
+            ? `eSign could not be completed. Transaction ID: ${txnId}`
+            : 'eSign could not be completed.',
+          'danger'
+        );
+      } else {
+        this.$common.showMessage(
+          txnId
+            ? `eSign status is being processed. Transaction ID: ${txnId}`
+            : 'eSign status is being processed.',
+          'info'
+        );
+      }
+
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { esignStatus: null, txnId: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    });
   }
 
   filterDataObj
   getState() {
-    this.$formManage?.getState(this.codeStatus?.inbox);
-    this.$formManage?.formStateList.subscribe(res => {
-      if (res) {
-        this.dataList = res;
-      }
-    })
+    const config = {
+      headers: {
+        roleTypeId: this.userIdDetails?.roleTypeId,
+        userId: this.userIdDetails?.userId,
+        unitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.unitId,
+        claimState: this.codeStatus?.inbox,
+      },
+    };
+    this.$claim.getClaimStates(config).subscribe((res: any) => {
+      this.dataList = Array.isArray(res?.object) ? res.object : [];
+    });
+  }
+
+  private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
+    const id = (subFormId || '').toUpperCase();
+    if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
+    if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
+    if (id === 'F') return detail ? 'form-fte-detail' : 'form-fte';
+    if (id === 'L') return detail ? 'form-ltc-detail' : 'form-ltc';
+    return null;
   }
 
   viewForm(data) {
+    const claim = data?.yatClaimDTO || {};
+    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    const subFormId =
+      claim?.codeSubFormDTO?.subFormId ||
+      data?.subFormId ||
+      data?.codeSubFormDTO?.subFormId;
+    const route = this.getCreatorClaimRoute(subFormId, false);
+
+    if (claimId && route) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() +
+          `/${route}?claimId=${claimId}&subFormId=${subFormId}`
+      );
+      return;
+    }
 
     let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(
-      moduleUrl + `/${data?.viewUrl}?id=${data.formId}`
-    );
+    this.router.navigateByUrl(moduleUrl + `/${data?.viewUrl}?id=${data.formId}`);
   }
 
-
   moveToDraft(data) {
-    
     try {
-      console.log(this.userIdDetails);
+      const claim = data?.yatClaimDTO || {};
+      const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+      if (claimId) {
+        const config = {
+          headers: {
+            id: claimId,
+          },
+        };
+        this.$claim.editClaim(config).subscribe(
+          (response: any) => {
+            if (response.status === true) {
+              this.$common.showMessage(`${response.message}`);
+              this.dataList = this.dataList.filter(
+                (elem: any) =>
+                  (elem?.yatClaimDTO?.claimId || elem?.formId || elem?.id) != claimId
+              );
+              setTimeout(() => {
+                let moduleUrl = this.$auth.getModuleName();
+                this.router.navigateByUrl(moduleUrl + `/draft`);
+              }, 1000);
+            }
+          },
+          () => {
+            this.$common.hideLoader();
+          }
+        );
+        return;
+      }
+
       let config = {
         headers:{
           "formId": data?.formId,
@@ -104,6 +202,16 @@ export class InboxComponent implements OnInit {
     } else {
       window.close();
     }
+  }
+
+  formId;
+  claimId;
+  viewHistory(formId: any, claimId: any = null): void {
+    this.formId = formId;
+    this.claimId = claimId || null;
+    setTimeout(() => {
+      $('#viewHistoryModal').modal('show');
+    }, 0);
   }
 
   // data shorting start

@@ -275,4 +275,24 @@ getFileNameFromUrl(url: string): string {
 
   }
 // download pdf end
+
+  downloadAbsolute(url: string, fileName?: string) {
+    if (!url) {
+      this.showMessage('Download URL is not available.', 'danger');
+      return;
+    }
+
+    fetch(url)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = fileName || this.getFileNameFromUrl(url);
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(blobUrl);
+        document.body.removeChild(a);
+      });
+  }
 }

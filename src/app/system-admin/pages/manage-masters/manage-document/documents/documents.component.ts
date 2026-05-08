@@ -52,16 +52,14 @@ export class DocumentsComponent implements OnInit {
     try {
       this.$common.showLoader();
       this.config = {
-        headers: {
-          codeFormId: this.userIdDetails?.moduleId
-        },
+        headers: {},
       };
       
       this.$document.get(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
-            let list = response.object;
+            const list = Array.isArray(response.object) ? response.object : [];
             this.dataList = list;
           }
         },
@@ -77,6 +75,11 @@ export class DocumentsComponent implements OnInit {
   }
 
   // edit start
+  openAddModal() {
+    this.dataObj = {};
+    $('#adddocuments').modal('show');
+  }
+
   editRecord(obj) {
     
     $('#adddocuments').modal('show');
@@ -99,7 +102,7 @@ export class DocumentsComponent implements OnInit {
           if (response.status === true) {
             this.$common.showMessage(response.message);
             this.dataList = this.dataList.filter(
-              (elem) => elem.id != id
+              (elem) => elem.docInfoId != id
             );
             $('#delete_modal').modal('hide');
           }

@@ -63,6 +63,7 @@
                         <th class="wd-20p">PNO/Name/Rank <i class="fa fa-sort" (click)="sort('fullDescr')"></i></th>
                         <th class="wd-20p">HQ AMOUNT <i class="fa fa-sort" (click)="sort('recommendedAmount')"></i></th>
                         <th class="wd-20p">HQ Remark <i class="fa fa-sort" (click)="sort('remarks')"></i></th>
+                        <th class="wd-20p">View History</th>
                         <!-- <th class="wd-20p">On work<i class="fa fa-sort" (click)="sort('onWork')"></i></th> -->
                         <th class="wd-15p">Created On <i class="fa fa-sort" (click)="sort('createdOn')"></i></th>
                         <th class="wd-15p">Updated On <i class="fa fa-sort" (click)="sort('updatedOn')"></i></th>
@@ -73,15 +74,19 @@
                       <tr
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
-                        <td>{{dataObj?.customId | showHypen}} </td>
-                        <td>{{dataObj?.formName | showHypen}} </td>
-                        <td>{{dataObj?.unit | showHypen}}</td>
-                        <td>{{dataObj?.fullDescr | showHypen}}</td>
-                        <td>{{dataObj?.recommendedAmount | showHypen}}</td>
-                        <td>{{dataObj?.remarks | showHypen}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.claimId || dataObj?.customId || dataObj?.claimId || dataObj?.formId) | showHypen}} </td>
+                        <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.formName) | showHypen}} </td>
+                        <td>{{(dataObj?.yatClaimDTO?.codeUnitDTO?.descr || dataObj?.yatClaimDTO?.codeUnitDTO?.unit || dataObj?.unit) | showHypen}}</td>
+                        <td>{{(dataObj?.fullName || dataObj?.yatClaimDTO?.remark || dataObj?.fullDescr) | showHypen}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.claimAmt || dataObj?.recommendedAmount) | showHypen}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.remark || dataObj?.remarks) | showHypen}}</td>
+                        <td>
+                          <button class="btn btn-warning" title="View History" data-target="#viewHistoryModal"
+                            (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">View History</button>
+                        </td>
                         <!-- <td>{{dataObj?.onWork | showHypen}}</td>   -->
-                        <td>{{dataObj?.createdOn | showDate:"medium"}}</td>
-                        <td>{{dataObj?.updatedOn | showDate:"medium"}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:"medium"}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.updatedOn || dataObj?.updatedOn) | showDate:"medium"}}</td>
                         <td class="switch_in_table">
                           <button class="btn btn-warning" title="View" (click)="viewForm(dataObj)">
                             <i class="fa fa-eye"></i>
@@ -94,9 +99,9 @@
                           -->
 
                           <button class="btn btn-info ml-1" title="Save as Draft"
-                            [disabled]="saveAsDraftLoadingMap[dataObj.formId]" (click)="saveAsDraft(dataObj)">
+                            [disabled]="saveAsDraftLoadingMap[dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId]" (click)="saveAsDraft(dataObj)">
                             <i class="fa"
-                              [ngClass]="saveAsDraftLoadingMap[dataObj.formId] ? 'fa-spinner fa-spin' : 'fa-save'"></i>
+                              [ngClass]="saveAsDraftLoadingMap[dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId] ? 'fa-spinner fa-spin' : 'fa-save'"></i>
                           </button>
                         </td>
                       </tr>
@@ -122,3 +127,4 @@
   </div>
 </div>
 <!-- <app-add-mapping-unit></app-add-mapping-unit> -->
+<app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>

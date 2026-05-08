@@ -42,7 +42,7 @@ export class VersionHistoryComponent implements OnInit {
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
-            let list = response.object;
+            const list = Array.isArray(response.object) ? response.object : [];
             this.dataList = list;
           }
         },
@@ -55,6 +55,11 @@ export class VersionHistoryComponent implements OnInit {
       this.$common.hideLoader();
       console.log(error);
     }
+  }
+
+  openAddModal() {
+    this.dataObj = {};
+    $('#addVersion').modal('show');
   }
 
   // edit start

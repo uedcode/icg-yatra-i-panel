@@ -252,10 +252,10 @@ export class FormManageService {
   getDocument(subFormId) {
     this.$common.showLoader();
     try {
+      const flags = this.getDocumentClaimFlags(subFormId);
       var config = {
         headers: {
-          subformId: subFormId,
-          visibilityIndicator: '1'
+          ...flags,
         },
       };
       this.$codeDocInfo.getDocument(config).subscribe(
@@ -277,18 +277,40 @@ export class FormManageService {
     }
   }
 
+  private getDocumentClaimFlags(subFormId: string) {
+    const flags: any = {
+      tyClaim: '',
+      pmtClaim: '',
+      ltcClaim: '',
+      resettleClm: '',
+      fteClaim: '',
+    };
+
+    if (!subFormId) {
+      return flags;
+    }
+
+    if (subFormId === 'T' || subFormId === 'TYD') {
+      flags.tyClaim = '1';
+    } else if (subFormId === 'P' || subFormId === 'PMT') {
+      flags.pmtClaim = '1';
+    } else if (subFormId === 'L' || subFormId === 'LTC') {
+      flags.ltcClaim = '1';
+    } else if (subFormId === 'RS') {
+      flags.resettleClm = '1';
+    } else if (subFormId === 'F' || subFormId === 'FTE') {
+      flags.fteClaim = '1';
+    }
+
+    return flags;
+  }
+
   // form download API
   getDownloadLink(formId) {
 
     this.$common.showLoader();
     try {
-      var config = {
-        headers: {
-          formId: formId,
-          type: "SignedDoc",
-        },
-      };
-      this.$form.getFromDownloadUrl(config).subscribe(
+      this.$form.getSignedFormDownloadLink(formId).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {

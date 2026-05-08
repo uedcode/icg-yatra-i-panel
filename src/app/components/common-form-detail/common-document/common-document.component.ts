@@ -74,6 +74,10 @@ export class CommonDocumentComponent implements OnInit {
     });
   }
 
+  private getDocInfo(data: any) {
+    return data?.codeDocInfoDTO || data?.codePilDocInfoDTO || null;
+  }
+
   // Get document start
   documentList: any = [];
   tempDocumentList: any = [];
@@ -113,7 +117,7 @@ export class CommonDocumentComponent implements OnInit {
         if (this.formId && list?.length > 0) {
           list.map((item) => {
             this.tempDocumentList = this.tempDocumentList.filter(
-              (elem) => elem?.docName.toLowerCase() != item?.codePilDocInfoDTO?.docName.toLowerCase()
+              (elem) => elem?.docName.toLowerCase() != this.getDocInfo(item)?.docName?.toLowerCase()
             );
           });
 
@@ -228,12 +232,23 @@ export class CommonDocumentComponent implements OnInit {
       return;
     }
 
+    const normalizedOtherDocName = (this.documentObj?.otherDocName || '').trim();
+    if (tempDocObj?.docName === 'Other' && !normalizedOtherDocName) {
+      this.$common.showMessage("Please enter the other document name.", 'danger');
+      return;
+    }
+
     const newObj = {
       ...this.documentObj,
+      otherDocName: normalizedOtherDocName,
+      descr: normalizedOtherDocName,
+      codeDocInfoDTO: {
+        id: tempDocObj?.id,
+        docName: tempDocObj?.docName,
+      },
       codePilDocInfoDTO: {
         id: tempDocObj?.id,
         docName: tempDocObj?.docName,
-        otherDocName: this.documentObj?.otherDocName || tempDocObj?.otherDocName,
       },
     };
 
@@ -241,10 +256,14 @@ export class CommonDocumentComponent implements OnInit {
     const isDuplicate = this.documentDtos.some((doc) => {
       if (newObj.codePilDocInfoDTO?.docName === "Other") {
         return (
-          doc.codePilDocInfoDTO?.otherDocName === newObj.codePilDocInfoDTO?.otherDocName
+          String(doc.otherDocName || doc.descr || '').trim().toLowerCase() ===
+          newObj.otherDocName.toLowerCase()
         );
       }
-      return doc.codePilDocInfoDTO?.docName === newObj.codePilDocInfoDTO?.docName;
+      return (
+        String(this.getDocInfo(doc)?.docName || '').trim().toLowerCase() ===
+        newObj.codeDocInfoDTO?.docName?.toLowerCase()
+      );
     });
     if (!this.isEdit) {
       if (isDuplicate) {
@@ -279,19 +298,19 @@ export class CommonDocumentComponent implements OnInit {
 
   editDocument(data, i) {
     const tempDocObj = this.documentList.find(
-      (e) => e?.id === data?.codePilDocInfoDTO?.id
+      (e) => e?.id === this.getDocInfo(data)?.id
     );
-    if (tempDocObj?.docName !== 'Other') {
+    if (tempDocObj?.docName !== 'Other' && tempDocObj) {
       if (!this.tempDocumentList.some((e) => e?.id === tempDocObj?.id)) {
         this.tempDocumentList.push(tempDocObj);
       }
       this.isOtherDoc = false;
-    } else {
+    } else if ((tempDocObj?.docName || this.getDocInfo(data)?.docName) === 'Other') {
       this.isOtherDoc = true;
     }
     this.documentObj = {
-      docName: tempDocObj?.docName || data?.codePilDocInfoDTO?.docName,
-      otherDocName: tempDocObj?.otherDocName || data?.otherDocName || '',
+      docName: tempDocObj?.docName || this.getDocInfo(data)?.docName,
+      otherDocName: data?.otherDocName || data?.descr || '',
       url: data?.url || '',
     };
     this.docIndex = i;
@@ -302,19 +321,24 @@ export class CommonDocumentComponent implements OnInit {
   deleteDocument(data, i) {
 
     let tempDocObj = this.documentList.find(
-      (e) => e?.id === data?.codePilDocInfoDTO?.id
+      (e) => e?.id === this.getDocInfo(data)?.id
     );
-    if (tempDocObj?.docName != 'Other') {
+    if (tempDocObj?.docName != 'Other' && tempDocObj) {
       this.tempDocumentList?.push(tempDocObj);
     }
     this.documentDtos.splice(i, 1);
     this.$codeDocInfo.setDocument(this.documentDtos);
+    if (this.docIndex === i) {
+      this.resetDocument();
+      this.isEdit = false;
+    }
   }
 
   resetDocument() {
 
     this.documentObj = {};
     this.docIndex = null;
+    this.isOtherDoc = false;
   }
   // Document add end
 }

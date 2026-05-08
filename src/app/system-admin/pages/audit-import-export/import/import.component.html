@@ -7,19 +7,19 @@
         <!--Page header-->
         <div class="page-header">
           <div class="page-leftheader">
-            <h4 class="page-title">Import</h4>
+            <h4 class="page-title">Import Queue</h4>
             <ol class="breadcrumb pl-0">
               <li class="breadcrumb-item">
                 <a [routerLink]="['../dashboard']">Dashboard</a>
               </li>
-              <li class="breadcrumb-item active" aria-current="page">Import</li>
+              <li class="breadcrumb-item active" aria-current="page">Import Queue</li>
             </ol>
           </div>
           <div>
             <div>
               <button type="button" class="btn btn-info request_view_back" title="Back to Page" data-toggle="modal"
                 data-target="#excelImportModal">
-                Import
+                Upload Batch
               </button>
             </div>
           </div>
@@ -57,10 +57,10 @@
                     <thead>
                       <tr>
                         <th>S.No.</th>
-                        <th>Batch-ID</th>
-                        <th>Imported Date</th>
+                        <th>Batch ID</th>
+                        <th>Uploaded On</th>
                         <th>Total Records</th>
-                        <th>Import</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -78,7 +78,7 @@
                         <td>
                           <button type="button" class="btn btn-info"
                             (click)="changeStagingStatus(batchObj.importExportId, i)">
-                            Import
+                            Process Batch
                           </button>
                           <button type="button" class="btn btn-danger"
                             (click)="deleteBatchStaging(batchObj.importExportId, i)">
@@ -133,8 +133,8 @@
                           <th>Process Name</th>
                           <th>Form No</th>
                           <th>Form Date</th>
-                          <th>Form Description</th>
-                          <th>Form Unit</th>
+                          <th>Claim Type</th>
+                          <th>Unit</th>
                         </tr>
                       </thead>
                       <tbody></tbody>

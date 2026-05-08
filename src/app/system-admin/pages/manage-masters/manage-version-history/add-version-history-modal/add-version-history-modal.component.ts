@@ -25,6 +25,7 @@ export class AddVersionHistoryModalComponent implements OnInit {
   @Input() dataList: Array<any> = [];
   @Output() setRecordData = new EventEmitter();
   formObj: any = {};
+  disableBtn = false;
 
   constructor(
     private $common: CommonService,
@@ -37,9 +38,11 @@ export class AddVersionHistoryModalComponent implements OnInit {
     
     try {
       this.$common.showLoader();
+      this.disableBtn = true;
       this.$versionhistory.createOrUpdate(this.formObj).subscribe(
         (response) => {
           this.$common.hideLoader();
+          this.disableBtn = false;
           if (response.status === true) {
             let object = response.object[0];
             this.$common.showMessage(`${response.message}`);
@@ -60,11 +63,13 @@ export class AddVersionHistoryModalComponent implements OnInit {
         },
         (error) => {
           this.$common.hideLoader();
+          this.disableBtn = false;
           console.log(error);
         }
       );
     } catch (error) {
       this.$common.hideLoader();
+      this.disableBtn = false;
       console.log(error);
     }
   }
@@ -78,6 +83,8 @@ export class AddVersionHistoryModalComponent implements OnInit {
     if (!changes) return;
     if (changes.record && changes.record.currentValue) {
       this.formObj = changes.record.currentValue;
+    } else if (changes.record) {
+      this.formObj = {};
     }
   }
 }

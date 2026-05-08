@@ -30,11 +30,13 @@ export class CommonFaqComponent implements OnInit {
       this.$faq.get(config).subscribe((response: any) => {
         this.$common.hideLoader();
         if (response.status === true) {
-          let list = response.object;
-          list?.map((item) => {
+          const list = Array.isArray(response.object) ? response.object : [];
+          list.map((item) => {
             item.isActive = false;
-          })
-          list[0].isActive = true;
+          });
+          if (list.length > 0) {
+            list[0].isActive = true;
+          }
           this.dataList = list;
         }
       }, err => {

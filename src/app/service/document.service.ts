@@ -12,7 +12,7 @@ constructor(private $common: CommonService, private http: HttpClient) { }
   
   get(config) {   
     
-    return this.http.get<any>(`codePilDocInfo/all`,config).pipe(
+    return this.http.get<any>(`codeDocInfo/all`,config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -21,7 +21,7 @@ constructor(private $common: CommonService, private http: HttpClient) { }
   }
 
   createOrUpdate(object) {
-    return this.http.post<any>(`codePilDocInfo/createOrUpdate`, object).pipe(
+    return this.http.post<any>(`codeDocInfo/createOrUpdate`, object).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -30,7 +30,7 @@ constructor(private $common: CommonService, private http: HttpClient) { }
   }
 
   delete(ids) {
-    return this.http.get<any>(`codePilDocInfo/deleteByIds`, ids).pipe(
+    return this.http.delete<any>(`codeDocInfo`, ids).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;

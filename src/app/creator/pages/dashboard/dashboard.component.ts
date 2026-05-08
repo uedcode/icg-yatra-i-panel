@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { CommonService } from 'src/app/service/common.service';
-import { FormStateService } from 'src/app/service/formState.service';
+import { ClaimService } from 'src/app/service/claim.service';
 
 declare var $: any;
 @Component({
@@ -13,7 +13,7 @@ declare var $: any;
 })
 export class DashboardComponent implements OnInit {
 
-    constructor(private $common: CommonService, public $auth: AuthService, private $count: FormStateService,
+    constructor(private $common: CommonService, public $auth: AuthService, private $claim: ClaimService,
         private route: Router) { }
 
     /**Contants */
@@ -95,7 +95,7 @@ export class DashboardComponent implements OnInit {
             if (this.userIdDetails?.roleTypeId == this.codeRoleList?.creator) {
                 this.config.headers.userId = this.userIdDetails?.userId;
             }
-            this.$count.getStateCount(this.config).subscribe((response: any) => {
+            this.$claim.getStatusCount(this.config).subscribe((response: any) => {
                 this.$common.hideLoader();
                 if (response.status === true) {
                     this.countObj = response.object;

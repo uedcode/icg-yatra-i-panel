@@ -34,13 +34,27 @@ export class ImportExportAuditService {
       })
     );
   }
-  getAllExported(config) {
+  getBatchChildren(importExportObject: any, codeStatus: any) {
+    const config: any = {
+      headers: {}
+    };
+    if (importExportObject?.type == codeStatus?.imported) {
+      config.headers.importBatchId = importExportObject.importExportId;
+    } else if (importExportObject?.type == codeStatus?.exported) {
+      config.headers.exportBatchId = importExportObject.importExportId;
+    }
+    return this.batchChilds(config);
+  }
+  getBatchList(config) {
     return this.http.get<any>(`auditImpExp/all`, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
       })
     );
+  }
+  getAllExported(config) {
+    return this.getBatchList(config);
   }
   createExport(config) {
     return this.http.post<any>(`auditImpExp/createExport`, null, config).pipe(
@@ -65,6 +79,13 @@ export class ImportExportAuditService {
         return response;
       })
     );
+  }
+  downloadBatchFromResponse(batchResponse: any) {
+    if (!batchResponse?.batchUrl || !batchResponse?.batchNo) {
+      return;
+    }
+    const fullUrl = `${this.$common.fileUrl}${batchResponse.batchUrl}`;
+    this.$common.downloadAbsolute(fullUrl, `${batchResponse.batchNo}.zip`);
   }
   changeStatusArchive(config) {
     return this.http.post<any>(`auditImpExp/changeStatusArchive`, null, config).pipe(

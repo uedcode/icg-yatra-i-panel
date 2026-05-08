@@ -106,7 +106,7 @@ export class ManageSystemAdminComponent implements OnInit {
 
     try {
       let req = {
-        "aclPilCodeRoleTypeDTO": {
+        "aclCodeRoleTypeDTO": {
           "id": "SY"
         },
         "aclCodeStatusDTO": {
@@ -156,7 +156,7 @@ export class ManageSystemAdminComponent implements OnInit {
       this.$common.hideLoader();
       if (response.status === true) {
         this.$common.showMessage(`${response.message}`);
-        this.dataList = this.dataList.filter(elem => elem.id != primaryId)
+        this.dataList = this.dataList.filter(elem => this.getRoleId(elem) != primaryId)
       }
     }, err => {
       this.$common.hideLoader();
@@ -218,6 +218,10 @@ export class ManageSystemAdminComponent implements OnInit {
   }
   // data shorting ends
 
+  getRoleId(dataObj: any) {
+    return dataObj?.roleId || dataObj?.id;
+  }
+
 
   tempObj;
   openChangeStatusModal(data, statusCode) {
@@ -227,12 +231,12 @@ export class ManageSystemAdminComponent implements OnInit {
 
   changeStatus(tempObj) {
     try {
-      if (tempObj?.id == this.userIdDetails?.roleId) {
+      if (this.getRoleId(tempObj) == this.userIdDetails?.roleId) {
         return this.$common.showMessage("You can't Deactivate yourself.", 'danger');
       }
       var config = {
         headers: {
-          "id": tempObj.id,
+          "roleId": this.getRoleId(tempObj),
           "statusId": tempObj.currentStatus
         }
       }

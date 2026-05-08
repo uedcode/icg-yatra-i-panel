@@ -39,10 +39,10 @@
               <i class="dropdown-icon fa fa-home"></i> Home
             </a> -->
             <a class="dropdown-item cursor_pointer" *ngFor="let dataObj of dataList"
-              [hidden]="userIdDetails?.roleId==dataObj.id" (click)="roleSwitch(dataObj)">
+              [hidden]="userIdDetails?.roleId==getRoleId(dataObj)" (click)="roleSwitch(dataObj)">
               {{ dataObj?.roleName }}
-              <span *ngIf="dataObj?.aclPilCodeDesignationDTO">
-                ({{ dataObj?.aclPilCodeDesignationDTO.descr }})
+              <span *ngIf="dataObj?.aclCodeDesignationDTO || dataObj?.aclPilCodeDesignationDTO">
+                ({{ dataObj?.aclCodeDesignationDTO?.descr || dataObj?.aclPilCodeDesignationDTO?.descr }})
               </span>
               
               <!-- <hr style="margin-top: 1px; margin-bottom: 0px; padding: 0px;height:1px;border-width:0;color:gray;background-color:gray"> -->

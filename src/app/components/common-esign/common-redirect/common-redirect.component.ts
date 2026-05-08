@@ -27,6 +27,11 @@ export class CommonRedirectComponent implements OnInit {
   txnId;
   userIdDetails;
   codeRoleType;
+  statusCode = '';
+  statusMessage = '';
+  redirectPath = '';
+  private readonly gatewayStorageKey = environment.esignConfig?.gatewayStorageKey || 'gateway';
+  private readonly redirectStorageKey = environment.esignConfig?.redirectStorageKey || 'esignRedirectPath';
 
   seconds: any;
   timeInt;
@@ -36,15 +41,20 @@ export class CommonRedirectComponent implements OnInit {
     this.codeRoleType = this.$auth?.codeRoleType();
     this.route.queryParams.subscribe((params) => {
       this.txnId = params?.txnId;
-      if (this.txnId) {
-        this.getSingleForm();
-
-        this.seconds = 60;
-        this.getTime();
-        setTimeout(() => {
-          this.redirectToNextPage();
-        }, this.seconds * 1000);
+      this.redirectPath = this.getRedirectPath();
+      if (!this.txnId) {
+        this.statusMessage = 'Transaction reference not found. Please retry the eSign flow from the claim page.';
+        this.clearGateway();
+        return;
       }
+
+      this.getSingleForm();
+
+      this.seconds = 60;
+      this.getTime();
+      setTimeout(() => {
+        this.redirectToNextPage();
+      }, this.seconds * 1000);
     });
   }
 
@@ -62,11 +72,19 @@ export class CommonRedirectComponent implements OnInit {
           this.$common.hideLoader();
           if (response.status === true) {
             this.transaction = response?.object;
+            this.statusCode = this.transaction?.trasactionStatus || '';
+            this.statusMessage = this.getStatusMessage();
+            this.clearGateway();
+          } else {
+            this.statusCode = 'ER';
+            this.statusMessage = response?.message || 'Unable to fetch transaction details.';
           }
         },
         (err) => {
           console.log(err);
           this.$common.hideLoader();
+          this.statusCode = 'ER';
+          this.statusMessage = err?.error?.message || 'Unable to fetch transaction details.';
         }
       );
     } catch (error) {
@@ -76,13 +94,13 @@ export class CommonRedirectComponent implements OnInit {
   }
 
   redirectToNextPage() {
-    let moduleUrl = this.$auth.getModuleName();
-    if (this.userIdDetails?.roleTypeId == this.codeRoleType.creator) {
-      this.router.navigateByUrl(moduleUrl + `/new`);
+    const targetPath = this.buildRedirectUrl();
+    this.clearStoredRedirectPath();
+    if (targetPath) {
+      this.router.navigateByUrl(targetPath);
+      return;
     }
-    else if (this.userIdDetails?.roleTypeId == this.codeRoleType.approver||this.userIdDetails?.roleTypeId == this.codeRoleType.verifier) {
-      this.router.navigateByUrl(moduleUrl + `/inbox`);
-    }
+    this.router.navigateByUrl('/login');
   }
 
   getTime() {
@@ -99,6 +117,80 @@ export class CommonRedirectComponent implements OnInit {
     if (this.timeInt) {
       clearInterval(this.timeInt);
     }
+  }
+
+  private getRedirectPath(): string {
+    const storedRedirectPath = this.getStoredRedirectPath();
+    if (storedRedirectPath) {
+      return storedRedirectPath;
+    }
+
+    const moduleUrl = this.$auth.getModuleName();
+    if (!moduleUrl) {
+      return '/login';
+    }
+
+    if (this.userIdDetails?.roleTypeId == this.codeRoleType.creator) {
+      return moduleUrl + `/new`;
+    }
+
+    if (
+      this.userIdDetails?.roleTypeId == this.codeRoleType.approver ||
+      this.userIdDetails?.roleTypeId == this.codeRoleType.verifier
+    ) {
+      return moduleUrl + `/inbox`;
+    }
+
+    return moduleUrl + `/dashboard`;
+  }
+
+  private getStatusMessage(): string {
+    if (this.statusCode === 'SC') {
+      return 'eSign completed successfully.';
+    }
+
+    if (this.statusCode === 'US') {
+      return this.transaction?.reason || 'Transaction failed.';
+    }
+
+    return this.transaction?.reason || 'Transaction status is still being processed or could not be determined.';
+  }
+
+  private clearGateway(): void {
+    localStorage.removeItem(this.gatewayStorageKey);
+  }
+
+  private getStoredRedirectPath(): string {
+    const value = localStorage.getItem(this.redirectStorageKey) || '';
+    if (!value || !value.startsWith('/')) {
+      return '';
+    }
+    return value;
+  }
+
+  private clearStoredRedirectPath(): void {
+    localStorage.removeItem(this.redirectStorageKey);
+  }
+
+  private buildRedirectUrl(): string {
+    if (!this.redirectPath) {
+      return '';
+    }
+
+    const params: string[] = [];
+    if (this.statusCode) {
+      params.push(`esignStatus=${encodeURIComponent(this.statusCode)}`);
+    }
+    if (this.txnId) {
+      params.push(`txnId=${encodeURIComponent(this.txnId)}`);
+    }
+
+    if (!params.length) {
+      return this.redirectPath;
+    }
+
+    const separator = this.redirectPath.includes('?') ? '&' : '?';
+    return `${this.redirectPath}${separator}${params.join('&')}`;
   }
 
 }

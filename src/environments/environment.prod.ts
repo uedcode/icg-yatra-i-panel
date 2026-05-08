@@ -13,6 +13,23 @@ export const environment = {
     isEnabled: false,
     siteKey: '6LcWzLIkAAAAABYAhcISETEWai7sTdufc9nZQ6bW',
   },
+  authConfig: {
+    basicClientAuth: 'Basic VVNFUl9DTElFTlRfQVBQOnBhc3N3b3Jk',
+    storageKeys: {
+      accessToken: 'pilotageAccessToken',
+      refreshToken: 'pilotageRefreshToken',
+      expiresIn: 'pilotageExpiresIn',
+      accessCount: 'pilotageAccessCount',
+      userDetails: 'pilotageUserDetails',
+      deviceId: 'pilotageDeviceId',
+      isDashboard: 'isDashboard',
+    },
+  },
+  esignConfig: {
+    authUrl: 'https://authenticate.e-mudhra.com/',
+    gatewayStorageKey: 'gateway',
+    redirectStorageKey: 'esignRedirectPath',
+  },
   appConfig: {
     id: 'PILOTAGE',
     logo: 'assets/images/logo.png',

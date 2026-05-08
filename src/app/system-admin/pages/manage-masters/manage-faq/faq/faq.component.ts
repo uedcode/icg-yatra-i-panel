@@ -60,6 +60,11 @@ export class FaqComponent implements OnInit {
   }
   // Get end
 
+  openAddModal() {
+    this.recordObj = {};
+    $('#manage_faq').modal('show');
+  }
+
   //   Edit start
   editRecord(object) {
     $('#manage_faq').modal('show');
@@ -74,6 +79,7 @@ export class FaqComponent implements OnInit {
         ids: primaryId,
       },
     };
+    this.$common.showLoader();
     this.$faq.delete(config).subscribe(
       (response: any) => {
         this.$common.hideLoader();

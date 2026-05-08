@@ -12,6 +12,7 @@ import { MasterShipService } from 'src/app/service/master/master-ship.service';
 import { UserService } from 'src/app/service/user.service';
 import { CommonService } from 'src/app/service/common.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
 import { ClaimUtilService } from 'src/app/service/claimUtil.service';
 
 declare var $: any;
@@ -97,6 +98,7 @@ interface ClaimsFteAdv {
   claimState?: string | null;
 
   gxFormFileUrl?: string | null;
+  yatDocsDTOs?: any[];
   internalRemarks?: string | null;
   claimAmt: string | null;
 
@@ -135,6 +137,7 @@ export class FormFteComponent implements OnInit {
   editTravelIndex: number | null = null;
   row: any;
   noDtsAmount: 0;
+  documentDtos: any[] = [];
 
   onFteModeChange() {
     this.fteOtherMode = this.tempFteTravel.modeOfTravel === 'Others';
@@ -344,9 +347,8 @@ export class FormFteComponent implements OnInit {
   }
 
   navigatePreview(route: string, id: any): void {
-    // keep same pattern as TY
-    this.router.navigate([route], {
-      queryParams: { claimId: id || this.claims?.claimId },
+    this.router.navigate(['../form-fte-detail'], {
+      queryParams: { claimId: id || this.claims?.claimId || this.claimIdParam, subFormId: 'F' },
     });
   }
 
@@ -358,7 +360,32 @@ export class FormFteComponent implements OnInit {
   }
 
   checkEsignAvailability(): void {
-    // keep blank or implement backend check later
+    if (this.claims?.signWith !== this.codeSignType.eSign) {
+      return;
+    }
+
+    const config = {
+      headers: {
+        userId: this.userIdDetails?.userId || '',
+        gxUnitId: String(this.userIdDetails?.unitId || ''),
+      },
+    };
+
+    this.$claim.checkEsignAvailability(config).subscribe({
+      next: (response: any) => {
+        if (response?.status === false) {
+          this.claims.signWith = this.codeSignType.inkSign;
+          this.$common.showMessage(
+            response?.message || 'eSign is not available for this FTE claim.',
+            'danger'
+          );
+        }
+      },
+      error: () => {
+        this.claims.signWith = this.codeSignType.inkSign;
+        this.$common.showMessage('Unable to verify eSign availability.', 'danger');
+      },
+    });
   }
 
   // if you kept this in html anywhere else, keep stub
@@ -424,7 +451,8 @@ export class FormFteComponent implements OnInit {
     private $user: UserService,
     private $common: CommonService,
     private $claim: ClaimService,
-    private $util: ClaimUtilService
+    private $util: ClaimUtilService,
+    private $codeDocInfo: CodeDocInfoService
   ) {}
 
   ngOnInit(): void {
@@ -435,6 +463,9 @@ export class FormFteComponent implements OnInit {
     this.initFromRoute();
     this.getUnits();
     this.loadFtePurposeTypes();
+    this.$codeDocInfo.documentDtos.subscribe((docs: any) => {
+      this.documentDtos = Array.isArray(docs) ? docs : [];
+    });
 
     this.route.queryParams.subscribe(() => {
       this.getFormDetails();
@@ -459,6 +490,7 @@ export class FormFteComponent implements OnInit {
 
       // ✅ Financial Terms Tab
       yatForeignTravelDetailDTOs: [],
+      yatDocsDTOs: [],
 
       yatClaimBankDetailDTO: {
         claimBankId: null,
@@ -559,7 +591,7 @@ export class FormFteComponent implements OnInit {
         gxUnitId: this.userIdDetails?.unitId ?? '',
         userId: this.userIdDetails?.userId ?? '',
         subFormId: this.codeClaim.fteAdv,
-        isfetch: 'true',
+        isFetch: 'true',
         claimId: '',
       };
 
@@ -677,8 +709,14 @@ export class FormFteComponent implements OnInit {
               ...obj,
               yatForeignDutyAdvDTOs: [{ ...adv }],
               yatForeignTravelDetailDTOs: travelList,
+              yatDtsDetailDTOs: obj.yatDtsDetailDTOs || this.claims.yatDtsDetailDTOs,
+              yatDocsDTOs: obj.yatDocsDTOs || [],
+              yatClaimBankDetailDTO:
+                obj.yatClaimBankDetailDTO || this.claims.yatClaimBankDetailDTO,
             };
 
+            this.documentDtos = this.claims.yatDocsDTOs || [];
+            this.$codeDocInfo.setDocument(this.documentDtos as []);
             this.claims.signWith = this.codeSignType.eSign;
           } else if (obj.userBasicDetailDTO) {
             const user = obj.userBasicDetailDTO;
@@ -926,6 +964,7 @@ export class FormFteComponent implements OnInit {
 
       // sign
       if (!tempClaim.signWith) tempClaim.signWith = this.codeSignType.eSign;
+      tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
 
       // ifsc flag
       tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
@@ -951,15 +990,16 @@ export class FormFteComponent implements OnInit {
 
       this.$claim.createOrUpdateClaim(formData, null).subscribe(
         (res: any) => {
-          const obj = res?.obj || res?.object || res;
+          const obj = Array.isArray(res?.object)
+            ? res.object[0]
+            : res?.object || res?.obj || res;
           if (!obj) {
             this.$common.hideLoader();
             this.disableBtn = false;
             return;
           }
 
-          const formStateInputDTO = obj.formStateInputDTO || {};
-          const respStatus = formStateInputDTO.status || status;
+          const respStatus = status;
 
           if (obj.id || obj.claimId)
             this.claims.claimId = obj.claimId || obj.id;
@@ -969,16 +1009,17 @@ export class FormFteComponent implements OnInit {
             : '';
 
           if (respStatus === this.codeClaimState.outbox) {
-            if ((window as any).$)
-              (window as any)('#esign_modal').modal('show');
-          } else if (respStatus === this.codeClaimState.draft) {
-            if (moduleUrl) this.router.navigateByUrl(moduleUrl + `/draft`);
-          } else if (respStatus === 'SB') {
             this.$common.showMessage(
-              'Claim submitted successfully!',
+              res?.message || 'FTE claim submitted successfully!',
               'success'
             );
             if (moduleUrl) this.router.navigateByUrl(moduleUrl + `/submitted`);
+          } else if (respStatus === this.codeClaimState.draft) {
+            this.$common.showMessage(
+              res?.message || 'FTE draft saved successfully.',
+              'success'
+            );
+            if (moduleUrl) this.router.navigateByUrl(moduleUrl + `/draft`);
           }
 
           this.$common.hideLoader();
@@ -1582,5 +1623,21 @@ export class FormFteComponent implements OnInit {
     if (!Number.isFinite(n) || n <= 0) return null;
 
     return n;
+  }
+
+  private mapClaimDocumentsForSave(documents: any[]): any[] {
+    return (documents || []).map((doc) => {
+      const codeDocInfoDTO = doc?.codeDocInfoDTO || doc?.codePilDocInfoDTO || null;
+      return {
+        ...doc,
+        codeDocInfoDTO: codeDocInfoDTO
+          ? {
+              id: codeDocInfoDTO.id,
+              docName: codeDocInfoDTO.docName,
+            }
+          : null,
+        descr: doc?.otherDocName || doc?.descr || null,
+      };
+    });
   }
 }

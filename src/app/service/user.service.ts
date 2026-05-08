@@ -27,7 +27,7 @@ export class UserService {
     );
   }
   roles(config) {
-    return this.http.get<any>(`aclPilRole/byUser`, config).pipe(
+    return this.http.get<any>(`role/byUser`, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -35,7 +35,7 @@ export class UserService {
     );
   }
   rolesById(config) {
-    return this.http.get<any>(`aclPilRole/all`, config).pipe(
+    return this.http.get<any>(`role/all`, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;

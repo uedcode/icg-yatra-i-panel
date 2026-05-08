@@ -1,5 +1,5 @@
 <div class="container">
-  <div *ngIf="transaction.trasactionStatus=='SC'">
+  <div *ngIf="statusCode=='SC'">
     <div class="row mb-4">
       <div class="col-md-4 offset-4">
         <div class="successFailureCard">
@@ -32,19 +32,37 @@
       </div>
     </div>
   </div>
-  <div class="row" *ngIf="transaction.trasactionStatus=='US'">
+  <div class="row" *ngIf="statusCode=='US' || statusCode=='ER'">
     <div class="col-md-4 offset-4">
       <div class="successFailureCard">
         <img src="assets/images/cancel.png" alt="Failure Icon">
         <h3 class="mt-5">Oops</h3>
         <p>Transaction Failed</p>
-        <p>{{transaction?.reason}}</p>
+        <p>{{statusMessage}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="statusCode && statusCode != 'SC' && statusCode != 'US' && statusCode != 'ER'">
+    <div class="col-md-4 offset-4">
+      <div class="successFailureCard">
+        <img src="assets/images/cancel.png" alt="Pending Icon">
+        <h3 class="mt-5">Transaction Update</h3>
+        <p>{{statusMessage}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="!txnId">
+    <div class="col-md-4 offset-4">
+      <div class="successFailureCard">
+        <img src="assets/images/cancel.png" alt="Missing transaction Icon">
+        <h3 class="mt-5">Missing Transaction</h3>
+        <p>{{statusMessage}}</p>
       </div>
     </div>
   </div>
   <div class="text-center" style="margin-top: 15px;">
-    <p style="color: red;">You will be redirected to the main page in 00:{{seconds}} seconds.</p>
-    <button type="button" class="btn btn-info" (click)="redirectToNextPage()">Redirect to Main Page</button>
+    <p style="color: red;" *ngIf="txnId">You will be redirected to the previous workflow page in 00:{{seconds}} seconds.</p>
+    <button type="button" class="btn btn-info" (click)="redirectToNextPage()">Return to Workflow</button>
     <!-- <p style="font-size: 13px;">Or it will automatically redirected to main page in 30 seconds!</p> -->
   </div>
 </div>

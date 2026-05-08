@@ -1,0 +1,37 @@
+<div class="modal" id="addMessage">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form #mainForm="ngForm" (ngSubmit)="mainForm.valid && saveRecord()">
+        <div class="modal-header">
+          <h4 class="modal-title">{{ formObj.id ? 'Update Message' : 'Add Message' }}</h4>
+          <button type="button" class="close" data-dismiss="modal" (click)="reset()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <label>Title <span class="text-danger">*</span></label>
+              <input class="form-control" type="text" name="title" [(ngModel)]="formObj.title" #title="ngModel" required />
+              <div *ngIf="title.invalid && (title.dirty || title.touched || mainForm.submitted)" class="invalid-msg">
+                Title is required.
+              </div>
+            </div>
+            <div class="col-md-12 mt-3">
+              <label>Description <span class="text-danger">*</span></label>
+              <textarea class="form-control" rows="4" name="descr" [(ngModel)]="formObj.descr" #descr="ngModel" required></textarea>
+              <div *ngIf="descr.invalid && (descr.dirty || descr.touched || mainForm.submitted)" class="invalid-msg">
+                Description is required.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="reset()">Close</button>
+          <button type="submit" class="btn btn-primary" [disabled]="disableBtn">
+            {{ formObj.id ? 'Update' : 'Save' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

@@ -3,6 +3,8 @@ import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { CommonService } from 'src/app/service/common.service';
 import { environment } from 'src/environments/environment';
 import { FormStateService } from 'src/app/service/formState.service';
+import { ClaimService } from 'src/app/service/claim.service';
+import { AuthService } from 'src/app/service/auth.service';
 
 declare var $: any;
 
@@ -16,11 +18,14 @@ export class CommonViewFormHistoryModalComponent implements OnInit {
 
    constructor(
     private $common: CommonService,
-    private $formState: FormStateService
+    private $formState: FormStateService,
+    private $claim: ClaimService,
+    private $auth: AuthService
   ) { }
 
   @Input() stateList: Array<any> = [];
   @Input() formId: any;
+  @Input() claimId: any;
   id: any;
   dataObj: any = {};
   noOfPage: any = 10;
@@ -40,7 +45,38 @@ export class CommonViewFormHistoryModalComponent implements OnInit {
   getAll() {
 
     try {
+      if (!this.formId && !this.claimId) {
+        this.stateList = [];
+        return;
+      }
+
       this.$common.showLoader();
+      if (this.claimId) {
+        const userDetails = this.$auth.getUserDetails();
+        this.config = {
+          headers: {
+            claimId: this.claimId,
+            roleTypeId: userDetails?.roleTypeId,
+            userId: userDetails?.userId,
+            unitId: userDetails?.unitId,
+            gxUnitId: userDetails?.unitId,
+          },
+        };
+        this.$claim.getClaimStates(this.config).subscribe(
+          (response: any) => {
+            this.$common.hideLoader();
+            this.stateList = response?.status === true && Array.isArray(response?.object)
+              ? response.object
+              : [];
+          },
+          (err) => {
+            this.$common.hideLoader();
+            console.log(err);
+          }
+        );
+        return;
+      }
+
       this.config = {
         headers: { formId: this.formId },
       };
@@ -70,10 +106,10 @@ export class CommonViewFormHistoryModalComponent implements OnInit {
     this.reverse = !this.reverse;
   }
 
-   ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges) {
     if (!changes) return;
 
-    if (changes.formId && changes.formId.currentValue) {
+    if ((changes.formId && changes.formId.currentValue) || (changes.claimId && changes.claimId.currentValue)) {
      this.getAll();
     }
   }

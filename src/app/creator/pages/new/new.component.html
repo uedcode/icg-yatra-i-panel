@@ -8,11 +8,11 @@
         <!--Page header-->
         <div class="page-header">
           <div class="page-leftheader">
-            <h4 class="page-title">New </h4>
+            <h4 class="page-title">New Claim</h4>
             <ol class="breadcrumb pl-0">
               <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
               <li class="breadcrumb-item active" aria-current="page">
-                New
+                New Claim
               </li>
             </ol>
           </div>
@@ -35,7 +35,7 @@
                     <thead>
                       <tr>
                         <th class="wd-5p">SL</th>
-                        <th class="wd-20p">Form Name </th>
+                        <th class="wd-20p">Claim Type</th>
 
                         <th class="actionBtnWidth">Action</th>
 
@@ -46,7 +46,7 @@
                         <td>{{i+1}}</td>
                         <td>{{dataObj?.descr}}</td>
                         <td>
-                          <button class="btn btn-primary" (click)="actionPage(dataObj)" title="Create" [disabled]="dataObj?.isAllowed == 0"> Create</button>
+                          <button class="btn btn-primary" (click)="actionPage(dataObj)" title="Create" [disabled]="dataObj?.isAllowed == 0">Create</button>
                         </td>
                       </tr>
                     </tbody>

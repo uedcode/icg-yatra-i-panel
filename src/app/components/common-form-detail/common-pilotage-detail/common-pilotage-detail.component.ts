@@ -213,21 +213,12 @@ export class CommonPilotageDetailComponent implements OnInit {
   // }
   getFormDownloadLink() {
     try {
-
       this.$common.showLoader();
-      this.config = {
-        headers: {
-          formId: this.formId,
-          // desigId:this.userIdDetails?.desigId
-        },
-      };
-      this.$form?.getFromDownloadUrl(this.config).subscribe(
+      this.$form?.getFormDownloadLink(this.formId).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
-
-            // window.open(`${this.fileUrl}${response?.object}`); // Open the generated PDF
-            this.$common.download(response?.object.formFileUrl);
+            this.$form.downloadFormFromResponse(response?.object);
           }
         },
         (err) => {

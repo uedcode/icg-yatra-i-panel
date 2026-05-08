@@ -31,9 +31,7 @@
             <button
               type="button"
               class="btn btn-primary"
-              (click)="dataObj = {}"
-              data-toggle="modal"
-              data-target="#adddocuments"
+              (click)="openAddModal()"
               title="Add"
             >
               <i class="fa fa-plus"></i>
@@ -166,7 +164,7 @@
                           title="Delete"
                           data-toggle="modal"
                           data-target="#delete_modal"
-                          (click)="id = dataObj.id"
+                          (click)="id = dataObj.docInfoId"
                         >
                           <i class="fa fa-trash"></i>
                         </button>

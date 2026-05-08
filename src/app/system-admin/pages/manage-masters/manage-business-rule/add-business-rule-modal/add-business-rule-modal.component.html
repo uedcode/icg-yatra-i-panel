@@ -1,0 +1,83 @@
+<div
+  class="modal fade"
+  id="addBusinessRule"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+  data-keyboard="false"
+  data-backdrop="static"
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="manage_admin">
+          {{ formObj.id ? 'Update' : 'Add' }} Business Rule
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="reset()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body form_modal_body">
+        <form
+          autocomplete="off"
+          (ngSubmit)="mainForm.form.valid && saveRecord()"
+          #mainForm="ngForm"
+          novalidate
+        >
+          <div class="modal_form_sec">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="form-label"
+                    >Business Rule<sup class="required-msg">*</sup></label
+                  >
+                  <textarea
+                    rows="4"
+                    class="form-control"
+                    placeholder="Business Rule"
+                    maxlength="999"
+                    [(ngModel)]="formObj.rule"
+                    #rule="ngModel"
+                    name="rule"
+                    required
+                  ></textarea>
+                  <div *ngIf="rule.touched || (mainForm.submitted && rule.invalid)">
+                    <div *ngIf="rule.errors?.required" class="invalid-msg">
+                      Business Rule is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="text-right">
+              <button
+                type="submit"
+                [disabled]="disableBtn"
+                class="btn btn-primary"
+                title="{{ formObj.id ? 'Update' : 'Submit' }}"
+              >
+                {{ formObj.id ? 'Update' : 'Submit' }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                title="Reset"
+                (click)="reset()"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -6,7 +6,6 @@ import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth.service';
 import { FormService } from 'src/app/service/form.service';
 import { ImportExportAuditService } from 'src/app/service/importExportAudit.service';
-import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 declare var $: any;
 
@@ -47,13 +46,12 @@ export class ExportedComponent implements OnInit {
   allAdminForm: any = [];
   batchList: any = [];
   batchChildList: any = [];
-  fileUrl = environment.fileUrl;
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
-    this.getExportedBatch();
+    this.loadBatchList();
   }
-  getExportedBatch() {
+  loadBatchList() {
     try {
       this.$common.showLoader();
       let config = {
@@ -63,7 +61,7 @@ export class ExportedComponent implements OnInit {
           'isStaging': "0"
         }
       }
-      this.$importExport.getAllExported(config).subscribe(
+      this.$importExport.getBatchList(config).subscribe(
         (response: any) => {
           if (response.status == true) {
             this.batchList = response.object;
@@ -83,18 +81,9 @@ export class ExportedComponent implements OnInit {
   getAllBatchChilds(importExportObject) {
     try {
       this.$common.showLoader();
-      let config: any = {
-        headers: {}
-      }
       this.batchNo = importExportObject.batchNo;
       this.viewingImportExportId = importExportObject.importExportId;
-      // config.headers.batchType = $rootScope.codeBatchType.auditBatch;
-      if (importExportObject.type == this.codeStatus.imported) {
-        config.headers.importBatchId = importExportObject.importExportId;
-      } else if (importExportObject.type == this.codeStatus.exported) {
-        config.headers.exportBatchId = importExportObject.importExportId;
-      }
-      this.$importExport.batchChilds(config).subscribe(
+      this.$importExport.getBatchChildren(importExportObject, this.codeStatus).subscribe(
         (response: any) => {
           if (response.status) {
             this.showBatchChilds = true;
@@ -145,14 +134,7 @@ export class ExportedComponent implements OnInit {
             }
           }
           var responseObject = response.object[0]
-          var fullUrl = this.fileUrl + responseObject.batchUrl;
-          var element = document.createElement('a');
-          element.setAttribute('href', fullUrl);
-          element.setAttribute('download', responseObject.batchNo + ".zip");
-          element.style.display = 'none';
-          document.body.appendChild(element);
-          element.click();
-          document.body.removeChild(element);
+          this.$importExport.downloadBatchFromResponse(responseObject);
 
           this.$common.hideLoader();
         }

@@ -1,0 +1,36 @@
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <app-sidebar></app-sidebar>
+    <div class="app-content">
+      <div class="side-app">
+        <div class="page-header">
+          <div class="page-leftheader">
+            <h4 class="page-title">Manual Advance Preview</h4>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4"><strong>Unit:</strong> {{ manual?.codeUnitDTO?.descr || '-' }}</div>
+              <div class="col-md-4"><strong>PNo:</strong> {{ manual?.pno || '-' }}</div>
+              <div class="col-md-4"><strong>Name:</strong> {{ manual?.name || '-' }}</div>
+              <div class="col-md-4 mt-2"><strong>Rank:</strong> {{ manual?.rank || '-' }}</div>
+              <div class="col-md-4 mt-2"><strong>Pay Level:</strong> {{ manual?.payLevel || '-' }}</div>
+              <div class="col-md-4 mt-2"><strong>Basic Pay:</strong> {{ manual?.basicPay || '-' }}</div>
+              <div class="col-md-4 mt-2"><strong>Form Type:</strong> {{ manual?.formType || '-' }}</div>
+              <div class="col-md-4 mt-2"><strong>Amount:</strong> {{ manual?.amount || '-' }}</div>
+              <div class="col-md-4 mt-2"><strong>Admissible:</strong> {{ manual?.admissibleAmt || '-' }}</div>
+              <div class="col-md-12 mt-2"><strong>Reason:</strong> {{ manual?.reason || '-' }}</div>
+              <div class="col-md-12 mt-3" *ngIf="manual?.manualFormUrl">
+                <a class="btn btn-info" [href]="manual?.manualFormUrl" target="_blank">View Manual Signed Form</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>
+

@@ -32,6 +32,13 @@ import { ImportedComponent } from './pages/audit-import-export/imported/imported
 import { ArchivedImportComponent } from './pages/audit-import-export/archived-import/archived-import.component';
 import { PortRateComponent } from './pages/manage-masters/manage-port-rate/port-rate/port-rate.component';
 import { ManageRoleComponent } from './pages/manage-role/manage-role.component';
+import { ReasonComponent } from './pages/manage-masters/manage-reason/reason/reason.component';
+import { BusinessRuleComponent } from './pages/manage-masters/manage-business-rule/business-rule/business-rule.component';
+import { MessageComponent } from './pages/manage-masters/manage-message/message/message.component';
+import { PayLevelComponent } from './pages/manage-masters/manage-pay-level/pay-level/pay-level.component';
+import { TyDutyPurposeComponent } from './pages/manage-masters/manage-ty-duty-purpose/ty-duty-purpose/ty-duty-purpose.component';
+import { EsignReportComponent } from './pages/reports/esign-report/esign-report.component';
+import { StatisticsComponent } from './pages/reports/statistics/statistics.component';
 
 const routes: Routes = [
   {
@@ -61,25 +68,25 @@ const routes: Routes = [
     path: 'system-admin',
     component: ManageSystemAdminComponent,
     canActivate: [AuthGuard],
-    data: { title: 'System Admin' },
+    data: { title: 'Manage System Admins' },
   },
   {
     path: 'unit-admin',
     component: ManageUnitAdminComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Unit Admin' },
+    data: { title: 'Manage Unit Admins' },
   },
   {
     path: 'manage-role',
     component: ManageRoleComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Manage Role' },
+    data: { title: 'Manage Roles' },
   },
   {
     path: 'mapping-unit',
     component: MappingUnitComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Unit Mapping' },
+    data: { title: 'Manage Unit Mappings' },
   },
   {
     path: 'add-mapping-unit',
@@ -93,25 +100,25 @@ const routes: Routes = [
     path: 'documents',
     component: DocumentsComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Documents' },
+    data: { title: 'Manage Documents' },
   },
   {
     path: 'ports',
     component: PortComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Port' },
+    data: { title: 'Manage Ports' },
   },
   {
     path: 'port-rate',
     component: PortRateComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Port Rate' },
+    data: { title: 'Manage Port Rates' },
   },
   {
     path: 'ships',
     component: ShipComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Ship' },
+    data: { title: 'Manage Ships' },
   },
   {
     path: 'version-history',
@@ -141,7 +148,37 @@ const routes: Routes = [
     path: 'faq',
     component: FaqComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Faq' },
+    data: { title: 'Manage FAQs' },
+  },
+  {
+    path: 'reason',
+    component: ReasonComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Reason' },
+  },
+  {
+    path: 'business-rule',
+    component: BusinessRuleComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Business Rule' },
+  },
+  {
+    path: 'message',
+    component: MessageComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Message Master' },
+  },
+  {
+    path: 'pay-level',
+    component: PayLevelComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Pay Level' },
+  },
+  {
+    path: 'ty-duty-purpose',
+    component: TyDutyPurposeComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'TY Duty Purpose' },
   },
 
   {
@@ -154,7 +191,7 @@ const routes: Routes = [
     path: 'profile-setting',
     component: ProfileSettingComponent,
     canActivate: [AuthGuard],
-    data: { title: 'profile setting' },
+    data: { title: 'Profile Setting' },
   },
 
   {
@@ -179,37 +216,49 @@ const routes: Routes = [
     path: 'inbox',
     component: InboxComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Inbox' },
+    data: { title: 'Audit Export Queue' },
   },
   {
     path: 'exported',
     component: ExportedComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Exported' },
+    data: { title: 'Exported Batches' },
   },
   {
     path: 'archived',
     component: ArchivedComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Archived' },
+    data: { title: 'Archived Exports' },
   },
   {
     path: 'import',
     component: ImportComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Import' },
+    data: { title: 'Audit Import Queue' },
   },
   {
     path: 'imported',
     component: ImportedComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Imported' },
+    data: { title: 'Imported Batches' },
   },
   {
     path: 'archived-import',
     component: ArchivedImportComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Archived Import' },
+    data: { title: 'Archived Imports' },
+  },
+  {
+    path: 'esign-report',
+    component: EsignReportComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'eSign Report' },
+  },
+  {
+    path: 'statistics',
+    component: StatisticsComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Statistics' },
   },
 ];
 

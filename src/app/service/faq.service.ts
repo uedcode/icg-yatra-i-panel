@@ -30,7 +30,7 @@ constructor(private $common: CommonService, private http: HttpClient) { }
   }
 
   delete(ids) {
-    return this.http.get<any>(`faq/deleteByIds`, ids).pipe(
+    return this.http.delete<any>(`faq`, ids).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;

@@ -179,6 +179,42 @@ export class ClaimService {
     );
   }
 
+  createOrUpdateClaimFormData(formData: FormData) {
+    return this.http.post<any>('claim/createOrUpdate', formData).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  changeClaimStatusById(payload: any) {
+    return this.http.post<any>(`claimState/changeStatusById`, payload).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  editClaim(config?: any) {
+    return this.http.post<any>(`claim/editClaim`, null, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  deleteClaim(config?: any) {
+    return this.http.delete<any>(`claim`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
   /**
    * Sub form master (Pilotage, TY Advance, FTE, LTC etc.).
    * Old JS: codeSubFormUrl = ApiUrl + "codeSubForm"; /all
@@ -354,6 +390,15 @@ export class ClaimService {
    */
   getClaimRemarks(config?: any) {
     return this.http.get<any>(`claimRemark/all`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  getClaimRemarkSummary(config?: any) {
+    return this.http.get<any>(`claim/getClaimRemarks`, config).pipe(
       map((res) => {
         this.$common.parseResponse(res);
         return res;

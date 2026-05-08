@@ -38,6 +38,7 @@ import { PassedComponent } from './pages/form-request/passed/passed.component';
 import { PilotageHistoryStatusComponent } from './pages/form-detail/pilotage-history-status/pilotage-history-status.component';
 import { PilotageChildModalComponent } from './pages/form-detail/pilotage-child-modal/pilotage-child-modal.component';
 import { ChangeApproverStatusComponent } from './pages/form-detail/change-approver-status/change-approver-status.component';
+import { FormClaimDetailComponent } from './pages/form-detail/form-claim-detail/form-claim-detail.component';
 
 const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more options
   optionValueField: 'id',
@@ -66,6 +67,7 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         PilotageHistoryStatusComponent,
         PilotageChildModalComponent,
         ChangeApproverStatusComponent,
+        FormClaimDetailComponent,
     ], imports: [RouterModule,
         CommonModule,
         ApproverRoutingModule,

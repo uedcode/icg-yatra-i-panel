@@ -29,6 +29,7 @@ export class AddDocumentsModalComponent implements OnInit {
   formObj: any = {
     isRequired: "No",
   };
+  disableBtn = false;
   config;
 
   constructor(
@@ -60,7 +61,7 @@ export class AddDocumentsModalComponent implements OnInit {
   ];
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
-    
+    this.getCodeSubForm();
   }
 
 
@@ -74,22 +75,20 @@ export class AddDocumentsModalComponent implements OnInit {
     };
     try {
       this.$common.showLoader();
-      let config = {
-        headers: {},
-      };
+      this.disableBtn = true;
       this.$document.createOrUpdate(obj).subscribe(
         (response) => {
           this.$common.hideLoader();
-          
+          this.disableBtn = false;
           if (response.status === true) {
             let object = response.object[0];
             this.$common.showMessage(`${response.message}`);
             $('#adddocuments').modal('hide');
-            if (!this.formObj.id) {
+            if (!this.formObj.docInfoId) {
               this.dataList.push(object);
             } else {
               var index = this.dataList.findIndex(
-                (elem) => elem.id == object.id
+                (elem) => elem.docInfoId == object.docInfoId
               );
               this.dataList[index] = object;
             }
@@ -100,11 +99,13 @@ export class AddDocumentsModalComponent implements OnInit {
         },
         (error) => {
           this.$common.hideLoader();
+          this.disableBtn = false;
           console.log(error);
         }
       );
     } catch (error) {
       this.$common.hideLoader();
+      this.disableBtn = false;
       console.log(error);
     }
   }
@@ -151,9 +152,13 @@ export class AddDocumentsModalComponent implements OnInit {
 
     if (!changes) return;
     if (changes.record && changes.record.currentValue) {
-      this.getCodeSubForm();
       this.formObj = changes.record.currentValue;
       this.formObj.subFormId = this.formObj?.codeSubFormDTO?.subFormId;
+    } else if (changes.record) {
+      this.formObj = {
+        isRequired: "No",
+        codeSubFormDTO: {},
+      };
     }
   }
 }

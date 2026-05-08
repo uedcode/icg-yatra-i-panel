@@ -126,10 +126,10 @@ export class ManageRoleComponent implements OnInit {
     try {
       this.$common.showLoader();
       const req = {
-        aclPilCodeRoleTypeDTO: {
+        aclCodeRoleTypeDTO: {
           id: this.formObj.role
         },
-        aclPilCodeDesignationDTO: {
+        aclCodeDesignationDTO: {
           id: this.formObj.desig
         },
         aclCodeStatusDTO: {
@@ -209,7 +209,7 @@ export class ManageRoleComponent implements OnInit {
     try {
       const config = {
         headers: {
-          id: tempObj.id,
+          roleId: this.getRoleId(tempObj),
           statusId: tempObj.currentStatus
         }
       };
@@ -291,15 +291,9 @@ export class ManageRoleComponent implements OnInit {
       this.config = {
         headers: {
           visibilityIndicator: '1',
-          roleType: this.formObj?.role,
-          unitId: this.formObj?.unitId
+          roleTypeId: this.formObj?.role
         },
       };
-      if (this.formObj.role == 'VE') {
-        this.config.headers.id = 'JDOPS'
-      } else {
-        this.config.headers.id = 'PDOPS'
-      }
       this.$dropdown.getCodeDesignation(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
@@ -343,6 +337,10 @@ export class ManageRoleComponent implements OnInit {
   sort(key) {
     this.key = key;
     this.reverse = !this.reverse;
+  }
+
+  getRoleId(dataObj: any) {
+    return dataObj?.roleId || dataObj?.id;
   }
 
 }
