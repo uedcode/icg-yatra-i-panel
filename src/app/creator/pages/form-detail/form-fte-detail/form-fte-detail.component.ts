@@ -23,11 +23,14 @@ export class FormFteDetailComponent implements OnInit {
 
   formObj: any = {};
   claimId: string | null = null;
+  subFormId: string = 'F';
   documentDtos: any[] = [];
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
-      this.claimId = params?.claimId || null;
+      this.claimId =
+        params?.claimId || params?.id || params?.formId || params?.supId || null;
+      this.subFormId = this.normalizeSubFormId(params?.subFormId);
       this.getClaimDetails();
     });
   }
@@ -41,7 +44,7 @@ export class FormFteDetailComponent implements OnInit {
     const config = {
       headers: {
         claimId: this.claimId,
-        subFormId: 'F',
+        subFormId: this.subFormId,
         isPreview: 'true',
       },
     };
@@ -86,5 +89,11 @@ export class FormFteDetailComponent implements OnInit {
 
   goBack() {
     this.location.back();
+  }
+
+  private normalizeSubFormId(subFormId: any): string {
+    const id = String(subFormId || '').toUpperCase();
+    if (id === 'FTEA' || id === 'FTE') return 'F';
+    return 'F';
   }
 }

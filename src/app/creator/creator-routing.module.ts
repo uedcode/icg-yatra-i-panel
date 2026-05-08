@@ -39,6 +39,15 @@ import { FormLtcDetailComponent } from './pages/form-detail/form-ltc-detail/form
 import { FormLtcAdvanceComponent } from './pages/form/form-ltc/form-ltc.component';
 import { FormManualAdvComponent } from './pages/form/form-manual-adv/form-manual-adv.component';
 import { FormManualAdvDetailComponent } from './pages/form-detail/form-manual-adv-detail/form-manual-adv-detail.component';
+import { FormLtcAvailedHistoryComponent } from './pages/form/form-ltc-availed-history/form-ltc-availed-history.component';
+import { FormLtcAvailedHistoryDetailComponent } from './pages/form-detail/form-ltc-availed-history-detail/form-ltc-availed-history-detail.component';
+import { FormPayDetailsComponent } from './pages/form/form-pay-details/form-pay-details.component';
+import { FormPayDetailsDetailComponent } from './pages/form-detail/form-pay-details-detail/form-pay-details-detail.component';
+import { MovementUpdateClaimComponent } from './pages/claim/movement-update-claim/movement-update-claim.component';
+import { PreviewVoucherComponent } from './pages/claim/preview-voucher/preview-voucher.component';
+import { ClaimNewComponent } from './pages/claim/claim-new/claim-new.component';
+import { ClaimFormShellComponent } from './pages/claim/claim-form-shell/claim-form-shell.component';
+import { ArchiveComponent } from './pages/form-request/archive/archive.component';
 
 const routes: Routes = [
   {
@@ -83,10 +92,22 @@ const routes: Routes = [
     data: { title: 'Inbox' },
   },
   {
+    path: 'claim/inbox',
+    component: InboxComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Claim Inbox' },
+  },
+  {
     path: 'outbox',
     component: OutboxComponent,
     canActivate: [AuthGuard],
     data: { title: 'Outbox' },
+  },
+  {
+    path: 'claim/outbox',
+    component: OutboxComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Claim Outbox' },
   },
   {
     path: 'draft',
@@ -95,10 +116,22 @@ const routes: Routes = [
     data: { title: 'Draft' },
   },
   {
+    path: 'claim/draft',
+    component: DraftComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Claim Draft' },
+  },
+  {
     path: 'approved',
     component: ApprovedComponent,
     canActivate: [AuthGuard],
     data: { title: 'Approved' },
+  },
+  {
+    path: 'claim/approved',
+    component: ApprovedComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Claim Approved' },
   },
   {
     path: 'rejected',
@@ -106,12 +139,24 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { title: 'Rejected' },
   },
+  {
+    path: 'claim/not-approved',
+    component: ReturnedComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Claim Not Approved' },
+  },
 
   {
     path: 'new',
     component: NewComponent,
     canActivate: [AuthGuard],
     data: { title: 'New Claim' },
+  },
+  {
+    path: 'claim/new',
+    component: ClaimNewComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Claim New' },
   },
   {
     path: 'form-tyduty',
@@ -194,10 +239,34 @@ const routes: Routes = [
     data: { title: 'Passed' },
   },
   {
+    path: 'claim/passed',
+    component: PassedComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Claim Passed' },
+  },
+  {
     path: 'not-passed',
     component: NotPassedComponent,
     canActivate: [AuthGuard],
     data: { title: 'Not Passed' },
+  },
+  {
+    path: 'claim/not-passed',
+    component: NotPassedComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Claim Not Passed' },
+  },
+  {
+    path: 'archive',
+    component: ArchiveComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Archive' },
+  },
+  {
+    path: 'claim/archive',
+    component: ArchiveComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Claim Archive' },
   },
   {
     path: 'pilotage-history',
@@ -216,6 +285,18 @@ const routes: Routes = [
     component: FormTydutyDetailComponent,
     canActivate: [AuthGuard],
     data: { title: 'TY Duty Detail' },
+  },
+  {
+    path: 'preview-ty-duty-claim',
+    component: FormTydutyDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'TY Duty Claim Preview' },
+  },
+  {
+    path: 'preview-ty-duty',
+    component: FormTydutyDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'TY Duty Advance Preview' },
   },
   {
     path: 'form-tyduty',
@@ -270,6 +351,126 @@ const routes: Routes = [
     component: FormManualAdvDetailComponent,
     canActivate: [AuthGuard],
     data: { title: 'Manual Advance Detail' },
+  },
+  {
+    path: 'form-ltc-availed-history',
+    component: FormLtcAvailedHistoryComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'LTC Availed History' },
+  },
+  {
+    path: 'form-ltc-availed-history-detail',
+    component: FormLtcAvailedHistoryDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'LTC Availed History Detail' },
+  },
+  {
+    path: 'form-pay-details',
+    component: FormPayDetailsComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Pay Details' },
+  },
+  {
+    path: 'form-pay-details-detail',
+    component: FormPayDetailsDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Pay Details Detail' },
+  },
+  {
+    path: 'movement-update-claim',
+    component: MovementUpdateClaimComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Movement Update Claim' },
+  },
+  {
+    path: 'preview-voucher',
+    component: PreviewVoucherComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Preview Voucher' },
+  },
+  {
+    path: 'claim-new',
+    component: ClaimNewComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Claim New' },
+  },
+  {
+    path: 'form-pmt-duty-claim',
+    component: FormPmtDutyComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'PMT Duty Claim' },
+  },
+  {
+    path: 'form-ty-duty-claim',
+    component: FormTydutyComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'TY Duty Claim' },
+  },
+  {
+    path: 'form-fte-claim',
+    component: FormFteComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'FTE Claim' },
+  },
+  {
+    path: 'form-ltc-claim',
+    component: FormLtcAdvanceComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'LTC Claim' },
+  },
+  {
+    path: 'form-resettlement-claim',
+    component: FormPmtDutyComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Resettlement Claim' },
+  },
+  {
+    path: 'preview-pmt-duty-claim',
+    component: FormPmtDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'PMT Duty Claim Preview' },
+  },
+  {
+    path: 'preview-pmt-duty',
+    component: FormPmtDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'PMT Duty Advance Preview' },
+  },
+  {
+    path: 'preview-fte-claim',
+    component: FormFteDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'FTE Claim Preview' },
+  },
+  {
+    path: 'preview-ltc-claim',
+    component: FormLtcDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'LTC Claim Preview' },
+  },
+  {
+    path: 'preview-ltc-advance',
+    component: FormLtcDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'LTC Advance Preview' },
+  },
+  {
+    path: 'preview-resettlement-claim',
+    component: FormPmtDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Resettlement Claim Preview' },
+  },
+  {
+    path: 'preview-resettlement',
+    component: FormPmtDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Resettlement Advance Preview' },
+  },
+  {
+    path: 'preview-pm-resettlementaim',
+    component: FormPmtDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Resettlement Supplementary Preview' },
   },
 ];
 

@@ -333,6 +333,7 @@ export class AuthService {
       processing: 'PRO',
       cancel: 'CA',
       draft: 'DR',
+      manualDraft: 'MD',
       inbox: 'IB',
       passed: 'PS',
       notPassed: 'NP',

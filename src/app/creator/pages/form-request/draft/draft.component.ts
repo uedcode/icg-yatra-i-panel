@@ -37,10 +37,12 @@ export class DraftComponent implements OnInit {
   pageType: any;
   config: any;
   formObj: any = {};
+  filterObj: any = {};
   rowId: any;
   noOfPage: any = 10;
   p = 1;
   searchObj;
+  toggleFilter: any = false;
 
 
   ngOnInit() {
@@ -51,6 +53,7 @@ export class DraftComponent implements OnInit {
 
   filterDataObj
   getState() {
+    const searchHeaders = this.getLegacySearchHeaders();
     const config = {
       headers: {
         roleTypeId: this.userIdDetails?.roleTypeId,
@@ -58,11 +61,52 @@ export class DraftComponent implements OnInit {
         unitId: this.userIdDetails?.unitId,
         gxUnitId: this.userIdDetails?.unitId,
         claimState: this.codeStatus?.draft,
+        isArchive: '0',
+        formId: searchHeaders.formId,
+        pno: searchHeaders.pno,
+        searchedName: searchHeaders.searchedName,
       },
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
+  }
+
+  private getLegacySearchHeaders(): { formId: string; pno: string; searchedName: string } {
+    const formId = (this.filterObj?.formId || '').toString().trim();
+    const pno = (this.filterObj?.pno || '').toString().trim();
+    const searchedName = (this.filterObj?.searchedName || '').toString().trim();
+    if (formId || pno || searchedName) {
+      return { formId, pno, searchedName };
+    }
+
+    const raw = (this.searchObj || '').toString().trim();
+    if (!raw) {
+      return { formId: '', pno: '', searchedName: '' };
+    }
+    if (/^\d+$/.test(raw)) {
+      return { formId: raw, pno: raw, searchedName: '' };
+    }
+    if (/^[A-Za-z0-9/-]+$/.test(raw)) {
+      return { formId: '', pno: raw, searchedName: '' };
+    }
+    return { formId: '', pno: '', searchedName: raw };
+  }
+
+  applyServerSearch(): void {
+    this.p = 1;
+    this.getState();
+  }
+
+  onSearchInput(): void {
+    if (!(this.searchObj || '').toString().trim()) {
+      this.applyServerSearch();
+    }
+  }
+
+  resetAdvancedFilters(): void {
+    this.filterObj = {};
+    this.applyServerSearch();
   }
 
   deleteRow(id) {
@@ -137,14 +181,26 @@ export class DraftComponent implements OnInit {
 
   private getCreatorClaimRoute(subFormId: string | null): string | null {
     const id = (subFormId || '').toUpperCase();
+    if (id === 'PMTA' || id === 'PMT') return 'form-pmt-duty-claim';
+    if (id === 'TYA' || id === 'TY') return 'form-ty-duty-claim';
+    if (id === 'FTEA' || id === 'FTE') return 'form-fte-claim';
+    if (id === 'LTCA' || id === 'LTC') return 'form-ltc-claim';
+    if (id === 'RS' || id === 'RES' || id === 'R') return 'form-resettlement-claim';
     if (id === 'P') return 'form-pmt';
     if (id === 'T') return 'form-tyduty';
     if (id === 'F') return 'form-fte';
     if (id === 'L') return 'form-ltc';
+    if (id === 'M') return 'form-manual-adv';
     return null;
   }
 
   actionPage(data) {
+    const payId = data?.yatPayDetailsDTO?.id || data?.id;
+    if (payId && (data?.yatPayDetailsDTO || data?.viewUrl === 'form-pay-details' || data?.formUrl === 'form-pay-details')) {
+      this.router.navigateByUrl(this.$auth.getModuleName() + `/form-pay-details?id=${payId}`);
+      return;
+    }
+
     const claim = data?.yatClaimDTO || {};
     const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
     const subFormId =

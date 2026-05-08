@@ -197,6 +197,15 @@ export class ClaimService {
     );
   }
 
+  changeClaimStatusArchive(config?: any) {
+    return this.http.put<any>(`claimState/changeStatusArchive`, null, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
   editClaim(config?: any) {
     return this.http.post<any>(`claim/editClaim`, null, config).pipe(
       map((res) => {
@@ -267,6 +276,42 @@ export class ClaimService {
     );
   }
 
+  getRemainingClaimBudget(config?: any) {
+    return this.http.get<any>(`claimBudget/getRemaningBudget`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  getSingleClaimBudget(config?: any) {
+    return this.http.get<any>(`claimBudget/single`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  createOrUpdateClaimBudget(payload: any) {
+    return this.http.post<any>(`claimBudget/createOrUpdate`, payload).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  deleteClaimBudget(config?: any) {
+    return this.http.delete<any>(`claimBudget`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
   /**
    * Directorate / DIR master.
    * Old JS: codeDirUrl = ApiUrl + "codeDir"; /all
@@ -325,6 +370,69 @@ export class ClaimService {
    */
   getLtcAvailedHistory(config?: any) {
     return this.http.get<any>(`ltcAvailedHist/all`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  createOrUpdateLtcAvailedHistory(payload: any) {
+    return this.http.post<any>(`ltcAvailedHist/createOrUpdate`, payload).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  getLtcEntitled(config?: any) {
+    return this.http.get<any>(`ltcAvailedHist/getLTCEntitled`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  getLtcAvailedEntitledHistory(config?: any) {
+    return this.http.get<any>(`ltcAvailedHist/getLTCAvailedHistory`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  getPayDetails(config?: any) {
+    return this.http.get<any>(`yatPayDetails/all`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  createOrUpdatePayDetails(payload: any) {
+    return this.http.post<any>(`yatPayDetails/createOrUpdate`, payload).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  getPayStates(config?: any) {
+    return this.http.get<any>(`payState/all`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  changePayStatusById(payload: any) {
+    return this.http.post<any>(`payState/changeStatusById`, payload).pipe(
       map((res) => {
         this.$common.parseResponse(res);
         return res;

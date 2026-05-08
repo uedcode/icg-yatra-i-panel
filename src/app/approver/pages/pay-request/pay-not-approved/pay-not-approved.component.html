@@ -1,0 +1,35 @@
+<div class="page-header">
+  <h4 class="page-title">Pay Not Approved</h4>
+</div>
+
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>PNO/Name/Rank</th>
+          <th>Document</th>
+          <th>Verifier Remark</th>
+          <th>Approver Remark</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of dataList | paginate: { itemsPerPage: noOfPage, currentPage: p }">
+          <td>
+            {{ row?.yatPayDetailsDTO?.pno || '-' }}/{{ row?.yatPayDetailsDTO?.name || '-' }}/{{ row?.yatPayDetailsDTO?.rank || '-' }}
+          </td>
+          <td>{{ row?.yatPayDetailsDTO?.docName || '-' }}</td>
+          <td>{{ row?.yatPayDetailsDTO?.verifier1Remark || '-' }}</td>
+          <td>{{ row?.yatPayDetailsDTO?.approverRemark || '-' }}</td>
+          <td><button class="btn btn-info btn-sm" (click)="viewForm(row)">Open</button></td>
+        </tr>
+        <tr *ngIf="!dataList?.length">
+          <td colspan="5" class="text-center">No not-approved pay records found.</td>
+        </tr>
+      </tbody>
+    </table>
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+</div>
+

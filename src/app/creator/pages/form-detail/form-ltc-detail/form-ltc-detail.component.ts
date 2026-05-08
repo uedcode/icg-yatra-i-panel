@@ -14,6 +14,7 @@ import { CommonService } from 'src/app/service/common.service';
 export class FormLtcDetailComponent implements OnInit {
   formObj: any = null;
   claimId: string | null = null;
+  subFormId: string = 'L';
   documentDtos: any[] = [];
 
   constructor(
@@ -26,7 +27,14 @@ export class FormLtcDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.claimId = this.route.snapshot.queryParamMap.get('claimId');
+    this.claimId =
+      this.route.snapshot.queryParamMap.get('claimId') ||
+      this.route.snapshot.queryParamMap.get('id') ||
+      this.route.snapshot.queryParamMap.get('formId') ||
+      this.route.snapshot.queryParamMap.get('supId');
+    this.subFormId = this.normalizeSubFormId(
+      this.route.snapshot.queryParamMap.get('subFormId')
+    );
     if (this.claimId) this.getClaimDetails();
   }
 
@@ -36,7 +44,7 @@ export class FormLtcDetailComponent implements OnInit {
     const config = {
       headers: {
         claimId: this.claimId,
-        subFormId: 'L',
+        subFormId: this.subFormId,
         isPreview: 'true',
       },
     };
@@ -72,5 +80,11 @@ export class FormLtcDetailComponent implements OnInit {
 
   goBack(): void {
     this.location.back();
+  }
+
+  private normalizeSubFormId(subFormId: any): string {
+    const id = String(subFormId || '').toUpperCase();
+    if (id === 'LTCA' || id === 'LTC') return 'L';
+    return 'L';
   }
 }

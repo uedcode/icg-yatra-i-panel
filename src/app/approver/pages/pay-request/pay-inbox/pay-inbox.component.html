@@ -1,0 +1,39 @@
+<div class="page-header">
+  <h4 class="page-title">Pay Inbox</h4>
+</div>
+
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>PNO/Name/Rank</th>
+          <th>Document</th>
+          <th>State</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of dataList | paginate: { itemsPerPage: noOfPage, currentPage: p }">
+          <td>
+            {{ row?.yatPayDetailsDTO?.pno || '-' }}/{{ row?.yatPayDetailsDTO?.name || '-' }}/{{ row?.yatPayDetailsDTO?.rank || '-' }}
+          </td>
+          <td>{{ row?.yatPayDetailsDTO?.docName || '-' }}</td>
+          <td>{{ row?.claimState || row?.state || '-' }}</td>
+          <td class="btn-cell">
+            <button class="btn btn-info btn-sm mr-1" (click)="viewForm(row)">Open</button>
+            <button class="btn btn-success btn-sm mr-1" (click)="submitAction(row, false)">
+              {{ getPrimaryActionLabel() }}
+            </button>
+            <button class="btn btn-danger btn-sm" (click)="submitAction(row, true)">Return</button>
+          </td>
+        </tr>
+        <tr *ngIf="!dataList?.length">
+          <td colspan="4" class="text-center">No pay inbox records found.</td>
+        </tr>
+      </tbody>
+    </table>
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+</div>
+

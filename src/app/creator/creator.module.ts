@@ -60,6 +60,15 @@ import { FormLtcAdvanceComponent } from './pages/form/form-ltc/form-ltc.componen
 import { FormLtcDetailComponent } from './pages/form-detail/form-ltc-detail/form-ltc-detail.component';
 import { FormManualAdvComponent } from './pages/form/form-manual-adv/form-manual-adv.component';
 import { FormManualAdvDetailComponent } from './pages/form-detail/form-manual-adv-detail/form-manual-adv-detail.component';
+import { FormLtcAvailedHistoryComponent } from './pages/form/form-ltc-availed-history/form-ltc-availed-history.component';
+import { FormLtcAvailedHistoryDetailComponent } from './pages/form-detail/form-ltc-availed-history-detail/form-ltc-availed-history-detail.component';
+import { FormPayDetailsComponent } from './pages/form/form-pay-details/form-pay-details.component';
+import { FormPayDetailsDetailComponent } from './pages/form-detail/form-pay-details-detail/form-pay-details-detail.component';
+import { MovementUpdateClaimComponent } from './pages/claim/movement-update-claim/movement-update-claim.component';
+import { PreviewVoucherComponent } from './pages/claim/preview-voucher/preview-voucher.component';
+import { ClaimNewComponent } from './pages/claim/claim-new/claim-new.component';
+import { ClaimFormShellComponent } from './pages/claim/claim-form-shell/claim-form-shell.component';
+import { ArchiveComponent } from './pages/form-request/archive/archive.component';
 
 const CustomSelectOptions: INgxSelectOptions = {
   // Check the interface for more options
@@ -108,6 +117,15 @@ const CustomSelectOptions: INgxSelectOptions = {
     FormLtcDetailComponent,
     FormManualAdvComponent,
     FormManualAdvDetailComponent,
+    FormLtcAvailedHistoryComponent,
+    FormLtcAvailedHistoryDetailComponent,
+    FormPayDetailsComponent,
+    FormPayDetailsDetailComponent,
+    MovementUpdateClaimComponent,
+    PreviewVoucherComponent,
+    ClaimNewComponent,
+    ClaimFormShellComponent,
+    ArchiveComponent,
   ],
   imports: [
     RouterModule,

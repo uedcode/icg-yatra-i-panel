@@ -39,6 +39,14 @@ import { PilotageHistoryStatusComponent } from './pages/form-detail/pilotage-his
 import { PilotageChildModalComponent } from './pages/form-detail/pilotage-child-modal/pilotage-child-modal.component';
 import { ChangeApproverStatusComponent } from './pages/form-detail/change-approver-status/change-approver-status.component';
 import { FormClaimDetailComponent } from './pages/form-detail/form-claim-detail/form-claim-detail.component';
+import { PayInboxComponent } from './pages/pay-request/pay-inbox/pay-inbox.component';
+import { PayOutboxComponent } from './pages/pay-request/pay-outbox/pay-outbox.component';
+import { PayApprovedComponent } from './pages/pay-request/pay-approved/pay-approved.component';
+import { PayNotApprovedComponent } from './pages/pay-request/pay-not-approved/pay-not-approved.component';
+import { FormPayDetailComponent } from './pages/form-detail/form-pay-detail/form-pay-detail.component';
+import { ManualDraftComponent } from './pages/form-request/manual-draft/manual-draft.component';
+import { BudgetAllocationComponent } from './pages/settings/budget-allocation/budget-allocation.component';
+import { ArchiveComponent } from './pages/form-request/archive/archive.component';
 
 const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more options
   optionValueField: 'id',
@@ -68,6 +76,14 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         PilotageChildModalComponent,
         ChangeApproverStatusComponent,
         FormClaimDetailComponent,
+        PayInboxComponent,
+        PayOutboxComponent,
+        PayApprovedComponent,
+        PayNotApprovedComponent,
+        FormPayDetailComponent,
+        ManualDraftComponent,
+        BudgetAllocationComponent,
+        ArchiveComponent,
     ], imports: [RouterModule,
         CommonModule,
         ApproverRoutingModule,

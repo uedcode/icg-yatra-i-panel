@@ -41,8 +41,10 @@ export class InboxComponent implements OnInit {
   searchObj: any;
   config: any;
   formObj: any = {};
+  filterObj: any = {};
   noOfPage: any = 10;
   p: any = 1;
+  toggleFilter: any = false;
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
@@ -93,6 +95,7 @@ export class InboxComponent implements OnInit {
 
   filterDataObj
   getState() {
+    const searchHeaders = this.getLegacySearchHeaders();
     const config = {
       headers: {
         roleTypeId: this.userIdDetails?.roleTypeId,
@@ -100,6 +103,10 @@ export class InboxComponent implements OnInit {
         unitId: this.userIdDetails?.unitId,
         gxUnitId: this.userIdDetails?.unitId,
         claimState: this.codeStatus?.inbox,
+        isArchive: '0',
+        formId: searchHeaders.formId,
+        pno: searchHeaders.pno,
+        searchedName: searchHeaders.searchedName,
       },
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
@@ -107,16 +114,65 @@ export class InboxComponent implements OnInit {
     });
   }
 
+  private getLegacySearchHeaders(): { formId: string; pno: string; searchedName: string } {
+    const formId = (this.filterObj?.formId || '').toString().trim();
+    const pno = (this.filterObj?.pno || '').toString().trim();
+    const searchedName = (this.filterObj?.searchedName || '').toString().trim();
+    if (formId || pno || searchedName) {
+      return { formId, pno, searchedName };
+    }
+
+    const raw = (this.searchObj || '').toString().trim();
+    if (!raw) {
+      return { formId: '', pno: '', searchedName: '' };
+    }
+    if (/^\d+$/.test(raw)) {
+      return { formId: raw, pno: raw, searchedName: '' };
+    }
+    if (/^[A-Za-z0-9/-]+$/.test(raw)) {
+      return { formId: '', pno: raw, searchedName: '' };
+    }
+    return { formId: '', pno: '', searchedName: raw };
+  }
+
+  applyServerSearch(): void {
+    this.p = 1;
+    this.getState();
+  }
+
+  onSearchInput(): void {
+    if (!(this.searchObj || '').toString().trim()) {
+      this.applyServerSearch();
+    }
+  }
+
+  resetAdvancedFilters(): void {
+    this.filterObj = {};
+    this.applyServerSearch();
+  }
+
   private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
+    if (id === 'PMTA' || id === 'PMT') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
+    if (id === 'TYA' || id === 'TY') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
+    if (id === 'FTEA' || id === 'FTE') return detail ? 'preview-fte-claim' : 'form-fte-claim';
+    if (id === 'LTCA' || id === 'LTC') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
+    if (id === 'RS' || id === 'RES' || id === 'R') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
     if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
     if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
     if (id === 'F') return detail ? 'form-fte-detail' : 'form-fte';
     if (id === 'L') return detail ? 'form-ltc-detail' : 'form-ltc';
+    if (id === 'M') return detail ? 'form-manual-adv-detail' : 'form-manual-adv';
     return null;
   }
 
   viewForm(data) {
+    const payId = data?.yatPayDetailsDTO?.id || data?.id;
+    if (payId && (data?.yatPayDetailsDTO || data?.viewUrl === 'form-pay-details' || data?.formUrl === 'form-pay-details')) {
+      this.router.navigateByUrl(this.$auth.getModuleName() + `/form-pay-details?id=${payId}`);
+      return;
+    }
+
     const claim = data?.yatClaimDTO || {};
     const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
     const subFormId =

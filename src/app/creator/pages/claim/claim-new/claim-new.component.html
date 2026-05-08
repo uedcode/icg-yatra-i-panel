@@ -1,0 +1,38 @@
+<div class="page-header">
+  <h4 class="page-title">New Claim</h4>
+</div>
+
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Claim ID</th>
+          <th>Sub Form</th>
+          <th>Voucher No</th>
+          <th>Voucher Date</th>
+          <th>Voucher Amount</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of dataList | paginate: { itemsPerPage: noOfPage, currentPage: p }">
+          <td>{{ row?.claimId || row?.yatClaimDTO?.claimId || '-' }}</td>
+          <td>{{ row?.subFormId || row?.codeSubFormDTO?.subFormId || row?.yatClaimDTO?.codeSubFormDTO?.subFormId || '-' }}</td>
+          <td>{{ row?.voucherNo || '-' }}</td>
+          <td>{{ row?.voucherDate || '-' }}</td>
+          <td>{{ row?.voucherAmt || '-' }}</td>
+          <td class="btn-cell">
+            <button class="btn btn-info btn-sm mr-1" (click)="openMovement(row)">Update</button>
+            <button class="btn btn-primary btn-sm" (click)="openClaimForm(row)">Open Claim Form</button>
+          </td>
+        </tr>
+        <tr *ngIf="!dataList?.length">
+          <td colspan="6" class="text-center">No records found for claim creation.</td>
+        </tr>
+      </tbody>
+    </table>
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+</div>
+

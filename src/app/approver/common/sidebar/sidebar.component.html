@@ -77,7 +77,7 @@
         (click)="$auth.closeSidebar()"
         class="side-menu__item"
         routerLinkActive="active current"
-        [routerLink]="['../rejected']"
+        [routerLink]="['../not-approved']"
         ><i class="side-menu__icon fa fa-reply"></i
         ><span class="side-menu__label"
           >Rejected
@@ -126,6 +126,83 @@
         <i class="side-menu__icon fa fa-times-circle"></i>
         <span class="side-menu__label">Pilotage History Status
         </span>
+      </a>
+    </li>
+    <li *ngIf="userIdDetails?.roleTypeId == 'VE'">
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../claim-archive']"
+      >
+        <i class="side-menu__icon fa fa-archive"></i>
+        <span class="side-menu__label">Claim Archive</span>
+      </a>
+    </li>
+    <li *ngIf="userIdDetails?.roleTypeId == 'VE' || userIdDetails?.roleTypeId == 'AP'">
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../pay-inbox']"
+      >
+        <i class="side-menu__icon fa fa-money"></i>
+        <span class="side-menu__label">Pay Inbox</span>
+      </a>
+    </li>
+    <li *ngIf="userIdDetails?.roleTypeId == 'VE' || userIdDetails?.roleTypeId == 'AP'">
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../pay-outbox']"
+      >
+        <i class="side-menu__icon fa fa-envelope-open"></i>
+        <span class="side-menu__label">Pay Outbox</span>
+      </a>
+    </li>
+    <li *ngIf="userIdDetails?.roleTypeId == 'VE' || userIdDetails?.roleTypeId == 'AP'">
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../pay-approved']"
+      >
+        <i class="side-menu__icon fa fa-check-circle"></i>
+        <span class="side-menu__label">Pay Approved</span>
+      </a>
+    </li>
+    <li *ngIf="userIdDetails?.roleTypeId == 'VE' || userIdDetails?.roleTypeId == 'AP'">
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../pay-not-approved']"
+      >
+        <i class="side-menu__icon fa fa-times-circle"></i>
+        <span class="side-menu__label">Pay Not Approved</span>
+      </a>
+    </li>
+    <li *ngIf="userIdDetails?.roleTypeId == 'VE'">
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../manual-draft']"
+      >
+        <i class="side-menu__icon fa fa-file"></i>
+        <span class="side-menu__label">Manual Draft</span>
+      </a>
+    </li>
+    <li *ngIf="userIdDetails?.roleTypeId == 'VE'">
+      <a
+        (click)="$auth.closeSidebar()"
+        class="side-menu__item"
+        routerLinkActive="active current"
+        [routerLink]="['../budget-allocation']"
+      >
+        <i class="side-menu__icon fa fa-money"></i>
+        <span class="side-menu__label">Budget Allocation</span>
       </a>
     </li>
 

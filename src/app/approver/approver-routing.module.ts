@@ -20,6 +20,14 @@ import { PassedComponent } from './pages/form-request/passed/passed.component';
 import { NotPassedComponent } from './pages/form-request/not-passed/not-passed.component';
 import { PilotageHistoryStatusComponent } from './pages/form-detail/pilotage-history-status/pilotage-history-status.component';
 import { FormClaimDetailComponent } from './pages/form-detail/form-claim-detail/form-claim-detail.component';
+import { PayInboxComponent } from './pages/pay-request/pay-inbox/pay-inbox.component';
+import { PayOutboxComponent } from './pages/pay-request/pay-outbox/pay-outbox.component';
+import { PayApprovedComponent } from './pages/pay-request/pay-approved/pay-approved.component';
+import { PayNotApprovedComponent } from './pages/pay-request/pay-not-approved/pay-not-approved.component';
+import { FormPayDetailComponent } from './pages/form-detail/form-pay-detail/form-pay-detail.component';
+import { ManualDraftComponent } from './pages/form-request/manual-draft/manual-draft.component';
+import { BudgetAllocationComponent } from './pages/settings/budget-allocation/budget-allocation.component';
+import { ArchiveComponent } from './pages/form-request/archive/archive.component';
 
 const routes: Routes = [
   {
@@ -84,6 +92,12 @@ const routes: Routes = [
     data: { title: 'Rejected' }
   },
   {
+    path: 'not-approved',
+    component: ReturnedComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Not Approved' }
+  },
+  {
     path: 'switch-module',
     component: SwitchModuleComponent,
     canActivate: [AuthGuard],
@@ -94,6 +108,12 @@ const routes: Routes = [
     component: ProfileSettingComponent,
     canActivate: [AuthGuard],
     data: { title: 'Profile Setting' }
+  },
+  {
+    path: 'settings',
+    component: BudgetAllocationComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Settings' }
   },
   {
     path: 'esign',
@@ -143,6 +163,60 @@ const routes: Routes = [
     component: PilotageHistoryStatusComponent,
     canActivate: [AuthGuard],
     data: { title: 'Pilotage History Status' },
+  },
+  {
+    path: 'pay-inbox',
+    component: PayInboxComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Pay Inbox' },
+  },
+  {
+    path: 'pay-outbox',
+    component: PayOutboxComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Pay Outbox' },
+  },
+  {
+    path: 'pay-approved',
+    component: PayApprovedComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Pay Approved' },
+  },
+  {
+    path: 'pay-not-approved',
+    component: PayNotApprovedComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Pay Not Approved' },
+  },
+  {
+    path: 'form-pay-detail',
+    component: FormPayDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Pay Detail' },
+  },
+  {
+    path: 'manual-draft',
+    component: ManualDraftComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Manual Draft' },
+  },
+  {
+    path: 'budget-allocation',
+    component: BudgetAllocationComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Budget Allocation' },
+  },
+  {
+    path: 'archive',
+    component: ArchiveComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Archive' },
+  },
+  {
+    path: 'claim-archive',
+    component: ArchiveComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Claim Archive' },
   },
 ];
 

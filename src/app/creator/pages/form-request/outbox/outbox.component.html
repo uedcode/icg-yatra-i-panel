@@ -32,6 +32,27 @@
                   (ngSubmit)="requiredForm.form.valid && getState();" #requiredForm="ngForm"
                   novalidate>
                   <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="form-label">Form ID</label>
+                        <input type="text" class="form-control" name="formId" #formId="ngModel"
+                        [(ngModel)]="filterObj.formId" placeholder="Form ID">
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="form-label">PNO</label>
+                        <input type="text" class="form-control" name="pno" #pno="ngModel"
+                        [(ngModel)]="filterObj.pno" placeholder="PNO">
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="searchedName" #searchedName="ngModel"
+                        [(ngModel)]="filterObj.searchedName" placeholder="Name">
+                      </div>
+                    </div>
                     <!-- <div class="col-md-3">
                       <div class="form-group">
                         <label class="form-label">Form Name</label>
@@ -92,7 +113,7 @@
                   <div class="col-sm-12 col-md-3 offset-3">
                     <div class="dataTables_filter"  title="Search">
                       <i class="fa fa-search"></i>
-                      <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
+                      <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1" (keyup.enter)="applyServerSearch()" (ngModelChange)="onSearchInput()"
                         [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
                     </div>
                   </div>

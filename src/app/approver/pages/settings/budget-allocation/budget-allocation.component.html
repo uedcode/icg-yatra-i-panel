@@ -1,0 +1,186 @@
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <app-sidebar></app-sidebar>
+    <div class="app-content">
+      <div class="side-app">
+        <div class="page-header">
+          <div class="page-leftheader">
+            <h4 class="page-title">Budget Allocation</h4>
+            <ol class="breadcrumb pl-0">
+              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Budget Allocation</li>
+            </ol>
+          </div>
+          <div>
+            <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()">
+              <i class="fa fa-chevron-left" style="display: inline-block"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <form class="page_form" autocomplete="off" (ngSubmit)="saveBudget()" novalidate>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label class="form-label">Financial Year</label>
+                        <input type="text" class="form-control" name="financialYear" [(ngModel)]="formObj.financialYear" (ngModelChange)="onDirectorateOrYearChange()" />
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="form-label">Directorate</label>
+                        <select class="form-control" name="directorateId" [(ngModel)]="formObj.codeDirectorateDTO.directorateId" (ngModelChange)="onDirectorateOrYearChange()">
+                          <option value="">Select Directorate</option>
+                          <option *ngFor="let d of directorates" [value]="d?.directorateId">{{ d?.descr || d?.directorate || d?.directorateId }}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label class="form-label">Allotment Type</label>
+                        <select class="form-control" name="typeOfAllotment" [(ngModel)]="formObj.typeOfAllotment" (ngModelChange)="onAllotmentTypeChange()" [disabled]="isUpdate">
+                          <option [value]="'Initial'" *ngIf="!currYearBudgets.length || isUpdate">Initial</option>
+                          <option [value]="'Increase'" *ngIf="currYearBudgets.length || isUpdate">Increase</option>
+                          <option [value]="'Decrease'" *ngIf="currYearBudgets.length || isUpdate">Decrease</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label class="form-label">Amount</label>
+                        <input type="number" class="form-control" name="amountAllocated" [(ngModel)]="formObj.amountAllocated" (ngModelChange)="onAmountChange()" [disabled]="isUpdate" min="1" max="9999999999" />
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label class="form-label">Present Allocation</label>
+                        <input type="number" class="form-control" name="presentAllocation" [(ngModel)]="formObj.presentAllocation" disabled />
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="form-label">Letter Date</label>
+                        <input type="date" class="form-control" name="occDate" [(ngModel)]="formObj.occDate" />
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="form-label">Vide Letter No</label>
+                        <input type="text" class="form-control" name="videLetterNo" [(ngModel)]="formObj.videLetterNo" maxlength="10" />
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="form-label">Imprest Unit</label>
+                        <input type="text" class="form-control" [value]="userIdDetails?.unitName || userIdDetails?.unitId || ''" disabled />
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label class="form-label">Remark</label>
+                        <textarea class="form-control" name="remark" rows="2" [(ngModel)]="formObj.remark"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form_page_btn">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
+                    <button type="button" class="btn btn-danger" (click)="resetForm()"><i class="fa fa-refresh"></i> Reset</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-12 col-md-6">
+                    <div class="dataTables_length">
+                      <label>Show</label>
+                      <select class="form-control" name="noOfPage" [(ngModel)]="noOfPage" (ngModelChange)="p = 1">
+                        <option value="10">10</option>
+                        <option value="100">100</option>
+                        <option value="100000">All</option>
+                      </select>
+                      <label>entries</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-3 offset-3">
+                    <div class="dataTables_filter" title="Search">
+                      <i class="fa fa-search"></i>
+                      <input type="search" class="form-control form-control-sm" placeholder="Search" [(ngModel)]="searchObj" name="searchObj" />
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-bordered" style="width: 100%">
+                    <thead>
+                      <tr>
+                        <th>S No.</th>
+                        <th (click)="sort('financialYear')">Financial Year</th>
+                        <th (click)="sort('typeOfAllotment')">Type</th>
+                        <th (click)="sort('amountAllocated')">Amount</th>
+                        <th>Directorate</th>
+                        <th>Cum. Allotment</th>
+                        <th>Amt. Booked</th>
+                        <th>Amt. Budgeted</th>
+                        <th>Bal. Post Booked</th>
+                        <th>Bal. Post Budgeted</th>
+                        <th>Letter Ref/Date</th>
+                        <th>Remark</th>
+                        <th>Updated On</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let dataObj of dataList | filterComplex : searchObj | orderBy : key : reverse | paginate : { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                        <td>{{ i + 1 + (p - 1) * noOfPage }}</td>
+                        <td>{{ dataObj?.financialYear | showHypen }}</td>
+                        <td>{{ dataObj?.typeOfAllotment | showHypen }}</td>
+                        <td>{{ dataObj?.amountAllocated | showHypen }}</td>
+                        <td>{{ (dataObj?.codeDirectorateDTO?.descr || dataObj?.codeDirectorateDTO?.directorate) | showHypen }}</td>
+                        <td>{{ dataObj?.cumulativeAllotment | showHypen }}</td>
+                        <td>{{ dataObj?.amountBooked | showHypen }}</td>
+                        <td>{{ dataObj?.amountBudgeted | showHypen }}</td>
+                        <td>{{ dataObj?.balancePostBooked | showHypen }}</td>
+                        <td>{{ dataObj?.balancePostBudgeted | showHypen }}</td>
+                        <td>{{ (dataObj?.videLetterNo | showHypen) }} / {{ dataObj?.occDate | showDate : 'mediumDate' }}</td>
+                        <td>{{ dataObj?.remark | showHypen }}</td>
+                        <td>{{ dataObj?.updatedOn | showDate : 'medium' }}</td>
+                        <td class="switch_in_table">
+                          <button class="btn btn-primary" title="Edit" (click)="editBudget(dataObj)">
+                            <i class="fa fa-edit"></i>
+                          </button>
+                          <button class="btn btn-danger ml-1" title="Delete" (click)="deleteBudget(dataObj)">
+                            <i class="fa fa-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr *ngIf="!dataList.length" class="text-center">
+                        <td colspan="20">No Records Available</td>
+                      </tr>
+                      <tr class="noExl pagination_area" *ngIf="dataList?.length">
+                        <td colspan="20">
+                          <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

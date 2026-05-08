@@ -1,0 +1,16 @@
+<div class="page-header">
+  <h4 class="page-title">{{ routeName }}</h4>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <p class="mb-2">
+      Claim form baseline route is ready for migration.
+    </p>
+    <p class="mb-2"><strong>Claim ID:</strong> {{ claimId || '-' }}</p>
+    <p class="mb-3"><strong>Sub Form:</strong> {{ subFormId || '-' }}</p>
+    <button class="btn btn-info mr-2" (click)="openMovement()">Open Movement Update</button>
+    <button class="btn btn-primary" (click)="openVoucher()">Open Voucher Preview</button>
+  </div>
+</div>
+

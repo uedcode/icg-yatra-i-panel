@@ -55,6 +55,30 @@
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../form-ltc-availed-history']"><i class="side-menu__icon fa fa-history"></i>
+        <span class="side-menu__label">LTC Availed History</span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../form-pay-details']"><i class="side-menu__icon fa fa-money"></i>
+        <span class="side-menu__label">Pay Details</span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../movement-update-claim']"><i class="side-menu__icon fa fa-exchange"></i>
+        <span class="side-menu__label">Movement Update Claim</span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../claim-new']"><i class="side-menu__icon fa fa-list"></i>
+        <span class="side-menu__label">Claim New</span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
         [routerLink]="['../draft']"><i class="side-menu__icon fa fa-file-o"></i><span class="side-menu__label">
           Draft
           <span *ngIf="countObj?.draft > 0" class="counts">{{
@@ -123,6 +147,14 @@
           <span *ngIf="countObj?.notPassed > 0" class="counts">{{
             countObj?.notPassed
             }}</span>
+        </span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../archive']"><i class="side-menu__icon fa fa-archive"></i>
+        <span class="side-menu__label">
+          Archive
         </span>
       </a>
     </li>

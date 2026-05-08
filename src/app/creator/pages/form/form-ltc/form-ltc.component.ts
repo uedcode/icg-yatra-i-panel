@@ -794,8 +794,23 @@ export class FormLtcAdvanceComponent implements OnInit {
   }
 
   getLtcAvailedHistory(): void {
-    // open modal or route
-    alert('Hook LTC Availed History modal/API here.');
+    const moduleUrl = this.$auth.getModuleName
+      ? this.$auth.getModuleName()
+      : '';
+    const query: any = {};
+    if (this.claims?.claimId) {
+      query.id = this.claims.claimId;
+    }
+    if (moduleUrl) {
+      this.router.navigate([`${moduleUrl}/form-ltc-availed-history`], {
+        queryParams: query,
+      });
+    } else {
+      this.router.navigate(['../form-ltc-availed-history'], {
+        relativeTo: this.route,
+        queryParams: query,
+      });
+    }
   }
 
   openIfscModal(): void {

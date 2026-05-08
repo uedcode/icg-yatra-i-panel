@@ -1,0 +1,28 @@
+<div class="page-header">
+  <h4 class="page-title">Voucher Preview</h4>
+</div>
+
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Voucher No</th>
+          <th>Voucher Date</th>
+          <th>Voucher Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of voucherList">
+          <td>{{ row?.voucherNo || '-' }}</td>
+          <td>{{ row?.voucherDate || '-' }}</td>
+          <td>{{ row?.voucherAmt || '-' }}</td>
+        </tr>
+        <tr *ngIf="!voucherList?.length">
+          <td colspan="3" class="text-center">No voucher records found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+

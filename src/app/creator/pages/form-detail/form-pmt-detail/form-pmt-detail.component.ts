@@ -23,13 +23,16 @@ export class FormPmtDetailComponent implements OnInit {
 
   formObj: any = {};
   claimId: string | null = null;
+  subFormId: string = 'P';
   documentDtos: any[] = [];
   today: string | null = null;
 
   ngOnInit() {
     this.today = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
     this.route.queryParams.subscribe((params) => {
-      this.claimId = params?.claimId || null;
+      this.claimId =
+        params?.claimId || params?.id || params?.formId || params?.supId || null;
+      this.subFormId = this.normalizeSubFormId(params?.subFormId);
       this.getClaimDetails();
     });
   }
@@ -43,7 +46,7 @@ export class FormPmtDetailComponent implements OnInit {
     const config = {
       headers: {
         claimId: this.claimId,
-        subFormId: 'P',
+        subFormId: this.subFormId,
         isPreview: 'true',
       },
     };
@@ -84,5 +87,12 @@ export class FormPmtDetailComponent implements OnInit {
 
   goBack() {
     this.location.back();
+  }
+
+  private normalizeSubFormId(subFormId: any): string {
+    const id = String(subFormId || '').toUpperCase();
+    if (id === 'PMTA' || id === 'PMT') return 'P';
+    if (id === 'RS' || id === 'RES' || id === 'R') return 'P';
+    return 'P';
   }
 }
