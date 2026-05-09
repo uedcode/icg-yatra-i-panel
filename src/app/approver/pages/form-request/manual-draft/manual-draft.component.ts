@@ -38,7 +38,7 @@ export class ManualDraftComponent implements OnInit {
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
-    if (this.userIdDetails?.roleTypeId !== 'VE') {
+    if (this.userIdDetails?.roleTypeId !== this.$auth.codeRoleType()?.verifier) {
       this.$common.showMessage('Manual Draft is available for verifier role only.', 'danger');
       this.router.navigateByUrl(this.$auth.getModuleName() + '/dashboard');
       return;
@@ -106,19 +106,12 @@ export class ManualDraftComponent implements OnInit {
   }
 
   viewForm(data: any) {
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-    const subFormId =
-      claim?.codeSubFormDTO?.subFormId || data?.subFormId || data?.codeSubFormDTO?.subFormId;
-
-    if (claimId && subFormId) {
-      this.router.navigateByUrl(
-        this.$auth.getModuleName() +
-          `/form-claim-detail?claimId=${claimId}&subFormId=${subFormId}&statusId=${
-            data?.claimState || this.codeStatus?.manualDraft || 'MD'
-          }`
-      );
-      return;
+    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
+      data,
+      data?.claimState || this.codeStatus?.manualDraft || 'MD'
+    );
+    if (routeUrl) {
+      this.router.navigateByUrl(routeUrl);
     }
   }
 

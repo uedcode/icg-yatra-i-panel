@@ -339,6 +339,8 @@ export class AuthService {
       return '/executor';
     } else if (
       roleTypeId == codeRoleList.verifier ||
+      roleTypeId == codeRoleList.verifier1 ||
+      roleTypeId == codeRoleList.verifier2 ||
       roleTypeId == codeRoleList.approver
     ) {
       return '/approver';
@@ -386,7 +388,9 @@ export class AuthService {
       unitAdmin: 'UN',
       creator: 'CR',
       executor: 'EX',
-      verifier: 'VE',
+      verifier: 'VE1',
+      verifier1: 'VE1',
+      verifier2: 'VE2',
       approver: 'AP',
       ihqStaff: 'IHQAP',
     };
@@ -543,6 +547,74 @@ export class AuthService {
     }
 
     return `${moduleUrl}/${formUrl}?${queryParams.join('&')}`;
+  }
+
+  getApproverWorkflowDetailUrl(
+    data: any,
+    defaultStatus: string,
+    actionable = false
+  ): string | null {
+    const moduleUrl = this.getModuleName();
+    if (!moduleUrl) {
+      return null;
+    }
+
+    const claim = data?.yatClaimDTO || {};
+    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    const formId = data?.formId || claim?.formId || claimId;
+    const subFormId =
+      claim?.codeSubFormDTO?.subFormId ||
+      data?.subFormId ||
+      data?.codeSubFormDTO?.subFormId ||
+      '';
+    const rawViewUrl =
+      data?.viewUrl ||
+      claim?.codeSubFormDTO?.viewUrl ||
+      data?.codeSubFormDTO?.viewUrl ||
+      '';
+    const viewUrl = String(rawViewUrl).replace(/^\/+/, '');
+
+    if (this.isApproverAdvanceView(viewUrl)) {
+      const queryParams = [
+        `id=${encodeURIComponent(formId)}`,
+        `claimId=${encodeURIComponent(claimId)}`,
+        `subFormId=${encodeURIComponent(subFormId)}`,
+        `statusId=${encodeURIComponent(defaultStatus)}`,
+      ];
+      if (actionable) {
+        queryParams.push('actionable=1');
+      }
+      return `${moduleUrl}/${viewUrl}?${queryParams.join('&')}`;
+    }
+
+    if (claimId && subFormId) {
+      const queryParams = [
+        `claimId=${encodeURIComponent(claimId)}`,
+        `subFormId=${encodeURIComponent(subFormId)}`,
+        `statusId=${encodeURIComponent(defaultStatus)}`,
+      ];
+      if (actionable) {
+        queryParams.push('actionable=1');
+      }
+      return `${moduleUrl}/form-claim-detail?${queryParams.join('&')}`;
+    }
+
+    if (viewUrl && formId) {
+      return `${moduleUrl}/${viewUrl}?id=${encodeURIComponent(formId)}`;
+    }
+
+    return null;
+  }
+
+  private isApproverAdvanceView(viewUrl: string): boolean {
+    return [
+      'form-pmt-duty',
+      'form-ty-duty',
+      'form-fte-advance',
+      'form-ltc-advance',
+      'form-manual-adv',
+      'form-ltc-availed-history',
+    ].includes(viewUrl);
   }
 
   getParameter(param) {

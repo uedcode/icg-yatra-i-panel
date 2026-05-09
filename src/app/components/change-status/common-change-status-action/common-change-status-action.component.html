@@ -1,9 +1,9 @@
 <div *ngIf="actionBtnShow">
-  <button *ngIf="userIdDetails.roleTypeId=='AP'" type="button" class="btn btn-primary" title="Approve"
+  <button *ngIf="isApprovingRole()" type="button" class="btn btn-primary" title="Approve"
     (click)="sureForChangeStatus(codeStatus?.outbox, 'AP')">Approve</button>
   <button *ngIf="userIdDetails.roleTypeId=='IHQAP'" type="button" class="btn btn-primary" title="Approve"
     (click)="sureForChangeStatus(codeStatus?.outbox, 'AP')">Approve</button>
-  <button *ngIf="userIdDetails.roleTypeId=='VE'" type="button" class="btn btn-primary" title="Verify"
+  <button *ngIf="isVerifier1Role()" type="button" class="btn btn-primary" title="Verify"
     (click)="sureForChangeStatus(codeStatus?.outbox, 'VE')">Verify</button>
   <button *ngIf="userIdDetails.desigId=='CSOOPS'" type="button" class="btn btn-info" title="Verify"
     (click)="sureForChangeStatus(codeStatus?.forward, 'FW')">Forward</button>
@@ -19,9 +19,9 @@
   <div class="modal-dialog modal-md" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 *ngIf="userIdDetails.roleTypeId=='AP' && actionType == 'AP' ">Approve</h4>
+        <h4 *ngIf="isApprovingRole() && actionType == 'AP' ">Approve</h4>
         <h4 *ngIf="userIdDetails.roleTypeId=='IHQAP' && actionType == 'AP' ">Approve</h4>
-        <h4 *ngIf="userIdDetails.roleTypeId=='VE' && actionType == 'VE'">Verify</h4>
+        <h4 *ngIf="isVerifier1Role() && actionType == 'VE'">Verify</h4>
         <h4 *ngIf="state=='RT'">Return</h4>
         <h4 *ngIf="state=='RJ'">Reject</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -32,7 +32,7 @@
         <form autocomplete="off" (ngSubmit)="requestForm.form.valid && handelChangeStatus();" #requestForm="ngForm"
           novalidate>
           <div class="form-group"
-            *ngIf="this.codeRoleList?.approver == this.userIdDetails?.roleTypeId && actionType == 'AP'">
+            *ngIf="isApprovingRole() && actionType == 'AP'">
             <label class="form-label">Budget Alloted<sup class="required-msg">*</sup></label>
             <input class="form-control" type="text" placeholder="Budget Alloted" maxlength="10"
               [(ngModel)]="formObj.allotedBudget" name="allotedBudget" #allotedBudget="ngModel" appDecimalNumber
@@ -84,7 +84,7 @@
 
           <div class="form-group">
             <div
-              *ngIf="(this.codeRoleList?.approver == this.userIdDetails?.roleTypeId || this.codeRoleList?.verifier == this.userIdDetails?.roleTypeId) && actionType == 'RT'">
+              *ngIf="(isApprovingRole() || isVerifier1Role()) && actionType == 'RT'">
               <div class="form-group">
                 <label class="form-label">Return To<sup class="required-msg">*</sup></label>
                 <ngx-select [items]="returnUserList" optionTextField="roleName" optionValueField="roleDesigId"

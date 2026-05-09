@@ -67,6 +67,24 @@
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../pay-outbox']"><i class="side-menu__icon fa fa-envelope-open"></i>
+        <span class="side-menu__label">Pay Outbox</span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../pay-approved']"><i class="side-menu__icon fa fa-check-circle"></i>
+        <span class="side-menu__label">Pay Approved</span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../pay-not-approved']"><i class="side-menu__icon fa fa-window-close"></i>
+        <span class="side-menu__label">Pay Not Approved</span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
         [routerLink]="['../movement-update-claim']"><i class="side-menu__icon fa fa-exchange"></i>
         <span class="side-menu__label">Movement Update Claim</span>
       </a>

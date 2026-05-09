@@ -16,6 +16,12 @@ export class FormPayDetailComponent implements OnInit {
   codeStatus: any;
   codeRoleType: any;
   userIdDetails: any;
+  formRemark = '';
+  readonly payStateCodes = {
+    outbox: 'OB',
+    approved: 'AP',
+    notApproved: 'NA',
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -45,6 +51,9 @@ export class FormPayDetailComponent implements OnInit {
         this.$common.hideLoader();
         if (res?.status && Array.isArray(res.object) && res.object.length) {
           this.payDetails = res.object[0];
+          if (this.mode === 'action') {
+            this.formRemark = this.getDefaultRemark(this.payStateCodes.outbox);
+          }
         }
       },
       () => this.$common.hideLoader()
@@ -52,24 +61,43 @@ export class FormPayDetailComponent implements OnInit {
   }
 
   getPrimaryActionLabel(): string {
-    return this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier
+    return this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier1
       ? 'Verify'
       : 'Approve';
   }
 
-  applyAction(isReturn = false): void {
+  get canReject(): boolean {
+    const role = this.userIdDetails?.roleTypeId;
+    return role === this.codeRoleType?.verifier1 || role === this.codeRoleType?.verifier2;
+  }
+
+  getActionPlaceholder(status: string): string {
+    return this.getDefaultRemark(status) || 'Enter remark';
+  }
+
+  setActionRemark(status: string): void {
+    this.formRemark = this.getDefaultRemark(status);
+  }
+
+  viewDocument(): void {
+    const docUrl = this.payDetails?.docUrl;
+    if (!docUrl) {
+      this.$common.showMessage("File doesn't exist", 'danger');
+      return;
+    }
+    this.$auth.viewFile(docUrl);
+  }
+
+  applyAction(status: string): void {
     const payId = this.payDetails?.id;
     if (!payId) return;
-    const status = isReturn
-      ? this.codeStatus?.rejected
-      : this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier
-      ? this.codeStatus?.outbox
-      : this.codeStatus?.approved;
-    const remark = isReturn
-      ? 'Returned'
-      : this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier
-      ? 'Verified'
-      : 'Approved';
+
+    const remark = (this.formRemark || '').trim() || this.getDefaultRemark(status);
+    if (!remark) {
+      this.$common.showMessage('Remark is required.', 'danger');
+      return;
+    }
+
     const payload = {
       claimId: payId,
       roleTypeId: this.userIdDetails?.roleTypeId,
@@ -84,5 +112,16 @@ export class FormPayDetailComponent implements OnInit {
       }
     });
   }
-}
 
+  private getDefaultRemark(status: string): string {
+    if (status === this.payStateCodes.outbox) {
+      return this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier1
+        ? 'Verified'
+        : 'Approved';
+    }
+    if (status === this.payStateCodes.notApproved) {
+      return 'Rejected';
+    }
+    return '';
+  }
+}

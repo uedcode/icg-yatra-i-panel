@@ -87,7 +87,7 @@
         </span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == 'VE'">
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
       <a
         (click)="$auth.closeSidebar()"
         class="side-menu__item"
@@ -102,7 +102,7 @@
         </span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == 'VE'">
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
       <a
         (click)="$auth.closeSidebar()"
         class="side-menu__item"
@@ -117,7 +117,7 @@
         </span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == 'VE'">
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
       <a
         (click)="$auth.closeSidebar()"
         class="side-menu__item"
@@ -128,7 +128,7 @@
         <span class="side-menu__label">Claim Archive</span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == 'VE' || userIdDetails?.roleTypeId == 'AP'">
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.verifier2">
       <a
         (click)="$auth.closeSidebar()"
         class="side-menu__item"
@@ -139,7 +139,7 @@
         <span class="side-menu__label">Pay Inbox</span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == 'VE' || userIdDetails?.roleTypeId == 'AP'">
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.verifier2">
       <a
         (click)="$auth.closeSidebar()"
         class="side-menu__item"
@@ -150,7 +150,7 @@
         <span class="side-menu__label">Pay Outbox</span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == 'VE' || userIdDetails?.roleTypeId == 'AP'">
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.verifier2">
       <a
         (click)="$auth.closeSidebar()"
         class="side-menu__item"
@@ -161,7 +161,7 @@
         <span class="side-menu__label">Pay Approved</span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == 'VE' || userIdDetails?.roleTypeId == 'AP'">
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.verifier2">
       <a
         (click)="$auth.closeSidebar()"
         class="side-menu__item"
@@ -172,7 +172,7 @@
         <span class="side-menu__label">Pay Not Approved</span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == 'VE'">
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
       <a
         (click)="$auth.closeSidebar()"
         class="side-menu__item"
@@ -183,7 +183,7 @@
         <span class="side-menu__label">Manual Draft</span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == 'VE'">
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
       <a
         (click)="$auth.closeSidebar()"
         class="side-menu__item"
@@ -215,3 +215,5 @@
 </aside>
 <!--aside closed-->
 <app-common-user-manual-modal></app-common-user-manual-modal>
+
+

@@ -30,6 +30,16 @@ export class AuthGuard  {
                 returnVal = true;
             } 
 
+            const userDetails = this.$auth.getUserDetails();
+            const allowedRoles = route.data?.roles as string[] | undefined;
+            if (allowedRoles?.length) {
+                const currentRole = userDetails?.roleTypeId;
+                if (!currentRole || !allowedRoles.includes(currentRole)) {
+                    this.$auth.destroySession("2");
+                    return false;
+                }
+            }
+
             var completeUrl = state.url;
             let moduleName = this.$auth.getModuleName();
             if(completeUrl.includes(moduleName)){

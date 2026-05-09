@@ -17,6 +17,7 @@ export class PayInboxComponent implements OnInit {
   codeRoleType: any;
   noOfPage = 10;
   p = 1;
+  searchObj = '';
 
   constructor(
     private $auth: AuthService,
@@ -55,38 +56,12 @@ export class PayInboxComponent implements OnInit {
     );
   }
 
-  getPrimaryActionLabel(): string {
-    return this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier
-      ? 'Verify'
-      : 'Approve';
-  }
-
-  submitAction(row: any, isReturn = false): void {
-    const payId = row?.yatPayDetailsDTO?.id || row?.id;
-    if (!payId) return;
-    const status = isReturn
-      ? this.codeStatus?.rejected
-      : this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier
-      ? this.codeStatus?.outbox
-      : this.codeStatus?.approved;
-    const remark = isReturn
-      ? 'Returned'
-      : this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier
-      ? 'Verified'
-      : 'Approved';
-    const payload = {
-      claimId: payId,
-      roleTypeId: this.userIdDetails?.roleTypeId,
-      userId: this.userIdDetails?.userId,
-      status,
-      remark,
-    };
-    this.$claim.changePayStatusById(payload).subscribe((res: any) => {
-      if (res?.status) {
-        this.$common.showMessage(res?.message || 'Status updated successfully.');
-        this.loadData();
-      }
-    });
+  viewDocument(row: any): void {
+    const docUrl = row?.yatPayDetailsDTO?.docUrl;
+    if (!docUrl) {
+      this.$common.showMessage("File doesn't exist", 'danger');
+      return;
+    }
+    this.$auth.viewFile(docUrl);
   }
 }
-

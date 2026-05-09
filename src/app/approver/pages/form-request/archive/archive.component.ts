@@ -39,7 +39,7 @@ export class ArchiveComponent implements OnInit {
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
-    if (this.userIdDetails?.roleTypeId !== 'VE') {
+    if (this.userIdDetails?.roleTypeId !== this.$auth.codeRoleType()?.verifier) {
       this.$common.showMessage('Claim Archive is available for verifier role only.', 'danger');
       this.router.navigateByUrl(this.$auth.getModuleName() + '/dashboard');
       return;
@@ -106,19 +106,10 @@ export class ArchiveComponent implements OnInit {
   }
 
   viewForm(data: any) {
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-    const subFormId =
-      claim?.codeSubFormDTO?.subFormId || data?.subFormId || data?.codeSubFormDTO?.subFormId;
-
-    if (claimId && subFormId) {
-      this.router.navigateByUrl(
-        this.$auth.getModuleName() + `/form-claim-detail?claimId=${claimId}&subFormId=${subFormId}`
-      );
-      return;
+    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(data, data?.claimState || '');
+    if (routeUrl) {
+      this.router.navigateByUrl(routeUrl);
     }
-
-    this.router.navigateByUrl(this.$auth.getModuleName() + `/${data?.viewUrl}?id=${data.formId}`);
   }
 
   viewHistory(formId: any, claimId: any = null): void {

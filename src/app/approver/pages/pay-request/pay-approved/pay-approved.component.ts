@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import { CommonService } from 'src/app/service/common.service';
 
 @Component({
   selector: 'app-pay-approved',
@@ -15,10 +16,12 @@ export class PayApprovedComponent implements OnInit {
   codeStatus: any;
   noOfPage = 10;
   p = 1;
+  searchObj = '';
 
   constructor(
     private $auth: AuthService,
     private $claim: ClaimService,
+    private $common: CommonService,
     private router: Router
   ) {}
 
@@ -50,5 +53,13 @@ export class PayApprovedComponent implements OnInit {
       `${this.$auth.getModuleName()}/form-pay-detail?id=${payId}&mode=view`
     );
   }
-}
 
+  downloadDocument(row: any): void {
+    const docUrl = row?.yatPayDetailsDTO?.docUrl;
+    if (!docUrl) {
+      this.$common.showMessage("File doesn't exist", 'danger');
+      return;
+    }
+    this.$common.download(docUrl);
+  }
+}

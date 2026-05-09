@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import { CommonService } from 'src/app/service/common.service';
 
 @Component({
   selector: 'app-pay-not-approved',
@@ -13,12 +14,17 @@ export class PayNotApprovedComponent implements OnInit {
   dataList: any[] = [];
   userIdDetails: any;
   codeStatus: any;
+  readonly payStateCodes = {
+    notApproved: 'NA',
+  };
   noOfPage = 10;
   p = 1;
+  searchObj = '';
 
   constructor(
     private $auth: AuthService,
     private $claim: ClaimService,
+    private $common: CommonService,
     private router: Router
   ) {}
 
@@ -35,7 +41,7 @@ export class PayNotApprovedComponent implements OnInit {
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
         gxUnitId: this.userIdDetails?.unitId,
-        state: this.codeStatus?.rejected,
+        state: this.payStateCodes.notApproved,
       },
     };
     this.$claim.getPayStates(config).subscribe((res: any) => {
@@ -50,5 +56,13 @@ export class PayNotApprovedComponent implements OnInit {
       `${this.$auth.getModuleName()}/form-pay-detail?id=${payId}&mode=view`
     );
   }
-}
 
+  downloadDocument(row: any): void {
+    const docUrl = row?.yatPayDetailsDTO?.docUrl;
+    if (!docUrl) {
+      this.$common.showMessage("File doesn't exist", 'danger');
+      return;
+    }
+    this.$common.download(docUrl);
+  }
+}

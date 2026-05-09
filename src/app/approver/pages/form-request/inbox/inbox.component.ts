@@ -106,25 +106,14 @@ export class InboxComponent implements OnInit {
   }
 
   viewForm(data) {
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-    const subFormId =
-      claim?.codeSubFormDTO?.subFormId ||
-      data?.subFormId ||
-      data?.codeSubFormDTO?.subFormId;
-
-    if (claimId && subFormId) {
-      this.router.navigateByUrl(
-        this.$auth.getModuleName() +
-          `/form-claim-detail?claimId=${claimId}&subFormId=${subFormId}&statusId=${
-            data?.claimState || this.codeStatus?.inbox
-          }&actionable=1`
-      );
-      return;
+    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
+      data,
+      data?.claimState || this.codeStatus?.inbox,
+      true
+    );
+    if (routeUrl) {
+      this.router.navigateByUrl(routeUrl);
     }
-
-    const moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(moduleUrl + `/${data?.viewUrl}?id=${data.formId}`);
   }
 
   goBack() {

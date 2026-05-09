@@ -43,6 +43,7 @@ import { FormPayDetailComponent } from './pages/form-detail/form-pay-detail/form
 import { ManualDraftComponent } from './pages/form-request/manual-draft/manual-draft.component';
 import { BudgetAllocationComponent } from './pages/settings/budget-allocation/budget-allocation.component';
 import { ArchiveComponent } from './pages/form-request/archive/archive.component';
+import { FormAdvanceDetailComponent } from './pages/form-detail/form-advance-detail/form-advance-detail.component';
 
 const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more options
   optionValueField: 'id',
@@ -73,6 +74,7 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         PayApprovedComponent,
         PayNotApprovedComponent,
         FormPayDetailComponent,
+        FormAdvanceDetailComponent,
         ManualDraftComponent,
         BudgetAllocationComponent,
         ArchiveComponent,

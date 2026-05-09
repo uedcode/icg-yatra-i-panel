@@ -46,7 +46,7 @@ export class BudgetAllocationComponent implements OnInit {
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
-    if (this.userIdDetails?.roleTypeId !== 'VE') {
+    if (this.userIdDetails?.roleTypeId !== this.$auth.codeRoleType()?.verifier) {
       this.$common.showMessage('Budget Allocation is available for verifier role only.', 'danger');
       this.router.navigateByUrl(this.$auth.getModuleName() + '/dashboard');
       return;

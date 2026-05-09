@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import { Router } from '@angular/router';
 import { CommonService } from 'src/app/service/common.service';
 
 @Component({
   selector: 'app-pay-outbox',
   templateUrl: './pay-outbox.component.html',
-  styleUrls: ['./pay-outbox.component.css'],
+  styleUrls: ['./pay-outbox.component.scss'],
   standalone: false,
 })
 export class PayOutboxComponent implements OnInit {
@@ -19,10 +20,11 @@ export class PayOutboxComponent implements OnInit {
   searchObj = '';
 
   constructor(
-    private $auth: AuthService,
+    private location: Location,
+    public $auth: AuthService,
     private $claim: ClaimService,
-    private $common: CommonService,
-    private router: Router
+    private router: Router,
+    private $common: CommonService
   ) {}
 
   ngOnInit(): void {
@@ -49,9 +51,7 @@ export class PayOutboxComponent implements OnInit {
   viewForm(row: any): void {
     const payId = row?.yatPayDetailsDTO?.id || row?.id;
     if (!payId) return;
-    this.router.navigateByUrl(
-      `${this.$auth.getModuleName()}/form-pay-detail?id=${payId}&mode=view`
-    );
+    this.router.navigateByUrl(`${this.$auth.getModuleName()}/form-pay-details?id=${payId}`);
   }
 
   downloadDocument(row: any): void {
@@ -61,5 +61,13 @@ export class PayOutboxComponent implements OnInit {
       return;
     }
     this.$common.download(docUrl);
+  }
+
+  goBack(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      window.close();
+    }
   }
 }

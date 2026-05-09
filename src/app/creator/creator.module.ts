@@ -64,6 +64,9 @@ import { PreviewVoucherComponent } from './pages/claim/preview-voucher/preview-v
 import { ClaimNewComponent } from './pages/claim/claim-new/claim-new.component';
 import { ClaimFormShellComponent } from './pages/claim/claim-form-shell/claim-form-shell.component';
 import { ArchiveComponent } from './pages/form-request/archive/archive.component';
+import { PayOutboxComponent } from './pages/pay-request/pay-outbox/pay-outbox.component';
+import { PayApprovedComponent } from './pages/pay-request/pay-approved/pay-approved.component';
+import { PayNotApprovedComponent } from './pages/pay-request/pay-not-approved/pay-not-approved.component';
 
 const CustomSelectOptions: INgxSelectOptions = {
   // Check the interface for more options
@@ -111,6 +114,9 @@ const CustomSelectOptions: INgxSelectOptions = {
     FormLtcAvailedHistoryDetailComponent,
     FormPayDetailsComponent,
     FormPayDetailsDetailComponent,
+    PayOutboxComponent,
+    PayApprovedComponent,
+    PayNotApprovedComponent,
     MovementUpdateClaimComponent,
     PreviewVoucherComponent,
     ClaimNewComponent,

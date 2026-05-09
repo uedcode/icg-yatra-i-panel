@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import { CommonService } from 'src/app/service/common.service';
 
 @Component({
   selector: 'app-claim-new',
@@ -18,7 +19,8 @@ export class ClaimNewComponent implements OnInit {
   constructor(
     private $auth: AuthService,
     private $claim: ClaimService,
-    private router: Router
+    private router: Router,
+    private $common: CommonService
   ) {}
 
   ngOnInit(): void {
@@ -54,7 +56,13 @@ export class ClaimNewComponent implements OnInit {
     ).toUpperCase();
     const claimId = row?.claimId || row?.yatClaimDTO?.claimId || row?.id || '';
     const route = this.getClaimFormRoute(subFormId);
-    if (!route) return;
+    if (!route) {
+      this.$common.showMessage(
+        `Unsupported claim type: ${subFormId || 'UNKNOWN'}. Please contact admin.`,
+        'danger'
+      );
+      return;
+    }
     this.router.navigateByUrl(
       `${this.$auth.getModuleName()}/${route}?claimId=${claimId}&subFormId=${subFormId}`
     );

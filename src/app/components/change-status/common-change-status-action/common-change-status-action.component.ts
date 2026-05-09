@@ -34,6 +34,17 @@ export class CommonChangeStatusActionComponent implements OnInit {
   actionBtnShow: any = true;
   tempFormObj: any;
 
+  isVerifier1Role(): boolean {
+    return this.userIdDetails?.roleTypeId == this.codeRoleList?.verifier1;
+  }
+
+  isApprovingRole(): boolean {
+    return (
+      this.userIdDetails?.roleTypeId == this.codeRoleList?.verifier2 ||
+      this.userIdDetails?.roleTypeId == this.codeRoleList?.approver
+    );
+  }
+
   ngOnInit() {
     this.codeStatus = this.$auth.codeStatus();
     this.userIdDetails = this.$auth.getUserDetails();
@@ -133,6 +144,9 @@ export class CommonChangeStatusActionComponent implements OnInit {
             } else if (this.actionType == 'RJ') {
               let moduleUrl = this.$auth.getModuleName();
               this.router.navigateByUrl(moduleUrl + `/rejected`);
+            } else if (this.actionType == 'AP') {
+              let moduleUrl = this.$auth.getModuleName();
+              this.router.navigateByUrl(moduleUrl + `/approved`);
             }
 
             this.actionType = '';

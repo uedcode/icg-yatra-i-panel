@@ -4,6 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { ClaimService } from 'src/app/service/claim.service';
 import { CommonService } from 'src/app/service/common.service';
+declare var $: any;
+
+type ReviewSection = {
+  key: string;
+  label: string;
+  checked: boolean;
+};
 
 @Component({
   selector: 'app-form-claim-detail',
@@ -12,6 +19,12 @@ import { CommonService } from 'src/app/service/common.service';
   standalone: false,
 })
 export class FormClaimDetailComponent implements OnInit {
+  readonly codeSignType = {
+    inkSign: 'IS',
+    eSign: 'ES',
+    inkSignAlt: 'INK_SIGN',
+    eSignAlt: 'E_SIGN',
+  } as const;
   claimId: string | null = null;
   subFormId: string | null = null;
   statusId: string | null = null;
@@ -23,6 +36,9 @@ export class FormClaimDetailComponent implements OnInit {
   remark = '';
   actionLoading = false;
   isLegacyPreviewContext = false;
+  reviewSections: ReviewSection[] = [];
+  activeReviewSectionKey = '';
+  eSignTempFormObj: any = null;
   userIdDetails: any;
   codeStatus: any;
   codeRoleType: any;
@@ -43,6 +59,7 @@ export class FormClaimDetailComponent implements OnInit {
     this.codeRoleType = this.$auth.codeRoleType();
 
     this.isLegacyPreviewContext = this.checkLegacyPreviewContext();
+    this.handleEsignFeedback();
 
     this.route.queryParamMap.subscribe((params) => {
       const routeParams = this.route.snapshot.paramMap;
@@ -52,6 +69,8 @@ export class FormClaimDetailComponent implements OnInit {
       this.actionable =
         (params.get('actionable') === '1' || routeParams.get('actionable') === '1') &&
         !this.isLegacyPreviewContext;
+      this.reviewSections = [];
+      this.activeReviewSectionKey = '';
       if (this.claimId && this.subFormId) {
         this.loadClaim();
         this.loadStateHistory();
@@ -77,6 +96,8 @@ export class FormClaimDetailComponent implements OnInit {
         if (Array.isArray(obj)) obj = obj[0] || null;
         this.formObj = obj;
         this.documentDtos = Array.isArray(obj?.yatDocsDTOs) ? obj.yatDocsDTOs : [];
+        this.reviewSections = this.buildReviewSections();
+        this.activeReviewSectionKey = this.reviewSections[0]?.key || '';
       },
       error: () => {
         this.$common.hideLoader();
@@ -138,8 +159,45 @@ export class FormClaimDetailComponent implements OnInit {
     return !closedStates.includes(this.statusId);
   }
 
+  get allSectionsReviewed(): boolean {
+    return this.reviewSections.every((section) => section.checked);
+  }
+
+  get currentReviewSection(): ReviewSection | null {
+    return this.reviewSections.find((section) => section.key === this.activeReviewSectionKey) || null;
+  }
+
+  get canGoToPreviousSection(): boolean {
+    return this.getActiveReviewSectionIndex() > 0;
+  }
+
+  get canGoToNextSection(): boolean {
+    const index = this.getActiveReviewSectionIndex();
+    return index > -1 && index < this.reviewSections.length - 1;
+  }
+
+  get uploadedDocuments(): any[] {
+    return this.documentDtos.filter((doc) => !!(doc?.url || doc?.fileUrl || doc?.docUrl));
+  }
+
+  get allUploadedDocumentsVerified(): boolean {
+    return this.uploadedDocuments.every((doc) => !!doc?.checkedIndicator);
+  }
+
+  get pendingUploadedDocumentCount(): number {
+    return this.uploadedDocuments.filter((doc) => !doc?.checkedIndicator).length;
+  }
+
+  get requiresESignForForward(): boolean {
+    const signWith = String(this.formObj?.signWith || '').toUpperCase();
+    const isESign =
+      signWith === this.codeSignType.eSign ||
+      signWith === this.codeSignType.eSignAlt;
+    return isESign && this.isApprovingRole();
+  }
+
   getActionLabel(): string {
-    if (this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier) {
+    if (this.isVerifier1()) {
       return 'Verify & Forward';
     }
     return 'Approve';
@@ -175,16 +233,13 @@ export class FormClaimDetailComponent implements OnInit {
     return previewPaths.includes(path);
   }
 
-  private isResettlementSubForm(): boolean {
+  isResettlementSubForm(): boolean {
     const id = (this.subFormId || '').toUpperCase();
     return id === 'RS' || id === 'RES' || id === 'R';
   }
 
   isVerifierResettlementMode(): boolean {
-    return (
-      this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier &&
-      this.isResettlementSubForm()
-    );
+    return this.isVerifier1() && this.isResettlementSubForm();
   }
 
   private isLocallyAllowedTargetStatus(status: string): boolean {
@@ -241,7 +296,18 @@ export class FormClaimDetailComponent implements OnInit {
 
   async submitAction(status: string): Promise<void> {
     if (!this.claimId) return;
-    const remark = (this.remark || '').trim();
+    if (!this.allSectionsReviewed) {
+      this.$common.showMessage('Please complete the review checklist first.', 'danger');
+      return;
+    }
+
+    if (status === this.codeStatus?.outbox && !this.allUploadedDocumentsVerified) {
+      this.selectReviewSection('documents');
+      this.$common.showMessage('Please verify all the documents before forwarding.', 'danger');
+      return;
+    }
+
+    const remark = this.getRemarkForStatus(status);
     if (!remark) {
       this.$common.showMessage('Remark is required.', 'danger');
       return;
@@ -249,6 +315,11 @@ export class FormClaimDetailComponent implements OnInit {
 
     const okToProceed = await this.validateActionTransition(status);
     if (!okToProceed) {
+      return;
+    }
+
+    if (status === this.codeStatus?.outbox && this.requiresESignForForward) {
+      this.startESignFlow(remark);
       return;
     }
 
@@ -290,8 +361,94 @@ export class FormClaimDetailComponent implements OnInit {
     });
   }
 
+  getActionPreviewRemark(status: string): string {
+    return this.getRemarkForStatus(status, false);
+  }
+
+  private handleEsignFeedback(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      const status = params.get('esignStatus');
+      const txnId = params.get('txnId');
+      if (!status) {
+        return;
+      }
+
+      if (status === 'SC') {
+        this.$common.showMessage(
+          txnId
+            ? `eSign completed successfully. Transaction ID: ${txnId}`
+            : 'eSign completed successfully.',
+          'success'
+        );
+      } else if (status === 'US' || status === 'ER') {
+        this.$common.showMessage(
+          txnId
+            ? `eSign could not be completed. Transaction ID: ${txnId}`
+            : 'eSign could not be completed.',
+          'danger'
+        );
+      } else {
+        this.$common.showMessage(
+          txnId
+            ? `eSign status is being processed. Transaction ID: ${txnId}`
+            : 'eSign status is being processed.',
+          'info'
+        );
+      }
+
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { esignStatus: null, txnId: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    });
+  }
+
   goBack(): void {
     this.location.back();
+  }
+
+  selectReviewSection(sectionKey: string): void {
+    if (!sectionKey) return;
+    this.activeReviewSectionKey = sectionKey;
+  }
+
+  goToNextSection(): void {
+    const index = this.getActiveReviewSectionIndex();
+    if (index > -1 && index < this.reviewSections.length - 1) {
+      this.activeReviewSectionKey = this.reviewSections[index + 1].key;
+    }
+  }
+
+  goToPreviousSection(): void {
+    const index = this.getActiveReviewSectionIndex();
+    if (index > 0) {
+      this.activeReviewSectionKey = this.reviewSections[index - 1].key;
+    }
+  }
+
+  isActiveSection(sectionKey: string): boolean {
+    return this.activeReviewSectionKey === sectionKey;
+  }
+
+  openPreview(): void {
+    if (!this.claimId || !this.subFormId) {
+      this.$common.showMessage('Preview route is not available.', 'danger');
+      return;
+    }
+
+    const route = this.getPreviewRoute();
+    if (!route) {
+      this.$common.showMessage('Preview route is not available.', 'danger');
+      return;
+    }
+
+    const url =
+      `${this.$auth.getModuleName()}/${route}` +
+      `?claimId=${encodeURIComponent(this.claimId)}` +
+      `&subFormId=${encodeURIComponent(this.subFormId)}`;
+    window.open(url, '_blank');
   }
 
   display(value: any): string {
@@ -305,8 +462,73 @@ export class FormClaimDetailComponent implements OnInit {
     return this.datePipe.transform(value, 'dd-MMM-yyyy') || '-';
   }
 
+  toNumber(value: any): number {
+    const num = Number(value);
+    return Number.isFinite(num) ? num : 0;
+  }
+
   subForm(): string {
     return (this.subFormId || '').toUpperCase();
+  }
+
+  get primaryAdvanceDetails(): any {
+    switch (this.subForm()) {
+      case 'P':
+      case 'RS':
+      case 'RES':
+      case 'R':
+        return this.formObj?.yatPermDutyAdvDTOs?.[0] || null;
+      case 'T':
+        return this.formObj?.yatTempDutyAdvDTOs?.[0] || null;
+      case 'F':
+        return this.formObj?.yatForeignDutyAdvDTOs?.[0] || null;
+      case 'L':
+        return this.formObj?.yatLtcAdvDTOs?.[0] || null;
+      default:
+        return null;
+    }
+  }
+
+  get primaryClaimDetails(): any {
+    switch (this.subForm()) {
+      case 'P':
+      case 'RS':
+      case 'RES':
+      case 'R':
+        return this.formObj?.yatPermDutyClaimDTOs?.[0] || null;
+      case 'T':
+        return this.formObj?.yatTempDutyClaimDTOs?.[0] || null;
+      case 'F':
+        return this.formObj?.yatForeignDutyClaimDTOs?.[0] || null;
+      case 'L':
+        return this.formObj?.yatLtcClaimDTOs?.[0] || null;
+      default:
+        return null;
+    }
+  }
+
+  get familyDetails(): any[] {
+    return Array.isArray(this.formObj?.yatFamilyDetailDTOs) ? this.formObj.yatFamilyDetailDTOs : [];
+  }
+
+  get lostDocuments(): any[] {
+    return Array.isArray(this.formObj?.lostDocsDTOs) ? this.formObj.lostDocsDTOs : [];
+  }
+
+  get tyTravelRows(): any[] {
+    return Array.isArray(this.formObj?.yatDtsDetailDTOs) ? this.formObj.yatDtsDetailDTOs : [];
+  }
+
+  get tyDtsAmount(): number {
+    return this.tyTravelRows
+      .filter((row) => row?.isDts !== 'NA' && row?.isDts !== 'No')
+      .reduce((sum, row) => sum + this.toNumber(row?.tempAmount ?? row?.amount), 0);
+  }
+
+  get tyNonDtsAmount(): number {
+    return this.tyTravelRows
+      .filter((row) => row?.isDts === 'NA' || row?.isDts === 'No')
+      .reduce((sum, row) => sum + this.toNumber(row?.tempAmount ?? row?.amount), 0);
   }
 
   historyStateLabel(row: any): string {
@@ -317,5 +539,145 @@ export class FormClaimDetailComponent implements OnInit {
       row?.statusId ||
       '-'
     );
+  }
+
+  viewSupportingDocument(doc: any): void {
+    const url = doc?.url || doc?.fileUrl || doc?.docUrl;
+    if (!url) {
+      this.$common.showMessage('Document file is not available.', 'danger');
+      return;
+    }
+    doc.checkedIndicator = true;
+    this.$auth.viewFile(url);
+  }
+
+  viewSignedDocument(): void {
+    const signedUrl = this.formObj?.signedFileUrl;
+    if (!signedUrl) {
+      this.$common.showMessage('Signed document is not available.', 'danger');
+      return;
+    }
+    this.formObj.signedCheckedIndicator = true;
+    this.$auth.viewFile(signedUrl);
+  }
+
+  openRelatedPreview(route: string, claimId: any, subFormId?: string): void {
+    if (!route || !claimId) {
+      this.$common.showMessage('Preview route is not available.', 'danger');
+      return;
+    }
+
+    const query = [`claimId=${encodeURIComponent(String(claimId))}`];
+    if (subFormId) {
+      query.push(`subFormId=${encodeURIComponent(subFormId)}`);
+    }
+    window.open(`${this.$auth.getModuleName()}/${route}?${query.join('&')}`, '_blank');
+  }
+
+  private getRemarkForStatus(status: string, mutateField = true): string {
+    const typedRemark = (this.remark || '').trim();
+    if (typedRemark) {
+      return typedRemark;
+    }
+
+    let fallbackRemark = '';
+    if (status === this.codeStatus?.outbox) {
+      if (this.isVerifier1()) {
+        fallbackRemark = 'Verified';
+      } else if (this.isApprovingRole()) {
+        fallbackRemark = 'Approved';
+      } else {
+        fallbackRemark = 'Verified';
+      }
+    } else if (status === this.codeStatus?.returned) {
+      fallbackRemark = 'Returned';
+    } else if (
+      status === this.codeStatus?.rejected ||
+      status === this.codeStatus?.notPassed
+    ) {
+      fallbackRemark = status === this.codeStatus?.notPassed ? 'Not Passed' : 'Rejected';
+    }
+
+    if (mutateField && fallbackRemark) {
+      this.remark = fallbackRemark;
+    }
+    return fallbackRemark;
+  }
+
+  private isVerifier1(): boolean {
+    return this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier1;
+  }
+
+  private isApprovingRole(): boolean {
+    return (
+      this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier2 ||
+      this.userIdDetails?.roleTypeId === this.codeRoleType?.approver
+    );
+  }
+
+  private startESignFlow(remark: string): void {
+    this.eSignTempFormObj = {
+      id: this.claimId,
+      formRemarks: remark,
+      recommendedAmount:
+        this.formObj?.recommendedAmount ??
+        this.primaryClaimDetails?.recommendedAmount ??
+        this.primaryClaimDetails?.claimAmt ??
+        this.formObj?.claimAmt,
+      allotedBudget: this.formObj?.allotedBudget,
+      balanceAmount: this.formObj?.balanceAmount,
+      progressiveExpenditureAmt: this.formObj?.progressiveExpenditureAmt,
+      balance: this.formObj?.balance,
+    };
+    $('#esign_modal').modal('show');
+  }
+
+  private buildReviewSections(): ReviewSection[] {
+    const sections: ReviewSection[] = [
+      { key: 'personal', label: 'Personal Details', checked: false },
+      { key: 'travel', label: this.subForm() === 'T' ? 'Travel / Daily Allowance' : 'Travel Details', checked: false },
+      { key: 'financial', label: 'Financial Details', checked: false },
+      { key: 'documents', label: 'Supporting Documents', checked: false },
+    ];
+
+    if (this.formObj?.yatClaimBankDetailDTO) {
+      sections.push({ key: 'bank', label: 'Bank Details', checked: false });
+    }
+
+    if (this.formObj?.internalRemarks || this.claimRemarkSummary) {
+      sections.push({ key: 'remarks', label: 'Remarks', checked: false });
+    }
+
+    return sections;
+  }
+
+  private getActiveReviewSectionIndex(): number {
+    return this.reviewSections.findIndex((section) => section.key === this.activeReviewSectionKey);
+  }
+
+  private getPreviewRoute(): string {
+    const previewMap: Record<string, string> = {
+      P: 'preview-pmt-duty-claim',
+      T: 'preview-ty-duty-claim',
+      F: 'preview-fte-claim',
+      L: 'preview-ltc-claim',
+      RS: 'preview-resettlement-claim',
+      RES: 'preview-resettlement-claim',
+      R: 'preview-resettlement-claim',
+    };
+    return previewMap[this.subForm()] || '';
+  }
+
+  getAdvancePreviewRoute(): string {
+    const previewMap: Record<string, string> = {
+      P: 'preview-pmt-duty',
+      T: 'preview-ty-duty',
+      F: 'preview-fte-advance',
+      L: 'preview-ltc-advance',
+      RS: 'preview-resettlement',
+      RES: 'preview-resettlement',
+      R: 'preview-resettlement',
+    };
+    return previewMap[this.subForm()] || '';
   }
 }
