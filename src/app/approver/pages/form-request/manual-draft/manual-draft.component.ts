@@ -27,6 +27,7 @@ export class ManualDraftComponent implements OnInit {
   key = 'createdOn';
   reverse = false;
   formId: any;
+  claimId: any;
 
   constructor(
     private location: Location,
@@ -115,8 +116,9 @@ export class ManualDraftComponent implements OnInit {
     }
   }
 
-  viewHistory(formId: any): void {
+  viewHistory(formId: any, claimId: any = null): void {
     this.formId = formId;
+    this.claimId = claimId || null;
     setTimeout(() => {
       $('#viewHistoryModal').modal('show');
     }, 0);

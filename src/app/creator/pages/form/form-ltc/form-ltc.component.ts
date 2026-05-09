@@ -199,6 +199,7 @@ export class FormLtcAdvanceComponent implements OnInit {
   disableHomeTown: any;
   userIdDetails: any;
   claimIdParam: string | null = null;
+  supplementaryId: string | null = null;
   documentDtos: any[] = [];
   codeClaim = { ltcAdv: 'L' } as const;
   codeClaimState = {
@@ -236,6 +237,7 @@ export class FormLtcAdvanceComponent implements OnInit {
   private initFromRoute(): void {
     const qp = this.route.snapshot.queryParamMap;
     this.claimIdParam = qp.get('claimId');
+    this.supplementaryId = qp.get('supId');
   }
 
   // ---------- Defaults ----------
@@ -444,15 +446,22 @@ export class FormLtcAdvanceComponent implements OnInit {
     const t = this.tempLtcTravelDetails;
 
     if (!t.source || !t.destination || !t.modeOfTravel || !t.isDts) {
-      alert('Please fill From/To/Mode/DTS.');
+      this.$common.showMessage('Please fill From/To/Mode/DTS.', 'danger');
       return;
     }
     if (this.otherMode && !(t.otherModeOfTravel || '').trim()) {
-      alert('Please fill Other Mode of Travel.');
+      this.$common.showMessage('Please fill Other Mode of Travel.', 'danger');
+      return;
+    }
+    if (t.isDts === 'No' && !(t.reasonForNoDts || '').trim()) {
+      this.$common.showMessage(
+        'Please fill the reason for not taking DTS.',
+        'danger'
+      );
       return;
     }
     if (!String(t.amount || '').trim()) {
-      alert('Please fill Amount.');
+      this.$common.showMessage('Please fill Amount.', 'danger');
       return;
     }
 
@@ -605,6 +614,9 @@ export class FormLtcAdvanceComponent implements OnInit {
         isFetch: 'true',
         claimId: this.claimIdParam || '',
       };
+      if (this.supplementaryId) {
+        headers.supCLaimId = this.supplementaryId;
+      }
 
       this.$claim.getSingleClaim({ headers }).subscribe(
         (response: any) => {
@@ -830,8 +842,34 @@ export class FormLtcAdvanceComponent implements OnInit {
       queryParams: {
         claimId,
         subFormId: this.codeClaim.ltcAdv,
+        ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
       },
     });
+  }
+
+  private navigateAfterSave(
+    status: string,
+    savedClaimId?: string | null
+  ): void {
+    const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
+    if (!moduleUrl) return;
+
+    if (status === this.codeClaimState.outbox) {
+      this.router.navigateByUrl(moduleUrl + `/submitted`);
+      return;
+    }
+
+    if (this.supplementaryId && savedClaimId) {
+      this.router.navigate([moduleUrl + '/form-ltc'], {
+        queryParams: {
+          claimId: savedClaimId,
+          supId: this.supplementaryId,
+        },
+      });
+      return;
+    }
+
+    this.router.navigateByUrl(moduleUrl + `/draft`);
   }
 
   formValidate(): void {
@@ -1014,6 +1052,34 @@ export class FormLtcAdvanceComponent implements OnInit {
       return false;
     }
 
+    const adv = this.claims?.yatLtcAdvDTOs?.[0];
+    if ((adv?.isDts || '').trim() === 'No' && !(adv?.reasonForNoDts || '').trim()) {
+      this.setTab('ship');
+      this.$common.showMessage(
+        'Please fill the reason for not taking DTS.',
+        'danger'
+      );
+      return false;
+    }
+
+    const invalidTravelRow = (this.claims.yatDtsDetailDTOs || []).find((row: any) => {
+      if ((row?.modeOfTravel || '').trim() === 'Others') {
+        return !row?.otherModeOfTravel || !String(row.otherModeOfTravel).trim();
+      }
+      if ((row?.isDts || '').trim() === 'No') {
+        return !row?.reasonForNoDts || !String(row.reasonForNoDts).trim();
+      }
+      return false;
+    });
+    if (invalidTravelRow) {
+      const message = (invalidTravelRow?.modeOfTravel || '').trim() === 'Others'
+        ? 'Please fill Other Mode of Travel for all travel detail rows.'
+        : 'Please fill the reason for not taking DTS for all non-DTS travel detail rows.';
+      this.setTab('ship2');
+      this.$common.showMessage(message, 'danger');
+      return false;
+    }
+
     return true;
   }
 
@@ -1056,6 +1122,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       }
 
       tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
+      if (this.supplementaryId) tempClaim.supClaimId = this.supplementaryId;
       tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
       tempClaim.occDate = this.UtilService.toMillis(tempClaim.occDate);
 
@@ -1090,14 +1157,16 @@ export class FormLtcAdvanceComponent implements OnInit {
               res?.message || 'LTC claim submitted successfully!',
               'success'
             );
-            if (moduleUrl) this.router.navigateByUrl(moduleUrl + `/submitted`);
           } else {
             this.$common.showMessage(
               res?.message || 'LTC draft saved successfully.',
               'success'
             );
-            if (moduleUrl) this.router.navigateByUrl(moduleUrl + `/draft`);
           }
+          this.navigateAfterSave(
+            status,
+            obj.claimId || obj.id || this.claims.claimId || this.claimIdParam
+          );
 
           this.$common.hideLoader();
           this.disableBtn = false;

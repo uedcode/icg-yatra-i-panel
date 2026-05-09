@@ -148,6 +148,15 @@ export class ClaimService {
     );
   }
 
+  fileDownloadedVoucher(config: any) {
+    return this.http.put<any>(`claim/fileDownloadedVoucher`, {}, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
   /**
    * Get verifier unit for a claim.
    * Old JS: $http.get(url + "/getVerifierUnit", config)

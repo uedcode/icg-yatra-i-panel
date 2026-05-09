@@ -42,9 +42,9 @@ export class ClaimNewComponent implements OnInit {
   openMovement(row: any): void {
     const claimId = row?.claimId || row?.yatClaimDTO?.claimId || row?.id || '';
     if (!claimId) return;
-    this.router.navigateByUrl(
-      `${this.$auth.getModuleName()}/movement-update-claim?claimId=${claimId}`
-    );
+    this.router.navigate([`${this.$auth.getModuleName()}/movement-update-claim`], {
+      queryParams: { claimId },
+    });
   }
 
   openClaimForm(row: any): void {
@@ -54,8 +54,13 @@ export class ClaimNewComponent implements OnInit {
       row?.yatClaimDTO?.codeSubFormDTO?.subFormId ||
       ''
     ).toUpperCase();
+    const formUrl =
+      row?.formUrl ||
+      row?.codeSubFormDTO?.formUrl ||
+      row?.yatClaimDTO?.codeSubFormDTO?.formUrl ||
+      '';
     const claimId = row?.claimId || row?.yatClaimDTO?.claimId || row?.id || '';
-    const route = this.getClaimFormRoute(subFormId);
+    const route = this.getClaimFormRoute(subFormId, formUrl);
     if (!route) {
       this.$common.showMessage(
         `Unsupported claim type: ${subFormId || 'UNKNOWN'}. Please contact admin.`,
@@ -63,12 +68,29 @@ export class ClaimNewComponent implements OnInit {
       );
       return;
     }
-    this.router.navigateByUrl(
-      `${this.$auth.getModuleName()}/${route}?claimId=${claimId}&subFormId=${subFormId}`
-    );
+    this.router.navigate([`${this.$auth.getModuleName()}/${route}`], {
+      queryParams: {
+        claimId,
+        subFormId,
+      },
+    });
   }
 
-  private getClaimFormRoute(subFormId: string): string | null {
+  private getClaimFormRoute(subFormId: string, formUrl: string = ''): string | null {
+    const normalizedFormUrl = String(formUrl || '').toLowerCase();
+    if (normalizedFormUrl) {
+      if (normalizedFormUrl.includes('form-pmt-duty-claim')) return 'form-pmt-duty-claim';
+      if (normalizedFormUrl.includes('form-ty-duty-claim')) return 'form-ty-duty-claim';
+      if (normalizedFormUrl.includes('form-fte-claim')) return 'form-fte-claim';
+      if (normalizedFormUrl.includes('form-ltc-claim')) return 'form-ltc-claim';
+      if (normalizedFormUrl.includes('form-resettlement-claim')) return 'form-resettlement-claim';
+      if (normalizedFormUrl.includes('form-pmt-duty')) return 'form-pmt-duty-claim';
+      if (normalizedFormUrl.includes('form-ty-duty')) return 'form-ty-duty-claim';
+      if (normalizedFormUrl.includes('form-fte-advance')) return 'form-fte-claim';
+      if (normalizedFormUrl.includes('form-ltc-advance')) return 'form-ltc-claim';
+      if (normalizedFormUrl.includes('resettlement')) return 'form-resettlement-claim';
+    }
+
     const id = (subFormId || '').toUpperCase();
     if (id === 'P' || id === 'PMT' || id === 'PMTA' || id === 'PMTCLM') return 'form-pmt-duty-claim';
     if (id === 'T' || id === 'TY' || id === 'TYA' || id === 'TYCLM') return 'form-ty-duty-claim';

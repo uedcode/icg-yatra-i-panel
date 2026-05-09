@@ -109,8 +109,22 @@ export class CommonViewFormHistoryModalComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges) {
     if (!changes) return;
 
-    if ((changes.formId && changes.formId.currentValue) || (changes.claimId && changes.claimId.currentValue)) {
-     this.getAll();
+    if (changes.formId && !changes.formId.currentValue && !this.claimId) {
+      this.stateList = [];
+      return;
+    }
+
+    if (changes.claimId && !changes.claimId.currentValue && !this.formId) {
+      this.stateList = [];
+      return;
+    }
+
+    if (
+      (changes.formId && changes.formId.currentValue !== changes.formId.previousValue) ||
+      (changes.claimId && changes.claimId.currentValue !== changes.claimId.previousValue)
+    ) {
+      this.p = 1;
+      this.getAll();
     }
   }
   // data shorting end

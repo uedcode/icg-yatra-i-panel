@@ -124,9 +124,10 @@ export class InboxComponent implements OnInit {
     }
   }
   formId;
-  viewHistory(formId: any): void {
-    
-    this.formId = formId; // just set formId
+  claimId;
+  viewHistory(formId: any, claimId: any = null): void {
+    this.formId = formId;
+    this.claimId = claimId || null;
     setTimeout(() => {
       $('#viewHistoryModal').modal('show');
     }, 0);

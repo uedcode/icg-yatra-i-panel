@@ -68,6 +68,7 @@
                 Return
               </button>
               <button
+                *ngIf="getTertiaryActionStatus()"
                 type="button"
                 class="btn"
                 [ngClass]="isVerifierResettlementMode() ? 'btn-secondary' : 'btn-danger'"
@@ -119,7 +120,7 @@
               <div class="col-md-3"><strong>Claim ID:</strong> {{ display(formObj?.claimId) }}</div>
               <div class="col-md-3"><strong>Claim No:</strong> {{ display(formObj?.claimNo) }}</div>
               <div class="col-md-3"><strong>Sub Form:</strong> {{ display(formObj?.codeSubFormDTO?.subFormName || formObj?.codeSubFormDTO?.descr || subForm()) }}</div>
-              <div class="col-md-3"><strong>State:</strong> {{ display(formObj?.claimState || statusId) }}</div>
+              <div class="col-md-3"><strong>State:</strong> {{ (formObj?.claimState || statusId) | codeStatus:'-' }}</div>
               <div class="col-md-3 mt-2"><strong>Unit:</strong> {{ display(formObj?.codeUnitDTO?.descr || formObj?.unitName) }}</div>
               <div class="col-md-3"><strong>Sign With:</strong> {{ display(formObj?.signWith) }}</div>
               <div class="col-md-3 mt-2"><strong>Occurrence Date:</strong> {{ asDate(formObj?.occDate) }}</div>

@@ -363,6 +363,7 @@ export class AuthService {
       pending: 'PE',
       outbox: 'OB',
       approved: 'AP',
+      notApproved: 'NA',
       returned: 'RT',
       rejected: 'RJ',
       success: 'SU',
@@ -401,6 +402,7 @@ export class AuthService {
       inbox: 'IB',
       outbox: 'OB',
       approved: 'AP',
+      notApproved: 'NA',
       rejected: 'RJ',
     };
   }
@@ -422,7 +424,7 @@ export class AuthService {
       return 'badge-warning';
     } else if (status.approved == statusId) {
       return 'badge-success';
-    } else if (status.rejected == statusId) {
+    } else if (status.rejected == statusId || status.notApproved == statusId) {
       return 'badge-danger';
     }
   }
@@ -445,7 +447,7 @@ export class AuthService {
     // else if (status.approved == statusId) {
     //   return "badge-success";
     // }
-    if (status.rejected == statusId) {
+    if (status.rejected == statusId || status.notApproved == statusId) {
       return 'strikeout';
     }
   }
@@ -562,6 +564,13 @@ export class AuthService {
     const claim = data?.yatClaimDTO || {};
     const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
     const formId = data?.formId || claim?.formId || claimId;
+    const resolvedStatus =
+      defaultStatus ||
+      data?.claimState ||
+      claim?.claimState ||
+      data?.statusId ||
+      claim?.statusId ||
+      '';
     const subFormId =
       claim?.codeSubFormDTO?.subFormId ||
       data?.subFormId ||
@@ -579,7 +588,7 @@ export class AuthService {
         `id=${encodeURIComponent(formId)}`,
         `claimId=${encodeURIComponent(claimId)}`,
         `subFormId=${encodeURIComponent(subFormId)}`,
-        `statusId=${encodeURIComponent(defaultStatus)}`,
+        `statusId=${encodeURIComponent(resolvedStatus)}`,
       ];
       if (actionable) {
         queryParams.push('actionable=1');
@@ -591,7 +600,7 @@ export class AuthService {
       const queryParams = [
         `claimId=${encodeURIComponent(claimId)}`,
         `subFormId=${encodeURIComponent(subFormId)}`,
-        `statusId=${encodeURIComponent(defaultStatus)}`,
+        `statusId=${encodeURIComponent(resolvedStatus)}`,
       ];
       if (actionable) {
         queryParams.push('actionable=1');

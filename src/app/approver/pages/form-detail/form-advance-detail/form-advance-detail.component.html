@@ -133,7 +133,7 @@
                 type="button"
                 class="btn btn-danger"
                 [disabled]="actionLoading || !allSectionsReviewed"
-                (click)="submitAction(codeStatus?.rejected)"
+                (click)="submitAction(codeStatus?.notApproved)"
               >
                 Reject
               </button>
@@ -159,7 +159,7 @@
             <div class="row">
               <div class="col-md-3"><strong>Claim ID:</strong> {{ display(formObj?.claimId || claimId) }}</div>
               <div class="col-md-3"><strong>Sub Form:</strong> {{ display(subFormId) }}</div>
-              <div class="col-md-3"><strong>State:</strong> {{ display(formObj?.claimState || statusId) }}</div>
+              <div class="col-md-3"><strong>State:</strong> {{ (formObj?.claimState || statusId) | codeStatus:'-' }}</div>
               <div class="col-md-3"><strong>Sign With:</strong> {{ display(formObj?.signWith) }}</div>
             </div>
           </div>
@@ -510,7 +510,7 @@
               <tbody>
                 <tr *ngFor="let row of stateHistory">
                   <td>{{ display(row?.roleTypeName || row?.aclCodeRoleTypeDTO?.roleTypeName || row?.aclCodeRoleTypeDTO?.descr) }}</td>
-                  <td>{{ display(row?.formState || row?.claimState || row?.statusId) }}</td>
+                  <td>{{ (row?.formState || row?.claimState || row?.statusId) | codeStatus:'-' }}</td>
                   <td>{{ display(row?.unitName || row?.yatClaimDTO?.codeUnitDTO?.descr || row?.yatClaimDTO?.codeUnitDTO?.unit) }}</td>
                   <td>{{ asDate(row?.createdOn) }}</td>
                 </tr>

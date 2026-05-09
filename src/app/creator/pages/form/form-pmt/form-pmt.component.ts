@@ -211,6 +211,7 @@ export class FormPmtDutyComponent implements OnInit {
 
   gxUnitId: number | null = null;
   claimIdParam: string | null = null;
+  supplementaryId: string | null = null;
 
   allUnits: any[] = [];
 
@@ -248,6 +249,7 @@ export class FormPmtDutyComponent implements OnInit {
 
     const qp = this.route.snapshot.queryParamMap;
     this.claimIdParam = qp.get('claimId');
+    this.supplementaryId = qp.get('supId');
 
     const gxUnitIdStr = qp.get('gxUnitId');
     this.gxUnitId = gxUnitIdStr ? +gxUnitIdStr : null;
@@ -387,6 +389,9 @@ export class FormPmtDutyComponent implements OnInit {
         isFetch: 'true',
         claimId: this.claimIdParam || '',
       };
+      if (this.supplementaryId) {
+        headers.supCLaimId = this.supplementaryId;
+      }
 
       this.config = { headers };
 
@@ -1112,6 +1117,7 @@ export class FormPmtDutyComponent implements OnInit {
         tempClaim.codeUnitDTO = { unit: tempClaim.codeUnitDTO.unit };
       }
       if (!tempClaim.signWith) tempClaim.signWith = 'ES';
+      if (this.supplementaryId) tempClaim.supClaimId = this.supplementaryId;
       tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
 
       tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
@@ -1152,14 +1158,7 @@ export class FormPmtDutyComponent implements OnInit {
             this.$common.showMessage(successMsg, 'success');
           }
 
-          if (status === this.codeClaimState.outbox) {
-            const moduleUrl = this.$auth.getModuleName
-              ? this.$auth.getModuleName()
-              : '';
-            if (moduleUrl) {
-              this.router.navigateByUrl(moduleUrl + `/submitted`);
-            }
-          }
+          this.navigateAfterSave(status, obj.claimId || obj.id || this.claimId);
           this.checkForPreviewBtn();
         },
         (err: any) => {
@@ -1370,8 +1369,83 @@ export class FormPmtDutyComponent implements OnInit {
       return false;
     }
 
+    if ((adv.isDts || '').trim() === 'No' && this.isNullOrEmpty(adv.reasonDts)) {
+      this.$common.showMessage(
+        'Please fill the reason for not taking DTS.',
+        'danger'
+      );
+      this.activateTab('ship');
+      return false;
+    }
+
+    if (
+      !this.isEmpty(adv.transPerEffectKg) &&
+      this.toNumber(adv.maxTransEffectKg) > 0 &&
+      this.toNumber(adv.transPerEffectKg) > this.toNumber(adv.maxTransEffectKg)
+    ) {
+      this.$common.showMessage(
+        `Transportation of personal effects weight cannot exceed ${adv.maxTransEffectKg} Kg.`,
+        'danger'
+      );
+      this.activateTab('ship2');
+      return false;
+    }
+
+    if (
+      !this.isEmpty(adv.transPerEffectShipKg) &&
+      this.toNumber(adv.maxTransEffectShipKg) > 0 &&
+      this.toNumber(adv.transPerEffectShipKg) > this.toNumber(adv.maxTransEffectShipKg)
+    ) {
+      this.$common.showMessage(
+        `Ship transportation weight cannot exceed ${adv.maxTransEffectShipKg} Kg.`,
+        'danger'
+      );
+      this.activateTab('ship2');
+      return false;
+    }
+
+    const hasLandRate = !this.isEmpty(adv.transPerEffectKgRs);
+    const hasLandKm = !this.isEmpty(adv.transPerEffectKms);
+    if (hasLandRate !== hasLandKm) {
+      this.$common.showMessage(
+        'Please fill both rate and kilometers for land transportation of personal effects.',
+        'danger'
+      );
+      this.activateTab('ship2');
+      return false;
+    }
+
+    const hasShipRate = !this.isEmpty(adv.transPerEffectShipKgRs);
+    const hasShipKm = !this.isEmpty(adv.transPerEffectShipKms);
+    if (hasShipRate !== hasShipKm) {
+      this.$common.showMessage(
+        'Please fill both rate and kilometers for ship transportation of personal effects.',
+        'danger'
+      );
+      this.activateTab('ship2');
+      return false;
+    }
+
     if (!Array.isArray(this.claims.yatDtsDetailDTOs) || this.claims.yatDtsDetailDTOs.length === 0) {
       this.$common.showMessage('Please add at least one travel detail row.', 'danger');
+      this.activateTab('ship4');
+      return false;
+    }
+
+    const invalidTravelRow = (this.claims.yatDtsDetailDTOs || []).find((row: any) => {
+      if ((row?.modeOfTravel || '').trim() === 'Others') {
+        return this.isNullOrEmpty(row?.otherModeOfTravel);
+      }
+      if ((row?.isDts || '').trim() === 'No') {
+        return this.isNullOrEmpty(row?.reasonForNoDts);
+      }
+      return false;
+    });
+    if (invalidTravelRow) {
+      const message = (invalidTravelRow?.modeOfTravel || '').trim() === 'Others'
+        ? 'Please fill Other Mode of Travel for all travel detail rows.'
+        : 'Please fill Reason for not using DTS for all non-DTS travel detail rows.';
+      this.$common.showMessage(message, 'danger');
       this.activateTab('ship4');
       return false;
     }
@@ -1388,8 +1462,37 @@ export class FormPmtDutyComponent implements OnInit {
 
   navigatePreview(type: string, id: string): void {
     this.router.navigate(['../form-pmt-detail'], {
-      queryParams: { claimId: this.claims.claimId || this.claimIdParam, subFormId: 'P' },
+      queryParams: {
+        claimId: this.claims.claimId || this.claimIdParam,
+        subFormId: 'P',
+        ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+      },
     });
+  }
+
+  private navigateAfterSave(
+    status: string,
+    savedClaimId?: string | null
+  ): void {
+    const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
+    if (!moduleUrl) return;
+
+    if (status === this.codeClaimState.outbox) {
+      this.router.navigateByUrl(moduleUrl + `/submitted`);
+      return;
+    }
+
+    if (this.supplementaryId && savedClaimId) {
+      this.router.navigate([moduleUrl + '/form-pmt'], {
+        queryParams: {
+          claimId: savedClaimId,
+          supId: this.supplementaryId,
+        },
+      });
+      return;
+    }
+
+    this.router.navigateByUrl(moduleUrl + `/draft`);
   }
 
   checkEsignAvailability(): void {

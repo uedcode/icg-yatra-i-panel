@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { ClaimService } from 'src/app/service/claim.service';
 import { CommonService } from 'src/app/service/common.service';
@@ -28,19 +28,22 @@ export class ArchiveComponent implements OnInit {
   reverse = false;
   formId: any;
   claimId: any;
+  pageTitle = 'Claim Archive';
 
   constructor(
     private location: Location,
     public $auth: AuthService,
     private $claim: ClaimService,
     private $common: CommonService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
+    this.pageTitle = this.getPageTitle();
     if (this.userIdDetails?.roleTypeId !== this.$auth.codeRoleType()?.verifier) {
-      this.$common.showMessage('Claim Archive is available for verifier role only.', 'danger');
+      this.$common.showMessage(`${this.pageTitle} is available for verifier role only.`, 'danger');
       this.router.navigateByUrl(this.$auth.getModuleName() + '/dashboard');
       return;
     }
@@ -131,5 +134,10 @@ export class ArchiveComponent implements OnInit {
     } else {
       window.close();
     }
+  }
+
+  private getPageTitle(): string {
+    const path = this.route.snapshot.routeConfig?.path || '';
+    return path === 'archive' ? 'Archive' : 'Claim Archive';
   }
 }

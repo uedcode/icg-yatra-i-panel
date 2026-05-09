@@ -24,7 +24,7 @@
                 *ngFor="let dataObj of stateList |  filterComplex : searchObj  |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                 <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
                 <td>{{(dataObj?.roleTypeName || dataObj?.aclRoleDTO?.roleName || dataObj?.aclRoleDTO?.descr) | showHypen}}</td>
-                <td>{{(dataObj?.formState || dataObj?.claimState || dataObj?.codeStatusDTO?.descr) | showHypen }}</td>
+                <td>{{ (dataObj?.formState || dataObj?.claimState || dataObj?.codeStatusDTO?.descr) | codeStatus:'-' }}</td>
                 <td>{{(dataObj?.unitName || dataObj?.yatClaimDTO?.codeUnitDTO?.descr || dataObj?.yatClaimDTO?.codeUnitDTO?.unit) | showHypen }}</td>
                 <td>{{dataObj?.createdOn | showDate:"medium"}}</td>
               </tr>

@@ -105,7 +105,7 @@
                         <td>{{ (dataObj?.yatClaimDTO?.codeUnitDTO?.descr || dataObj?.yatClaimDTO?.codeUnitDTO?.unit || dataObj?.unit) | showHypen }}</td>
                         <td>{{ (dataObj?.fullName || dataObj?.yatClaimDTO?.remark || dataObj?.fullDescr) | showHypen }}</td>
                         <td>
-                          <button class="btn btn-warning" title="View History" (click)="viewHistory(dataObj?.formId)">
+                          <button class="btn btn-warning" title="View History" (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">
                             View History
                           </button>
                         </td>
@@ -137,4 +137,4 @@
     <app-footer></app-footer>
   </div>
 </div>
-<app-common-view-form-history-modal [formId]="formId"></app-common-view-form-history-modal>
+<app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>

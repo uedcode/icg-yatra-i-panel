@@ -348,8 +348,37 @@ export class FormFteComponent implements OnInit {
 
   navigatePreview(route: string, id: any): void {
     this.router.navigate(['../form-fte-detail'], {
-      queryParams: { claimId: id || this.claims?.claimId || this.claimIdParam, subFormId: 'F' },
+      queryParams: {
+        claimId: id || this.claims?.claimId || this.claimIdParam,
+        subFormId: 'F',
+        ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+      },
     });
+  }
+
+  private navigateAfterSave(
+    status: string,
+    savedClaimId?: string | null
+  ): void {
+    const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
+    if (!moduleUrl) return;
+
+    if (status === this.codeClaimState.outbox) {
+      this.router.navigateByUrl(moduleUrl + `/submitted`);
+      return;
+    }
+
+    if (this.supplementaryId && savedClaimId) {
+      this.router.navigate([moduleUrl + '/form-fte'], {
+        queryParams: {
+          claimId: savedClaimId,
+          supId: this.supplementaryId,
+        },
+      });
+      return;
+    }
+
+    this.router.navigateByUrl(moduleUrl + `/draft`);
   }
 
   checkValidSignType(
@@ -409,6 +438,7 @@ export class FormFteComponent implements OnInit {
 
   /* ==== ROUTE PARAMS ==== */
   claimIdParam: string | null = null;
+  supplementaryId: string | null = null;
 
   /* ==== COMMON STATE ==== */
   config: any;
@@ -475,6 +505,7 @@ export class FormFteComponent implements OnInit {
   private initFromRoute(): void {
     const qp = this.route.snapshot.queryParamMap;
     this.claimIdParam = qp.get('claimId');
+    this.supplementaryId = qp.get('supId');
   }
 
   private createEmptyClaims(): ClaimsFteAdv {
@@ -596,6 +627,7 @@ export class FormFteComponent implements OnInit {
       };
 
       if (this.claimIdParam) headers.claimId = this.claimIdParam;
+      if (this.supplementaryId) headers.supCLaimId = this.supplementaryId;
 
       const config = { headers };
 
@@ -964,6 +996,7 @@ export class FormFteComponent implements OnInit {
 
       // sign
       if (!tempClaim.signWith) tempClaim.signWith = this.codeSignType.eSign;
+      if (this.supplementaryId) tempClaim.supClaimId = this.supplementaryId;
       tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
 
       // ifsc flag
@@ -1013,14 +1046,16 @@ export class FormFteComponent implements OnInit {
               res?.message || 'FTE claim submitted successfully!',
               'success'
             );
-            if (moduleUrl) this.router.navigateByUrl(moduleUrl + `/submitted`);
           } else if (respStatus === this.codeClaimState.draft) {
             this.$common.showMessage(
               res?.message || 'FTE draft saved successfully.',
               'success'
             );
-            if (moduleUrl) this.router.navigateByUrl(moduleUrl + `/draft`);
           }
+          this.navigateAfterSave(
+            respStatus,
+            obj.claimId || obj.id || this.claims.claimId || this.claimIdParam
+          );
 
           this.$common.hideLoader();
           this.disableBtn = false;
@@ -1076,6 +1111,30 @@ export class FormFteComponent implements OnInit {
         'Please complete all mandatory fields before submitting.',
         'danger'
       );
+      return false;
+    }
+
+    if (!Array.isArray(this.claims.yatDtsDetailDTOs) || this.claims.yatDtsDetailDTOs.length === 0) {
+      this.activateTab('ship4');
+      this.$common.showMessage('Please add at least one travel detail row.', 'danger');
+      return false;
+    }
+
+    const invalidTravelRow = (this.claims.yatDtsDetailDTOs || []).find((row: any) => {
+      if ((row?.modeOfTravel || '').trim() === 'Others') {
+        return !row?.otherModeOfTravel || !String(row.otherModeOfTravel).trim();
+      }
+      if ((row?.isDts || '').trim() === 'No') {
+        return !row?.reasonForNoDts || !String(row.reasonForNoDts).trim();
+      }
+      return false;
+    });
+    if (invalidTravelRow) {
+      const message = (invalidTravelRow?.modeOfTravel || '').trim() === 'Others'
+        ? 'Please fill Other Mode of Travel for all travel detail rows.'
+        : 'Reason for not using DTS is required for all non-DTS travel detail rows.';
+      this.activateTab('ship4');
+      this.$common.showMessage(message, 'danger');
       return false;
     }
 

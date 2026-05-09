@@ -151,6 +151,7 @@ export class FormClaimDetailComponent implements OnInit {
     if (!this.actionable) return false;
     const closedStates = [
       this.codeStatus?.approved,
+      this.codeStatus?.notApproved,
       this.codeStatus?.rejected,
       this.codeStatus?.returned,
       this.codeStatus?.passed,
@@ -207,14 +208,20 @@ export class FormClaimDetailComponent implements OnInit {
     if (this.isVerifierResettlementMode()) {
       return this.codeStatus?.notPassed;
     }
-    return this.codeStatus?.rejected;
+    if (this.isApprovingRole()) {
+      return this.codeStatus?.notApproved;
+    }
+    return '';
   }
 
   getTertiaryActionLabel(): string {
     if (this.isVerifierResettlementMode()) {
       return 'Not Passed';
     }
-    return 'Reject';
+    if (this.isApprovingRole()) {
+      return 'Reject';
+    }
+    return '';
   }
 
   private checkLegacyPreviewContext(): boolean {
@@ -245,7 +252,9 @@ export class FormClaimDetailComponent implements OnInit {
   private isLocallyAllowedTargetStatus(status: string): boolean {
     const allowed = this.isVerifierResettlementMode()
       ? [this.codeStatus?.outbox, this.codeStatus?.returned, this.codeStatus?.notPassed]
-      : [this.codeStatus?.outbox, this.codeStatus?.returned, this.codeStatus?.rejected];
+      : this.isApprovingRole()
+        ? [this.codeStatus?.outbox, this.codeStatus?.returned, this.codeStatus?.notApproved]
+        : [this.codeStatus?.outbox, this.codeStatus?.returned];
     return allowed.includes(status);
   }
 
@@ -592,6 +601,7 @@ export class FormClaimDetailComponent implements OnInit {
     } else if (status === this.codeStatus?.returned) {
       fallbackRemark = 'Returned';
     } else if (
+      status === this.codeStatus?.notApproved ||
       status === this.codeStatus?.rejected ||
       status === this.codeStatus?.notPassed
     ) {
@@ -655,7 +665,7 @@ export class FormClaimDetailComponent implements OnInit {
     return this.reviewSections.findIndex((section) => section.key === this.activeReviewSectionKey);
   }
 
-  private getPreviewRoute(): string {
+  public getPreviewRoute(): string {
     const previewMap: Record<string, string> = {
       P: 'preview-pmt-duty-claim',
       T: 'preview-ty-duty-claim',

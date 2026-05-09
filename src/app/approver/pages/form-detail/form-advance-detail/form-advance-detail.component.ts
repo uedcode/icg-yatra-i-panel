@@ -539,6 +539,7 @@ export class FormAdvanceDetailComponent implements OnInit {
     if (!this.actionable || this.previewMode) return false;
     const closedStates = [
       this.codeStatus?.approved,
+      this.codeStatus?.notApproved,
       this.codeStatus?.rejected,
       this.codeStatus?.returned,
       this.codeStatus?.passed,
@@ -645,7 +646,7 @@ export class FormAdvanceDetailComponent implements OnInit {
   private isAllowedTargetStatus(status: string): boolean {
     const allowed = [this.codeStatus?.outbox, this.codeStatus?.returned];
     if (this.canReject) {
-      allowed.push(this.codeStatus?.rejected);
+      allowed.push(this.codeStatus?.notApproved);
     }
     return allowed.includes(status);
   }
@@ -929,7 +930,10 @@ export class FormAdvanceDetailComponent implements OnInit {
       fallbackRemark = this.isApprovingRole() ? 'Approved' : 'Verified';
     } else if (status === this.codeStatus?.returned) {
       fallbackRemark = 'Returned';
-    } else if (status === this.codeStatus?.rejected) {
+    } else if (
+      status === this.codeStatus?.notApproved ||
+      status === this.codeStatus?.rejected
+    ) {
       fallbackRemark = 'Rejected';
     }
 

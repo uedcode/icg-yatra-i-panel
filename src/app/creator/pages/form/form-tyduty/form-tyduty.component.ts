@@ -445,6 +445,7 @@ export class FormTydutyComponent implements OnInit {
     const qp = this.route.snapshot.queryParamMap;
     this.claimIdParam = qp.get('claimId');
     this.extnClaimId = qp.get('extnClaimId');
+    this.supplementryId = qp.get('supId');
     const gxUnitIdStr = qp.get('gxUnitId');
     this.gxUnitId = gxUnitIdStr ? +gxUnitIdStr : null;
   }
@@ -821,6 +822,19 @@ export class FormTydutyComponent implements OnInit {
       return;
     }
 
+    if ((detail.modeOfTravel || '').trim() === 'Others') {
+      const otherMode = detail.otherModeOfTravel
+        ? detail.otherModeOfTravel.trim()
+        : '';
+      if (!otherMode) {
+        this.$common.showMessage(
+          'Please fill Other Mode of Travel when mode is Others.',
+          'danger'
+        );
+        return;
+      }
+    }
+
     if (detail.isDts === 'No') {
       const reason = detail.reasonForNoDts ? detail.reasonForNoDts.trim() : '';
 
@@ -929,7 +943,10 @@ export class FormTydutyComponent implements OnInit {
 
   navigate_preview(route: string): void {
     this.router.navigate([route], {
-      queryParams: { claimId: this.claims.claimId },
+      queryParams: {
+        claimId: this.claims.claimId,
+        ...(this.supplementryId ? { supId: this.supplementryId } : {}),
+      },
     });
   }
 
@@ -1031,6 +1048,9 @@ export class FormTydutyComponent implements OnInit {
 
       if (this.claimIdParam) {
         headers.claimId = this.claimIdParam;
+      }
+      if (this.supplementryId) {
+        headers.supCLaimId = this.supplementryId;
       }
 
       const config = { headers };
@@ -1287,8 +1307,34 @@ export class FormTydutyComponent implements OnInit {
       queryParams: {
         claimId: id || this.claims.claimId || this.claimIdParam,
         subFormId: 'T',
+        ...(this.supplementryId ? { supId: this.supplementryId } : {}),
       },
     });
+  }
+
+  private navigateAfterSave(
+    status: string,
+    savedClaimId?: string | null
+  ): void {
+    const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
+    if (!moduleUrl) return;
+
+    if (status === this.codeClaimState.outbox) {
+      this.router.navigateByUrl(moduleUrl + `/submitted`);
+      return;
+    }
+
+    if (this.supplementryId && savedClaimId) {
+      this.router.navigate([moduleUrl + '/form-tyduty'], {
+        queryParams: {
+          claimId: savedClaimId,
+          supId: this.supplementryId,
+        },
+      });
+      return;
+    }
+
+    this.router.navigateByUrl(moduleUrl + `/draft`);
   }
   checkEsignAvailability(): void {
     if (this.claims?.signWith !== this.codeSignType.eSign) {
@@ -1562,6 +1608,9 @@ export class FormTydutyComponent implements OnInit {
       if (!tempClaim.signWith) {
         tempClaim.signWith = 'ES';
       }
+      if (this.supplementryId) {
+        tempClaim.supClaimId = this.supplementryId;
+      }
       tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
 
       tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
@@ -1614,18 +1663,16 @@ export class FormTydutyComponent implements OnInit {
               res?.message || 'TY Duty claim submitted successfully!',
               'success'
             );
-            if (moduleUrl) {
-              this.router.navigateByUrl(moduleUrl + `/submitted`);
-            }
           } else if (respStatus === this.codeClaimState.draft) {
             this.$common.showMessage(
               res?.message || 'TY Duty draft saved successfully.',
               'success'
             );
-            if (moduleUrl) {
-              this.router.navigateByUrl(moduleUrl + `/draft`);
-            }
           }
+          this.navigateAfterSave(
+            respStatus,
+            obj.claimId || obj.id || this.claims.claimId || this.claimIdParam
+          );
 
           this.$common.hideLoader();
           this.disableBtn = false;
@@ -2066,10 +2113,100 @@ export class FormTydutyComponent implements OnInit {
   }
 
   private validateTyBusinessFields(): boolean {
-    const station = this.claims?.yatTempDutyAdvDTOs?.[0]?.stationProceedingTo;
+    if (!this.claims?.codeUnitDTO?.unit) {
+      this.$common.showMessage('Please select the applied to unit.', 'danger');
+      return false;
+    }
+
+    const adv = this.claims?.yatTempDutyAdvDTOs?.[0];
+    const station = adv?.stationProceedingTo;
 
     if (!station) {
       this.$common.showMessage('Please select Field proceeding to.', 'danger');
+      return false;
+    }
+
+    if (adv?.isAvailFoodCharge) {
+      if (
+        this.isNullOrEmpty(adv.foodChargeDays) ||
+        this.isNullOrEmpty(adv.foodChargeRatePerDay)
+      ) {
+        this.$common.showMessage(
+          'Please fill food charge days and rate per day.',
+          'danger'
+        );
+        return false;
+      }
+    }
+
+    if (adv?.isAvailHotelAcc) {
+      if (
+        this.isNullOrEmpty(adv.hotelAccDays) ||
+        this.isNullOrEmpty(adv.hotelAccRatePerDay)
+      ) {
+        this.$common.showMessage(
+          'Please fill hotel accommodation days and rate per day.',
+          'danger'
+        );
+        return false;
+      }
+    }
+
+    if (adv?.isAvailArr) {
+      if (
+        this.isNullOrEmpty(adv.arrToDutyRate) ||
+        this.isNullOrEmpty(adv.arrToDutyKm)
+      ) {
+        this.$common.showMessage(
+          'Please fill ARR to duty rate and kilometers.',
+          'danger'
+        );
+        return false;
+      }
+    }
+
+    if (adv?.isAvailAcc) {
+      if (
+        this.isNullOrEmpty(adv.accHToDutyPerDay) ||
+        this.isNullOrEmpty(adv.accHToDutyDays)
+      ) {
+        this.$common.showMessage(
+          'Please fill accommodation to duty days and rate per day.',
+          'danger'
+        );
+        return false;
+      }
+      if (
+        (adv.availedCategory === 1 || adv.availedCategory === 2) &&
+        this.isNullOrEmpty(adv.accHToDutyKms)
+      ) {
+        this.$common.showMessage(
+          'Please fill accommodation to duty kilometers.',
+          'danger'
+        );
+        return false;
+      }
+    }
+
+    if (!Array.isArray(this.claims.yatDtsDetailDTOs) || this.claims.yatDtsDetailDTOs.length === 0) {
+      this.$common.showMessage('Please add at least one travel detail row.', 'danger');
+      return false;
+    }
+
+    const invalidTravelRow = (this.claims.yatDtsDetailDTOs || []).find((row: any) => {
+      if ((row?.modeOfTravel || '').trim() === 'Others') {
+        return !row?.otherModeOfTravel || !String(row.otherModeOfTravel).trim();
+      }
+      if ((row?.isDts || '').trim() === 'No') {
+        return !row?.reasonForNoDts || !String(row.reasonForNoDts).trim();
+      }
+      return false;
+    });
+    if (invalidTravelRow) {
+      const message = (invalidTravelRow?.modeOfTravel || '').trim() === 'Others'
+        ? 'Please fill Other Mode of Travel for all travel detail rows.'
+        : 'Reason for not using DTS is required for all non-DTS travel detail rows.';
+      this.$common.showMessage(message, 'danger');
       return false;
     }
 

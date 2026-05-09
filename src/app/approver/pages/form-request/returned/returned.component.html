@@ -7,10 +7,10 @@
         <!--Page header-->
         <div class="page-header">
           <div class="page-leftheader">
-            <h4 class="page-title">Rejected</h4>
+            <h4 class="page-title">{{ pageTitle }}</h4>
             <ol class="breadcrumb pl-0">
               <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Rejected</li>
+              <li class="breadcrumb-item active" aria-current="page">{{ pageTitle }}</li>
             </ol>
           </div>
           <div>
@@ -79,7 +79,7 @@
                         <td>{{(dataObj?.yatClaimDTO?.remark || dataObj?.remarks) | showHypen}}</td>
                          <td>
                             <button class="btn btn-warning" title="View History" data-target="#viewHistoryModal"
-                              (click)="viewHistory(dataObj?.yatClaimDTO?.claimId || dataObj?.formId)">View History</button>
+                              (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">View History</button>
                           </td>
                         <td>{{(dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:"medium"}}</td>
                         <td>{{(dataObj?.yatClaimDTO?.updatedOn || dataObj?.updatedOn) | showDate:"medium"}}</td>
@@ -110,4 +110,4 @@
   </div>
 </div>
 <!-- <app-add-mapping-unit></app-add-mapping-unit> -->
-  <app-common-view-form-history-modal [formId]="formId"></app-common-view-form-history-modal>
+  <app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>

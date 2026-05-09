@@ -20,6 +20,7 @@ export class ReturnedComponent implements OnInit {
 
   codeStatus;
   userIdDetails: any;
+  queueState = '';
 
   constructor(
     private location: Location,
@@ -29,6 +30,7 @@ export class ReturnedComponent implements OnInit {
     public $formManage: FormManageService,
     private router: Router,
     private $claim: ClaimService,
+    private route: ActivatedRoute,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -45,7 +47,12 @@ export class ReturnedComponent implements OnInit {
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
+    this.queueState = this.getQueueState();
     this.getState();
+  }
+
+  get pageTitle(): string {
+    return this.queueState === this.codeStatus?.notApproved ? 'Not Approved' : 'Rejected';
   }
 
   filterDataObj;
@@ -56,7 +63,7 @@ export class ReturnedComponent implements OnInit {
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
         gxUnitId: this.userIdDetails?.unitId,
-        claimState: this.codeStatus?.rejected,
+        claimState: this.queueState,
       },
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
@@ -67,16 +74,17 @@ export class ReturnedComponent implements OnInit {
   viewForm(data) {
     const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
       data,
-      data?.claimState || this.codeStatus?.rejected
+      data?.claimState || this.queueState
     );
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
     }
   }
  formId;
-  viewHistory(formId: any): void {
-    
-    this.formId = formId; // just set formId
+ claimId;
+  viewHistory(formId: any, claimId: any = null): void {
+    this.formId = formId;
+    this.claimId = claimId || null;
     setTimeout(() => {
       $('#viewHistoryModal').modal('show');
     }, 0);
@@ -95,6 +103,13 @@ export class ReturnedComponent implements OnInit {
   sort(key) {
     this.key = key;
     this.reverse = !this.reverse;
+  }
+
+  private getQueueState(): string {
+    const routePath = this.route.snapshot.routeConfig?.path || '';
+    return routePath === 'not-approved'
+      ? this.codeStatus?.notApproved || 'NA'
+      : this.codeStatus?.rejected;
   }
 
 }
