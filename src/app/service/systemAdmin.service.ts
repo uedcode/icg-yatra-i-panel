@@ -67,5 +67,95 @@ export class SystemAdminService {
       })
     );
   }
+
+  getUpdatePmtAllUnits(config) {
+    return this.http.get<any>(`updatePmt/allUnits`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  getUpdatePmtRecords(config) {
+    return this.http.get<any>(`updatePmt/all`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  createOrUpdatePmtUnit(object) {
+    return this.http.post<any>(`updatePmt/createOrUpdate`, object).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  changePmtFlag(config) {
+    return this.http.put<any>(`updatePmt/changeFLag`, null, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  getPnoList(config) {
+    return this.http.get<any>(`markTy/getPnoList`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  getMarkedTyDuty(config) {
+    return this.http.get<any>(`markTy/all`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  createMarkedTyDuty(object) {
+    return this.http.post<any>(`markTy/createOrUpdate`, object).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  changeMarkedTyDutyFlag(config) {
+    return this.http.put<any>(`markTy/changeFlag`, null, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  getPayLevelTransactions(config) {
+    return this.http.get<any>(`codehrpay/all`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  createOrUpdatePayLevelTransaction(object) {
+    return this.http.post<any>(`codehrpay/createOrUpdate`, object).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
 }
 

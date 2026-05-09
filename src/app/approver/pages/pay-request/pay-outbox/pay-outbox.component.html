@@ -50,15 +50,23 @@
             <td>
               {{ row?.yatPayDetailsDTO?.pno || '-' }}/{{ row?.yatPayDetailsDTO?.name || '-' }}/{{ row?.yatPayDetailsDTO?.rank || '-' }}
             </td>
-            <td><span class="btn btn-info btn-sm">{{ row?.onWork || row?.claimState || row?.state || '-' }}</span></td>
+            <td><span class="btn btn-info btn-sm">{{ (row?.onWork || row?.claimState || row?.state) | codeStatus:'-' }}</span></td>
             <td>
               {{ row?.yatPayDetailsDTO?.docName || '-' }}:
-              <button type="button" class="btn btn-info btn-sm ml-2" (click)="downloadDocument(row)">Download</button>
+              <button
+                *ngIf="row?.yatPayDetailsDTO?.docUrl"
+                type="button"
+                class="btn btn-info btn-sm ml-2"
+                (click)="downloadDocument(row)"
+              >
+                Download
+              </button>
+              <span *ngIf="!row?.yatPayDetailsDTO?.docUrl" class="ml-2">-</span>
             </td>
             <td><button class="btn btn-info btn-sm" (click)="viewForm(row)">View</button></td>
           </tr>
           <tr *ngIf="!dataList?.length">
-            <td colspan="20" class="text-center">No Records</td>
+            <td colspan="5" class="text-center">No Records</td>
           </tr>
         </tbody>
       </table>

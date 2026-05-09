@@ -151,6 +151,10 @@ export class FormAdvanceDetailComponent implements OnInit {
     return ['P', 'T', 'F', 'L'].includes(this.subFormId) && this.canTakeAction();
   }
 
+  get hasFamilyDetails(): boolean {
+    return Array.isArray(this.formObj?.yatFamilyDetailDTOs) && this.formObj.yatFamilyDetailDTOs.length > 0;
+  }
+
   get advanceCeilingRemarksMaxLength(): number {
     return this.subFormId === 'T' ? 500 : 1000;
   }

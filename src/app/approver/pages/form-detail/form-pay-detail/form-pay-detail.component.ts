@@ -71,6 +71,22 @@ export class FormPayDetailComponent implements OnInit {
     return role === this.codeRoleType?.verifier1 || role === this.codeRoleType?.verifier2;
   }
 
+  get currentState(): string {
+    return this.payDetails?.statusId || this.payDetails?.payState || this.payDetails?.formState || '';
+  }
+
+  get canTakeAction(): boolean {
+    if (this.mode !== 'action') {
+      return false;
+    }
+
+    const role = this.userIdDetails?.roleTypeId;
+    const validRole =
+      role === this.codeRoleType?.verifier1 || role === this.codeRoleType?.verifier2;
+
+    return validRole && this.currentState === this.codeStatus?.inbox;
+  }
+
   getActionPlaceholder(status: string): string {
     return this.getDefaultRemark(status) || 'Enter remark';
   }
@@ -91,10 +107,22 @@ export class FormPayDetailComponent implements OnInit {
   applyAction(status: string): void {
     const payId = this.payDetails?.id;
     if (!payId) return;
+    if (!this.canTakeAction) {
+      this.$common.showMessage(
+        'This pay detail is not in a valid inbox state for action.',
+        'danger'
+      );
+      return;
+    }
 
     const remark = (this.formRemark || '').trim() || this.getDefaultRemark(status);
     if (!remark) {
       this.$common.showMessage('Remark is required.', 'danger');
+      return;
+    }
+
+    if (!this.isAllowedTargetStatus(status)) {
+      this.$common.showMessage('This action is not allowed for the current role.', 'danger');
       return;
     }
 
@@ -111,6 +139,23 @@ export class FormPayDetailComponent implements OnInit {
         this.router.navigateByUrl(`${this.$auth.getModuleName()}/pay-inbox`);
       }
     });
+  }
+
+  private isAllowedTargetStatus(status: string): boolean {
+    const role = this.userIdDetails?.roleTypeId;
+    if (role === this.codeRoleType?.verifier1) {
+      return (
+        status === this.payStateCodes.outbox ||
+        status === this.payStateCodes.notApproved
+      );
+    }
+    if (role === this.codeRoleType?.verifier2) {
+      return (
+        status === this.payStateCodes.outbox ||
+        status === this.payStateCodes.notApproved
+      );
+    }
+    return false;
   }
 
   private getDefaultRemark(status: string): string {

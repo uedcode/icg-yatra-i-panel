@@ -1,0 +1,114 @@
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <app-sidebar></app-sidebar>
+
+    <div class="app-content">
+      <div class="side-app">
+        <div class="page-header">
+          <div class="page-leftheader">
+            <h4 class="page-title">Archive</h4>
+            <ol class="breadcrumb pl-0">
+              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Archive</li>
+            </ol>
+          </div>
+          <div>
+            <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()">
+              <i class="fa fa-chevron-left" style="display: inline-block;"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-12 col-md-6">
+                    <div class="dataTables_length">
+                      <label>Show</label>
+                      <select class="form-control" name="noOfPage" [(ngModel)]="noOfPage" (ngModelChange)="p = 1">
+                        <option value="10">10</option>
+                        <option value="100">100</option>
+                        <option value="100000">All</option>
+                      </select>
+                      <label>entries</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-12 col-md-3 offset-3">
+                    <div class="dataTables_filter" title="Search">
+                      <i class="fa fa-search"></i>
+                      <input
+                        type="search"
+                        class="form-control form-control-sm"
+                        placeholder="Search"
+                        (keyup)="p = 1"
+                        [(ngModel)]="searchObj"
+                        name="searchObj"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table id="exportData" class="table table-bordered" style="width:100%">
+                    <thead>
+                      <tr>
+                        <th class="wd-5p">SL</th>
+                        <th class="wd-20p">PNO <i class="fa fa-sort" (click)="sort('pno')"></i></th>
+                        <th class="wd-20p">Name <i class="fa fa-sort" (click)="sort('name')"></i></th>
+                        <th class="wd-20p">Rank <i class="fa fa-sort" (click)="sort('rank')"></i></th>
+                        <th class="wd-20p">Role <i class="fa fa-sort" (click)="sort('roleType')"></i></th>
+                        <th class="wd-20p">Designation <i class="fa fa-sort" (click)="sort('descr')"></i></th>
+                        <th class="wd-20p">Status</th>
+                        <th class="actionBtnWidth">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let dataObj of dataList | filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                        <td>{{ (i + 1) + (p - 1) * noOfPage }}</td>
+                        <td>{{ dataObj?.pno | showHypen }}</td>
+                        <td>{{ dataObj?.name | showHypen }}</td>
+                        <td>{{ dataObj?.rank | showHypen }}</td>
+                        <td>{{ dataObj?.aclCodeRoleTypeDTO?.roleType | showHypen }}</td>
+                        <td>{{ dataObj?.aclCodeDesignationDTO?.descr | showHypen }}</td>
+                        <td>{{ dataObj?.aclCodeStatusDTO?.statusId | codeStatus:'-' }}</td>
+                        <td>
+                          <button
+                            type="button"
+                            class="btn btn-info btn-sm"
+                            title="Restore"
+                            (click)="openChangeStatusModal(dataObj, codeStatusList.activate)"
+                            data-toggle="modal"
+                            data-target="#change_status_modal"
+                          >
+                            Restore
+                          </button>
+                        </td>
+                      </tr>
+                      <tr *ngIf="!dataList.length" class="text-center">
+                        <td colspan="8">No Records Available</td>
+                      </tr>
+                      <tr class="noExl pagination_area" *ngIf="dataList?.length">
+                        <td colspan="8">
+                          <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <app-footer></app-footer>
+      </div>
+    </div>
+  </div>
+</div>
+<app-change-status-modal
+  [changeData]="tempObj"
+  (changeStatusConfirmed)="changeStatus($event)"
+></app-change-status-modal>

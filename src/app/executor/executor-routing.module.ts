@@ -8,6 +8,8 @@ import { EsignReportComponent } from './pages/esign-report/esign-report.componen
 import { PieChartComponent } from './pages/pie-chart/pie-chart.component';
 import { ClaimPreviewComponent } from './pages/claim-preview/claim-preview.component';
 
+const EXECUTOR_ROLES = ['EX'];
+
 const routes: Routes = [
   {
     path: '',
@@ -17,127 +19,127 @@ const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Dashboard' },
+    data: { title: 'Dashboard', roles: EXECUTOR_ROLES },
   },
   {
     path: 'search-by-pno',
     component: SearchByPnoComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Search By PNO' },
+    data: { title: 'Search By PNO', roles: EXECUTOR_ROLES },
   },
   {
     path: 'esign-report',
     component: EsignReportComponent,
     canActivate: [AuthGuard],
-    data: { title: 'eSign Report' },
+    data: { title: 'eSign Report', roles: EXECUTOR_ROLES },
   },
   {
     path: 'pie-chart',
     component: PieChartComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Pie Chart' },
+    data: { title: 'Pie Chart', roles: EXECUTOR_ROLES },
   },
   {
     path: 'form-claim-detail',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Claim Detail' },
+    data: { title: 'Claim Detail', roles: EXECUTOR_ROLES },
   },
   {
     path: 'preview-pmt-duty',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'PMT Duty Preview' },
+    data: { title: 'PMT Duty Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'preview-ty-duty',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'TY Duty Preview' },
+    data: { title: 'TY Duty Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'preview-fte-advance',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'FTE Advance Preview' },
+    data: { title: 'FTE Advance Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'preview-ltc-advance',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'LTC Advance Preview' },
+    data: { title: 'LTC Advance Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'preview-manual-adv',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Manual Advance Preview' },
+    data: { title: 'Manual Advance Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'preview-ltc-availed-history',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'LTC Availed History Preview' },
+    data: { title: 'LTC Availed History Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'preview-pmt-duty-claim',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'PMT Claim Preview' },
+    data: { title: 'PMT Claim Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'claim/preview-pmt-duty-claim',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'PMT Claim Preview' },
+    data: { title: 'PMT Claim Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'preview-ty-duty-claim',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'TY Claim Preview' },
+    data: { title: 'TY Claim Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'claim/preview-ty-duty-claim',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'TY Claim Preview' },
+    data: { title: 'TY Claim Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'preview-fte-claim',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'FTE Claim Preview' },
+    data: { title: 'FTE Claim Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'claim/preview-fte-claim',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'FTE Claim Preview' },
+    data: { title: 'FTE Claim Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'preview-ltc-claim',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'LTC Claim Preview' },
+    data: { title: 'LTC Claim Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'claim/preview-ltc-claim',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'LTC Claim Preview' },
+    data: { title: 'LTC Claim Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'preview-resettlement-claim',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Resettlement Claim Preview' },
+    data: { title: 'Resettlement Claim Preview', roles: EXECUTOR_ROLES },
   },
   {
     path: 'claim/preview-resettlement-claim',
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Resettlement Claim Preview' },
+    data: { title: 'Resettlement Claim Preview', roles: EXECUTOR_ROLES },
   },
 ];
 

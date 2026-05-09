@@ -244,6 +244,11 @@
                 <div class="col-md-3"><strong>Place Of Visit:</strong> {{ display(primaryAdvanceDetails?.placeOfVisit) }}</div>
                 <div class="col-md-3"><strong>LTC Place:</strong> {{ display(primaryAdvanceDetails?.ltcPlace) }}</div>
                 <div class="col-md-3"><strong>GX Unit:</strong> {{ display(primaryAdvanceDetails?.gxUnit) }}</div>
+                <div class="col-md-3"><strong>Joining Date:</strong> {{ asDate(primaryAdvanceDetails?.joiningDate) }}</div>
+                <div class="col-md-3"><strong>Is DTS:</strong> {{ display(primaryAdvanceDetails?.isDts) }}</div>
+                <div class="col-md-3"><strong>Arrival Fare:</strong> {{ display(primaryAdvanceDetails?.arrFare) }}</div>
+                <div class="col-md-3"><strong>Place:</strong> {{ display(primaryAdvanceDetails?.place) }}</div>
+                <div class="col-md-3"><strong>Date:</strong> {{ asDate(primaryAdvanceDetails?.date) }}</div>
               </div>
 
               <div class="row" *ngIf="subFormId === 'M'">
@@ -264,6 +269,34 @@
               <button type="button" class="btn btn-info" (click)="viewManualSignedForm()">
                 View Manual Signed Form
               </button>
+            </div>
+          </div>
+
+          <div class="card mb-3" *ngIf="subFormId === 'L' && hasFamilyDetails && showTravelSection()">
+            <div class="card-header">
+              <strong>Family Details</strong>
+            </div>
+            <div class="card-body table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Relation</th>
+                    <th>Occupation</th>
+                    <th>Selected</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of formObj?.yatFamilyDetailDTOs">
+                    <td>{{ display(row?.memberName) }}</td>
+                    <td>{{ display(row?.age) }}</td>
+                    <td>{{ display(row?.relation) }}</td>
+                    <td>{{ display(row?.occupation) }}</td>
+                    <td>{{ display(row?.checkedIndicator ? 'Yes' : 'No') }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
@@ -294,16 +327,21 @@
                       <th>DTS</th>
                       <th>Amount</th>
                       <th>Reason</th>
+                      <th>Remarks</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let row of formObj?.yatDtsDetailDTOs">
                       <td>{{ display(row?.source) }}</td>
                       <td>{{ display(row?.destination) }}</td>
-                      <td>{{ display(row?.modeOfTravel) }}</td>
+                      <td>
+                        {{ display(row?.modeOfTravel) }}
+                        <span *ngIf="row?.otherModeOfTravel">({{ display(row?.otherModeOfTravel) }})</span>
+                      </td>
                       <td>{{ display(row?.isDts) }}</td>
                       <td>{{ display(row?.amount || row?.tempAmount) }}</td>
                       <td>{{ display(row?.reasonForNoDts || row?.reasonDts) }}</td>
+                      <td>{{ display(row?.remarks) }}</td>
                     </tr>
                   </tbody>
                 </table>

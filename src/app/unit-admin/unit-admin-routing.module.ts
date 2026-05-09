@@ -10,7 +10,12 @@ import { ProfileSettingComponent } from './pages/profile-setting/profile-setting
 import { FaqComponent } from './pages/faq/faq.component';
 import { WebDetailComponent } from './pages/web-detail/web-detail.component';
 import { UnitAdminRoleComponent } from './pages/unit-admin-role/unit-admin-role.component';
+import { ArchiveComponent } from './pages/archive/archive.component';
+import { UpdatePmtUnitComponent } from './pages/update-pmt-unit/update-pmt-unit.component';
+import { ReportTyDutyComponent } from './pages/report-ty-duty/report-ty-duty.component';
+import { ManagePaylevelTransactionComponent } from './pages/manage-paylevel-transaction/manage-paylevel-transaction.component';
 
+const UNIT_ADMIN_ROLES = ['UN'];
 
 const routes: Routes = [
   { path: '', component: UnitAdminComponent },
@@ -18,44 +23,68 @@ const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Dashboard' },
+    data: { title: 'Dashboard', roles: UNIT_ADMIN_ROLES },
   },
   {
     path: 'role',
     component: RoleComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Role' },
+    data: { title: 'Role', roles: UNIT_ADMIN_ROLES },
   },
   {
     path: 'unit-admin',
     component: UnitAdminRoleComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Unit Admin' },
+    data: { title: 'Unit Admin', roles: UNIT_ADMIN_ROLES },
+  },
+  {
+    path: 'archive',
+    component: ArchiveComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Archive', roles: UNIT_ADMIN_ROLES },
+  },
+  {
+    path: 'update-pmt-unit',
+    component: UpdatePmtUnitComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Update PMT Unit', roles: UNIT_ADMIN_ROLES },
+  },
+  {
+    path: 'report-ty-duty',
+    component: ReportTyDutyComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Report TY Duty', roles: UNIT_ADMIN_ROLES },
+  },
+  {
+    path: 'manage-paylevel-transaction',
+    component: ManagePaylevelTransactionComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Manage Paylevel Transaction', roles: UNIT_ADMIN_ROLES },
   },
   {
     path: 'switch-module',
     component: SwitchModuleComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Switch Module' }
+    data: { title: 'Switch Module', roles: UNIT_ADMIN_ROLES }
   },
   {
     path: 'profile-setting',
     component: ProfileSettingComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Switch Module' }
+    data: { title: 'Switch Module', roles: UNIT_ADMIN_ROLES }
   },
 
   {
     path: 'faq',
     component:FaqComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Faq' }
+    data: { title: 'Faq', roles: UNIT_ADMIN_ROLES }
   },
   {
     path: 'web-detail',
     component: WebDetailComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Web Detail' },
+    data: { title: 'Web Detail', roles: UNIT_ADMIN_ROLES },
   },
 ];
 

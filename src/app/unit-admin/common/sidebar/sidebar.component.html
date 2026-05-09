@@ -28,6 +28,26 @@
         [routerLink]="['../role']"><i class="side-menu__icon fa fa-arrows"></i><span
           class="side-menu__label">Manage Role </span></a>
     </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../archive']"><i class="side-menu__icon fa fa-archive"></i><span
+          class="side-menu__label">Archive </span></a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../update-pmt-unit']"><i class="side-menu__icon fa fa-exchange"></i><span
+          class="side-menu__label">Update PMT Unit </span></a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../report-ty-duty']"><i class="side-menu__icon fa fa-flag"></i><span
+          class="side-menu__label">Report TY Duty </span></a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
+        [routerLink]="['../manage-paylevel-transaction']"><i class="side-menu__icon fa fa-money"></i><span
+          class="side-menu__label">Manage Paylevel </span></a>
+    </li>
 
     <li>
      <!-- <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"

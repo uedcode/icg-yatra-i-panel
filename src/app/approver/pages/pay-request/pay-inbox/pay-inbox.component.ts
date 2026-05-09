@@ -48,6 +48,10 @@ export class PayInboxComponent implements OnInit {
     });
   }
 
+  get showVerifierRemarkColumn(): boolean {
+    return this.userIdDetails?.roleTypeId !== this.codeRoleType?.verifier1;
+  }
+
   viewForm(row: any): void {
     const payId = row?.yatPayDetailsDTO?.id || row?.id;
     if (!payId) return;

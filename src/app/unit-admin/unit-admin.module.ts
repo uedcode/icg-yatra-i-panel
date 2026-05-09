@@ -26,6 +26,10 @@ import { ProfileSettingComponent } from './pages/profile-setting/profile-setting
 import { FaqComponent } from './pages/faq/faq.component';
 import { WebDetailComponent } from './pages/web-detail/web-detail.component';
 import { UnitAdminRoleComponent } from './pages/unit-admin-role/unit-admin-role.component';
+import { ArchiveComponent } from './pages/archive/archive.component';
+import { UpdatePmtUnitComponent } from './pages/update-pmt-unit/update-pmt-unit.component';
+import { ReportTyDutyComponent } from './pages/report-ty-duty/report-ty-duty.component';
+import { ManagePaylevelTransactionComponent } from './pages/manage-paylevel-transaction/manage-paylevel-transaction.component';
 
 const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more options
   optionValueField: 'id',
@@ -40,6 +44,10 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         UnitAdminComponent,
         RoleComponent,
         UnitAdminRoleComponent,
+        ArchiveComponent,
+        UpdatePmtUnitComponent,
+        ReportTyDutyComponent,
+        ManagePaylevelTransactionComponent,
         SwitchModuleComponent,
         ProfileSettingComponent,
         FaqComponent,

@@ -245,6 +245,10 @@
               <div class="col-md-3"><strong>DTS Amt:</strong> {{ display(primaryClaimDetails?.dtsAmount) }}</div>
               <div class="col-md-3 mt-2"><strong>Duty To:</strong> {{ display(primaryAdvanceDetails?.tempTransferToType) }}</div>
               <div class="col-md-3 mt-2"><strong>Name of Unit:</strong> {{ display(primaryAdvanceDetails?.tempTransTo) }}</div>
+              <div class="col-md-3 mt-2"><strong>Duty Station:</strong> {{ display(primaryAdvanceDetails?.dutyStation) }}</div>
+              <div class="col-md-3 mt-2"><strong>Duration:</strong> {{ display(primaryAdvanceDetails?.duration) }}</div>
+              <div class="col-md-3 mt-2"><strong>W.E.F Date:</strong> {{ asDate(primaryAdvanceDetails?.wefDate) }}</div>
+              <div class="col-md-3 mt-2"><strong>GX Date:</strong> {{ asDate(primaryAdvanceDetails?.gxDate) }}</div>
               <div class="col-md-3 mt-2"><strong>Total Amt:</strong> {{ display(primaryAdvanceDetails?.totalAmt) }}</div>
               <div class="col-md-3 mt-2"><strong>Total Budgeted:</strong> {{ display(primaryAdvanceDetails?.totalBudgetedAmt) }}</div>
             </div>
@@ -253,6 +257,10 @@
               <div class="col-md-3"><strong>Proceeding To:</strong> {{ display(primaryClaimDetails?.stationProceedingTo) }}</div>
               <div class="col-md-3"><strong>Advance Amt:</strong> {{ display(primaryClaimDetails?.advAmt) }}</div>
               <div class="col-md-3"><strong>DTS Amt:</strong> {{ display(primaryClaimDetails?.dtsAmount) }}</div>
+              <div class="col-md-3 mt-2"><strong>Duty Station:</strong> {{ display(primaryAdvanceDetails?.dutyStation) }}</div>
+              <div class="col-md-3 mt-2"><strong>Duration:</strong> {{ display(primaryAdvanceDetails?.duration) }}</div>
+              <div class="col-md-3 mt-2"><strong>W.E.F Date:</strong> {{ asDate(primaryAdvanceDetails?.wefDate) }}</div>
+              <div class="col-md-3 mt-2"><strong>GX Date:</strong> {{ asDate(primaryAdvanceDetails?.gxDate) }}</div>
               <div class="col-md-3 mt-2"><strong>Total Amt:</strong> {{ display(primaryAdvanceDetails?.totalAmt) }}</div>
               <div class="col-md-3 mt-2"><strong>Total Budgeted:</strong> {{ display(primaryAdvanceDetails?.totalBudgetedAmt) }}</div>
               <div class="col-md-3 mt-2"><strong>Place:</strong> {{ display(primaryAdvanceDetails?.place) }}</div>
@@ -345,7 +353,7 @@
           </div>
         </div>
 
-        <div class="card mb-3" *ngIf="isActiveSection('travel') && familyDetails.length">
+        <div class="card mb-3" *ngIf="isActiveSection('travel')">
           <div class="card-header">
             <strong>Family Details</strong>
           </div>
@@ -371,6 +379,9 @@
                   <td>{{ asDate(family?.dob || family?.dateOfBirth) }}</td>
                   <td>{{ display(family?.isDependent) }}</td>
                   <td>{{ display(family?.checkedIndicator ? 'Yes' : 'No') }}</td>
+                </tr>
+                <tr *ngIf="!familyDetails.length">
+                  <td colspan="7" class="text-center">No family details available.</td>
                 </tr>
               </tbody>
             </table>
@@ -401,7 +412,7 @@
           </div>
         </div>
 
-        <div class="card mb-3" *ngIf="isActiveSection('travel') && subForm() === 'F' && formObj?.yatForeignTravelDetailDTOs?.length">
+        <div class="card mb-3" *ngIf="isActiveSection('travel') && subForm() === 'F'">
           <div class="card-header">
             <strong>Foreign Travel Details</strong>
           </div>
@@ -425,6 +436,9 @@
                   <td>{{ asDate(row?.toDate || row?.arrivalDate) }}</td>
                   <td>{{ display(row?.currencyCode || row?.currency) }}</td>
                   <td>{{ display(row?.amount || row?.totalAmount) }}</td>
+                </tr>
+                <tr *ngIf="!formObj?.yatForeignTravelDetailDTOs?.length">
+                  <td colspan="6" class="text-center">No foreign travel details available.</td>
                 </tr>
               </tbody>
             </table>
@@ -475,7 +489,7 @@
                     </button>
                   </td>
                 </tr>
-                <tr *ngIf="!documentDtos?.length">
+                <tr *ngIf="!documentDtos?.length && !formObj?.signedFileUrl">
                   <td colspan="5" class="text-center">No documents available.</td>
                 </tr>
               </tbody>
@@ -642,7 +656,7 @@
               <tbody>
                 <tr *ngFor="let row of stateHistory">
                   <td>{{ display(row?.roleTypeName || row?.aclCodeRoleTypeDTO?.roleTypeName || row?.aclCodeRoleTypeDTO?.descr) }}</td>
-                  <td>{{ display(historyStateLabel(row)) }}</td>
+                  <td>{{ (row?.formState || row?.claimState || row?.claimStateId || row?.statusId) | codeStatus:'-' }}</td>
                   <td>{{ display(row?.unitName || row?.yatClaimDTO?.codeUnitDTO?.descr || row?.yatClaimDTO?.codeUnitDTO?.unit) }}</td>
                   <td>{{ asDate(row?.createdOn) }}</td>
                 </tr>
