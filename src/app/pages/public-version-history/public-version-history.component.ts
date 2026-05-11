@@ -6,6 +6,7 @@ import { VersionhistoryService } from 'src/app/service/master/versionhistory.ser
   selector: 'app-public-version-history',
   templateUrl: './public-version-history.component.html',
   styleUrls: ['./public-version-history.component.scss'],
+  standalone: false
 })
 export class PublicVersionHistoryComponent implements OnInit {
   dataList: Array<any> = [];

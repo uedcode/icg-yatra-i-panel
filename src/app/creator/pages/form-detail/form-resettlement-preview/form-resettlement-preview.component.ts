@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-form-resettlement-preview',
   templateUrl: './form-resettlement-preview.component.html',
   styleUrls: ['./form-resettlement-preview.component.scss'],
+  standalone: false
 })
 export class FormResettlementPreviewComponent {}
 

@@ -6,6 +6,7 @@ import { CommonService } from 'src/app/service/common.service';
   selector: 'app-public-preview-update-pno',
   templateUrl: './public-preview-update-pno.component.html',
   styleUrls: ['./public-preview-update-pno.component.scss'],
+  standalone: false
 })
 export class PublicPreviewUpdatePnoComponent implements OnInit {
   statusMessage = '';

@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-public-paramvt',
   templateUrl: './public-paramvt.component.html',
   styleUrls: ['./public-paramvt.component.scss'],
+  standalone: false
 })
 export class PublicParamvtComponent {
   readonly videos = [
