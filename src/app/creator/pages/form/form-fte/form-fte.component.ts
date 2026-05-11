@@ -233,7 +233,7 @@ export class FormFteComponent implements OnInit {
   }
 
   resetTempFteTravel() {
-    throw new Error('Method not implemented.');
+    this.resetTempFteTravelDetails();
   }
 
   editFteTravelDetails(i: number): void {
@@ -416,9 +416,6 @@ export class FormFteComponent implements OnInit {
       },
     });
   }
-
-  // if you kept this in html anywhere else, keep stub
-  changeTransType(_x: any, _y: any): void {}
 
   /* ==== SUBFORM IDS (FROM YOUR ROOTSCOPE) ==== */
   codeClaim = {
@@ -1268,7 +1265,7 @@ export class FormFteComponent implements OnInit {
     }
   }
 
-  // ---- file upload handlers (keep simple stubs first) ----
+  // ---- file upload handlers ----
   purposeType = {
     investive: 'Investiture Ceremony',
     other: 'Other',
@@ -1526,22 +1523,20 @@ export class FormFteComponent implements OnInit {
 
     // Description required
     if (!d) {
-      // use your toastr/snackbar if you have it
-      // this.toastr.error('Description is required');
-      alert('Description is required');
+      this.$common.showMessage('Description is required.', 'danger');
       return;
     }
 
     // Amount required + numeric + > 0
     // digits only (no minus, no decimal). If you want decimal, tell me.
     if (!/^\d+$/.test(rawAmt)) {
-      alert('Amount must be a valid number');
+      this.$common.showMessage('Amount must be a valid number.', 'danger');
       return;
     }
 
     const amt = Number(rawAmt);
     if (!Number.isFinite(amt) || amt <= 0) {
-      alert('Amount must be greater than 0');
+      this.$common.showMessage('Amount must be greater than 0.', 'danger');
       return;
     }
 

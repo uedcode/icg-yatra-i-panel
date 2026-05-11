@@ -114,7 +114,7 @@ export class ReturnedComponent implements OnInit {
     if (id === 'TYA' || id === 'TY') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
     if (id === 'FTEA' || id === 'FTE') return detail ? 'preview-fte-claim' : 'form-fte-claim';
     if (id === 'LTCA' || id === 'LTC') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
-    if (id === 'RS' || id === 'RES' || id === 'R') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
+    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
     if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
     if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
     if (id === 'F') return detail ? 'form-fte-detail' : 'form-fte';

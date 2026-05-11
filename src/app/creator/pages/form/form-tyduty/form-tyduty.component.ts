@@ -1266,14 +1266,6 @@ export class FormTydutyComponent implements OnInit {
     }
   }
 
-  getStations(): void {
-    // service call stub
-  }
-
-  getDeputationStatus(): void {
-    // service call stub
-  }
-
   changeTransType(tempTransferToType: string | null, type: string): void {
     if (type !== this.codeClaim.tyAdv) {
       return;

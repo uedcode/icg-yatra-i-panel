@@ -30,6 +30,7 @@ export class ArchivedImportComponent implements OnInit {
     private $form: FormService,
     private router: Router,
     public $importExport: ImportExportAuditService,
+    private route: ActivatedRoute,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -51,9 +52,11 @@ export class ArchivedImportComponent implements OnInit {
   allAdminForm: any = [];
   batchList: any = [];
   batchChildList: any = [];
+  private batchType: 'IM' | 'DI' = 'IM';
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
+    this.batchType = this.route.snapshot.routeConfig?.path?.includes('diary') ? 'DI' : 'IM';
     this.loadBatchList();
   }
   loadBatchList() {
@@ -61,12 +64,12 @@ export class ArchivedImportComponent implements OnInit {
       this.$common.showLoader();
       let config = {
         headers: {
-          'type': "IM",
+          'type': this.batchType,
           'isArchived': "1",
           'isStaging': "0"
         }
       }
-      this.$importExport.getBatchList(config).subscribe(
+      this.$importExport.getCustomBatch(config).subscribe(
         (response: any) => {
           if (response.status == true) {
             this.batchList = response.object;
@@ -89,7 +92,7 @@ export class ArchivedImportComponent implements OnInit {
       this.$common.showLoader();
       this.batchNo = importExportObject.batchNo;
       this.viewingImportExportId = importExportObject.importExportId;
-      this.$importExport.getBatchChildren(importExportObject, this.codeStatus).subscribe(
+      this.$importExport.getBatchChildren(importExportObject, this.codeStatus, this.batchType).subscribe(
         (response: any) => {
           if (response.status) {
             this.showBatchChilds = true;
@@ -118,6 +121,7 @@ export class ArchivedImportComponent implements OnInit {
       let config = {
         headers: {
           "importExportId": importExportId,
+          "type": this.batchType
         }
       }
       this.$importExport.downloadExportBatch(config).subscribe((response: any) => {
@@ -170,7 +174,8 @@ export class ArchivedImportComponent implements OnInit {
       var config = {
         headers: {
           'ids': this.ids,
-          'isArchive': isArchive
+          'isArchive': isArchive,
+          'type': this.batchType
         }
       };
       

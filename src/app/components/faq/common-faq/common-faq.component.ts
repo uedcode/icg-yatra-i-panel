@@ -15,8 +15,10 @@ export class CommonFaqComponent implements OnInit {
   constructor(private $common: CommonService, private $auth: AuthService, private $faq: FaqService) { }
 
   dataList: any = [];
+  dashboardRoute = '/login';
 
   ngOnInit() {
+    this.dashboardRoute = this.getDashboardRoute();
     this.getDetails();
   }
 
@@ -62,6 +64,14 @@ export class CommonFaqComponent implements OnInit {
         item.isActive = false;
       }
     })
+  }
+
+  private getDashboardRoute(): string {
+    const moduleUrl = this.$auth.getModuleName();
+    if (moduleUrl) {
+      return `${moduleUrl}/dashboard`;
+    }
+    return '/login';
   }
 
 }

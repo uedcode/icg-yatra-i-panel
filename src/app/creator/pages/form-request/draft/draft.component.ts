@@ -185,7 +185,7 @@ export class DraftComponent implements OnInit {
     if (id === 'TYA' || id === 'TY') return 'form-ty-duty-claim';
     if (id === 'FTEA' || id === 'FTE') return 'form-fte-claim';
     if (id === 'LTCA' || id === 'LTC') return 'form-ltc-claim';
-    if (id === 'RS' || id === 'RES' || id === 'R') return 'form-resettlement-claim';
+    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return 'form-resettlement-claim';
     if (id === 'P') return 'form-pmt';
     if (id === 'T') return 'form-tyduty';
     if (id === 'F') return 'form-fte';

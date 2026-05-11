@@ -107,7 +107,7 @@ export class ArchiveComponent implements OnInit {
     if (id === 'TYA' || id === 'TY') return 'preview-ty-duty-claim';
     if (id === 'FTEA' || id === 'FTE') return 'preview-fte-claim';
     if (id === 'LTCA' || id === 'LTC') return 'preview-ltc-claim';
-    if (id === 'RS' || id === 'RES' || id === 'R') return 'preview-resettlement-claim';
+    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return 'preview-resettlement-claim';
     if (id === 'P') return 'form-pmt-detail';
     if (id === 'T') return 'form-tyduty-detail';
     if (id === 'F') return 'form-fte-detail';

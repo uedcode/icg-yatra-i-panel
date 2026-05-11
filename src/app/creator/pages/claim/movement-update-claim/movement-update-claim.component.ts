@@ -66,6 +66,7 @@ export class MovementUpdateClaimComponent implements OnInit {
   } as const;
 
   claimId = '';
+  routeSubFormId = '';
   userIdDetails: any;
   movement: MovementModel = this.createEmptyMovement();
   tempGxDetails: MovementGxDetail = this.createEmptyGxDetail();
@@ -108,9 +109,14 @@ export class MovementUpdateClaimComponent implements OnInit {
 
     this.route.queryParamMap.subscribe((params) => {
       this.claimId = params.get('claimId') || params.get('id') || '';
+      this.routeSubFormId = this.normalizeSubFormId(params.get('subFormId') || '');
       this.resetScreen();
       if (!this.claimId) {
         return;
+      }
+      if (this.routeSubFormId) {
+        this.movement.subFormId = this.routeSubFormId;
+        this.movement.purpose = this.routeSubFormId;
       }
       this.loadMovement();
       this.loadVoucher();
@@ -171,23 +177,38 @@ export class MovementUpdateClaimComponent implements OnInit {
           claimId: row?.claimId || this.claimId,
           claimMode: row?.advanceMode || row?.claimMode || '',
           advanceMode: row?.advanceMode || row?.claimMode || '',
-          subFormId: row?.purpose || row?.subFormId || row?.codeSubFormDTO?.subFormId || '',
-          purpose: row?.purpose || row?.subFormId || row?.codeSubFormDTO?.subFormId || '',
+          subFormId: this.normalizeSubFormId(
+            row?.purpose || row?.subFormId || row?.codeSubFormDTO?.subFormId || ''
+          ),
+          purpose: this.normalizeSubFormId(
+            row?.purpose || row?.subFormId || row?.codeSubFormDTO?.subFormId || ''
+          ),
           voucherDate: this.toInputDate(row?.voucherDate),
           letterNoDated: this.toInputDate(row?.letterNoDated),
           yatTempDutyClaimGxDTOs: this.normalizeGxDetails(row?.yatTempDutyClaimGxDTOs),
         };
+        if (!this.movement.subFormId && this.routeSubFormId) {
+          this.movement.subFormId = this.routeSubFormId;
+          this.movement.purpose = this.routeSubFormId;
+        }
 
         this.onClaimModeChange(false);
         this.syncManualSettlementFlags();
         this.loadGxTypes(this.movement.subFormId || '');
+        this.loadVoucher();
       },
       () => this.$common.hideLoader()
     );
   }
 
   loadVoucher(): void {
-    const config = { headers: { claimId: this.claimId } };
+    const subFormId = this.normalizeSubFormId(this.movement.subFormId || this.routeSubFormId || '');
+    const config = {
+      headers: {
+        claimId: this.claimId,
+        ...(subFormId ? { subFormId } : {}),
+      },
+    };
     this.$claim.getAdvanceVoucher(config).subscribe((res: any) => {
       this.voucherList = Array.isArray(res?.object) ? res.object : [];
     });
@@ -410,6 +431,9 @@ export class MovementUpdateClaimComponent implements OnInit {
       this.$common.showMessage('Please select Purpose.', 'danger');
       return;
     }
+    if (!this.validateVoucherInputs()) {
+      return;
+    }
     if (!this.validateManualSettlement()) {
       return;
     }
@@ -440,7 +464,12 @@ export class MovementUpdateClaimComponent implements OnInit {
           this.claimId = nextClaimId || this.claimId;
           setTimeout(() => {
             this.router.navigate([`${this.$auth.getModuleName()}/claim-new`], {
-              queryParams: this.claimId ? { claimId: this.claimId } : {},
+              queryParams: this.claimId
+                ? {
+                    claimId: this.claimId,
+                    ...(this.movement.subFormId ? { subFormId: this.movement.subFormId } : {}),
+                  }
+                : {},
             });
           }, 600);
         },
@@ -454,7 +483,10 @@ export class MovementUpdateClaimComponent implements OnInit {
 
   openVoucherPreview(): void {
     this.router.navigate([`${this.$auth.getModuleName()}/preview-voucher`], {
-      queryParams: { claimId: this.claimId },
+      queryParams: {
+        claimId: this.claimId,
+        ...(this.movement.subFormId ? { subFormId: this.movement.subFormId } : {}),
+      },
     });
   }
 
@@ -491,6 +523,7 @@ export class MovementUpdateClaimComponent implements OnInit {
 
   private buildSavePayload(): any {
     const codeUnit = this.movement?.codeUnitDTO?.unit || this.userIdDetails?.unit || this.userIdDetails?.unitId || '';
+    const settlementUnit = this.movement.unitId || null;
     const drawnFrom =
       this.movement.drawnFrom === 'Others'
         ? this.movement.drawnFromOther || this.movement.drawnFrom
@@ -502,7 +535,8 @@ export class MovementUpdateClaimComponent implements OnInit {
             creditDebitMemoNo: this.movement.creditDebitNo || null,
             isClaimSetteled: this.movement.isClaimSettle || null,
             claimAmt: this.toNumberOrNull(this.movement.claimAmt),
-            unitName: this.movement.unitId || null,
+            unitName: settlementUnit,
+            unitId: settlementUnit,
             claimPassAmt: this.toNumberOrNull(this.movement.claimPassAmt),
             letterNo: this.movement.letterNo || null,
             letterNoDated: this.toApiDate(this.movement.letterNoDated),
@@ -520,6 +554,7 @@ export class MovementUpdateClaimComponent implements OnInit {
       voucherDate: this.toApiDate(this.movement.voucherDate),
       voucherAmt: this.toNumberOrNull(this.movement.voucherAmt),
       drawnFrom: drawnFrom || null,
+      drawnFromOther: this.movement.drawnFrom === 'Others' ? this.movement.drawnFromOther || null : null,
       claimPassAmt: this.toNumberOrNull(this.movement.claimPassAmt),
       claimRecAmt: this.toNumberOrNull(this.movement.claimPassAmt),
       claimAmt: this.toNumberOrNull(this.movement.claimAmt),
@@ -602,6 +637,37 @@ export class MovementUpdateClaimComponent implements OnInit {
     return true;
   }
 
+  private validateVoucherInputs(): boolean {
+    if (this.movement.claimMode !== this.yatTravelMode.manual) {
+      return true;
+    }
+    if (this.isNilOrSupplementary) {
+      return true;
+    }
+
+    if (!this.movement.voucherNo) {
+      this.$common.showMessage('Please enter Voucher Number.', 'danger');
+      return false;
+    }
+    if (!this.movement.voucherDate) {
+      this.$common.showMessage('Please enter Voucher Date.', 'danger');
+      return false;
+    }
+    if (this.toNumberOrNull(this.movement.voucherAmt) == null) {
+      this.$common.showMessage('Please enter Amount.', 'danger');
+      return false;
+    }
+    if (!this.movement.drawnFrom) {
+      this.$common.showMessage('Please enter Drawn from.', 'danger');
+      return false;
+    }
+    if (this.movement.drawnFrom === 'Others' && !this.movement.drawnFromOther) {
+      this.$common.showMessage('Please enter Other Drawn from.', 'danger');
+      return false;
+    }
+    return true;
+  }
+
   private syncManualSettlementFlags(): void {
     this.claimSubmitted = this.movement.isClaimAlreadySubmitted === '1';
     this.claimSettled = this.movement.isClaimSettle === '1';
@@ -641,8 +707,14 @@ export class MovementUpdateClaimComponent implements OnInit {
     if (id === this.codeClaim.tyAdv || id === 'TY' || id === 'TYA' || id === 'TYD') return 'form-ty-duty-claim';
     if (id === this.codeClaim.fteAdv || id === 'FTE' || id === 'FTEA') return 'form-fte-claim';
     if (id === this.codeClaim.ltcAdv || id === 'LTC' || id === 'LTCA') return 'form-ltc-claim';
-    if (id === this.codeClaim.resettleClm || id === 'RES' || id === 'RESCLM') return 'form-resettlement-claim';
+    if (id === this.codeClaim.resettleClm || id === 'RES' || id === 'RESCLM' || id === 'R') return 'form-resettlement-claim';
     return null;
+  }
+
+  private normalizeSubFormId(subFormId: string): string {
+    const id = String(subFormId || '').toUpperCase();
+    if (id === 'R' || id === 'RES' || id === 'RESCLM') return this.codeClaim.resettleClm;
+    return id;
   }
 
   private createEmptyMovement(): MovementModel {

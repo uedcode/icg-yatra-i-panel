@@ -127,7 +127,8 @@ export class InboxComponent implements OnInit {
       var config = {
         headers: {
           "procIds": procIds,
-          "codeProcessId": "PC"
+          "codeProcessId": "PC",
+          "type": "EX"
         }
       }
       // if (codeProcessId) {
@@ -160,6 +161,7 @@ export class InboxComponent implements OnInit {
       let config = {
         headers: {
           "importExportId": importExportId,
+          "type": "EX"
         }
       }
       this.$importExport.downloadExportBatch(config).subscribe(
@@ -209,6 +211,7 @@ export class InboxComponent implements OnInit {
       this.$common.showLoader();
       var config = {
         headers: {
+          "type": "EX"
         }
       }
       // if (!$rootScope.isNullOrEmpty(this.codeProcessId)) {

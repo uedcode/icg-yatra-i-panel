@@ -6,7 +6,7 @@ import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth.service';
 import { FormService } from 'src/app/service/form.service';
 import { ImportExportAuditService } from 'src/app/service/importExportAudit.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 declare var $: any;
 
 @Component({
@@ -25,6 +25,7 @@ export class ImportedComponent implements OnInit {
     public $auth: AuthService,
     private $common: CommonService,
     public $importExport: ImportExportAuditService,
+    private route: ActivatedRoute,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -45,9 +46,11 @@ export class ImportedComponent implements OnInit {
   allAdminForm: any = [];
   batchList: any = [];
   batchChildList: any = [];
+  private batchType: 'IM' | 'DI' = 'IM';
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
+    this.batchType = this.route.snapshot.routeConfig?.path?.includes('diary') ? 'DI' : 'IM';
     this.loadBatchList();
   }
   loadBatchList() {
@@ -55,12 +58,12 @@ export class ImportedComponent implements OnInit {
       this.$common.showLoader();
       let config = {
         headers: {
-          'type': "IM",
+          'type': this.batchType,
           'isArchived': "0",
           'isStaging': "0"
         }
       }
-      this.$importExport.getBatchList(config).subscribe(
+      this.$importExport.getCustomBatch(config).subscribe(
         (response: any) => {
           if (response.status == true) {
             this.batchList = response.object;
@@ -82,7 +85,7 @@ export class ImportedComponent implements OnInit {
       this.$common.showLoader();
       this.batchNo = importExportObject.batchNo;
       this.viewingImportExportId = importExportObject.importExportId;
-      this.$importExport.getBatchChildren(importExportObject, this.codeStatus).subscribe(
+      this.$importExport.getBatchChildren(importExportObject, this.codeStatus, this.batchType).subscribe(
         (response: any) => {
           if (response.status) {
             this.showBatchChilds = true;
@@ -111,6 +114,7 @@ export class ImportedComponent implements OnInit {
       let config = {
         headers: {
           "importExportId": importExportId,
+          "type": this.batchType
         }
       }
       this.$importExport.downloadExportBatch(config).subscribe((response: any) => {
@@ -164,7 +168,8 @@ export class ImportedComponent implements OnInit {
       var config = {
         headers: {
           'ids': this.ids,
-          'isArchive': isArchive
+          'isArchive': isArchive,
+          'type': this.batchType
         }
       };
       

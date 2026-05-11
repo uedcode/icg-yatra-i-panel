@@ -31,6 +31,12 @@ import { environment } from 'src/environments/environment';
 import { SwitchModuleExternalComponent } from './pages/switch-module-external/switch-module-external.component';
 import { NewDeviceComponent } from './pages/new-device/new-device.component';
 import { VerifyTotpModalComponent } from './pages/verify-totp-modal/verify-totp-modal.component';
+import { PublicFaqComponent } from './pages/public-faq/public-faq.component';
+import { PublicVersionHistoryComponent } from './pages/public-version-history/public-version-history.component';
+import { PublicPreviewUpdatePnoComponent } from './pages/public-preview-update-pno/public-preview-update-pno.component';
+import { PublicSupportComponent } from './pages/public-support/public-support.component';
+import { PublicParamvtComponent } from './pages/public-paramvt/public-paramvt.component';
+import { PublicTestRedirectComponent } from './pages/public-test-redirect/public-test-redirect.component';
 
 
 const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more options
@@ -47,6 +53,12 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         ForgotPasswordModalComponent,
         NewDeviceComponent,
         SwitchModuleExternalComponent,
+        PublicFaqComponent,
+        PublicVersionHistoryComponent,
+        PublicPreviewUpdatePnoComponent,
+        PublicSupportComponent,
+        PublicParamvtComponent,
+        PublicTestRedirectComponent,
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,

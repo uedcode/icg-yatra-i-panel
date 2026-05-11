@@ -122,6 +122,8 @@ interface ClaimsModel {
   standalone: false,
 })
 export class FormLtcAdvanceComponent implements OnInit {
+  activeFormKind: 'advance' | 'claim' = 'advance';
+  activeSubFormId = 'L';
   removeEmoji() {
     this.claims.internalRemarks = (this.claims.internalRemarks || '').replace(
       /[\u{1F300}-\u{1FAFF}]/gu,
@@ -223,6 +225,9 @@ export class FormLtcAdvanceComponent implements OnInit {
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
+    this.activeFormKind = this.resolveFormKind(this.route.snapshot.data?.['formKind']);
+    this.activeSubFormId = this.resolveSubFormId(this.route.snapshot.data?.['subFormId']);
+    this.claims.codeSubFormDTO = { subFormId: this.activeSubFormId };
     this.initFromRoute();
     this.loadInitialMasterData();
     this.$codeDocInfo.documentDtos.subscribe((docs: any) => {
@@ -610,7 +615,7 @@ export class FormLtcAdvanceComponent implements OnInit {
         isPreview: 'false',
         gxUnitId: this.userIdDetails?.unitId ?? '',
         userId: this.userIdDetails?.userId ?? '',
-        subFormId: this.codeClaim.ltcAdv,
+        subFormId: this.activeSubFormId,
         isFetch: 'true',
         claimId: this.claimIdParam || '',
       };
@@ -770,7 +775,7 @@ export class FormLtcAdvanceComponent implements OnInit {
     const config = {
       headers: {
         claimId,
-        subFormId: this.codeClaim.ltcAdv,
+        subFormId: this.activeSubFormId,
         userId: this.userIdDetails?.userId ?? '',
       },
     };
@@ -801,8 +806,7 @@ export class FormLtcAdvanceComponent implements OnInit {
   }
 
   getLtcEntitled(): void {
-    // open modal or route; implement as per your Angular project
-    alert('Hook LTC Entitled modal/API here.');
+    this.$common.showMessage('LTC entitlement lookup is not configured yet.', 'danger');
   }
 
   getLtcAvailedHistory(): void {
@@ -826,8 +830,7 @@ export class FormLtcAdvanceComponent implements OnInit {
   }
 
   openIfscModal(): void {
-    // open your Angular modal (ng-bootstrap/material/etc.)
-    alert('Hook IFSC update modal here.');
+    this.$common.showMessage('IFSC modal flow is not configured yet.', 'danger');
   }
 
   navigatePreview(): void {
@@ -837,11 +840,11 @@ export class FormLtcAdvanceComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['../form-ltc-detail'], {
+    this.router.navigate([`../${this.getPreviewRoute()}`], {
       relativeTo: this.route,
       queryParams: {
         claimId,
-        subFormId: this.codeClaim.ltcAdv,
+        subFormId: this.activeSubFormId,
         ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
       },
     });
@@ -860,7 +863,7 @@ export class FormLtcAdvanceComponent implements OnInit {
     }
 
     if (this.supplementaryId && savedClaimId) {
-      this.router.navigate([moduleUrl + '/form-ltc'], {
+      this.router.navigate([moduleUrl + `/${this.getCurrentFormRoute()}`], {
         queryParams: {
           claimId: savedClaimId,
           supId: this.supplementaryId,
@@ -1121,6 +1124,11 @@ export class FormLtcAdvanceComponent implements OnInit {
         };
       }
 
+      tempClaim.codeSubFormDTO = {
+        ...(tempClaim.codeSubFormDTO || {}),
+        subFormId: this.activeSubFormId,
+      };
+
       tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
       if (this.supplementaryId) tempClaim.supClaimId = this.supplementaryId;
       tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
@@ -1154,12 +1162,12 @@ export class FormLtcAdvanceComponent implements OnInit {
 
           if (status === this.codeClaimState.outbox) {
             this.$common.showMessage(
-              res?.message || 'LTC claim submitted successfully!',
+              res?.message || `${this.getFormDisplayName()} submitted successfully!`,
               'success'
             );
           } else {
             this.$common.showMessage(
-              res?.message || 'LTC draft saved successfully.',
+              res?.message || `${this.getFormDisplayName()} draft saved successfully.`,
               'success'
             );
           }
@@ -1211,5 +1219,27 @@ export class FormLtcAdvanceComponent implements OnInit {
     }
 
     // you can extend this for other fields if you want same style validations
+  }
+
+  private resolveFormKind(rawFormKind: any): 'advance' | 'claim' {
+    return String(rawFormKind || '').toLowerCase() === 'claim' ? 'claim' : 'advance';
+  }
+
+  private resolveSubFormId(rawSubFormId: any): string {
+    const id = String(rawSubFormId || '').toUpperCase();
+    if (id === 'LTC' || id === 'L' || id === 'LC') return 'L';
+    return 'L';
+  }
+
+  private getCurrentFormRoute(): string {
+    return this.activeFormKind === 'claim' ? 'form-ltc-claim' : 'form-ltc';
+  }
+
+  private getPreviewRoute(): string {
+    return this.activeFormKind === 'claim' ? 'preview-ltc-claim' : 'preview-ltc-advance';
+  }
+
+  private getFormDisplayName(): string {
+    return this.activeFormKind === 'claim' ? 'LTC claim' : 'LTC advance';
   }
 }

@@ -51,6 +51,8 @@ import { FormFteComponent } from './pages/form/form-fte/form-fte.component';
 import { FormFteDetailComponent } from './pages/form-detail/form-fte-detail/form-fte-detail.component';
 import { FormPmtDutyComponent } from './pages/form/form-pmt/form-pmt.component';
 import { FormPmtDetailComponent } from './pages/form-detail/form-pmt-detail/form-pmt-detail.component';
+import { FormResettlementClaimComponent } from './pages/form/form-resettlement-claim/form-resettlement-claim.component';
+import { FormResettlementPreviewComponent } from './pages/form-detail/form-resettlement-preview/form-resettlement-preview.component';
 import { FormLtcAdvanceComponent } from './pages/form/form-ltc/form-ltc.component';
 import { FormLtcDetailComponent } from './pages/form-detail/form-ltc-detail/form-ltc-detail.component';
 import { FormManualAdvComponent } from './pages/form/form-manual-adv/form-manual-adv.component';
@@ -106,6 +108,8 @@ const CustomSelectOptions: INgxSelectOptions = {
     FormFteDetailComponent,
     FormPmtDutyComponent,
     FormPmtDetailComponent,
+    FormResettlementClaimComponent,
+    FormResettlementPreviewComponent,
     FormLtcAdvanceComponent,
     FormLtcDetailComponent,
     FormManualAdvComponent,

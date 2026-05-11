@@ -87,7 +87,7 @@ export class ArchivedComponent implements OnInit {
       this.$common.showLoader();
       this.batchNo = importExportObject.batchNo;
       this.viewingImportExportId = importExportObject.importExportId;
-      this.$importExport.getBatchChildren(importExportObject, this.codeStatus).subscribe(
+      this.$importExport.getBatchChildren(importExportObject, this.codeStatus, 'EX').subscribe(
         (response: any) => {
           if (response.status) {
             this.showBatchChilds = true;
@@ -117,6 +117,7 @@ export class ArchivedComponent implements OnInit {
       let config = {
         headers: {
           "importExportId": importExportId,
+          "type": "EX"
         }
       }
       this.$importExport.downloadExportBatch(config).subscribe((response: any) => {
@@ -170,7 +171,8 @@ export class ArchivedComponent implements OnInit {
       var config = {
         headers: {
           'ids': this.ids,
-          'isArchive': isArchive
+          'isArchive': isArchive,
+          'type': "EX"
         }
       };
 

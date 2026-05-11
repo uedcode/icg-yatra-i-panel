@@ -12,6 +12,7 @@ import { CommonService } from 'src/app/service/common.service';
   standalone: false,
 })
 export class FormPmtDetailComponent implements OnInit {
+  previewKind: 'advance' | 'claim' = 'advance';
   constructor(
     private location: Location,
     private route: ActivatedRoute,
@@ -29,17 +30,22 @@ export class FormPmtDetailComponent implements OnInit {
 
   ngOnInit() {
     this.today = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+    this.subFormId = this.normalizeSubFormId(this.route.snapshot.data?.['subFormId']);
+    this.previewKind =
+      String(this.route.snapshot.data?.['previewKind'] || '').toLowerCase() === 'claim'
+        ? 'claim'
+        : 'advance';
     this.route.queryParams.subscribe((params) => {
       this.claimId =
         params?.claimId || params?.id || params?.formId || params?.supId || null;
-      this.subFormId = this.normalizeSubFormId(params?.subFormId);
+      this.subFormId = this.normalizeSubFormId(params?.subFormId || this.subFormId);
       this.getClaimDetails();
     });
   }
 
   getClaimDetails() {
     if (!this.claimId) {
-      this.$common.showMessage('Missing claim id for PMT preview.', 'danger');
+      this.$common.showMessage(`Missing claim id for ${this.getPreviewDisplayName()}.`, 'danger');
       return;
     }
 
@@ -57,7 +63,7 @@ export class FormPmtDetailComponent implements OnInit {
         this.$common.hideLoader();
         if (response?.status !== true) {
           this.$common.showMessage(
-            response?.message || 'Unable to load PMT preview.',
+            response?.message || `Unable to load ${this.getPreviewDisplayName()}.`,
             'danger'
           );
           return;
@@ -72,7 +78,7 @@ export class FormPmtDetailComponent implements OnInit {
       error: (err) => {
         this.$common.hideLoader();
         console.error(err);
-        this.$common.showMessage('Error while loading PMT preview.', 'danger');
+        this.$common.showMessage(`Error while loading ${this.getPreviewDisplayName()}.`, 'danger');
       },
     });
   }
@@ -92,7 +98,29 @@ export class FormPmtDetailComponent implements OnInit {
   private normalizeSubFormId(subFormId: any): string {
     const id = String(subFormId || '').toUpperCase();
     if (id === 'PMTA' || id === 'PMT') return 'P';
-    if (id === 'RS' || id === 'RES' || id === 'R') return 'P';
+    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return 'RS';
     return 'P';
+  }
+
+  isResettlementSubForm(): boolean {
+    return this.subFormId === 'RS';
+  }
+
+  get previewHeading(): string {
+    if (this.isResettlementSubForm()) {
+      return this.previewKind === 'claim' ? 'Resettlement Claim Preview' : 'Resettlement Preview';
+    }
+    return this.previewKind === 'claim' ? 'PMT Duty Claim Preview' : 'PMT Advance Preview';
+  }
+
+  get detailHeading(): string {
+    return this.isResettlementSubForm() ? 'Resettlement Details' : 'PMT Advance Details';
+  }
+
+  private getPreviewDisplayName(): string {
+    if (this.isResettlementSubForm()) {
+      return this.previewKind === 'claim' ? 'resettlement claim preview' : 'resettlement preview';
+    }
+    return this.previewKind === 'claim' ? 'PMT claim preview' : 'PMT preview';
   }
 }

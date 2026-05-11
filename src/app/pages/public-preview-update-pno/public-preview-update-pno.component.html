@@ -1,0 +1,27 @@
+<div class="app-content">
+  <div class="side-app">
+    <div class="page-header">
+      <div class="page-leftheader">
+        <h4 class="page-title">PNO Update</h4>
+        <ol class="breadcrumb pl-0">
+          <li class="breadcrumb-item"><a [routerLink]="['/login']">Login</a></li>
+          <li class="breadcrumb-item active" aria-current="page">PNO Update</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 col-lg-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><span class="badge badge-secondary mr-2">1</span>Successfully Updated?</h5>
+          </div>
+          <div class="card-body">
+            <p><strong>Status:</strong> {{ statusMessage || '-' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

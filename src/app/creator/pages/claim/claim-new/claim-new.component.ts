@@ -41,9 +41,18 @@ export class ClaimNewComponent implements OnInit {
 
   openMovement(row: any): void {
     const claimId = row?.claimId || row?.yatClaimDTO?.claimId || row?.id || '';
+    const subFormId = (
+      row?.subFormId ||
+      row?.codeSubFormDTO?.subFormId ||
+      row?.yatClaimDTO?.codeSubFormDTO?.subFormId ||
+      ''
+    ).toUpperCase();
     if (!claimId) return;
     this.router.navigate([`${this.$auth.getModuleName()}/movement-update-claim`], {
-      queryParams: { claimId },
+      queryParams: {
+        claimId,
+        ...(subFormId ? { subFormId } : {}),
+      },
     });
   }
 

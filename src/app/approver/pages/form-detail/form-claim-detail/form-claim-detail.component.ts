@@ -64,7 +64,7 @@ export class FormClaimDetailComponent implements OnInit {
     this.route.queryParamMap.subscribe((params) => {
       const routeParams = this.route.snapshot.paramMap;
       this.claimId = params.get('claimId') || params.get('id') || routeParams.get('claimId');
-      this.subFormId = params.get('subFormId') || routeParams.get('subFormId');
+      this.subFormId = this.normalizeSubFormId(params.get('subFormId') || routeParams.get('subFormId'));
       this.statusId = params.get('statusId') || routeParams.get('statusId');
       this.actionable =
         (params.get('actionable') === '1' || routeParams.get('actionable') === '1') &&
@@ -241,8 +241,7 @@ export class FormClaimDetailComponent implements OnInit {
   }
 
   isResettlementSubForm(): boolean {
-    const id = (this.subFormId || '').toUpperCase();
-    return id === 'RS' || id === 'RES' || id === 'R';
+    return this.subForm() === 'RS';
   }
 
   isVerifierResettlementMode(): boolean {
@@ -477,7 +476,7 @@ export class FormClaimDetailComponent implements OnInit {
   }
 
   subForm(): string {
-    return (this.subFormId || '').toUpperCase();
+    return this.normalizeSubFormId(this.subFormId);
   }
 
   get primaryAdvanceDetails(): any {
@@ -689,5 +688,11 @@ export class FormClaimDetailComponent implements OnInit {
       R: 'preview-resettlement',
     };
     return previewMap[this.subForm()] || '';
+  }
+
+  private normalizeSubFormId(subFormId: any): string {
+    const id = String(subFormId || '').toUpperCase();
+    if (id === 'R' || id === 'RES' || id === 'RESCLM') return 'RS';
+    return id;
   }
 }

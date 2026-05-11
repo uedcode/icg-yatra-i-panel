@@ -12,7 +12,7 @@
           <div class="panel">
             <div class="panel-body">
               <div class="col-md-12 claim">
-                <h4 class="ml-3"><b>PMT Duty Claim Preview</b></h4>
+                <h4 class="ml-3"><b>{{ previewHeading }}</b></h4>
 
                 <div class="PersonalDetail container">
                   <h4>Personal Details</h4>
@@ -55,7 +55,7 @@
                 </div>
 
                 <div class="PersonalDetail container" *ngIf="formObj?.yatPermDutyAdvDTOs?.length">
-                  <h4>PMT Advance Details</h4>
+                  <h4>{{ detailHeading }}</h4>
                   <div class="container row">
                     <div class="col-md-4">
                       <label class="form-label">Transfer To</label>

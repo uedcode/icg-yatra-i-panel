@@ -27,6 +27,7 @@ import { ManualDraftComponent } from './pages/form-request/manual-draft/manual-d
 import { BudgetAllocationComponent } from './pages/settings/budget-allocation/budget-allocation.component';
 import { ArchiveComponent } from './pages/form-request/archive/archive.component';
 import { FormAdvanceDetailComponent } from './pages/form-detail/form-advance-detail/form-advance-detail.component';
+import { SettingsLauncherComponent } from './pages/settings/settings-launcher/settings-launcher.component';
 
 const routes: Routes = [
   {
@@ -230,7 +231,7 @@ const routes: Routes = [
   },
   {
     path: 'settings',
-    component: BudgetAllocationComponent,
+    component: SettingsLauncherComponent,
     canActivate: [AuthGuard],
     data: { title: 'Settings', roles: ['VE1'] }
   },

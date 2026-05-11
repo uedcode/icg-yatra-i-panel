@@ -183,7 +183,7 @@ export class FormPmtDutyComponent implements OnInit {
     return true;
   }
 
-  codeClaim = { pmtAdv: 'P' } as const;
+  codeClaim = { pmtAdv: 'P', resettleClm: 'RS' } as const;
 
   codeClaimState = {
     draft: 'DR',
@@ -212,6 +212,8 @@ export class FormPmtDutyComponent implements OnInit {
   gxUnitId: number | null = null;
   claimIdParam: string | null = null;
   supplementaryId: string | null = null;
+  activeSubFormId = 'P';
+  activeFormKind: 'advance' | 'claim' = 'advance';
 
   allUnits: any[] = [];
 
@@ -246,6 +248,12 @@ export class FormPmtDutyComponent implements OnInit {
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
     this.today = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+    this.activeSubFormId = this.resolveSubFormId(this.route.snapshot.data?.['subFormId']);
+    this.activeFormKind = this.resolveFormKind(this.route.snapshot.data?.['formKind']);
+    this.claims.codeSubFormDTO = {
+      ...(this.claims.codeSubFormDTO || {}),
+      subFormId: this.activeSubFormId,
+    };
 
     const qp = this.route.snapshot.queryParamMap;
     this.claimIdParam = qp.get('claimId');
@@ -267,7 +275,7 @@ export class FormPmtDutyComponent implements OnInit {
   private createEmptyClaims(): Claims {
     return {
       signWith: this.codeSignType.eSign,
-      codeSubFormDTO: { subFormId: 'P' } as any,
+      codeSubFormDTO: { subFormId: this.activeSubFormId } as any,
       codeUnitDTO: { unit: '', descr: '' } as any,
 
       yatPermDutyAdvDTOs: [this.createEmptyPmtAdv()],
@@ -385,7 +393,7 @@ export class FormPmtDutyComponent implements OnInit {
         isPreview: 'false',
         gxUnitId: this.userIdDetails?.unitId ?? '',
         userId: this.userIdDetails?.userId ?? '',
-        subFormId: 'P',
+        subFormId: this.activeSubFormId,
         isFetch: 'true',
         claimId: this.claimIdParam || '',
       };
@@ -401,7 +409,7 @@ export class FormPmtDutyComponent implements OnInit {
 
           if (!response || response.status !== true) {
             this.$common.showMessage(
-              response?.message || 'Unable to load PMT Duty Advance details.',
+              response?.message || `Unable to load ${this.getFormDisplayName()} details.`,
               'danger'
             );
             return;
@@ -463,9 +471,9 @@ export class FormPmtDutyComponent implements OnInit {
         },
         (error) => {
           this.$common.hideLoader();
-          console.error('Error while loading PMT Duty Advance details.', error);
+          console.error(`Error while loading ${this.getFormDisplayName()} details.`, error);
           this.$common.showMessage(
-            'Error while loading PMT Duty Advance details.',
+            `Error while loading ${this.getFormDisplayName()} details.`,
             'danger'
           );
         }
@@ -1079,7 +1087,7 @@ export class FormPmtDutyComponent implements OnInit {
   /* ===================== SAVE ===================== */
 
   saveClaim(type: string, status: string, showToast: boolean = true): void {
-    if (type !== this.codeClaim.pmtAdv) return;
+    if (type !== this.codeClaim.pmtAdv && type !== this.codeClaim.resettleClm) return;
 
     this.calculateAmount(this.codeClaim.pmtAdv);
     this.disableBtn = true;
@@ -1111,8 +1119,10 @@ export class FormPmtDutyComponent implements OnInit {
         tempClaim.roleTypeId = this.userIdDetails.roleTypeId;
       if (!tempClaim.aclUserDTO && this.userIdDetails?.userId)
         tempClaim.aclUserDTO = { userId: this.userIdDetails.userId };
-      if (!tempClaim.codeSubFormDTO)
-        tempClaim.codeSubFormDTO = { subFormId: 'P' };
+      tempClaim.codeSubFormDTO = {
+        ...(tempClaim.codeSubFormDTO || {}),
+        subFormId: this.activeSubFormId,
+      };
       if (tempClaim.codeUnitDTO?.unit) {
         tempClaim.codeUnitDTO = { unit: tempClaim.codeUnitDTO.unit };
       }
@@ -1153,8 +1163,8 @@ export class FormPmtDutyComponent implements OnInit {
           if (showToast) {
             const successMsg =
               status === this.codeClaimState.outbox
-                ? res?.message || 'PMT Duty claim submitted successfully.'
-                : res?.message || 'PMT Duty draft saved successfully.';
+                ? res?.message || `${this.getFormDisplayName()} submitted successfully.`
+                : res?.message || `${this.getFormDisplayName()} draft saved successfully.`;
             this.$common.showMessage(successMsg, 'success');
           }
 
@@ -1162,9 +1172,9 @@ export class FormPmtDutyComponent implements OnInit {
           this.checkForPreviewBtn();
         },
         (err: any) => {
-          console.error('Error while saving PMT Duty claim', err);
+          console.error(`Error while saving ${this.getFormDisplayName()}`, err);
           this.$common.showMessage(
-            'Error while saving PMT Duty claim.',
+            `Error while saving ${this.getFormDisplayName()}.`,
             'danger'
           );
           this.$common.hideLoader();
@@ -1172,8 +1182,8 @@ export class FormPmtDutyComponent implements OnInit {
         }
       );
     } catch (err) {
-      console.error('Error while saving PMT Duty claim', err);
-      this.$common.showMessage('Error while saving PMT Duty claim.', 'danger');
+      console.error(`Error while saving ${this.getFormDisplayName()}`, err);
+      this.$common.showMessage(`Error while saving ${this.getFormDisplayName()}.`, 'danger');
       this.$common.hideLoader();
       this.disableBtn = false;
     }
@@ -1461,10 +1471,10 @@ export class FormPmtDutyComponent implements OnInit {
   }
 
   navigatePreview(type: string, id: string): void {
-    this.router.navigate(['../form-pmt-detail'], {
+    this.router.navigate([`../${this.getPreviewRoute()}`], {
       queryParams: {
         claimId: this.claims.claimId || this.claimIdParam,
-        subFormId: 'P',
+        subFormId: this.activeSubFormId,
         ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
       },
     });
@@ -1483,7 +1493,7 @@ export class FormPmtDutyComponent implements OnInit {
     }
 
     if (this.supplementaryId && savedClaimId) {
-      this.router.navigate([moduleUrl + '/form-pmt'], {
+      this.router.navigate([moduleUrl + `/${this.getCurrentFormRoute()}`], {
         queryParams: {
           claimId: savedClaimId,
           supId: this.supplementaryId,
@@ -1656,7 +1666,7 @@ export class FormPmtDutyComponent implements OnInit {
   }
 
   updateEntitlement(subFormId?: string): void {
-    if (subFormId && subFormId !== this.codeClaim.pmtAdv) return;
+    if (subFormId && subFormId !== this.codeClaim.pmtAdv && subFormId !== this.codeClaim.resettleClm) return;
 
     const adv = this.adv;
     if (!adv) return;
@@ -1680,11 +1690,51 @@ export class FormPmtDutyComponent implements OnInit {
     this.refreshEntitledUi();
   }
 
+  private resolveSubFormId(rawSubFormId: any): string {
+    const id = String(rawSubFormId || '').toUpperCase();
+    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return this.codeClaim.resettleClm;
+    if (id === 'PMTA' || id === 'PMT' || id === 'P') return this.codeClaim.pmtAdv;
+    return this.codeClaim.pmtAdv;
+  }
+
+  private resolveFormKind(rawFormKind: any): 'advance' | 'claim' {
+    return String(rawFormKind || '').toLowerCase() === 'claim' ? 'claim' : 'advance';
+  }
+
+  private isResettlementMode(): boolean {
+    return this.activeSubFormId === this.codeClaim.resettleClm;
+  }
+
+  get pageTitle(): string {
+    if (this.isResettlementMode()) return 'REQUISITION FOR RESETTLEMENT CLAIM';
+    return this.activeFormKind === 'claim'
+      ? 'REQUISITION FOR PMT DUTY CLAIM'
+      : 'REQUISITION FOR PMT DUTY ADVANCE';
+  }
+
+  private getCurrentFormRoute(): string {
+    if (this.isResettlementMode()) return 'form-resettlement-claim';
+    if (this.activeFormKind === 'claim') return 'form-pmt-duty-claim';
+    return 'form-pmt';
+  }
+
+  private getPreviewRoute(): string {
+    if (this.isResettlementMode()) {
+      return this.activeFormKind === 'claim' ? 'preview-resettlement-claim' : 'preview-resettlement';
+    }
+    return this.activeFormKind === 'claim' ? 'preview-pmt-duty-claim' : 'form-pmt-detail';
+  }
+
+  private getFormDisplayName(): string {
+    if (this.isResettlementMode()) return 'Resettlement claim';
+    return this.activeFormKind === 'claim' ? 'PMT Duty claim' : 'PMT advance';
+  }
+
   loadPayLevels(): void {
     this.$claim.getPayLevels().subscribe((res: any) => {
       if (res?.status === true) {
         this.payLevels = res.object || [];
-        this.updateEntitlement(this.codeClaim.pmtAdv);
+        this.updateEntitlement(this.activeSubFormId);
       }
     });
   }
