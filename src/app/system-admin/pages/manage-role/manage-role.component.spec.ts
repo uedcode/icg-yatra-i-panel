@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused-variable */
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ManageRoleComponent } from './manage-role.component';
 
@@ -7,17 +7,16 @@ describe('ManageRoleComponent', () => {
   let component: ManageRoleComponent;
   let fixture: ComponentFixture<ManageRoleComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(() => {
+    return TestBed.configureTestingModule({
       declarations: [ManageRoleComponent]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ManageRoleComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

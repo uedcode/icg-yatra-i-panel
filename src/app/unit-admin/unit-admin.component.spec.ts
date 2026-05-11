@@ -16,7 +16,6 @@ describe('UnitAdminComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(UnitAdminComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

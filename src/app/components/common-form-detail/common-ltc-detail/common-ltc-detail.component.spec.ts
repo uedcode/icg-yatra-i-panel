@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
@@ -9,17 +9,16 @@ describe('CommonLtcDetailComponent', () => {
   let component: CommonLtcDetailComponent;
   let fixture: ComponentFixture<CommonLtcDetailComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CommonLtcDetailComponent ]
+  beforeEach(() => {
+    return TestBed.configureTestingModule({
+      imports: [ CommonLtcDetailComponent ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CommonLtcDetailComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

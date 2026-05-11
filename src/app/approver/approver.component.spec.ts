@@ -16,7 +16,6 @@ describe('ApproverComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ApproverComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {

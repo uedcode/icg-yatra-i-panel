@@ -1,25 +1,24 @@
 /* tslint:disable:no-unused-variable */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { FormPmtComponent } from './form-pmt.component';
+import { FormPmtDutyComponent } from './form-pmt.component';
 
-describe('FormPmtComponent', () => {
-  let component: FormPmtComponent;
-  let fixture: ComponentFixture<FormPmtComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ FormPmtComponent ]
-    })
-    .compileComponents();
-  }));
+describe('FormPmtDutyComponent', () => {
+  let component: FormPmtDutyComponent;
+  let fixture: ComponentFixture<FormPmtDutyComponent>;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormPmtComponent);
+    return TestBed.configureTestingModule({
+      declarations: [ FormPmtDutyComponent ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(FormPmtDutyComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
