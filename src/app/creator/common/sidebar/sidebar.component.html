@@ -8,198 +8,123 @@
       <div class="user-info">
         <h6 class="mb-1 text-dark">{{ userIdDetails?.formId }}</h6>
         <h6 class="mb-1 text-dark">{{ userIdDetails?.unitName }}</h6>
-        <!-- <h6 *ngIf="userIdDetails?.userGroupName" class="mb-1 text-dark">{{userIdDetails?.userGroupName}}</h6> -->
       </div>
     </div>
   </div>
-  <ul class="side-menu sidebar_page_scroll">
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../dashboard']"><i class="side-menu__icon fa fa-th"></i><span
-          class="side-menu__label">Dashboard</span></a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../new']"><i class="side-menu__icon fa fa-plus-square"></i><span class="side-menu__label">
-          New Claim</span></a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../form-tyduty']"><i class="side-menu__icon fa fa-file-o"></i>
-        <span class="side-menu__label">TY Duty Advance</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../form-fte']"><i class="side-menu__icon fa fa-file-o"></i>
-        <span class="side-menu__label">FTE Advance</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../form-pmt']"><i class="side-menu__icon fa fa-file-o"></i>
-        <span class="side-menu__label">PMT Advance</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../form-ltc']"><i class="side-menu__icon fa fa-file-o"></i>
-        <span class="side-menu__label">LTC Advance</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../form-manual-adv']"><i class="side-menu__icon fa fa-file-o"></i>
-        <span class="side-menu__label">Manual Advance</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../form-ltc-availed-history']"><i class="side-menu__icon fa fa-history"></i>
-        <span class="side-menu__label">LTC Availed History</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../form-pay-details']"><i class="side-menu__icon fa fa-money"></i>
-        <span class="side-menu__label">Pay Details</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../pay-outbox']"><i class="side-menu__icon fa fa-envelope-open"></i>
-        <span class="side-menu__label">Pay Outbox</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../pay-approved']"><i class="side-menu__icon fa fa-check-circle"></i>
-        <span class="side-menu__label">Pay Approved</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../pay-not-approved']"><i class="side-menu__icon fa fa-window-close"></i>
-        <span class="side-menu__label">Pay Not Approved</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../movement-update-claim']"><i class="side-menu__icon fa fa-exchange"></i>
-        <span class="side-menu__label">Movement Update Claim</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../claim-new']"><i class="side-menu__icon fa fa-list"></i>
-        <span class="side-menu__label">Claim New</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../draft']"><i class="side-menu__icon fa fa-file-o"></i><span class="side-menu__label">
-          Draft
-          <span *ngIf="countObj?.draft > 0" class="counts">{{
-            countObj?.draft
-            }}</span>
-        </span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../inbox']"><i class="side-menu__icon fa fa-inbox"></i><span class="side-menu__label">
-          Inbox
-          <span *ngIf="countObj?.inbox > 0" class="counts">{{
-            countObj?.inbox
-            }}</span>
-        </span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../outbox']"><i class="side-menu__icon fa fa-envelope-open"></i><span class="side-menu__label">
-          Outbox
-          <span *ngIf="countObj?.outbox > 0" class="counts">{{
-            countObj?.outbox
-            }}</span>
-        </span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../approved']"><i class="side-menu__icon fa fa-check-circle"></i><span class="side-menu__label">
-          Approved
-          <span *ngIf="countObj?.approved > 0" class="counts">{{
-            countObj?.approved
-            }}</span>
-        </span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../rejected']"><i class="side-menu__icon fa fa-window-close"></i>
-        <span class="side-menu__label">
-          Rejected
-          <span *ngIf="countObj?.rejected > 0" class="counts">{{
-            countObj?.rejected
-            }}</span>
-        </span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../passed']"><i class="side-menu__icon fa fa-check"></i>
-        <span class="side-menu__label">
-          Passed
-          <span *ngIf="countObj?.passed > 0" class="counts">{{
-            countObj?.passed
-            }}</span>
-        </span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../not-passed']"><i class="side-menu__icon fa fa-times-circle"></i>
-        <span class="side-menu__label">
-          Not Passed
-          <span *ngIf="countObj?.notPassed > 0" class="counts">{{
-            countObj?.notPassed
-            }}</span>
-        </span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../archive']"><i class="side-menu__icon fa fa-archive"></i>
-        <span class="side-menu__label">
-          Archive
-        </span>
-      </a>
-    </li>
-    <!-- <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../web-detail']"><i class="side-menu__icon fa fa-life-ring"></i><span class="side-menu__label">
-          Support
-        </span>
-      </a>
-    </li> -->
 
+  <!-- ADV module style (legacy advModule block) -->
+  <ul *ngIf="$auth.isRuntimeAdv()" class="side-menu sidebar_page_scroll">
     <li>
-      <!-- <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../web-detail']">
-        <i class="side-menu__icon fa fa-life-ring"></i>
-        <span class="side-menu__label">
-          User Manual
-        </span>
-      </a>-->
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../new']">
+        <i class="side-menu__icon fa fa-plus"></i><span class="side-menu__label">New</span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../inbox']">
+        <i class="side-menu__icon fa fa-inbox"></i><span class="side-menu__label">Inbox <span *ngIf="countObj?.inbox > 0" class="counts">{{ countObj?.inbox }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../outbox']">
+        <i class="side-menu__icon fa fa-reply-all"></i><span class="side-menu__label">Outbox <span *ngIf="countObj?.outbox > 0" class="counts">{{ countObj?.outbox }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../draft']">
+        <i class="side-menu__icon fa fa-file"></i><span class="side-menu__label">Draft <span *ngIf="countObj?.draft > 0" class="counts">{{ countObj?.draft }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../approved']">
+        <i class="side-menu__icon fa fa-check-square"></i><span class="side-menu__label">Approved <span *ngIf="countObj?.approved > 0" class="counts">{{ countObj?.approved }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../rejected']">
+        <i class="side-menu__icon fa fa-times-circle"></i><span class="side-menu__label">Not Approved <span *ngIf="countObj?.rejected > 0" class="counts">{{ countObj?.rejected }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../passed']">
+        <i class="side-menu__icon fa fa-check"></i><span class="side-menu__label">Passed <span *ngIf="countObj?.passed > 0" class="counts">{{ countObj?.passed }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../not-passed']">
+        <i class="side-menu__icon fa fa-times"></i><span class="side-menu__label">Not Passed <span *ngIf="countObj?.notPassed > 0" class="counts">{{ countObj?.notPassed }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../archive']">
+        <i class="side-menu__icon fa fa-archive"></i><span class="side-menu__label">Archive</span>
+      </a>
+    </li>
 
-      <a (click)="openUserManualModal()" class="side-menu__item" routerLinkActive="active current">
-        <i class="side-menu__icon fa fa-th"></i>
-        <span class="side-menu__label">User Manual</span>
+    <li routerLinkActive="is-expanded" class="slide">
+      <a class="side-menu__item" data-toggle="slide">
+        <i class="side-menu__icon fa fa-money"></i><span class="side-menu__label">Update Pay Details</span><i class="angle fa fa-angle-right"></i>
+      </a>
+      <ul class="slide-menu">
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../form-pay-details']">New</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../pay-outbox']">Outbox</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../pay-approved']">Approved</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../pay-not-approved']">Not Approved</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <!-- CLM module style (legacy clmModule block) -->
+  <ul *ngIf="$auth.isRuntimeClm()" class="side-menu sidebar_page_scroll">
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../movement-update-claim']">
+        <i class="side-menu__icon fa fa-plus"></i><span class="side-menu__label">Movement Update</span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../claim-new']">
+        <i class="side-menu__icon fa fa-plus"></i><span class="side-menu__label">New <span *ngIf="countObj?.newClaim > 0" class="counts">{{ countObj?.newClaim }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../claim/inbox']">
+        <i class="side-menu__icon fa fa-inbox"></i><span class="side-menu__label">Inbox <span *ngIf="countObj?.inboxClaim > 0" class="counts">{{ countObj?.inboxClaim }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../claim/outbox']">
+        <i class="side-menu__icon fa fa-reply-all"></i><span class="side-menu__label">Outbox <span *ngIf="countObj?.outboxClaim > 0" class="counts">{{ countObj?.outboxClaim }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../claim/draft']">
+        <i class="side-menu__icon fa fa-file"></i><span class="side-menu__label">Draft <span *ngIf="countObj?.draftClaim > 0" class="counts">{{ countObj?.draftClaim }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../claim/approved']">
+        <i class="side-menu__icon fa fa-check-square"></i><span class="side-menu__label">Approved <span *ngIf="countObj?.approvedClaim > 0" class="counts">{{ countObj?.approvedClaim }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../claim/not-approved']">
+        <i class="side-menu__icon fa fa-times-circle"></i><span class="side-menu__label">Not Approved <span *ngIf="countObj?.notApprovedClaim > 0" class="counts">{{ countObj?.notApprovedClaim }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../claim/passed']">
+        <i class="side-menu__icon fa fa-check"></i><span class="side-menu__label">Passed <span *ngIf="countObj?.passedClaim > 0" class="counts">{{ countObj?.passedClaim }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../claim/not-passed']">
+        <i class="side-menu__icon fa fa-times"></i><span class="side-menu__label">Not Passed <span *ngIf="countObj?.notPassedClaim > 0" class="counts">{{ countObj?.notPassedClaim }}</span></span>
+      </a>
+    </li>
+    <li>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../claim/archive']">
+        <i class="side-menu__icon fa fa-archive"></i><span class="side-menu__label">Archive <span *ngIf="countObj?.archiveClaim > 0" class="counts">{{ countObj?.archiveClaim }}</span></span>
       </a>
     </li>
   </ul>
-  <!-- <img src="assets/images/logo.png" alt="Yatra Logo" class="logo_in_sidebar"> -->
 </aside>
 <!--aside closed-->
-<app-common-user-manual-modal></app-common-user-manual-modal>

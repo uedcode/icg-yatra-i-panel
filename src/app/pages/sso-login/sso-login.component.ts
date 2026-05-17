@@ -67,7 +67,8 @@ export class SsoLoginComponent implements OnInit {
     let username = this.ssoResponse.username;
     let password = this.ssoResponse.password;
 
-    let moduleIdEncrypted = encodeURIComponent(crypto.AES.encrypt('PIL', "moduleId").toString());
+    const runtimeModuleId = this.$auth.getRuntimeModuleId();
+    let moduleIdEncrypted = encodeURIComponent(crypto.AES.encrypt(runtimeModuleId, "moduleId").toString());
     params = params.append('username', username + '---' + password + '---' + moduleIdEncrypted);
     params = params.append('password', password);
     params = params.append('grant_type', 'password');

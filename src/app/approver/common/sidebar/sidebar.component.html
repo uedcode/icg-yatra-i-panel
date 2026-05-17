@@ -3,217 +3,124 @@
   <div class="app-sidebar__user">
     <div class="dropdown user-pro-body text-center">
       <div class="user-pic">
-        <img
-          src="assets/images/user.png"
-          alt="user-img"
-          class="avatar-xl rounded-circle mb-1"
-        />
+        <img src="assets/images/user.png" alt="user-img" class="avatar-xl rounded-circle mb-1" />
       </div>
       <div class="user-info">
         <h6 class="mb-1 text-dark">{{ userIdDetails?.formId }}</h6>
         <h6 class="mb-1 text-dark">{{ userIdDetails?.unitName }}</h6>
-        <!-- <h6 *ngIf="userIdDetails?.userGroupName" class="mb-1 text-dark">{{userIdDetails?.userGroupName}}</h6> -->
       </div>
     </div>
   </div>
+
   <ul class="side-menu sidebar_page_scroll">
-    <li>
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../dashboard']"
-        ><i class="side-menu__icon fa fa-th"></i
-        ><span class="side-menu__label">Dashboard</span></a
-      >
-    </li>
-    <li>
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../inbox']"
-        ><i class="side-menu__icon fa fa-inbox"></i
-        ><span class="side-menu__label"
-          >Inbox
-          <span *ngIf="countObj?.inbox > 0" class="counts">{{
-            countObj?.inbox
-          }}</span>
-        </span>
+    <li routerLinkActive="is-expanded" class="slide">
+      <a class="side-menu__item" data-toggle="slide">
+        <i class="side-menu__icon fa fa-inbox"></i>
+        <span class="side-menu__label">Inbox <span *ngIf="countObj?.inbox > 0" class="counts">{{ countObj?.inbox }}</span></span>
+        <i class="angle fa fa-angle-right"></i>
       </a>
+      <ul class="slide-menu">
+        <li *ngIf="$auth.isRuntimeAdv()"><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../inbox']">Advance</a></li>
+        <li *ngIf="$auth.isRuntimeClm()"><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../inbox']">Claims</a></li>
+      </ul>
     </li>
-    <li>
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../outbox']"
-        ><i class="side-menu__icon fa fa-envelope-open"></i
-        ><span class="side-menu__label"
-          >Outbox
-          <span *ngIf="countObj?.outbox > 0" class="counts">{{
-            countObj?.outbox
-          }}</span>
-        </span>
+
+    <li routerLinkActive="is-expanded" class="slide">
+      <a class="side-menu__item" data-toggle="slide">
+        <i class="side-menu__icon fa fa-reply-all"></i>
+        <span class="side-menu__label">Outbox <span *ngIf="countObj?.outbox > 0" class="counts">{{ countObj?.outbox }}</span></span>
+        <i class="angle fa fa-angle-right"></i>
       </a>
+      <ul class="slide-menu">
+        <li *ngIf="$auth.isRuntimeAdv()"><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../outbox']">Advance</a></li>
+        <li *ngIf="$auth.isRuntimeClm()"><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../outbox']">Claims</a></li>
+      </ul>
     </li>
-    <li>
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../approved']"
-        ><i class="side-menu__icon fa fa-check-circle"></i
-        ><span class="side-menu__label"
-          >Approved
-          <span *ngIf="countObj?.approved > 0" class="counts">{{
-            countObj?.approved
-          }}</span>
-        </span>
+
+    <li routerLinkActive="is-expanded" class="slide">
+      <a class="side-menu__item" data-toggle="slide">
+        <i class="side-menu__icon fa fa-check-square"></i>
+        <span class="side-menu__label">Approved <span *ngIf="countObj?.approved > 0" class="counts">{{ countObj?.approved }}</span></span>
+        <i class="angle fa fa-angle-right"></i>
       </a>
+      <ul class="slide-menu">
+        <li *ngIf="$auth.isRuntimeAdv()"><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../approved']">Advance</a></li>
+        <li *ngIf="$auth.isRuntimeClm()"><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../approved']">Claims</a></li>
+      </ul>
     </li>
-    <li>
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../not-approved']"
-        ><i class="side-menu__icon fa fa-reply"></i
-        ><span class="side-menu__label"
-          >Rejected
-          <span *ngIf="countObj?.rejected > 0" class="counts">{{
-            countObj?.rejected
-          }}</span>
-        </span>
-      </a>
-    </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../passed']"
-        ><i class="side-menu__icon fa fa-check"></i
-        ><span class="side-menu__label"
-          >Passed
-          <span *ngIf="countObj?.passed > 0" class="counts">{{
-            countObj?.passed
-          }}</span>
-        </span>
-      </a>
-    </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../not-passed']"
-        ><i class="side-menu__icon fa fa-times-circle"></i
-        ><span class="side-menu__label"
-          >Not Passed
-          <span *ngIf="countObj?.notPassed > 0" class="counts">{{
-            countObj?.notPassed
-          }}</span>
-        </span>
-      </a>
-    </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../claim-archive']"
-      >
-        <i class="side-menu__icon fa fa-archive"></i>
-        <span class="side-menu__label">Claim Archive</span>
-      </a>
-    </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.verifier2">
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../pay-inbox']"
-      >
-        <i class="side-menu__icon fa fa-money"></i>
-        <span class="side-menu__label">Pay Inbox</span>
-      </a>
-    </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.verifier2">
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../pay-outbox']"
-      >
-        <i class="side-menu__icon fa fa-envelope-open"></i>
-        <span class="side-menu__label">Pay Outbox</span>
-      </a>
-    </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.verifier2">
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../pay-approved']"
-      >
-        <i class="side-menu__icon fa fa-check-circle"></i>
-        <span class="side-menu__label">Pay Approved</span>
-      </a>
-    </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.verifier2">
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../pay-not-approved']"
-      >
+
+    <li routerLinkActive="is-expanded" class="slide">
+      <a class="side-menu__item" data-toggle="slide">
         <i class="side-menu__icon fa fa-times-circle"></i>
-        <span class="side-menu__label">Pay Not Approved</span>
+        <span class="side-menu__label">Not Approved <span *ngIf="countObj?.rejected > 0" class="counts">{{ countObj?.rejected }}</span></span>
+        <i class="angle fa fa-angle-right"></i>
       </a>
+      <ul class="slide-menu">
+        <li *ngIf="$auth.isRuntimeAdv()"><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../not-approved']">Advance</a></li>
+        <li *ngIf="$auth.isRuntimeClm()"><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../not-approved']">Claims</a></li>
+      </ul>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../manual-draft']"
-      >
-        <i class="side-menu__icon fa fa-file"></i>
-        <span class="side-menu__label">Manual Draft</span>
+
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier" routerLinkActive="is-expanded" class="slide">
+      <a class="side-menu__item" data-toggle="slide">
+        <i class="side-menu__icon fa fa-check"></i>
+        <span class="side-menu__label">Passed <span *ngIf="countObj?.passed > 0" class="counts">{{ countObj?.passed }}</span></span>
+        <i class="angle fa fa-angle-right"></i>
       </a>
+      <ul class="slide-menu">
+        <li *ngIf="$auth.isRuntimeAdv()"><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../passed']">Advance</a></li>
+        <li *ngIf="$auth.isRuntimeClm()"><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../passed']">Claims</a></li>
+      </ul>
     </li>
+
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier" routerLinkActive="is-expanded" class="slide">
+      <a class="side-menu__item" data-toggle="slide">
+        <i class="side-menu__icon fa fa-times"></i>
+        <span class="side-menu__label">Not Passed <span *ngIf="countObj?.notPassed > 0" class="counts">{{ countObj?.notPassed }}</span></span>
+        <i class="angle fa fa-angle-right"></i>
+      </a>
+      <ul class="slide-menu">
+        <li *ngIf="$auth.isRuntimeAdv()"><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../not-passed']">Advance</a></li>
+        <li *ngIf="$auth.isRuntimeClm()"><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../not-passed']">Claims</a></li>
+      </ul>
+    </li>
+
     <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../budget-allocation']"
-      >
-        <i class="side-menu__icon fa fa-money"></i>
-        <span class="side-menu__label">Budget Allocation</span>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../claim-archive']">
+        <i class="side-menu__icon fa fa-archive"></i><span class="side-menu__label">Archive</span>
       </a>
     </li>
 
-    <li>
-      <!--<a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../web-detail']"><i class="side-menu__icon fa fa-life-ring"></i><span class="side-menu__label">
-          Support
-        </span>
-      </a>-->
-      <a
-        (click)="openUserManualModal()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-      >
-        <i class="side-menu__icon fa fa-th"></i>
-        <span class="side-menu__label">User Manual</span>
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.verifier2">
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../settings']">
+        <i class="side-menu__icon fa fa-cog"></i><span class="side-menu__label">Settings</span>
+      </a>
+    </li>
+
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.verifier2" routerLinkActive="is-expanded" class="slide">
+      <a class="side-menu__item" data-toggle="slide">
+        <i class="side-menu__icon fa fa-money"></i>
+        <span class="side-menu__label">Update Pay Details</span>
+        <i class="angle fa fa-angle-right"></i>
+      </a>
+      <ul class="slide-menu">
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../pay-inbox']">Inbox</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../pay-outbox']">Outbox</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../pay-approved']">Approved</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../pay-not-approved']">Not Approved</a></li>
+      </ul>
+    </li>
+
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../manual-draft']">
+        <i class="side-menu__icon fa fa-file"></i><span class="side-menu__label">Manual Draft</span>
+      </a>
+    </li>
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../budget-allocation']">
+        <i class="side-menu__icon fa fa-money"></i><span class="side-menu__label">Budget Allocation</span>
       </a>
     </li>
   </ul>
-  <!-- <img src="assets/images/logo.png" alt="Yatra Logo" class="logo_in_sidebar"> -->
 </aside>
 <!--aside closed-->
-<app-common-user-manual-modal></app-common-user-manual-modal>
-
-

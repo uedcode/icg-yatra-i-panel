@@ -37,9 +37,11 @@ describe('AuthGuard', () => {
       'destroySession',
       'getModuleName',
       'getUserDetails',
+      'getRuntimeModuleId',
     ]);
 
     authService.getModuleName.and.returnValue('/creator');
+    authService.getRuntimeModuleId.and.returnValue('ADV' as any);
     authService.getUserDetails.and.returnValue({
       roleTypeId: 'CR',
     });
@@ -82,6 +84,20 @@ describe('AuthGuard', () => {
 
     expect(canActivate).toBeTrue();
     expect(authService.destroySession).not.toHaveBeenCalled();
+  });
+
+  it('should reject claim-only route when runtime module is ADV', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getModuleName.and.returnValue('/creator');
+    authService.getRuntimeModuleId.and.returnValue('ADV' as any);
+
+    const canActivate = guard.canActivate(
+      routeSnapshot('claim/new'),
+      routerState('/creator/claim/new')
+    );
+
+    expect(canActivate).toBeFalse();
+    expect(authService.destroySession).toHaveBeenCalledWith('2');
   });
 
   it('should accept the legacy Pilotage access token key', () => {

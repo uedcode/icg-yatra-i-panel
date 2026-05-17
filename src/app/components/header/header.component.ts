@@ -75,7 +75,7 @@ export class HeaderComponent implements OnInit {
       const roleType = dataObj?.aclCodeRoleTypeDTO;
       this.config = {
         headers: {
-          moduleId:'PIL'
+          moduleId: this.$auth.getRuntimeModuleId()
         }
       }
       

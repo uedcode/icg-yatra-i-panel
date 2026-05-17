@@ -352,6 +352,19 @@ describe('AuthService', () => {
     expect(service.setRoleName('UNKNOWN')).toBe('-');
   });
 
+  it('should resolve runtime module id from URL path tokens', () => {
+    expect(service.getRuntimeModuleId('/claim/creator/dashboard')).toBe('CLM');
+    expect(service.getRuntimeModuleId('/adv/creator/dashboard')).toBe('ADV');
+    expect(service.getRuntimeModuleId('/creator/dashboard')).toBe('ADV');
+  });
+
+  it('should enable module features based on runtime module context', () => {
+    spyOn(service, 'getRuntimeModuleId').and.returnValue('ADV');
+    expect(service.enableFeatures('ADV')).toBeTrue();
+    expect(service.enableFeatures('CLM')).toBeFalse();
+    expect(service.enableFeatures('COM')).toBeTrue();
+  });
+
   it('should build form details payload from stored creator user context', () => {
     service.createSession(sessionPayload, 'NONE');
 

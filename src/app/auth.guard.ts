@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { environment } from 'src/environments/environment';
+import { RuntimeModuleId } from './service/runtime-module.service';
 
 @Injectable()
 export class AuthGuard  {
@@ -46,6 +47,11 @@ export class AuthGuard  {
                 returnVal = true;
             }
 
+            const runtimeModuleId = this.$auth.getRuntimeModuleId();
+            if (returnVal && !this.isModuleRouteAllowed(runtimeModuleId, completeUrl)) {
+                returnVal = false;
+            }
+
             let list = ['/view-file', '/switch-module', '/new-device', '/common-profile-setting', '/common-new-device'];
             if(list.includes(completeUrl)){
                 returnVal = true;
@@ -65,5 +71,41 @@ export class AuthGuard  {
     commonPageList : Array<any> = [
         { path: 'login' }, { path: 'dashboard' }, { path: 'profile' }, { path: 'change-password' },
     ];
+
+    private readonly claimOnlyTokens = [
+      '/claim/',
+      '-claim',
+      'movement-update-claim',
+      'preview-voucher',
+      'form-claim-detail',
+      'claim-new'
+    ];
+
+    private readonly advanceOnlyTokens = [
+      '/new',
+      'form-tyduty',
+      'form-fte',
+      'form-pmt',
+      'form-ltc',
+      'form-manual-adv',
+      'form-ltc-availed-history',
+      'pay-',
+      'manual-draft',
+      'budget-allocation'
+    ];
+
+    private isModuleRouteAllowed(moduleId: RuntimeModuleId, routeUrl: string): boolean {
+      const normalized = String(routeUrl || '').toLowerCase();
+      if (!normalized) {
+        return true;
+      }
+      if (moduleId === 'ADV') {
+        return !this.claimOnlyTokens.some((token) => normalized.includes(token));
+      }
+      if (moduleId === 'CLM') {
+        return !this.advanceOnlyTokens.some((token) => normalized.includes(token));
+      }
+      return true;
+    }
 
 }

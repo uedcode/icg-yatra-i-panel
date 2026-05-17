@@ -3,320 +3,81 @@
   <div class="app-sidebar__user">
     <div class="dropdown user-pro-body text-center">
       <div class="user-pic">
-        <img
-          src="assets/images/user.png"
-          alt="user-img"
-          class="avatar-xl rounded-circle mb-1"
-        />
+        <img src="assets/images/user.png" alt="user-img" class="avatar-xl rounded-circle mb-1" />
       </div>
       <div class="user-info">
         <h6 class="mb-1 text-dark">{{ userIdDetails?.formId }}</h6>
         <h6 class="mb-1 text-dark">{{ userIdDetails?.unitName }}</h6>
-        <!-- <h6 class="mb-1 text-dark">{{userIdDetails?.unitId}}</h6> -->
       </div>
     </div>
   </div>
   <ul class="side-menu sidebar_page_scroll">
     <li>
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../dashboard']"
-        ><i class="side-menu__icon fa fa-th"></i
-        ><span class="side-menu__label">Dashboard</span></a
-      >
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../dashboard']">
+        <i class="side-menu__icon fa fa-th-large"></i><span class="side-menu__label">Dashboard</span>
+      </a>
     </li>
     <li>
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../mapping-unit']"
-        ><i class="side-menu__icon fa fa-map-marker"></i
-        ><span class="side-menu__label">Manage Unit Mappings</span></a
-      >
-    </li>
-
-    <li>
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../system-admin']"
-        ><i class="side-menu__icon fa fa-users"></i
-        ><span class="side-menu__label">Manage System Admins</span></a
-      >
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../statistics']">
+        <i class="side-menu__icon fa fa-pie-chart"></i><span class="side-menu__label">Statistics</span>
+      </a>
     </li>
     <li>
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../unit-admin']"
-        ><i class="side-menu__icon fa fa-user-secret"></i
-        ><span class="side-menu__label">Manage Unit Admins</span></a
-      >
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../esign-report']">
+        <i class="side-menu__icon fa fa-file"></i><span class="side-menu__label">Esign Report</span>
+      </a>
     </li>
-    <li>
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../manage-role']"
-        ><i class="side-menu__icon fa fa-arrows"></i
-        ><span class="side-menu__label">Manage Roles</span></a
-      >
-    </li>
-
-    <!-- <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../manage-approver']"><i class="side-menu__icon fa fa-check-circle"></i><span
-          class="side-menu__label">Manage Approver </span></a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../mapping-approver-form']"><i class="side-menu__icon fa fa-check-circle"></i><span
-          class="side-menu__label">Mapping Approver Form </span></a>
-    </li>-->
 
     <li routerLinkActive="is-expanded" class="slide">
-      <a class="side-menu__item" data-toggle="slide"
-        ><i class="side-menu__icon fa fa-file"></i>
-        <span class="side-menu__label">Manage Masters</span
-        ><i class="angle fa fa-angle-right"></i>
-      </a>
+      <a class="side-menu__item" data-toggle="slide"><i class="side-menu__icon fa fa-download"></i><span class="side-menu__label">Import</span><i class="angle fa fa-angle-right"></i></a>
       <ul class="slide-menu">
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../documents']"
-          >
-            Manage Documents
-          </a>
-        </li>
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../ports']"
-          >
-            Manage Ports
-          </a>
-        </li>
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../port-rate']"
-          >
-            Manage Port Rates
-          </a>
-        </li>
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../business-rule']"
-          >
-            Manage Business Rule
-          </a>
-        </li>
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../message']"
-          >
-            Manage Messages
-          </a>
-        </li>
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../pay-level']"
-          >
-            Manage Pay Levels
-          </a>
-        </li>
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../ty-duty-purpose']"
-          >
-            Manage TY Duty Purpose
-          </a>
-        </li>
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../reason']"
-          >
-            Manage Reason
-          </a>
-        </li>
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../ships']"
-          >
-            Manage Ships
-          </a>
-        </li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../import']">Import</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../imported']">Imported</a></li>
+      </ul>
+    </li>
 
-        <li>
-          <a (click)="$auth.closeSidebar()" class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../faq']">
-            Manage FAQs
-          </a>
-        </li>
-        <li>
-          <a (click)="$auth.closeSidebar()" class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../version-history']">
-            Manage Version History
-          </a>
-        </li>
-      </ul>
-    </li>
     <li routerLinkActive="is-expanded" class="slide">
-      <a class="side-menu__item" data-toggle="slide"
-        ><i class="side-menu__icon fa fa-upload"></i>
-        <span class="side-menu__label">Audit Export</span
-        ><i class="angle fa fa-angle-right"></i>
-      </a>
+      <a class="side-menu__item" data-toggle="slide"><i class="side-menu__icon fa fa-upload"></i><span class="side-menu__label">Export</span><i class="angle fa fa-angle-right"></i></a>
       <ul class="slide-menu">
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../inbox']"
-          >
-            Export Queue
-          </a>
-        </li>
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../exported']"
-          >
-            Exported Batches
-          </a>
-        </li>
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../archived']"
-          >
-            Archived Exports
-          </a>
-        </li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../inbox']">Inbox</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../exported']">Exported</a></li>
       </ul>
     </li>
+
     <li routerLinkActive="is-expanded" class="slide">
-      <a class="side-menu__item" data-toggle="slide"
-        ><i class="side-menu__icon fa fa-download"></i>
-        <span class="side-menu__label">Audit Import</span
-        ><i class="angle fa fa-angle-right"></i>
-      </a>
+      <a class="side-menu__item" data-toggle="slide"><i class="side-menu__icon fa fa-archive"></i><span class="side-menu__label">Archived</span><i class="angle fa fa-angle-right"></i></a>
       <ul class="slide-menu">
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../import']"
-          >
-            Import Queue
-          </a>
-        </li>
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../imported']"
-          >
-            Imported Batches
-          </a>
-        </li>
-        <li>
-          <a
-            (click)="$auth.closeSidebar()"
-            class="slide-item"
-            routerLinkActive="active current"
-            [routerLink]="['../archived-import']"
-          >
-            Archived Imports
-          </a>
-        </li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../backup-Import']">Imported</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../backup-Export']">Exported</a></li>
       </ul>
     </li>
+
+    <li routerLinkActive="is-expanded" class="slide">
+      <a class="side-menu__item" data-toggle="slide"><i class="side-menu__icon fa fa-download"></i><span class="side-menu__label">Diary Claim</span><i class="angle fa fa-angle-right"></i></a>
+      <ul class="slide-menu">
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../diary-import']">Import</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../diary-imported']">Imported</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['../diary-imported-backup']">Archived</a></li>
+      </ul>
+    </li>
+
     <li>
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../statistics']"
-      >
-        <i class="side-menu__icon fa fa-pie-chart"></i>
-        <span class="side-menu__label">Statistics</span>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../unit-admin']">
+        <i class="side-menu__icon fa fa-user"></i><span class="side-menu__label">Manage Unit Admin</span>
       </a>
     </li>
     <li>
-      <a
-        (click)="$auth.closeSidebar()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-        [routerLink]="['../esign-report']"
-      >
-        <i class="side-menu__icon fa fa-file-text-o"></i>
-        <span class="side-menu__label">eSign Report</span>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../profile-setting']">
+        <i class="side-menu__icon fa fa-cog"></i><span class="side-menu__label">Settings</span>
       </a>
     </li>
     <li>
-      <!--<a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../web-detail']"><i class="side-menu__icon fa fa-life-ring"></i><span class="side-menu__label">
-          Support
-        </span>
-      </a>-->
-      <a
-        (click)="openUserManualModal()"
-        class="side-menu__item"
-        routerLinkActive="active current"
-      >
-        <i class="side-menu__icon fa fa-th"></i>
-        <span class="side-menu__label">User Manual</span>
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['../excel-import']">
+        <i class="side-menu__icon fa fa-download"></i><span class="side-menu__label">Excel Import</span>
       </a>
     </li>
   </ul>
 
-  <img
-    src="assets/images/logo.png"
-    alt="Yatra Logo"
-    class="logo_in_sidebar"
-  />
+  <img src="assets/images/logo.png" alt="Yatra Logo" class="logo_in_sidebar" />
 </aside>
-
 <!--aside closed-->
-<app-common-user-manual-modal></app-common-user-manual-modal>

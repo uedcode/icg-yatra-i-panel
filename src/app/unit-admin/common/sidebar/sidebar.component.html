@@ -15,32 +15,22 @@
   <ul class="side-menu sidebar_page_scroll">
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../dashboard']"><i class="side-menu__icon fa fa-th"></i><span
-          class="side-menu__label">Dashboard</span></a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../unit-admin']"><i class="side-menu__icon fa fa-user-secret"></i><span
+        [routerLink]="['../unit-admin']"><i class="side-menu__icon fa fa-user"></i><span
           class="side-menu__label">Manage Unit Admin </span></a>
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../role']"><i class="side-menu__icon fa fa-arrows"></i><span
+        [routerLink]="['../role']"><i class="side-menu__icon fa fa-users"></i><span
           class="side-menu__label">Manage Role </span></a>
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../archive']"><i class="side-menu__icon fa fa-archive"></i><span
-          class="side-menu__label">Archive </span></a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../update-pmt-unit']"><i class="side-menu__icon fa fa-exchange"></i><span
+        [routerLink]="['../update-pmt-unit']"><i class="side-menu__icon fa fa-refresh"></i><span
           class="side-menu__label">Update PMT Unit </span></a>
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../report-ty-duty']"><i class="side-menu__icon fa fa-flag"></i><span
+        [routerLink]="['../report-ty-duty']"><i class="side-menu__icon fa fa-file"></i><span
           class="side-menu__label">Report TY Duty </span></a>
     </li>
     <li>
@@ -49,20 +39,7 @@
           class="side-menu__label">Manage Paylevel </span></a>
     </li>
 
-    <li>
-     <!-- <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['../web-detail']"><i class="side-menu__icon fa fa-life-ring"></i><span class="side-menu__label">
-          Support
-        </span>
-      </a>-->
-      <a (click)="openUserManualModal()" class="side-menu__item" routerLinkActive="active current">
-        <i class="side-menu__icon fa fa-th"></i>
-        <span class="side-menu__label">User Manual</span>
-      </a>
-    </li>
-
   </ul>
   <!-- <img src="assets/images/logo.png" alt="Yatra Logo" class="logo_in_sidebar"> -->
 </aside>
 <!--aside closed-->
-<app-common-user-manual-modal></app-common-user-manual-modal>

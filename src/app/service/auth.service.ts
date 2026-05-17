@@ -6,6 +6,7 @@ import { CommonService } from 'src/app/service/common.service';
 import { UserTokenService } from './userToken.service';
 import { environment } from 'src/environments/environment';
 import { DatePipe } from '@angular/common';
+import { RuntimeModuleService, RuntimeModuleId } from './runtime-module.service';
 
 declare var $: any;
 
@@ -28,10 +29,27 @@ export class AuthService {
     private route: Router,
     private $common: CommonService,
     private $userToken: UserTokenService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private runtimeModuleService: RuntimeModuleService
   ) {}
 
   config;
+
+  getRuntimeModuleId(pathname?: string): RuntimeModuleId {
+    return this.runtimeModuleService.getModuleId(pathname);
+  }
+
+  isRuntimeAdv(pathname?: string): boolean {
+    return this.runtimeModuleService.isAdv(pathname);
+  }
+
+  isRuntimeClm(pathname?: string): boolean {
+    return this.runtimeModuleService.isClm(pathname);
+  }
+
+  enableFeatures(moduleId = ''): boolean {
+    return this.runtimeModuleService.isModuleEnabled(moduleId);
+  }
 
   login(data) {
     return this.http.post<any>(`oauth/token`, data).pipe(

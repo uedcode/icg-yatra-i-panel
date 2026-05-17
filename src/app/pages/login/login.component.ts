@@ -159,7 +159,8 @@ export class LoginComponent implements OnInit {
 
     let usernameEncrypted = encodeURIComponent(crypto.AES.encrypt(username, "username").toString());
     let passwordEncrypted = encodeURIComponent(crypto.AES.encrypt(password, "password").toString());
-    let moduleIdEncrypted = encodeURIComponent(crypto.AES.encrypt('PIL', "moduleId").toString());
+    const runtimeModuleId = this.$auth.getRuntimeModuleId();
+    let moduleIdEncrypted = encodeURIComponent(crypto.AES.encrypt(runtimeModuleId, "moduleId").toString());
     params = params.append(
       'username',
       usernameEncrypted + '---' + passwordEncrypted + '---' + moduleIdEncrypted

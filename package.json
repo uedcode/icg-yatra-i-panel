@@ -4,7 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:adv": "ng serve -c advlocal --port 4200 --serve-path /adv/",
+    "start:claim": "ng serve -c claimlocal --port 4201 --serve-path /claim/",
     "build": "ng build",
+    "build:adv": "ng build --base-href /adv/",
+    "build:claim": "ng build --base-href /claim/",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

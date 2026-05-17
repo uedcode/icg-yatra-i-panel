@@ -36,6 +36,12 @@
             "browser": "src/main.ts"
           },
           "configurations": {
+            "advlocal": {
+              "baseHref": "/adv/"
+            },
+            "claimlocal": {
+              "baseHref": "/claim/"
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -98,6 +104,12 @@
             "buildTarget": "icgpilotage:build"
           },
           "configurations": {
+            "advlocal": {
+              "buildTarget": "icgpilotage:build:advlocal"
+            },
+            "claimlocal": {
+              "buildTarget": "icgpilotage:build:claimlocal"
+            },
             "production": {
               "buildTarget": "icgpilotage:build:production"
             },

@@ -2,24 +2,53 @@
   <div class="page-main">
     <app-header></app-header>
     <app-executor-sidebar></app-executor-sidebar>
-    <div class="app-content">
+    <div class="app-content" (click)="$auth.closeSidebar()">
       <div class="side-app">
-        <div class="page-header gov-page-toolbar">
+        <div class="page-header mobile_page_header gov-page-toolbar">
           <div class="page-leftheader">
-            <h4 class="page-title">Executor Dashboard</h4>
+            <h4 class="page-title">Dashboard</h4>
             <ol class="breadcrumb pl-0">
               <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Executor Dashboard</li>
+              <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
             </ol>
           </div>
         </div>
         <div class="card">
           <div class="card-body">
-            <div class="gov-state-panel mb-0">
-              <h5>Baseline Active</h5>
-              <p class="mb-0">
-              Executor module baseline is active. Remaining executor screens will be migrated in next tasks.
-              </p>
+            <div class="row">
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../search-by-pno']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-search icon_bg_user" aria-hidden="true"></i>
+                      <h2>{{ countObj?.inbox || 0 }}</h2>
+                      <p>Master Search</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../pie-chart']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-pie-chart icon_bg_user" aria-hidden="true"></i>
+                      <h2>{{ countObj?.received || 0 }}</h2>
+                      <p>Statistics</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../esign-report']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-file-text-o icon_bg_user" aria-hidden="true"></i>
+                      <h2>{{ countObj?.passed || 0 }}</h2>
+                      <p>eSign Report</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
         </div>
