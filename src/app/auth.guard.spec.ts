@@ -23,6 +23,14 @@ describe('AuthGuard', () => {
   const routerState = (url: string): RouterStateSnapshot =>
     ({ url }) as RouterStateSnapshot;
 
+  const routeSnapshotWithoutConfig = (
+    roles?: string[]
+  ): ActivatedRouteSnapshot =>
+    ({
+      routeConfig: undefined,
+      data: roles ? { roles } : {},
+    }) as ActivatedRouteSnapshot;
+
   beforeEach(() => {
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
     authService = jasmine.createSpyObj<AuthService>('AuthService', [
@@ -108,6 +116,19 @@ describe('AuthGuard', () => {
     expect(authService.destroySession).not.toHaveBeenCalled();
   });
 
+  it('should still enforce route role checks on shared utility routes', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getUserDetails.and.returnValue({ roleTypeId: 'CR' });
+
+    const canActivate = guard.canActivate(
+      routeSnapshot('view-file', ['SY']),
+      routerState('/view-file')
+    );
+
+    expect(canActivate).toBeFalse();
+    expect(authService.destroySession).toHaveBeenCalledWith('2');
+  });
+
   it('should allow common authenticated page paths by route config', () => {
     localStorage.setItem(storageKeys.accessToken, 'access-token');
 
@@ -122,6 +143,9 @@ describe('AuthGuard', () => {
         routeSnapshot('change-password'),
         routerState('/unexpected')
       )
+    ).toBeTrue();
+    expect(
+      guard.canActivate(routeSnapshot('login'), routerState('/unexpected'))
     ).toBeTrue();
   });
 
@@ -175,5 +199,85 @@ describe('AuthGuard', () => {
 
     expect(canActivate).toBeFalse();
     expect(authService.destroySession).toHaveBeenCalledWith('2');
+  });
+
+  it('should destroy session when module name is empty and route is not in shared allow list', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getModuleName.and.returnValue('');
+
+    const canActivate = guard.canActivate(
+      routeSnapshot('form-request/inbox'),
+      routerState('/creator/form-request/inbox')
+    );
+
+    expect(canActivate).toBeFalse();
+    expect(authService.destroySession).toHaveBeenCalledWith('2');
+  });
+
+  it('should handle missing route config path and still reject unauthorized routes', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getModuleName.and.returnValue('/creator');
+
+    const canActivate = guard.canActivate(
+      routeSnapshotWithoutConfig(),
+      routerState('/system-admin/manage-user')
+    );
+
+    expect(canActivate).toBeFalse();
+    expect(authService.destroySession).toHaveBeenCalledWith('2');
+  });
+
+  it('should reject missing route config when role-protected and user role mismatches', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getModuleName.and.returnValue('/creator');
+    authService.getUserDetails.and.returnValue({ roleTypeId: 'CR' });
+
+    const canActivate = guard.canActivate(
+      routeSnapshotWithoutConfig(['SY']),
+      routerState('/creator/unknown-route')
+    );
+
+    expect(canActivate).toBeFalse();
+    expect(authService.destroySession).toHaveBeenCalledWith('2');
+  });
+
+  it('should still reject when role matches but URL is outside module and allow list', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getModuleName.and.returnValue('/creator');
+    authService.getUserDetails.and.returnValue({ roleTypeId: 'CR' });
+
+    const canActivate = guard.canActivate(
+      routeSnapshot('manage-user', ['CR']),
+      routerState('/system-admin/manage-user')
+    );
+
+    expect(canActivate).toBeFalse();
+    expect(authService.destroySession).toHaveBeenCalledWith('2');
+  });
+
+  it('should allow shared utility route even when module name is empty', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getModuleName.and.returnValue('');
+
+    const canActivate = guard.canActivate(
+      routeSnapshot('view-file'),
+      routerState('/view-file')
+    );
+
+    expect(canActivate).toBeTrue();
+    expect(authService.destroySession).not.toHaveBeenCalled();
+  });
+
+  it('should allow common page route even when module name does not match', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getModuleName.and.returnValue('/approver');
+
+    const canActivate = guard.canActivate(
+      routeSnapshot('dashboard'),
+      routerState('/some-other-module/path')
+    );
+
+    expect(canActivate).toBeTrue();
+    expect(authService.destroySession).not.toHaveBeenCalled();
   });
 });

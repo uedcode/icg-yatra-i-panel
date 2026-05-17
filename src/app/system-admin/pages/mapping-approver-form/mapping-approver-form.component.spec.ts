@@ -1,7 +1,5 @@
-/* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { MappingApproverFormComponent } from './mapping-approver-form.component';
 
@@ -11,7 +9,8 @@ describe('MappingApproverFormComponent', () => {
 
   beforeEach(() => {
     return TestBed.configureTestingModule({
-      declarations: [ MappingApproverFormComponent ]
+      declarations: [MappingApproverFormComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   });
@@ -19,9 +18,19 @@ describe('MappingApproverFormComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MappingApproverFormComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should run ngOnInit without side effects', () => {
+    expect(() => component.ngOnInit()).not.toThrow();
+  });
+
+  it('should render component template shell', () => {
+    const html = fixture.nativeElement.innerHTML;
+    expect(html.trim().length).toBeGreaterThan(0);
   });
 });

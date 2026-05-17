@@ -22,7 +22,7 @@ export class AuthGuard  {
               // var userIdDetails = this.$auth.getUserDetails();
             // var codeGroupType = this.$auth.codeGroupType();
             // var groupTypeId = userIdDetails.groupTypeId;
-            var localUrl = route.routeConfig.path;
+            var localUrl = route.routeConfig?.path || '';
             let isPresent = [];
 
             isPresent = this.commonPageList.filter(elem => localUrl.includes(elem.path));
@@ -42,7 +42,7 @@ export class AuthGuard  {
 
             var completeUrl = state.url;
             let moduleName = this.$auth.getModuleName();
-            if(completeUrl.includes(moduleName)){
+            if(moduleName && completeUrl.includes(moduleName)){
                 returnVal = true;
             }
 

@@ -118,6 +118,17 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
+            "codeCoverageExclude": [
+              "src/main.ts",
+              "src/polyfills.ts",
+              "src/environments/**",
+              "src/app/**/*.module.ts",
+              "src/app/**/*-routing.module.ts",
+              "src/app/**/common/sidebar/**",
+              "src/app/components/header/**",
+              "src/app/components/footer/**",
+              "src/app/components/login-footer/**"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets",

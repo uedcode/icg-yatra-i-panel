@@ -1,7 +1,4 @@
-/* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
 
 import { ViewFileComponent } from './view-file.component';
 
@@ -19,9 +16,14 @@ describe('ViewFileComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ViewFileComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should run ngOnInit without side effects', () => {
+    expect(() => component.ngOnInit()).not.toThrow();
   });
 });

@@ -1,7 +1,5 @@
-/* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { SwitchModuleComponent } from './switch-module.component';
 
@@ -11,7 +9,8 @@ describe('SwitchModuleComponent', () => {
 
   beforeEach(() => {
     return TestBed.configureTestingModule({
-      declarations: [ SwitchModuleComponent ]
+      declarations: [SwitchModuleComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   });
@@ -19,9 +18,19 @@ describe('SwitchModuleComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SwitchModuleComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should run ngOnInit without side effects', () => {
+    expect(() => component.ngOnInit()).not.toThrow();
+  });
+
+  it('should render common switch-module container', () => {
+    const html = fixture.nativeElement.innerHTML;
+    expect(html).toContain('app-common-switch-module');
   });
 });

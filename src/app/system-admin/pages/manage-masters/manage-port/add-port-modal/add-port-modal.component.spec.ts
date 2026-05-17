@@ -1,7 +1,5 @@
-/* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { AddPortModalComponent } from './add-port-modal.component';
 
@@ -11,7 +9,8 @@ describe('AddPortModalComponent', () => {
 
   beforeEach(() => {
     return TestBed.configureTestingModule({
-      declarations: [ AddPortModalComponent ]
+      declarations: [AddPortModalComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   });
@@ -19,9 +18,19 @@ describe('AddPortModalComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AddPortModalComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should run ngOnInit without side effects', () => {
+    expect(() => component.ngOnInit()).not.toThrow();
+  });
+
+  it('should render component template shell', () => {
+    const html = fixture.nativeElement.innerHTML;
+    expect(html.trim().length).toBeGreaterThan(0);
   });
 });

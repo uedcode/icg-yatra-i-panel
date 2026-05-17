@@ -137,6 +137,22 @@ describe('SidebarComponent', () => {
     });
   });
 
+  it('sends only designation header when unit and role are missing', () => {
+    authService.getUserDetails.and.returnValue({
+      ...verifierUser,
+      unitId: null,
+      roleTypeId: null
+    } as any);
+
+    component.ngOnInit();
+
+    expect(claimService.getStatusCount).toHaveBeenCalledOnceWith({
+      headers: {
+        desigId: 'DESIG-VE1'
+      }
+    });
+  });
+
   it('hides the loader when count loading fails', () => {
     spyOn(console, 'log');
     claimService.getStatusCount.and.returnValue(
@@ -147,6 +163,30 @@ describe('SidebarComponent', () => {
 
     expect(commonService.hideLoader).toHaveBeenCalled();
     expect(component.countObj).toEqual({});
+  });
+
+  it('does not overwrite count object when API returns status false', () => {
+    component.countObj = { inbox: 99 };
+    claimService.getStatusCount.and.returnValue(
+      of({ status: false, object: { inbox: 1 } }) as any
+    );
+
+    component.getCount();
+
+    expect(component.countObj).toEqual({ inbox: 99 });
+    expect(commonService.hideLoader).toHaveBeenCalled();
+  });
+
+  it('hides loader when getStatusCount throws synchronously', () => {
+    spyOn(console, 'log');
+    claimService.getStatusCount.and.callFake(() => {
+      throw new Error('sync failure');
+    });
+
+    component.getCount();
+
+    expect(commonService.hideLoader).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalled();
   });
 
   it('shows verifier-only claim and admin workflow menus for verifier role', () => {
@@ -198,5 +238,47 @@ describe('SidebarComponent', () => {
 
     component.showHideSubMenu();
     expect(component.submenuShow).toBeFalse();
+  });
+
+  it('opens the user manual modal', () => {
+    const old$ = (window as any).$;
+    const modalSpy = jasmine.createSpy('modal');
+    (window as any).$ = () => ({ modal: modalSpy });
+
+    try {
+      component.openUserManualModal();
+      expect(modalSpy).toHaveBeenCalledOnceWith('show');
+    } finally {
+      (window as any).$ = old$;
+    }
+  });
+
+  it('binds sidebar slide click handler', () => {
+    const old$ = (window as any).$;
+    const onSpy = jasmine.createSpy('on');
+    const findParentRemove = jasmine.createSpy('removeClass');
+    const findParent = jasmine.createSpy('parent').and.returnValue({
+      removeClass: findParentRemove
+    });
+    const findSpy = jasmine.createSpy('find').and.returnValue({ parent: findParent });
+
+    (window as any).$ = (selector: any) => {
+      if (selector === '.side-menu') {
+        return { find: findSpy };
+      }
+      if (selector === "[data-toggle='slide']") {
+        return { on: onSpy };
+      }
+      return { parent: () => ({ hasClass: () => false, toggleClass: () => undefined }) };
+    };
+
+    try {
+      component.sidebarDropdown();
+      expect(onSpy).toHaveBeenCalled();
+      expect(onSpy.calls.mostRecent().args[0]).toBe('click');
+      expect(typeof onSpy.calls.mostRecent().args[1]).toBe('function');
+    } finally {
+      (window as any).$ = old$;
+    }
   });
 });

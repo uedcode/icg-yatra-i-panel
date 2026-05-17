@@ -1,14 +1,31 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { SidebarComponent } from './sidebar.component';
+import { AuthService } from 'src/app/service/auth.service';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
+  let authService: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
+    authService = jasmine.createSpyObj<AuthService>('AuthService', [
+      'closeSidebar',
+      'getUserDetails',
+      'codeRoleType'
+    ]);
+    authService.getUserDetails.and.returnValue({
+      formId: 'SYS-1',
+      unitName: 'HQ Unit',
+      roleTypeId: 'SY'
+    } as any);
+    authService.codeRoleType.and.returnValue({ systemAdmin: 'SY' } as any);
+
     await TestBed.configureTestingModule({
-      declarations: [ SidebarComponent ]
+      declarations: [SidebarComponent],
+      providers: [{ provide: AuthService, useValue: authService }],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   });
@@ -16,9 +33,70 @@ describe('SidebarComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SidebarComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should initialize user details and role code list', () => {
+    expect(authService.getUserDetails).toHaveBeenCalled();
+    expect(authService.codeRoleType).toHaveBeenCalled();
+    expect(component.userIdDetails.formId).toBe('SYS-1');
+  });
+
+  it('should render key system admin menu entries', () => {
+    const text = fixture.nativeElement.textContent.replace(/\s+/g, ' ');
+
+    expect(text).toContain('Manage System Admins');
+    expect(text).toContain('Manage Unit Admins');
+    expect(text).toContain('Manage Masters');
+    expect(text).toContain('Audit Export');
+    expect(text).toContain('Audit Import');
+    expect(text).toContain('Statistics');
+    expect(text).toContain('User Manual');
+  });
+
+  it('should open user manual modal', () => {
+    const old$ = (window as any).$;
+    const modalSpy = jasmine.createSpy('modal');
+    (window as any).$ = () => ({ modal: modalSpy });
+
+    try {
+      component.openUserManualModal();
+      expect(modalSpy).toHaveBeenCalledWith('show');
+    } finally {
+      (window as any).$ = old$;
+    }
+  });
+
+  it('should bind slide click handler in sidebarDropdown', () => {
+    const old$ = (window as any).$;
+    const onSpy = jasmine.createSpy('on');
+    const findParentRemove = jasmine.createSpy('removeClass');
+    const findParent = jasmine.createSpy('parent').and.returnValue({
+      removeClass: findParentRemove
+    });
+    const findSpy = jasmine.createSpy('find').and.returnValue({ parent: findParent });
+
+    (window as any).$ = (selector: any) => {
+      if (selector === '.side-menu') {
+        return { find: findSpy };
+      }
+      if (selector === "[data-toggle='slide']") {
+        return { on: onSpy };
+      }
+      return { parent: () => ({ hasClass: () => false, toggleClass: () => undefined }) };
+    };
+
+    try {
+      component.sidebarDropdown();
+      expect(onSpy).toHaveBeenCalled();
+      expect(onSpy.calls.mostRecent().args[0]).toBe('click');
+      expect(typeof onSpy.calls.mostRecent().args[1]).toBe('function');
+    } finally {
+      (window as any).$ = old$;
+    }
   });
 });

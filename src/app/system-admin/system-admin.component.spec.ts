@@ -16,9 +16,19 @@ describe('SystemAdminComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SystemAdminComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should run ngOnInit without side effects', () => {
+    expect(() => component.ngOnInit()).not.toThrow();
+  });
+
+  it('should render system-admin shell text', () => {
+    const text = fixture.nativeElement.textContent.replace(/\s+/g, ' ').trim();
+    expect(text).toContain('admin works!');
   });
 });

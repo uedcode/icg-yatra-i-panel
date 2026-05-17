@@ -185,7 +185,8 @@ export class LoginComponent implements OnInit {
             'danger'
           );
         } else {
-          this.$common.showMessage(err.error.error_description, 'danger');
+          const errMsg = err?.error?.error_description || 'Login failed. Please try again.';
+          this.$common.showMessage(errMsg, 'danger');
         }
       }
     );
