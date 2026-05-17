@@ -2,7 +2,12 @@
   <div class="container-fluid">
     <div class="d-flex gov-header">
       <div class="gov-header__left">
-        <a aria-label="Hide Sidebar" class="header-brand" data-toggle="sidebar" href="#">
+        <div class="dropdown side-nav">
+          <a aria-label="Toggle Sidebar" class="app-sidebar__toggle nav-link icon mt-1" data-toggle="sidebar" href="#">
+            <i class="fa fa-align-left" aria-hidden="true"></i>
+          </a>
+        </div>
+        <a aria-label="Home" class="header-brand" [routerLink]="['../dashboard']">
           <img src="assets/images/logo.png" alt="" class="logo">
         </a>
         <div class="gov-title">

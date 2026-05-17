@@ -1,0 +1,20 @@
+{
+  "/yatra-i": {
+    "target": "http://localhost:8084",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/p-api": {
+    "target": "https://icg.net.in",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/yatra-i-pilotage": {
+    "target": "https://testing.uedeveloper.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

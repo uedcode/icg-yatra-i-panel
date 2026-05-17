@@ -94,6 +94,7 @@
           "options": {
             "host": "0.0.0.0",
             "disableHostCheck": true,
+            "proxyConfig": "proxy.conf.json",
             "buildTarget": "icgpilotage:build"
           },
           "configurations": {
