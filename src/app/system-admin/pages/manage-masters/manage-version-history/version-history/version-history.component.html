@@ -6,7 +6,7 @@
     <div class="app-content">
       <div class="side-app">
         <!--Page header-->
-        <div class="page-header">
+        <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Version History</h4>
             <ol class="breadcrumb pl-0">
@@ -50,8 +50,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="table-responsive">
-                  <table id="exportData" class="table table-bordered" style="width:100%">
+                <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+                  <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
                     <thead>
                       <tr>
                         <th class="wd-5p">SL</th>
@@ -76,7 +76,7 @@
                             (click)="id=dataObj.verHisId"><i class="fa fa-trash"></i></button>
                         </td>
                       </tr>
-                      <tr *ngIf="!dataList.length" class="text-center">
+                      <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
                         <td colspan="20">No Records Available</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="dataList?.length">
@@ -99,3 +99,4 @@
 <app-add-version-history-modal [record]="dataObj" [dataList]="dataList" (setRecordData)="dataList = $event">
 </app-add-version-history-modal>
 <app-delete-modal [deleteData]="id" (deleteConfirmed)="deleteList($event)"></app-delete-modal>
+

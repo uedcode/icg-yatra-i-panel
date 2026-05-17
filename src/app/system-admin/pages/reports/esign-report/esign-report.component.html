@@ -5,7 +5,7 @@
 
     <div class="app-content">
       <div class="side-app">
-        <div class="page-header">
+        <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">eSign Report</h4>
             <ol class="breadcrumb pl-0">
@@ -47,7 +47,7 @@
             </div>
 
             <div class="table-responsive mt-3">
-              <table class="table table-bordered">
+              <table class="table table-bordered gov-table-sticky-first table-sticky-first">
                 <thead>
                   <tr>
                     <th>SL</th>
@@ -77,7 +77,7 @@
                     <td>{{ detail?.totalCda | showHypen }}</td>
                   </tr>
                   <tr *ngIf="!list?.length">
-                    <td colspan="20" class="text-center">No Records Available</td>
+                    <td colspan="20" class="text-center table-empty-state gov-table-empty-state">No Records Available</td>
                   </tr>
                   <tr class="noExl pagination_area" *ngIf="list?.length">
                     <td colspan="20">
@@ -95,4 +95,5 @@
 </div>
 
 <app-footer></app-footer>
+
 

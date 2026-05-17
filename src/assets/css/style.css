@@ -29297,3 +29297,75 @@ tr.strikeout td:before {
 .w-48 {
   width: 48% !important;
 }
+
+/* --------------------------------------------
+   Enterprise Theme Bridge (Legacy CSS Layer)
+--------------------------------------------- */
+:root {
+  --legacy-primary: #0b2a46;
+  --legacy-accent: #1c5a47;
+  --legacy-border: #d6dde6;
+}
+
+.page-title,
+h4.page-title {
+  color: var(--legacy-primary);
+  letter-spacing: 0.2px;
+}
+
+.breadcrumb-item a {
+  color: #5f7286;
+}
+
+.breadcrumb-item.active {
+  color: var(--legacy-primary);
+}
+
+.card {
+  border-color: var(--legacy-border);
+}
+
+.card-header {
+  background: linear-gradient(180deg, #f7fbff 0%, #edf3f9 100%);
+  color: var(--legacy-primary);
+}
+
+.table_main_heading {
+  background: linear-gradient(90deg, #dfeaf6, #edf4fb);
+  color: #123b61;
+  border-left: 4px solid var(--legacy-accent);
+}
+
+.actionBtnWidth .btn,
+.switch_in_table .btn {
+  min-height: 34px;
+}
+
+.counts {
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+/* .modal-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-bottom: none;
+  padding: 8px 12px;
+} */
+
+.modal-content {
+  border-radius: 10px;
+}
+
+.modal-header {
+  border-bottom: 1px solid #eee;
+}
+
+.modal-footer {
+  border-top: none;
+}
+.custom-top-modal {
+  margin-top: 50px;
+}

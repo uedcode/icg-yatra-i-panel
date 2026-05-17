@@ -5,7 +5,7 @@
     <div class="app-content">
       <div class="side-app">
         <!--Page header-->
-        <div class="page-header">
+        <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Exported Batches</h4>
             <ol class="breadcrumb pl-0">
@@ -46,8 +46,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="table-responsive">
-                  <table id="exportData" class="table table-bordered" style="width: 100%">
+                <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+                  <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width: 100%">
                     <thead>
                       <tr>
                         <th>S.No.</th>
@@ -82,7 +82,7 @@
                           </button>
                         </td>
                       </tr>
-                      <tr *ngIf="!batchList.length" class="text-center">
+                      <tr *ngIf="!batchList.length" class="text-center table-empty-state gov-table-empty-state">
                         <td colspan="20">No Records Available</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="batchList?.length">
@@ -120,7 +120,7 @@
                     </div>
 
                   </div>
-                  <div class="table-responsive">
+                  <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
                     <table class="table table-striped table-bordered table-hover">
                       <thead>
                         <tr>
@@ -151,7 +151,7 @@
                             {{ batchChildObject.formUnitDTO?.descr || "-" }}
                           </td>
                         </tr>
-                        <tr *ngIf="!batchChildList.length" class="text-center">
+                        <tr *ngIf="!batchChildList.length" class="text-center table-empty-state gov-table-empty-state">
                           <td colspan="20">No Records Available</td>
                         </tr>
                         <tr class="noExl pagination_area" *ngIf="batchChildList?.length">
@@ -174,3 +174,4 @@
   </div>
 </div>
 <app-change-batch-status [changeData]="'1'" (changeStatusConfirmed)="changeStatus($event)"></app-change-batch-status>
+

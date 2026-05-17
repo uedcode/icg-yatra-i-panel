@@ -5,7 +5,7 @@
 
     <div class="app-content">
       <div class="side-app">
-        <div class="page-header">
+        <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Manage Roles</h4>
             <ol class="breadcrumb pl-0">
@@ -153,8 +153,8 @@
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive">
-                      <table id="exportData" class="table table-bordered" style="width:100%">
+                    <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+                      <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
                         <thead>
                           <tr>
                             <th class="wd-5p">SL</th>
@@ -189,7 +189,7 @@
                                 style="width: 45px; cursor: pointer;">
                             </td>
                           </tr>
-                          <tr *ngIf="!dataList.length" class="text-center">
+                          <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
                             <td colspan="20">No Records Available</td>
                           </tr>
                           <tr class="noExl pagination_area" *ngIf="dataList?.length">
@@ -213,3 +213,4 @@
 </div>
 <app-change-status-modal [changeData]="tempObj"
   (changeStatusConfirmed)="changeStatus($event)"></app-change-status-modal>
+

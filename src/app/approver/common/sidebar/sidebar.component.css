@@ -1,1 +1,31 @@
 
+.side-menu .side-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  min-height: 40px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #cfd8e3;
+  transition: all 0.25s ease;
+}
+
+.side-menu .side-menu__item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.side-menu .side-menu__item.active,
+.side-menu .side-menu__item.current {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.side-menu .side-menu__icon {
+  width: 18px;
+  text-align: center;
+}
+
+.counts {
+  margin-left: 6px;
+}

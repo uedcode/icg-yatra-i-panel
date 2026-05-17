@@ -5,7 +5,7 @@
     <div class="app-content">
       <div class="side-app">
         <!--Page header-->
-        <div class="page-header">
+        <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Export Queue</h4>
             <ol class="breadcrumb pl-0">
@@ -54,8 +54,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="table-responsive">
-                  <table id="exportData" class="table table-bordered" style="width:100%">
+                <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+                  <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
                     <thead>
                      <tr>
 														<th>S.No.</th>
@@ -80,7 +80,7 @@
                       <td><input type="checkbox" [(ngModel)]="obj.checked"></td>
                     </tr>
 
-                    <tr *ngIf="!(filteredAdminForm?.length)" class="text-center">
+                    <tr *ngIf="!(filteredAdminForm?.length)" class="text-center table-empty-state gov-table-empty-state">
                       <td colspan="20">No Records Available</td>
                     </tr>
 
@@ -102,3 +102,4 @@
   </div>
 </div>
 <app-export-form-modal [changeData]="exportType" (changeStatusConfirmed)="createExportFinally($event)"></app-export-form-modal>
+

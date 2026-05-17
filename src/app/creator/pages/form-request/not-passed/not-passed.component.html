@@ -5,7 +5,7 @@
     <div class="app-content">
       <div class="side-app">
         <!--Page header-->
-        <div class="page-header">
+        <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Not Passed</h4>
             <ol class="breadcrumb pl-0">
@@ -28,7 +28,7 @@
         </div>
         <div class="row" *ngIf="toggleFilter == true">
           <div class="col-md-12">
-            <div class="card">
+            <div class="card filter-shell gov-filter-shell">
               <div class="card-body">
                 <form class="page_form" autocomplete="off" (ngSubmit)="requiredForm.form.valid && applyServerSearch();" #requiredForm="ngForm" novalidate>
                   <div class="row">
@@ -62,9 +62,9 @@
         </div>
         <div class="row">
           <div class="col-md-12 col-lg-12">
-            <div class="card">
+            <div class="card table-shell gov-table-shell">
               <div class="card-body">
-                <div class="row">
+                <div class="row table-toolbar gov-table-toolbar">
                   <div class="col-sm-12 col-md-6">
                     <div class="dataTables_length">
                       <label>Show</label>
@@ -88,8 +88,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="table-responsive">
-                  <table id="exportData" class="table table-bordered" style="width:100%">
+                <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+                  <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
                     <thead>
                       <tr>
                         <th class="wd-5p">S No.</th>
@@ -148,7 +148,7 @@
                         </td>
                       </tr>
 
-                      <tr *ngIf="!dataList.length" class="text-center">
+                      <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
                         <td colspan="20">No Records Available</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="dataList?.length">

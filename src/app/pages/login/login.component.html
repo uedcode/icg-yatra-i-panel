@@ -1,111 +1,114 @@
-<section class="login_sec">
-  <p class="build_no">{{buildNo}}
-    <!-- <span style="margin: 0px 8px">|</span> -->
-    <!-- <a [routerLink]="['../faq']">FAQ</a> -->
-  </p>
-  <div class="container-fluid plr_0">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="login_left_area">
-          <!-- <h1>Welcome to <span>ICG Yatra</span></h1> -->
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="login_right_area">
-          <!-- Login start -->
-          <form autocomplete="off" (ngSubmit)="loginValidation.form.valid && login()" #loginValidation="ngForm"
-            novalidate>
-            <div class="login_right_logo">
-              <img src="assets/images/logo.png" alt="">
-              <h4>Login</h4>
-            </div>
-            <div class="form-group">
-              <div>
-                <input type="text" class="form-control" [(ngModel)]="loginForm.username" name="username" type="text"
-                  #username="ngModel" placeholder="Enter Username" maxlength="70" required>
-                <i class="fa fa-envelope" aria-hidden="true"></i>
-              </div>
-              <div *ngIf="username.touched || loginValidation.submitted">
-                <div *ngIf="username.errors?.required" class="invalid-msg mb-3">Username is required
-                </div>
-              </div>
-              <!-- <div *ngIf="loginForm.username && username.invalid" class="invalid-msg"> Mobile must be
-                between 4 and 10 characters</div> -->
-            </div>
-            <div class="form-group">
-              <div>
-                <input type="password" appShowHidePassword class="form-control" placeholder="Password"
-                  [(ngModel)]="loginForm.password" name="password" type="password" #password="ngModel" minlength="4"
-                  maxlength="30" placeholder="Enter Password" required>
-              </div>
-              <div *ngIf="password.touched || loginValidation.submitted ">
-                <div *ngIf="password.errors?.required" class="invalid-msg mb-3">Password
-                  is required
-                </div>
-              </div>
-              <div *ngIf="loginForm.password && password.invalid" class="invalid-msg"> Password must be
-                between 4 and 30 characters</div>
-            </div>
-
-            <div class="form-group">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="captcha_view">
-                    <p>{{yourCaptcha}}</p>
-                    <i class="fa fa-refresh" title="Refresh" aria-hidden="true" (click)="captchaGenerate()"></i>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="captcha_form">
-                    <input type="text" class="form-control" [(ngModel)]="loginForm.captcha" name="captcha"
-                      #captcha="ngModel" maxlength="20" placeholder="Enter Captcha" (paste)="onPaste($event)" required>
-                  </div>
-                  <div *ngIf="captcha.touched || loginValidation.submitted">
-                    <div *ngIf="captcha.errors?.required" class="invalid-msg mb-3">Captcha is required</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group" *ngIf="isRecaptcha">
-              <div class="row">
-                <div class="col-md-12">
-                  <re-captcha id="recaptcha" name="recaptcha" #recaptcha="ngModel" [(ngModel)]="loginForm.captcha"
-                    required [class.is-invalid]="recaptcha.invalid && (recaptcha.dirty || recaptcha.touched)">
-                  </re-captcha>
-                  <div *ngIf="recaptcha.touched || loginValidation.submitted">
-                    <div *ngIf="recaptcha.errors?.required" class="invalid-msg mb-3">Captcha is required</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- <div class="form-group">
-              <div class="input-icon">
-                <input type="radio" class="rdobox-list" name="loginType" [(ngModel)]="loginForm.loginType" value="SMS">
-                SMS OTP
-                <input type="radio" class="rdobox-list" name="loginType" [(ngModel)]="loginForm.loginType"
-                  value="EMAIL"> EMAIL OTP
-                <input type="radio" class="rdobox-list" name="loginType" [(ngModel)]="loginForm.loginType" value="TOTP">
-                T-OTP
-              </div>
-            </div> -->
-
-            <button  type="submit" title="Submit" class="btn btn-primary btn-block" [disabled]="disableBtn">Login</button>
-            <!--<p class="login_forgot_password">
-              <span (click)="forgotPassword()">Forgot Password ?</span>
-            </p>-->
-          </form>
-          <br />
-          <br />
-          <br />
-          <!-- Login end -->
-        </div>
+<section class="login-wrap">
+  <header class="gov-header">
+    <div class="gov-header__left">
+      <img class="gov-logo" src="assets/images/logo.png" alt="Indian Coast Guard" />
+      <div class="gov-title">
+        <div class="gov-title__top">ICG Yatra</div>
+        <div class="gov-title__sub">Travel, Claim and Workflow Management System</div>
       </div>
     </div>
+    <div class="gov-header__right">
+      <span class="build_no">Build: {{buildNo}}</span>
+    </div>
+  </header>
+
+  <div class="login-main">
+    <aside class="login-visual">
+      <div class="visual-overlay"></div>
+      <div class="visual-content">
+        <h1>Welcome to <span>ICG Yatra</span></h1>
+        <p>
+          Centralized claim processing, approvals, audit history, role-based workflow and secure
+          transaction management for Indian Coast Guard.
+        </p>
+
+        <div class="visual-badges">
+          <span class="badge-pill"><i class="fa fa-shield"></i> Secure Access</span>
+          <span class="badge-pill"><i class="fa fa-sitemap"></i> Workflow Control</span>
+          <span class="badge-pill"><i class="fa fa-history"></i> Full Traceability</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="login-panel">
+      <div class="login-card">
+        <div class="login-card__head">
+          <div class="login-card__logo">
+            <img src="assets/images/logo.png" alt="ICG" />
+          </div>
+          <h4>Officer / Staff Login</h4>
+          <p class="muted">Enter your credentials to continue</p>
+        </div>
+
+        <form autocomplete="off" (ngSubmit)="loginValidation.form.valid && login()" #loginValidation="ngForm" novalidate>
+          <div class="form-group bm-field">
+            <label class="bm-label">Username</label>
+            <div class="bm-input">
+              <i class="fa fa-user"></i>
+              <input type="text" class="form-control xss-skip" [(ngModel)]="loginForm.username" name="username"
+                #username="ngModel" placeholder="Enter Username" maxlength="70" required />
+            </div>
+            <div *ngIf="username.touched || loginValidation.submitted">
+              <div *ngIf="username.errors?.required" class="invalid-msg">Username is required</div>
+            </div>
+          </div>
+
+          <div class="form-group bm-field">
+            <label class="bm-label">Password</label>
+            <div class="bm-input">
+              <i class="fa fa-lock"></i>
+              <input type="password" appShowHidePassword class="form-control xss-skip" [(ngModel)]="loginForm.password"
+                name="password" #password="ngModel" minlength="4" maxlength="30" placeholder="Enter Password" required />
+            </div>
+            <div *ngIf="password.touched || loginValidation.submitted">
+              <div *ngIf="password.errors?.required" class="invalid-msg">Password is required</div>
+            </div>
+            <div *ngIf="loginForm.password && password.invalid" class="invalid-msg">
+              Password must be between 4 and 30 characters
+            </div>
+          </div>
+
+          <div class="form-group bm-field">
+            <label class="bm-label">Captcha</label>
+            <div class="captcha-row">
+              <div class="captcha-box">
+                <span class="captcha-text">{{yourCaptcha}}</span>
+                <button type="button" class="captcha-refresh" title="Refresh" (click)="captchaGenerate()">
+                  <i class="fa fa-refresh"></i>
+                </button>
+              </div>
+
+              <div class="bm-input captcha-input">
+                <i class="fa fa-key"></i>
+                <input type="text" class="form-control xss-skip" [(ngModel)]="loginForm.captcha" name="captcha"
+                  #captcha="ngModel" maxlength="20" placeholder="Enter Captcha" (paste)="onPaste($event)" required />
+              </div>
+            </div>
+            <div *ngIf="captcha.touched || loginValidation.submitted">
+              <div *ngIf="captcha.errors?.required" class="invalid-msg">Captcha is required</div>
+            </div>
+          </div>
+
+          <div class="form-group bm-field" *ngIf="isRecaptcha">
+            <re-captcha id="recaptcha" name="recaptcha" #recaptcha="ngModel" [(ngModel)]="loginForm.captcha" required
+              [class.is-invalid]="recaptcha.invalid && (recaptcha.dirty || recaptcha.touched)">
+            </re-captcha>
+            <div *ngIf="recaptcha.touched || loginValidation.submitted">
+              <div *ngIf="recaptcha.errors?.required" class="invalid-msg">Captcha is required</div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block bm-btn" [disabled]="disableBtn">Login</button>
+        </form>
+
+        <div class="login-foot">
+          <span>© Indian Coast Guard</span>
+          <span class="dot">•</span>
+          <span>Government of India</span>
+        </div>
+      </div>
+    </main>
   </div>
 </section>
 
-<!-- <app-verify-otp-modal [record]="recordObj" (setRecordData)="mainLogin($event)"></app-verify-otp-modal> -->
-<!-- <app-verify-totp-modal [record]="recordObj" (setRecordData)="mainLogin($event)"></app-verify-totp-modal> -->
 <app-forgot-password-modal></app-forgot-password-modal>

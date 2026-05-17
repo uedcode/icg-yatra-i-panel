@@ -4,7 +4,7 @@
     <app-sidebar></app-sidebar>
     <div class="app-content">
       <div class="side-app">
-        <div class="page-header">
+        <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Archive</h4>
             <ol class="breadcrumb pl-0">
@@ -87,8 +87,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="table-responsive">
-                  <table class="table table-bordered" style="width: 100%">
+                <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+                  <table class="table table-bordered gov-table-sticky-first table-sticky-first" style="width: 100%">
                     <thead>
                       <tr>
                         <th class="wd-5p">S No.</th>
@@ -143,7 +143,7 @@
                           </button>
                         </td>
                       </tr>
-                      <tr *ngIf="!dataList.length" class="text-center">
+                      <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
                         <td colspan="20">No Records Available</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="dataList?.length">
@@ -164,3 +164,4 @@
   </div>
 </div>
 <app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>
+
