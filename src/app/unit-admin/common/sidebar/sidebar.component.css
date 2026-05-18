@@ -1,3 +1,30 @@
 .app-sidebar {
   min-height: 100%;
 }
+
+.side-menu__icon {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: inherit !important;
+}
+
+.sidebar-mini.sidenav-toggled .app-sidebar:hover .side-menu__item {
+  display: flex !important;
+}
+
+.sidebar-mini.sidenav-toggled .app-sidebar:hover .side-menu__icon {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.sidebar-mini.sidenav-toggled .app-sidebar:hover .side-menu__label {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: static !important;
+  min-width: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}

@@ -1,3 +1,69 @@
 .app-sidebar {
   min-height: 100%;
 }
+
+.side-menu__icon {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: inherit !important;
+}
+
+/* Creator dark sidebar: keep text/icons readable on dark background */
+:host ::ng-deep .app-sidebar .side-menu__item {
+  color: #dfe8ff !important;
+}
+
+:host ::ng-deep .app-sidebar .side-menu__item .side-menu__icon,
+:host ::ng-deep .app-sidebar .side-menu__item .side-menu__label {
+  color: #dfe8ff !important;
+}
+
+:host ::ng-deep .app-sidebar .side-menu__item:hover,
+:host ::ng-deep .app-sidebar .side-menu__item:focus {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .app-sidebar .side-menu__item:hover .side-menu__icon,
+:host ::ng-deep .app-sidebar .side-menu__item:hover .side-menu__label,
+:host ::ng-deep .app-sidebar .side-menu__item:focus .side-menu__icon,
+:host ::ng-deep .app-sidebar .side-menu__item:focus .side-menu__label {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .app-sidebar .side-menu__item.active,
+:host ::ng-deep .app-sidebar .side-menu__item.current {
+  background: #ffffff !important;
+  color: #1e4fa8 !important;
+}
+
+:host ::ng-deep .app-sidebar .side-menu__item.active .side-menu__icon,
+:host ::ng-deep .app-sidebar .side-menu__item.active .side-menu__label,
+:host ::ng-deep .app-sidebar .side-menu__item.current .side-menu__icon,
+:host ::ng-deep .app-sidebar .side-menu__item.current .side-menu__label {
+  color: #1e4fa8 !important;
+}
+
+/* Mini sidebar hover: keep icons/labels visible for all items */
+.sidebar-mini.sidenav-toggled .app-sidebar:hover .side-menu__item {
+  display: flex !important;
+  color: #dfe8ff !important;
+}
+
+.sidebar-mini.sidenav-toggled .app-sidebar:hover .side-menu__icon {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #dfe8ff !important;
+}
+
+.sidebar-mini.sidenav-toggled .app-sidebar:hover .side-menu__label {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #dfe8ff !important;
+  position: static !important;
+  min-width: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}

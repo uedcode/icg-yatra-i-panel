@@ -79,7 +79,7 @@ export class NewComponent implements OnInit {
   getForm() {
     try {
       this.$common.showLoader();
-      const activeFormId = this.userIdDetails?.formId || 'PIL';
+      const activeFormId = this.userIdDetails?.formId;
       this.config = {
         headers: {
           formId: activeFormId

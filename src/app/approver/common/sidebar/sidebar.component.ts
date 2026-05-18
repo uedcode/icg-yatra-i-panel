@@ -1,5 +1,5 @@
 import { AuthService } from 'src/app/service/auth.service';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/common.service';
 import { ClaimService } from 'src/app/service/claim.service';
 
@@ -11,7 +11,7 @@ declare var $: any;
     styleUrls: ['./sidebar.component.css'],
     standalone: false
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   submenuShow: boolean = false;
   constructor(public $auth: AuthService, private $common: CommonService, private $claim: ClaimService) { }
 
@@ -24,7 +24,14 @@ export class SidebarComponent implements OnInit {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeRoleList = this.$auth.codeRoleType();
     this.getCount();
+  }
+
+  ngAfterViewInit(): void {
     this.sidebarDropdown();
+  }
+
+  ngOnDestroy(): void {
+    $(document).off('click.approverSidebar', "[data-toggle='slide']");
   }
 
   getCount() {
@@ -59,9 +66,10 @@ export class SidebarComponent implements OnInit {
   }
 
   sidebarDropdown() {
-    var slideMenu = $('.side-menu');
-    $("[data-toggle='slide']").on('click', function (event) {
+    $(document).off('click.approverSidebar', "[data-toggle='slide']");
+    $(document).on('click.approverSidebar', "[data-toggle='slide']", function (event) {
       event.preventDefault();
+      const slideMenu = $('.side-menu');
       if (!$(this).parent().hasClass('is-expanded')) {
         slideMenu
           .find("[data-toggle='slide']")

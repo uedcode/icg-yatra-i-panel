@@ -1,5 +1,5 @@
 import { AuthService } from 'src/app/service/auth.service';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 
 declare var $: any;
 
@@ -9,7 +9,7 @@ declare var $: any;
     styleUrls: ['./sidebar.component.css'],
     standalone: false
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(public $auth: AuthService) { }
 
@@ -17,16 +17,23 @@ export class SidebarComponent implements OnInit {
     
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeRoleList = this.$auth.codeRoleType();
+  }
+  ngAfterViewInit(): void {
     this.sidebarDropdown();
+  }
+
+  ngOnDestroy(): void {
+    $(document).off('click.systemAdminSidebar', "[data-toggle='slide']");
   }
 
   userIdDetails;
   codeRoleList;
 
   sidebarDropdown() {
-    var slideMenu = $('.side-menu');
-    $("[data-toggle='slide']").on('click', function (event) {
+    $(document).off('click.systemAdminSidebar', "[data-toggle='slide']");
+    $(document).on('click.systemAdminSidebar', "[data-toggle='slide']", function (event) {
       event.preventDefault();
+      const slideMenu = $('.side-menu');
       if (!$(this).parent().hasClass('is-expanded')) {
         slideMenu.find("[data-toggle='slide']").parent().removeClass('is-expanded');
       }
