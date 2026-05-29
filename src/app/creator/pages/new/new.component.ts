@@ -79,7 +79,9 @@ export class NewComponent implements OnInit {
   getForm() {
     try {
       this.$common.showLoader();
-      const activeFormId = this.userIdDetails?.formId;
+      // Legacy flow used codeForm.advVoucher / codeForm.claimForm (ADV/CLM),
+      // not user profile formId. Runtime module id maps to the same values.
+      const activeFormId = this.$auth.getRuntimeModuleId();
       this.config = {
         headers: {
           formId: activeFormId
@@ -144,6 +146,3 @@ export class NewComponent implements OnInit {
   }
   // data shorting end
 }
-
-
-

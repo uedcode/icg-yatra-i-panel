@@ -16,14 +16,7 @@ declare var $: any;
 export class AuthService {
   getUserId: any;
   private readonly storageKeys = environment.authConfig.storageKeys;
-  private readonly legacyStorageKeys = {
-    accessToken: 'pilotageAccessToken',
-    refreshToken: 'pilotageRefreshToken',
-    expiresIn: 'pilotageExpiresIn',
-    accessCount: 'pilotageAccessCount',
-    userDetails: 'pilotageUserDetails',
-    deviceId: 'pilotageDeviceId',
-  };
+  private readonly moduleStorageKeys = environment.authConfig.moduleStorageKeys || {};
   constructor(
     private http: HttpClient,
     private route: Router,
@@ -34,6 +27,46 @@ export class AuthService {
   ) {}
 
   config;
+
+  private getScopedStorageKeys(moduleId?: RuntimeModuleId): any {
+    const activeModule = moduleId || this.getRuntimeModuleId();
+    return this.moduleStorageKeys?.[activeModule] || {};
+  }
+
+  private setWithScopedKey(baseKeyName: string, value: string): void {
+    const scoped = this.getScopedStorageKeys();
+    const baseKey = this.storageKeys?.[baseKeyName];
+    const scopedKey = scoped?.[baseKeyName];
+    if (scopedKey) {
+      localStorage.setItem(scopedKey, value);
+      return;
+    }
+    if (baseKey) {
+      localStorage.setItem(baseKey, value);
+    }
+  }
+
+  private getWithScopedKey(baseKeyName: string): string {
+    const scoped = this.getScopedStorageKeys();
+    const baseKey = this.storageKeys?.[baseKeyName];
+    const scopedKey = scoped?.[baseKeyName];
+    if (scopedKey) {
+      return localStorage.getItem(scopedKey) || '';
+    }
+    return (baseKey ? localStorage.getItem(baseKey) : null) || '';
+  }
+
+  private setModuleCompatKeys(moduleId: RuntimeModuleId, keyType: 'AccessToken' | 'RefreshToken' | 'ExpiresIn', value: string): void {
+    const upperModule = String(moduleId || '').toUpperCase();
+    const suffix = upperModule === 'CLM' ? 'Clm' : 'Adv';
+    const otherSuffix = suffix === 'Adv' ? 'Clm' : 'Adv';
+    const baseKey = `yatInt${keyType}`;
+    const activeKey = `yatInt${keyType}${suffix}`;
+    const inactiveKey = `yatInt${keyType}${otherSuffix}`;
+    localStorage.setItem(baseKey, value);
+    localStorage.setItem(activeKey, value);
+    localStorage.removeItem(inactiveKey);
+  }
 
   getRuntimeModuleId(pathname?: string): RuntimeModuleId {
     return this.runtimeModuleService.getModuleId(pathname);
@@ -192,49 +225,66 @@ export class AuthService {
 
   createSession(data, redirectType) {
     // this.updateUserToken(data);
-
+    const payload = data?.object ? data.object : data;
+    const activeModule = this.getRuntimeModuleId();
     let moduleUrlOld = this.getModuleName();
-    localStorage.setItem(this.storageKeys.accessToken, data.access_token);
-    localStorage.setItem(this.storageKeys.refreshToken, data.refresh_token);
-    localStorage.setItem(this.storageKeys.expiresIn, data.expires_in);
-    localStorage.setItem(this.legacyStorageKeys.accessToken, data.access_token);
-    localStorage.setItem(this.legacyStorageKeys.refreshToken, data.refresh_token);
-    localStorage.setItem(this.legacyStorageKeys.expiresIn, data.expires_in);
+    const previousUser = this.getUserDetails() || {};
+    const accessToken =
+      payload?.access_token ??
+      payload?.accessToken ??
+      this.getAccessToken();
+    const refreshToken =
+      payload?.refresh_token ??
+      payload?.refreshToken ??
+      this.getRefreshToken();
+    const expiresIn =
+      payload?.expires_in ??
+      payload?.expiresIn ??
+      localStorage.getItem(this.storageKeys.expiresIn) ??
+      '';
+
+    if (accessToken) {
+      this.setWithScopedKey('accessToken', accessToken);
+      this.setModuleCompatKeys(activeModule, 'AccessToken', accessToken);
+    }
+    if (refreshToken) {
+      this.setWithScopedKey('refreshToken', refreshToken);
+      this.setModuleCompatKeys(activeModule, 'RefreshToken', refreshToken);
+    }
+    if (expiresIn !== null && expiresIn !== undefined) {
+      const expiresInText = String(expiresIn);
+      this.setWithScopedKey('expiresIn', expiresInText);
+      this.setModuleCompatKeys(activeModule, 'ExpiresIn', expiresInText);
+    }
     // if (isLogin) {
     localStorage.setItem(this.storageKeys.isDashboard, '1');
-    localStorage.setItem(this.storageKeys.accessCount, '0');
-    localStorage.setItem(this.legacyStorageKeys.accessCount, '0');
+    this.setWithScopedKey('accessCount', '0');
     // }
 
     let accessData = {
-      userId: data.userId,
-      unitId: data.unitId,
-      unitName: data.unitName,
-      roleId: data.roleId,
-      roleTypeId: data.roleTypeId,
-      desigId: data.desigId,
-      roleName: data.roleName,
-      personName: data.personName,
-      formId: data.formId,
-      moduleId: data.moduleId,
-      formName: data.formName,
-      cadre: data.cadre,
-      isSign: data.isSign,
+      userId: payload?.userId ?? previousUser?.userId,
+      unitId: payload?.unitId ?? previousUser?.unitId,
+      unitName: payload?.unitName ?? previousUser?.unitName,
+      roleId: payload?.roleId ?? previousUser?.roleId,
+      roleTypeId: payload?.roleTypeId ?? previousUser?.roleTypeId,
+      desigId: payload?.desigId ?? previousUser?.desigId,
+      roleName: payload?.roleName ?? previousUser?.roleName,
+      personName: payload?.personName ?? previousUser?.personName,
+      formId: payload?.formId ?? previousUser?.formId,
+      moduleId: payload?.moduleId ?? previousUser?.moduleId,
+      formName: payload?.formName ?? previousUser?.formName,
+      cadre: payload?.cadre ?? previousUser?.cadre,
+      isSign: payload?.isSign ?? previousUser?.isSign,
       // "sessionTime": data.sessionTime,
       // "permissionChangeDt": data.permissionChangeDt,
-      userPermission: '',
+      userPermission: previousUser?.userPermission
+        ? JSON.stringify(previousUser.userPermission)
+        : '',
     };
 
     let userDetailsArray = [];
     userDetailsArray.push(accessData);
-    localStorage.setItem(
-      this.storageKeys.userDetails,
-      JSON.stringify(userDetailsArray)
-    );
-    localStorage.setItem(
-      this.legacyStorageKeys.userDetails,
-      JSON.stringify(userDetailsArray)
-    );
+    this.setWithScopedKey('userDetails', JSON.stringify(userDetailsArray));
     if (redirectType) {
       let moduleUrl = this.getModuleName();
       if (redirectType == 'NONE') {
@@ -274,12 +324,25 @@ export class AuthService {
     localStorage.removeItem(this.storageKeys.accessCount);
     localStorage.removeItem(this.storageKeys.userDetails);
     localStorage.removeItem(this.storageKeys.deviceId);
-    localStorage.removeItem(this.legacyStorageKeys.accessToken);
-    localStorage.removeItem(this.legacyStorageKeys.refreshToken);
-    localStorage.removeItem(this.legacyStorageKeys.expiresIn);
-    localStorage.removeItem(this.legacyStorageKeys.accessCount);
-    localStorage.removeItem(this.legacyStorageKeys.userDetails);
-    localStorage.removeItem(this.legacyStorageKeys.deviceId);
+    const advKeys = this.getScopedStorageKeys('ADV');
+    const clmKeys = this.getScopedStorageKeys('CLM');
+    [advKeys, clmKeys].forEach((keys) => {
+      if (!keys) return;
+      ['accessToken', 'refreshToken', 'expiresIn', 'accessCount', 'userDetails', 'deviceId'].forEach((k) => {
+        if (keys[k]) {
+          localStorage.removeItem(keys[k]);
+        }
+      });
+    });
+    localStorage.removeItem('yatIntAccessToken');
+    localStorage.removeItem('yatIntRefreshToken');
+    localStorage.removeItem('yatIntExpiresIn');
+    localStorage.removeItem('yatIntAccessTokenAdv');
+    localStorage.removeItem('yatIntRefreshTokenAdv');
+    localStorage.removeItem('yatIntExpiresInAdv');
+    localStorage.removeItem('yatIntAccessTokenClm');
+    localStorage.removeItem('yatIntRefreshTokenClm');
+    localStorage.removeItem('yatIntExpiresInClm');
     setTimeout(() => {
       this.$common.hideLoader();
       location.href = 'login';
@@ -295,40 +358,40 @@ export class AuthService {
   }
 
   getAccessToken() {
-    return (
-      localStorage.getItem(this.storageKeys.accessToken) ||
-      localStorage.getItem(this.legacyStorageKeys.accessToken) ||
-      ''
-    );
+    return this.getWithScopedKey('accessToken') || '';
   }
 
   getRefreshToken() {
-    return (
-      localStorage.getItem(this.storageKeys.refreshToken) ||
-      localStorage.getItem(this.legacyStorageKeys.refreshToken) ||
-      ''
-    );
+    return this.getWithScopedKey('refreshToken') || '';
   }
 
   getDeviceFingerprint() {
-    return (
-      localStorage.getItem(this.storageKeys.deviceId) ||
-      localStorage.getItem(this.legacyStorageKeys.deviceId) ||
-      ''
-    );
+    return this.getWithScopedKey('deviceId') || '';
   }
 
   getUserDetails() {
-    const userDetailsText =
-      localStorage.getItem(this.storageKeys.userDetails) ||
-      localStorage.getItem(this.legacyStorageKeys.userDetails);
-    if (userDetailsText === null) {
+    const userDetailsText = this.getWithScopedKey('userDetails');
+    if (!userDetailsText || !userDetailsText.trim()) {
       return null;
     }
-    let userDetailsArray = JSON.parse(userDetailsText);
+    let userDetailsArray: any[] = [];
+    try {
+      userDetailsArray = JSON.parse(userDetailsText);
+    } catch (error) {
+      console.warn('Invalid userDetails JSON in storage. Clearing session cache key.', error);
+      this.setWithScopedKey('userDetails', '');
+      return null;
+    }
+    if (!Array.isArray(userDetailsArray) || userDetailsArray.length === 0) {
+      return null;
+    }
     let userDetails = userDetailsArray[userDetailsArray.length - 1];
-    if (userDetails?.userPermission) {
-      userDetails.userPermission = JSON.parse(userDetails.userPermission);
+    if (userDetails?.userPermission && typeof userDetails.userPermission === 'string') {
+      try {
+        userDetails.userPermission = JSON.parse(userDetails.userPermission);
+      } catch {
+        userDetails.userPermission = {};
+      }
     }
     return userDetails;
   }

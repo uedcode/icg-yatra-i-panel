@@ -11,6 +11,7 @@ export const environment = {
   ipChecker: "https://whatismyip.monstrkart.com/index.php",
   recaptcha: {
     isEnabled: false,
+    textCaptchaEnabled: true,
     siteKey: '6LcWzLIkAAAAABYAhcISETEWai7sTdufc9nZQ6bW',
   },
   authConfig: {
@@ -23,6 +24,24 @@ export const environment = {
       userDetails: 'yatraUserDetails',
       deviceId: 'yatraDeviceId',
       isDashboard: 'isDashboard',
+    },
+    moduleStorageKeys: {
+      ADV: {
+        accessToken: 'yatraAccessTokenAdv',
+        refreshToken: 'yatraRefreshTokenAdv',
+        expiresIn: 'yatraExpiresInAdv',
+        accessCount: 'yatraAccessCountAdv',
+        userDetails: 'yatraUserDetailsAdv',
+        deviceId: 'yatraDeviceIdAdv',
+      },
+      CLM: {
+        accessToken: 'yatraAccessTokenClm',
+        refreshToken: 'yatraRefreshTokenClm',
+        expiresIn: 'yatraExpiresInClm',
+        accessCount: 'yatraAccessCountClm',
+        userDetails: 'yatraUserDetailsClm',
+        deviceId: 'yatraDeviceIdClm',
+      },
     },
   },
   esignConfig: {

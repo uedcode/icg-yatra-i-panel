@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
 
   disableBtn: boolean = false;
   isRecaptcha = environment.recaptcha.isEnabled;
+  isTextCaptcha = environment.recaptcha.textCaptchaEnabled ?? true;
   config;
   userIdDetails;
   buildNo = environment.appConfig.buildNo;
@@ -44,7 +45,9 @@ export class LoginComponent implements OnInit {
       this.userIdDetails = this.$auth.getUserDetails();
     }, 1000);
     this.checkSession();
-    this.captchaGenerate();
+    if (this.isTextCaptcha) {
+      this.captchaGenerate();
+    }
   }
 
   response
@@ -57,7 +60,7 @@ export class LoginComponent implements OnInit {
     //   this.sendOtp();
     // }
 
-    if (this.yourCaptcha != this.loginForm?.captcha) {
+    if (this.isTextCaptcha && this.yourCaptcha != this.loginForm?.captcha) {
       this.captchaGenerate();
       return this.$common.showMessage("Please enter a valid captcha", 'danger');
     }
@@ -74,7 +77,7 @@ export class LoginComponent implements OnInit {
 
   async sendOtp() {
     try {
-      if (this.yourCaptcha != this.loginForm?.captcha) {
+      if (this.isTextCaptcha && this.yourCaptcha != this.loginForm?.captcha) {
         this.captchaGenerate();
         return this.$common.showMessage("Please enter a valid captcha", 'danger');
       }

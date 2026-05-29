@@ -44,9 +44,7 @@ export class HeaderComponent implements OnInit {
       if (this.userIdDetails?.roleId) {
         this.config.headers.roleId = this.userIdDetails?.roleId;
       }
-      if (this.userIdDetails?.formId) {
-        this.config.headers.formId = this.userIdDetails?.formId;
-      }
+      this.config.headers.moduleId = this.$auth.getRuntimeModuleId();
       this.$user.roles(this.config).subscribe((response: any) => {
         this.$common.hideLoader();
         if (response.status === true) {
@@ -73,6 +71,7 @@ export class HeaderComponent implements OnInit {
       this.$common.showLoader();
       const designation = dataObj?.aclCodeDesignationDTO;
       const roleType = dataObj?.aclCodeRoleTypeDTO;
+      const resolvedRoleTypeId = roleType?.roleTypeId || roleType?.id;
       this.config = {
         headers: {
           moduleId: this.$auth.getRuntimeModuleId()
@@ -82,8 +81,8 @@ export class HeaderComponent implements OnInit {
       if (designation?.id) {
         this.config.headers.desigId = designation.id;
       }
-      if (roleType?.id) {
-        this.config.headers.roleTypeId= roleType.id;
+      if (resolvedRoleTypeId) {
+        this.config.headers.roleTypeId = resolvedRoleTypeId;
       }
       // if (dataObj?.userGroupDTO?.id) {
       //   this.config.headers.userGroupId = dataObj?.userGroupDTO?.id;

@@ -30,6 +30,7 @@ export class ForgotPasswordModalComponent implements OnInit {
   passwordObj: any = {};
   otp;
   isRecaptcha = environment.recaptcha.isEnabled;
+  isTextCaptcha = environment.recaptcha.textCaptchaEnabled ?? true;
   
   showEnterPno: boolean = true;
   showEnterOtp: boolean = false;
@@ -37,7 +38,9 @@ export class ForgotPasswordModalComponent implements OnInit {
 
   timeInt;
   ngOnInit() {
-    this.captchaGenerate();
+    if (this.isTextCaptcha) {
+      this.captchaGenerate();
+    }
     this.initialStrongPassword();
   }
 
@@ -62,11 +65,11 @@ export class ForgotPasswordModalComponent implements OnInit {
   async forgotPassword() {
     // return this.resetPasswordObj={otp:12345}
     try {
-      if (this.yourCaptcha != this.formObj?.captcha) {
+      if (this.isTextCaptcha && this.yourCaptcha != this.formObj?.captcha) {
         this.captchaGenerate();
         return this.$common.showMessage("Please enter a valid captcha", 'danger');
       }
-      const recaptchaToken = this.formObj?.captcha;
+      const recaptchaToken = this.formObj?.captcha || '';
       if (this.isRecaptcha && recaptchaToken?.length === 0) {
         return this.$common.showMessage("Please enter a valid captcha", 'danger');
       }
@@ -120,7 +123,7 @@ export class ForgotPasswordModalComponent implements OnInit {
       if (this.otp.length != 4) {
         return this.$common.showMessage('Please enter correct OTP', "danger");
       }
-      const recaptchaToken = this.passwordObj?.captcha;
+      const recaptchaToken = this.passwordObj?.captcha || '';
       if (this.isRecaptcha && recaptchaToken?.length === 0) {
         return this.$common.showMessage("Please enter a valid captcha", 'danger');
       }

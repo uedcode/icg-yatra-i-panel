@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
-import { environment } from 'src/environments/environment';
 import { RuntimeModuleId } from './service/runtime-module.service';
 
 @Injectable()
@@ -9,16 +8,11 @@ export class AuthGuard  {
 
     constructor(private router: Router, public $auth: AuthService) { }
     dashboardObj: any;
-    private readonly storageKeys = environment.authConfig.storageKeys;
-    private readonly legacyAccessTokenKey = 'pilotageAccessToken';
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 
         var returnVal = false;
-        const hasToken = !!(
-            localStorage.getItem(this.storageKeys.accessToken) ||
-            localStorage.getItem(this.legacyAccessTokenKey)
-        );
+        const hasToken = !!this.$auth.getAccessToken();
         if (hasToken) {
               // var userIdDetails = this.$auth.getUserDetails();
             // var codeGroupType = this.$auth.codeGroupType();

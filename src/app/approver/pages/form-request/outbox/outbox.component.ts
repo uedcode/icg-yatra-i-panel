@@ -84,7 +84,7 @@ export class OutboxComponent implements OnInit {
       this.$common.showLoader();
       this.config = {
         headers: {
-          formId: this.userIdDetails?.formId,
+          formId: this.$auth.getRuntimeModuleId(),
         },
       };
       this.$codeSubForm.get(this.config).subscribe(

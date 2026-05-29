@@ -1,56 +1,68 @@
-<div class="page-header gov-page-toolbar">
-  <h4 class="page-title">Pay Details</h4>
-</div>
+<div class="page">
+  <div class="page-main">
+    <app-header></app-header>
+    <app-sidebar></app-sidebar>
 
-<div class="card">
-  <div class="card-body">
-    <div class="row">
-      <div class="col-md-4 mb-3">
-        <label>PNO</label>
-        <input type="text" class="form-control" [(ngModel)]="claims.pno" name="pno" />
-      </div>
-      <div class="col-md-4 mb-3">
-        <label>Name</label>
-        <input type="text" class="form-control" [(ngModel)]="claims.name" name="name" />
-      </div>
-      <div class="col-md-4 mb-3">
-        <label>Rank</label>
-        <input type="text" class="form-control" [(ngModel)]="claims.rank" name="rank" />
-      </div>
-      <div class="col-md-4 mb-3">
-        <label>From Date <span class="text-danger">*</span></label>
-        <input type="date" class="form-control" [(ngModel)]="claims.fromDt" name="fromDt" />
-      </div>
-      <div class="col-md-4 mb-3">
-        <label>To Date</label>
-        <input type="date" class="form-control" [(ngModel)]="claims.toDt" name="toDt" />
-      </div>
-      <div class="col-md-4 mb-3">
-        <label>Type</label>
-        <select class="form-control" [(ngModel)]="claims.type" name="type" (change)="setDocName(claims.type)">
-          <option value="">Select</option>
-          <option value="On Increment">On Increment</option>
-          <option value="On Promotion">On Promotion</option>
-        </select>
-      </div>
-      <div class="col-md-4 mb-3">
-        <label>Document Name</label>
-        <input type="text" class="form-control" [(ngModel)]="claims.docName" name="docName" />
-      </div>
-      <div class="col-md-8 mb-3">
-        <label>Upload Document</label>
-        <input type="file" class="form-control" (change)="onDocFileChange($event)" />
-      </div>
-      <div class="col-md-12 mb-3">
-        <label>Remark</label>
-        <textarea class="form-control" rows="3" [(ngModel)]="claims.remark" name="remark"></textarea>
+    <div class="app-content">
+      <div class="side-app">
+        <div class="page-header gov-page-toolbar">
+          <h4 class="page-title">Pay Details</h4>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label>PNO</label>
+                <input type="text" class="form-control" [(ngModel)]="claims.pno" name="pno" />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label>Name</label>
+                <input type="text" class="form-control" [(ngModel)]="claims.name" name="name" />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label>Rank</label>
+                <input type="text" class="form-control" [(ngModel)]="claims.rank" name="rank" />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label>From Date <span class="text-danger">*</span></label>
+                <input type="date" class="form-control" [(ngModel)]="claims.fromDt" name="fromDt" />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label>To Date</label>
+                <input type="date" class="form-control" [(ngModel)]="claims.toDt" name="toDt" />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label>Type</label>
+                <select class="form-control" [(ngModel)]="claims.type" name="type" (change)="setDocName(claims.type)">
+                  <option value="">Select</option>
+                  <option value="On Increment">On Increment</option>
+                  <option value="On Promotion">On Promotion</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label>Document Name</label>
+                <input type="text" class="form-control" [(ngModel)]="claims.docName" name="docName" />
+              </div>
+              <div class="col-md-8 mb-3">
+                <label>Upload Document</label>
+                <input type="file" class="form-control" (change)="onDocFileChange($event)" />
+              </div>
+              <div class="col-md-12 mb-3">
+                <label>Remark</label>
+                <textarea class="form-control" rows="3" [(ngModel)]="claims.remark" name="remark"></textarea>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary" [disabled]="submitBtn" (click)="submit()">Submit</button>
+              <button class="btn btn-info" type="button" (click)="openPreview()">Preview</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="d-flex gap-2">
-      <button class="btn btn-primary" [disabled]="submitBtn" (click)="submit()">Submit</button>
-      <button class="btn btn-info" type="button" (click)="openPreview()">Preview</button>
-    </div>
+    <app-footer></app-footer>
   </div>
 </div>
 
