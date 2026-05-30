@@ -25,3 +25,4 @@ describe('CommonLtcDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

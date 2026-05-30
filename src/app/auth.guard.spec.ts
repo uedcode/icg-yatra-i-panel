@@ -297,3 +297,4 @@ describe('AuthGuard', () => {
     expect(authService.destroySession).not.toHaveBeenCalled();
   });
 });
+

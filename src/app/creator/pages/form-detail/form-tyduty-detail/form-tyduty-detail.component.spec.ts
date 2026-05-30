@@ -61,3 +61,4 @@ describe('FormTydutyDetailComponent', () => {
     expect(component.location.back).toHaveBeenCalled();
   });
 });
+

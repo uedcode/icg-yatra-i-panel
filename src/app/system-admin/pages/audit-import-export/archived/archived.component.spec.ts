@@ -36,3 +36,4 @@ describe('ArchivedComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

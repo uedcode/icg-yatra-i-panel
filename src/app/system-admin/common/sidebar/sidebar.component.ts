@@ -4,7 +4,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 declare var $: any;
 
 @Component({
-    selector: 'app-sidebar',
+    selector: 'app-system-admin-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.css'],
     standalone: false

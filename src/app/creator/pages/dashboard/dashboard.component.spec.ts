@@ -61,3 +61,4 @@ describe('DashboardComponent', () => {
     expect(claimService.getStatusCount).toHaveBeenCalled();
   });
 });
+

@@ -36,3 +36,4 @@ describe('ImportedComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

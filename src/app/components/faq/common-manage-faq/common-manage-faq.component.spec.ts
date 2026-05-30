@@ -33,3 +33,4 @@ describe('CommonManageFaqComponent', () => {
     expect(fixture.nativeElement.innerHTML.trim().length).toBeGreaterThan(0);
   });
 });
+

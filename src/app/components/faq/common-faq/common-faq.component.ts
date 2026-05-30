@@ -75,3 +75,4 @@ export class CommonFaqComponent implements OnInit {
   }
 
 }
+

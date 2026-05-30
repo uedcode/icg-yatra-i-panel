@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "icgpilotage": {
+    "yatra": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -14,7 +14,7 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": {
-              "base": "dist/icgpilotage"
+              "base": "dist/yatra"
             },
             "index": "src/index.html",
             "polyfills": [
@@ -101,27 +101,27 @@
             "host": "0.0.0.0",
             "disableHostCheck": true,
             "proxyConfig": "proxy.conf.json",
-            "buildTarget": "icgpilotage:build"
+            "buildTarget": "yatra:build"
           },
           "configurations": {
             "advlocal": {
-              "buildTarget": "icgpilotage:build:advlocal"
+              "buildTarget": "yatra:build:advlocal"
             },
             "claimlocal": {
-              "buildTarget": "icgpilotage:build:claimlocal"
+              "buildTarget": "yatra:build:claimlocal"
             },
             "production": {
-              "buildTarget": "icgpilotage:build:production"
+              "buildTarget": "yatra:build:production"
             },
             "staging": {
-              "buildTarget": "icgpilotage:build:staging"
+              "buildTarget": "yatra:build:staging"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "icgpilotage:build"
+            "buildTarget": "yatra:build"
           }
         },
         "test": {
@@ -161,11 +161,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "icgpilotage:serve"
+            "devServerTarget": "yatra:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "icgpilotage:serve:production"
+              "devServerTarget": "yatra:serve:production"
             }
           }
         }

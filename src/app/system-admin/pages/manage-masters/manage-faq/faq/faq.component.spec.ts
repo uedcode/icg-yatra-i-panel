@@ -36,3 +36,4 @@ describe('FaqComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

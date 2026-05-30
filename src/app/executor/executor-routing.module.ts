@@ -14,6 +14,11 @@ const routes: Routes = [
   {
     path: '',
     component: ExecutorComponent,
+    children: [
+  {
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
   },
   {
     path: 'dashboard',
@@ -140,6 +145,12 @@ const routes: Routes = [
     component: ClaimPreviewComponent,
     canActivate: [AuthGuard],
     data: { title: 'Resettlement Claim Preview', roles: EXECUTOR_ROLES },
+  },
+  {
+    path: '**',
+    redirectTo: 'dashboard',
+  },
+    ],
   },
 ];
 

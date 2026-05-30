@@ -87,3 +87,4 @@ export class AuthTokenService {
         localStorage.removeItem(this.REFRESH_TOKEN);
     }
 }
+

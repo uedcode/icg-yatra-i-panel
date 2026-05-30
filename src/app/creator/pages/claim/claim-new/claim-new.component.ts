@@ -109,3 +109,4 @@ export class ClaimNewComponent implements OnInit {
     return null;
   }
 }
+

@@ -33,3 +33,4 @@ describe('ViewRemarkModalComponent', () => {
     expect(fixture.nativeElement.innerHTML.trim().length).toBeGreaterThan(0);
   });
 });
+

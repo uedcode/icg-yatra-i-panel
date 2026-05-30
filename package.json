@@ -1,19 +1,19 @@
 {
-  "name": "icgpilotage",
+  "name": "yatra",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:adv": "ng serve -c advlocal --port 4200 --serve-path /adv/",
-    "start:claim": "ng serve -c claimlocal --port 4201 --serve-path /claim/",
+    "start:adv": "ng serve -c advlocal --port 4205 --serve-path /adv/",
+    "start:claim": "ng serve -c claimlocal --port 4206 --serve-path /claim/",
     "build": "ng build",
     "build:adv": "ng build --base-href /adv/",
     "build:claim": "ng build --base-href /claim/",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "start:staging": "ng serve -c=staging --port=4201",
-    "start:prod": "ng serve -c=production --port=4202"
+    "start:staging": "ng serve -c=staging --port=4205",
+    "start:prod": "ng serve -c=production --port=4206"
   },
   "private": true,
   "dependencies": {

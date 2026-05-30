@@ -68,3 +68,4 @@ export class SearchByPnoComponent implements OnInit {
     return 'form-claim-detail';
   }
 }
+

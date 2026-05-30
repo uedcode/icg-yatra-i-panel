@@ -97,3 +97,4 @@ export class FormFteDetailComponent implements OnInit {
     return 'F';
   }
 }
+

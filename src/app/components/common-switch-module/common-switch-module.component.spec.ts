@@ -93,3 +93,4 @@ describe('CommonSwitchModuleComponent', () => {
     expect(console.log).toHaveBeenCalled();
   });
 });
+

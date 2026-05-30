@@ -79,3 +79,4 @@ describe('CommonDocumentDetailComponent', () => {
     expect(authService.viewFile).toHaveBeenCalledOnceWith('/docs/bill.pdf');
   });
 });
+

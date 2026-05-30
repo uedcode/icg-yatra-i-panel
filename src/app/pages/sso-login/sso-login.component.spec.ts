@@ -160,3 +160,4 @@ describe('SsoLoginComponent', () => {
     expect(router.navigateByUrl).not.toHaveBeenCalled();
   });
 });
+

@@ -63,3 +63,4 @@ export class PayOutboxComponent implements OnInit {
     this.$common.download(docUrl);
   }
 }
+

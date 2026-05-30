@@ -16,3 +16,4 @@ export class YesNoPipe implements PipeTransform {
     }
   }
 }
+

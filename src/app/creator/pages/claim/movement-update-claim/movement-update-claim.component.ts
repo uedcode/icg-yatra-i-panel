@@ -795,3 +795,4 @@ export class MovementUpdateClaimComponent implements OnInit {
     return Number.isFinite(num) ? num : null;
   }
 }
+

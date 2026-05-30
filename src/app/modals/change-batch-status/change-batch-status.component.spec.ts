@@ -34,3 +34,4 @@ describe('ChangeBatchStatusComponent', () => {
     expect(html.trim().length).toBeGreaterThan(0);
   });
 });
+

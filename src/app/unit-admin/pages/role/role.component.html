@@ -1,11 +1,4 @@
-<div class="page">
-  <div class="page-main">
-    <app-header></app-header>
-    <app-sidebar></app-sidebar>
-
-    <div class="app-content">
-      <div class="side-app">
-        <!--Page header-->
+<!--Page header-->
         <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Manage Role</h4>
@@ -189,16 +182,10 @@
                       </table>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <app-footer></app-footer>
-      </div>
-    </div>
-  </div>
-</div>
-<app-change-status-modal [changeData]="tempObj"
+                </div><app-change-status-modal [changeData]="tempObj"
   (changeStatusConfirmed)="changeStatus($event)"></app-change-status-modal>
+
+
+
+
 

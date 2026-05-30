@@ -1,10 +1,4 @@
-<div class="page">
-  <div class="page-main">
-    <app-header></app-header>
-    <app-sidebar></app-sidebar>
-    <div class="app-content">
-      <div class="side-app" *ngIf="formObj">
-        <div class="page-header gov-page-toolbar">
+<div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Claim Detail</h4>
           </div>
@@ -664,13 +658,10 @@
                   <td colspan="4" class="text-center">No workflow history available.</td>
                 </tr>
               </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>
-    <app-footer></app-footer>
+            </table><app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>
   </div>
 </div>
+
+
+
 

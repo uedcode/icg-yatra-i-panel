@@ -36,3 +36,4 @@ describe('ReturnedComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

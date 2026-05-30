@@ -36,3 +36,4 @@ describe('NotPassedComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

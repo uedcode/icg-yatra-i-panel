@@ -53,3 +53,4 @@ describe('DashboardComponent', () => {
     expect(authService.getUserDetails).toHaveBeenCalled();
   });
 });
+

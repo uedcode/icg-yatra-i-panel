@@ -37,3 +37,4 @@ describe('ChangePasswordComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

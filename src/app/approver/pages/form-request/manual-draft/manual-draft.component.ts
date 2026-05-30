@@ -137,3 +137,4 @@ export class ManualDraftComponent implements OnInit {
     }
   }
 }
+

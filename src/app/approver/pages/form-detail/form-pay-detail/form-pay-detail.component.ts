@@ -170,3 +170,4 @@ export class FormPayDetailComponent implements OnInit {
     return '';
   }
 }
+

@@ -154,3 +154,4 @@ export class AddFaqModalComponent implements OnInit {
   }
 
 }
+

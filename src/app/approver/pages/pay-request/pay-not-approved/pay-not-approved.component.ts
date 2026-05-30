@@ -66,3 +66,4 @@ export class PayNotApprovedComponent implements OnInit {
     this.$common.download(docUrl);
   }
 }
+

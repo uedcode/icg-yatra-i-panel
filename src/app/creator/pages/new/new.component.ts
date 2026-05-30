@@ -146,3 +146,4 @@ export class NewComponent implements OnInit {
   }
   // data shorting end
 }
+

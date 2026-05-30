@@ -163,3 +163,4 @@ export class ReportTyDutyComponent implements OnInit {
     return dataObj?.id;
   }
 }
+

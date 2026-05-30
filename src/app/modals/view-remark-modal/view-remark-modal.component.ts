@@ -29,3 +29,4 @@ export class ViewRemarkModalComponent implements OnInit {
     }
   }
 }
+

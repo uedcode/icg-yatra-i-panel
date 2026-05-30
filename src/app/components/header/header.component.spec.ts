@@ -108,3 +108,4 @@ describe('HeaderComponent', () => {
     expect(component.getRoleId({ id: 'ROW-3' })).toBe('ROW-3');
   });
 });
+

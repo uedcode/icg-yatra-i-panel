@@ -230,3 +230,4 @@ export class OutboxComponent implements OnInit {
     this.reverse = !this.reverse;
   }
 }
+

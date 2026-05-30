@@ -36,3 +36,4 @@ describe('MappingUnitComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

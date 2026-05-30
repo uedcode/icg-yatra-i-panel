@@ -33,3 +33,4 @@ describe('CommonNewDeviceComponent', () => {
     expect(() => component.submit()).not.toThrow();
   });
 });
+

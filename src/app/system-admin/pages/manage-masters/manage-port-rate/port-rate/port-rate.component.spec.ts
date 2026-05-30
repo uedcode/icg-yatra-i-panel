@@ -25,3 +25,4 @@ describe('PortRateComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

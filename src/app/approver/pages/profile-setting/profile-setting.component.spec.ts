@@ -36,3 +36,4 @@ describe('ProfileSettingComponent', () => {
     expect(html).toContain('app-common-profile-setting');
   });
 });
+

@@ -15,3 +15,4 @@ export class ShowNamePipe implements PipeTransform {
         return '-';
     }
 }
+

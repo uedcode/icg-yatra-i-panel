@@ -25,3 +25,4 @@ describe('RedirectComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

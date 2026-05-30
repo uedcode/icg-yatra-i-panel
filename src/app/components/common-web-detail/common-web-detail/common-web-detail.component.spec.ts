@@ -25,3 +25,4 @@ describe('CommonWebDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

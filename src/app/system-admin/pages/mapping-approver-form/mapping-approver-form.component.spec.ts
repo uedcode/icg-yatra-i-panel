@@ -34,3 +34,4 @@ describe('MappingApproverFormComponent', () => {
     expect(html.trim().length).toBeGreaterThan(0);
   });
 });
+

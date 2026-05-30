@@ -6,7 +6,7 @@ import { ClaimService } from 'src/app/service/claim.service';
 declare var $: any;
 
 @Component({
-    selector: 'app-sidebar',
+    selector: 'app-creator-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.css'],
     standalone: false

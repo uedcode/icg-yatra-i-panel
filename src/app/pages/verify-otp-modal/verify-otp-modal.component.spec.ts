@@ -91,3 +91,4 @@ describe('VerifyOtpModalComponent', () => {
     expect(component.closeModal).toHaveBeenCalled();
   });
 });
+

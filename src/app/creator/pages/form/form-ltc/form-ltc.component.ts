@@ -1243,3 +1243,4 @@ export class FormLtcAdvanceComponent implements OnInit {
     return this.activeFormKind === 'claim' ? 'LTC claim' : 'LTC advance';
   }
 }
+

@@ -34,3 +34,4 @@ describe('WebDetailComponent', () => {
     expect(html).toContain('app-common-web-detail');
   });
 });
+

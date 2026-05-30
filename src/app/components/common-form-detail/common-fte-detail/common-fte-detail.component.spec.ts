@@ -25,3 +25,4 @@ describe('CommonFteDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

@@ -110,3 +110,4 @@ export class ArchiveComponent implements OnInit {
     return dataObj?.roleId || dataObj?.id;
   }
 }
+

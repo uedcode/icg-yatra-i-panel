@@ -34,3 +34,4 @@ describe('SwitchModuleExternalComponent', () => {
     expect(html).toContain('app-common-switch-module');
   });
 });
+

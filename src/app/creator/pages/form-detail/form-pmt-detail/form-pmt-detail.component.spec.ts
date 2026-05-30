@@ -79,3 +79,4 @@ describe('FormPmtDetailComponent', () => {
     expect(component.location.back).toHaveBeenCalled();
   });
 });
+

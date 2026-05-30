@@ -220,3 +220,4 @@ export class ManageApproverComponent implements OnInit {
   }
   // Strong password validation end
 }
+

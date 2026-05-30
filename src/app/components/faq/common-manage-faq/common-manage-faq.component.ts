@@ -115,3 +115,4 @@ export class CommonManageFaqComponent implements OnInit {
   }
 
 }
+

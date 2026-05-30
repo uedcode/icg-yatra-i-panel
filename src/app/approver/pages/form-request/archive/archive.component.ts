@@ -141,3 +141,4 @@ export class ArchiveComponent implements OnInit {
     return path === 'archive' ? 'Archive' : 'Claim Archive';
   }
 }
+

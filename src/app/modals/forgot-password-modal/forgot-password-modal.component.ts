@@ -334,3 +334,4 @@ export class ForgotPasswordModalComponent implements OnInit {
   }
 
 }
+

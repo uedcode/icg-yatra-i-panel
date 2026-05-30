@@ -198,3 +198,4 @@ export class CommonRedirectComponent implements OnInit {
   }
 
 }
+

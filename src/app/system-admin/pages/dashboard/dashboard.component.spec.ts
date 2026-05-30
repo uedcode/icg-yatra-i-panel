@@ -51,3 +51,4 @@ describe('DashboardComponent', () => {
     expect(commonService.hideLoader).toHaveBeenCalled();
   });
 });
+

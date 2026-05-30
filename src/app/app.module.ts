@@ -92,3 +92,4 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         provideHttpClient(withInterceptorsFromDi())
     ] })
 export class AppModule { }
+

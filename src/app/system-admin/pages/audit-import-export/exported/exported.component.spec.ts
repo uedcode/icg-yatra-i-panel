@@ -36,3 +36,4 @@ describe('ExportedComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

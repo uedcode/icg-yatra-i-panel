@@ -27,3 +27,4 @@ describe('ViewFileComponent', () => {
     expect(() => component.ngOnInit()).not.toThrow();
   });
 });
+

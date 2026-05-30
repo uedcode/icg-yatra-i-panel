@@ -167,3 +167,4 @@ describe('SidebarComponent', () => {
     expect(component.submenuShow).toBeFalse();
   });
 });
+

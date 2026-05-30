@@ -25,3 +25,4 @@ describe('CommonChangePasswordComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

@@ -46,6 +46,11 @@ const routes: Routes = [
   {
     path: '',
     component: SystemAdminComponent,
+    children: [
+  {
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
   },
   {
     path: 'dashboard',
@@ -251,6 +256,11 @@ const routes: Routes = [
     data: { title: 'Audit Import Queue', roles: SYSTEM_ADMIN_ROLES },
   },
   {
+    path: 'hrcdf-import',
+    redirectTo: 'import',
+    pathMatch: 'full',
+  },
+  {
     path: 'backup-Import',
     component: ImportComponent,
     canActivate: [AuthGuard],
@@ -303,6 +313,12 @@ const routes: Routes = [
     component: StatisticsComponent,
     canActivate: [AuthGuard],
     data: { title: 'Statistics', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
+    path: '**',
+    redirectTo: 'dashboard',
+  },
+    ],
   },
 ];
 

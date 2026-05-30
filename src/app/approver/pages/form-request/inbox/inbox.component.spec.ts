@@ -36,3 +36,4 @@ describe('InboxComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

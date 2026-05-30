@@ -25,3 +25,4 @@ describe('CommonUserManualModalComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

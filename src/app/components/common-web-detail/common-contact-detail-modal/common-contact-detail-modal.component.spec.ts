@@ -25,3 +25,4 @@ describe('CommonContactDetailModalComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

@@ -36,3 +36,4 @@ describe('ShipComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

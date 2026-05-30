@@ -62,3 +62,4 @@ export class CommonEsignComponent implements OnInit {
     this.router.navigateByUrl(moduleUrl ? `${moduleUrl}/new` : '/login');
   }
 }
+

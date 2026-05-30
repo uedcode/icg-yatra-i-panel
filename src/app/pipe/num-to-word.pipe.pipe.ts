@@ -15,3 +15,4 @@ export class NumToWordPipe implements PipeTransform {
     return this.words[idx] ?? '';
   }
 }
+

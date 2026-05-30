@@ -20,6 +20,7 @@ import { AdminRoutingModule } from './system-admin-routing.module';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ChangePasswordComponent } from './pages/change-password/change-password.component';
 import { SidebarComponent } from './common/sidebar/sidebar.component';
+import { SystemAdminComponent } from './system-admin.component';
 
 import { ManageSystemAdminComponent } from './pages/manage-user/manage-system-admin/manage-system-admin.component';
 import { ManageUnitAdminComponent } from './pages/manage-user/manage-unit-admin/manage-unit-admin.component';
@@ -71,6 +72,7 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
 
 @NgModule({ declarations: [
         SidebarComponent,
+        SystemAdminComponent,
         DashboardComponent,
         ChangePasswordComponent,
         ManageSystemAdminComponent,

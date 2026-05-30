@@ -154,3 +154,4 @@ export class VerifyOtpModalComponent implements OnInit {
   }
 
 }
+

@@ -101,3 +101,4 @@ describe('PreviewDetailsComponent', () => {
     expect(component.location.back.calls.count() + closeSpy.calls.count()).toBeGreaterThan(0);
   });
 });
+

@@ -33,3 +33,4 @@ describe('FooterComponent', () => {
     expect(text).toContain('ICG Yatra');
   });
 });
+

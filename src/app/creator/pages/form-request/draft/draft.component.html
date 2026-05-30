@@ -1,11 +1,4 @@
-
-<div class="page">
-  <div class="page-main">
-    <app-header></app-header>
-    <app-sidebar></app-sidebar>
-    <div class="app-content">
-      <div class="side-app">
-        <!--Page header-->
+<!--Page header-->
         <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Draft</h4>
@@ -155,14 +148,11 @@
                   </table>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <app-footer></app-footer>
-    <app-delete-modal [deleteData]="id" (deleteConfirmed)="deleteRow($event)"></app-delete-modal>
+            </div><app-delete-modal [deleteData]="id" (deleteConfirmed)="deleteRow($event)"></app-delete-modal>
     <!-- <app-add-mapping-unit></app-add-mapping-unit> -->
   </div>
 </div>
+
+
+
 

@@ -113,3 +113,4 @@ describe('NewDeviceComponent', () => {
     expect(console.log).toHaveBeenCalled();
   });
 });
+

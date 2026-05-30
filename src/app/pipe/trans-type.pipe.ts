@@ -23,3 +23,4 @@ export class TransTypePipe implements PipeTransform {
     }
   }
 }
+

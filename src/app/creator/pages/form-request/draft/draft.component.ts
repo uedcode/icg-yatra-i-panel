@@ -228,3 +228,4 @@ export class DraftComponent implements OnInit {
     this.rowId = data?.yatClaimDTO?.claimId || data?.claimId || null;
   }
 }
+

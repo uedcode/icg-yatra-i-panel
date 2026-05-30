@@ -25,3 +25,4 @@ describe('CommonTydutyDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

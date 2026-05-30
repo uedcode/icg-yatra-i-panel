@@ -36,3 +36,4 @@ describe('DocumentsComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

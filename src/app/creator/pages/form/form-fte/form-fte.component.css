@@ -168,3 +168,4 @@ form.ng-submitted ngx-select.ng-invalid .ngx-select__toggle {
 ngx-select.ng-invalid.ng-touched .ngx-select__toggle {
   border: 1px solid #ff0000 !important;
 }
+

@@ -779,3 +779,4 @@ export class AuthService {
     return `<br> <b>(${operationType} - ${operationTime} Hrs)</b>`;
   }
 }
+

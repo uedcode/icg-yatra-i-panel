@@ -1,10 +1,4 @@
-<div class="page">
-  <div class="page-main">
-    <app-header></app-header>
-    <app-sidebar></app-sidebar>
-    <div class="app-content">
-      <div class="side-app">
-        <!--Page header-->
+<!--Page header-->
         <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Ships</h4>
@@ -101,16 +95,8 @@
                       </td>
                     </tr>
                   </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<app-footer></app-footer>
-<app-add-ship-modal [record]="dataObj" [dataList]="dataList" (setRecordData)="dataList = $event">
+                </table><app-add-ship-modal [record]="dataObj" [dataList]="dataList" (setRecordData)="dataList = $event">
 </app-add-ship-modal>
 <app-delete-modal [deleteData]="id" (deleteConfirmed)="deleteList($event)"></app-delete-modal>
+
+

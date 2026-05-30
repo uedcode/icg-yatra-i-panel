@@ -36,3 +36,4 @@ describe('OutboxComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

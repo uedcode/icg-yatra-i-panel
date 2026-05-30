@@ -25,3 +25,4 @@ describe('CommonAddFaqModalComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

@@ -69,3 +69,4 @@ export class PayInboxComponent implements OnInit {
     this.$auth.viewFile(docUrl);
   }
 }
+

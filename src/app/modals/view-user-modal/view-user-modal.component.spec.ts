@@ -33,3 +33,4 @@ describe('ViewUserModalComponent', () => {
     expect(fixture.nativeElement.innerHTML.trim().length).toBeGreaterThan(0);
   });
 });
+

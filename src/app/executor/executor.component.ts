@@ -2,7 +2,20 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-executor',
-  template: '<router-outlet></router-outlet>',
+  template: `
+    <div class="page">
+      <div class="page-main">
+        <app-header></app-header>
+        <app-executor-sidebar></app-executor-sidebar>
+        <div class="app-content">
+          <div class="side-app">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+        <app-footer></app-footer>
+      </div>
+    </div>
+  `,
   standalone: false,
 })
 export class ExecutorComponent {}

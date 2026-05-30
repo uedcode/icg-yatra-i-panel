@@ -36,3 +36,4 @@ describe('VersionHistoryComponent', () => {
     expect(html).toContain('app-footer');
   });
 });
+

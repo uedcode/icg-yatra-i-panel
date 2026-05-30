@@ -84,6 +84,7 @@ const routes: Routes = [
   { path: 'creator', loadChildren: () => import('./creator/creator.module').then(m => m.CreatorModule) },
   { path: 'approver', loadChildren: () => import('./approver/approver.module').then(m => m.ApproverModule) },
   { path: 'executor', loadChildren: () => import('./executor/executor.module').then(m => m.ExecutorModule) },
+  { path: '**', redirectTo: 'login' },
 ];
 
 @NgModule({
@@ -92,3 +93,4 @@ const routes: Routes = [
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppRoutingModule { }
+

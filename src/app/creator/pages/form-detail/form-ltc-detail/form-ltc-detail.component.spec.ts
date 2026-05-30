@@ -62,3 +62,4 @@ describe('FormLtcDetailComponent', () => {
     expect(component.location.back).toHaveBeenCalled();
   });
 });
+

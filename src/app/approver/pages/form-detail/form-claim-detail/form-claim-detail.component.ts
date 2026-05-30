@@ -696,3 +696,4 @@ export class FormClaimDetailComponent implements OnInit {
     return id;
   }
 }
+

@@ -124,3 +124,4 @@ export class FormPmtDetailComponent implements OnInit {
     return this.previewKind === 'claim' ? 'PMT claim preview' : 'PMT preview';
   }
 }
+

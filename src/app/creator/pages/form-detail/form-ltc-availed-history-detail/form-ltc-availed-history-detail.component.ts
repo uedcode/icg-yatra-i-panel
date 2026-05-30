@@ -70,3 +70,4 @@ export class FormLtcAvailedHistoryDetailComponent implements OnInit {
   }
 }
 
+

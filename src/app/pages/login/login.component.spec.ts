@@ -445,3 +445,4 @@ describe('LoginComponent', () => {
     expect(() => component.onPaste(event)).not.toThrow();
   });
 });
+
