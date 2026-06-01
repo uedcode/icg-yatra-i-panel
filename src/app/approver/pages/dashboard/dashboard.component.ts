@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { CommonService } from 'src/app/service/common.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import { buildLegacyStateCountHeaders } from 'src/app/shared/utils/legacy-api.util';
+import { normalizeSidebarCounts } from 'src/app/shared/utils/sidebar-count.util';
 
 declare var $: any;
 @Component({
@@ -83,23 +85,12 @@ export class DashboardComponent implements OnInit {
 
             this.$common.showLoader();
             this.config = {
-                headers: {
-                    desigId: this.userIdDetails?.desigId
-                }
-            }
-            if (this.userIdDetails?.unitId) {
-                this.config.headers.unitId = this.userIdDetails?.unitId;
-            }
-            if (this.userIdDetails?.roleTypeId) {
-                this.config.headers.roleTypeId = this.userIdDetails?.roleTypeId;
-            }
-            if (this.userIdDetails?.roleTypeId == this.codeRoleList?.creator) {
-                this.config.headers.userId = this.userIdDetails?.userId;
+                headers: buildLegacyStateCountHeaders(this.userIdDetails, this.codeRoleList)
             }
             this.$claim.getStatusCount(this.config).subscribe((response: any) => {
                 this.$common.hideLoader();
                 if (response.status === true) {
-                    this.countObj = response.object;
+                    this.countObj = normalizeSidebarCounts(response.object);
                 }
             }, err => {
                 this.$common.hideLoader();

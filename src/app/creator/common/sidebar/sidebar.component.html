@@ -8,6 +8,7 @@
       <div class="user-info">
         <h6 class="mb-1 text-dark">{{ userIdDetails?.formId }}</h6>
         <h6 class="mb-1 text-dark">{{ userIdDetails?.unitName }}</h6>
+        <h6 class="mb-1 text-dark">Module: {{ runtimeModuleLabel }}</h6>
       </div>
     </div>
   </div>
@@ -86,42 +87,42 @@
       </a>
     </li>
     <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['inbox']">
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['claim/inbox']">
         <i class="side-menu__icon fa fa-inbox"></i><span class="side-menu__label">Inbox <span *ngIf="countObj?.inboxClaim > 0" class="counts">{{ countObj?.inboxClaim }}</span></span>
       </a>
     </li>
     <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['outbox']">
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['claim/outbox']">
         <i class="side-menu__icon fa fa-reply-all"></i><span class="side-menu__label">Outbox <span *ngIf="countObj?.outboxClaim > 0" class="counts">{{ countObj?.outboxClaim }}</span></span>
       </a>
     </li>
     <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['draft']">
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['claim/draft']">
         <i class="side-menu__icon fa fa-file"></i><span class="side-menu__label">Draft <span *ngIf="countObj?.draftClaim > 0" class="counts">{{ countObj?.draftClaim }}</span></span>
       </a>
     </li>
     <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['approved']">
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['claim/approved']">
         <i class="side-menu__icon fa fa-check-square"></i><span class="side-menu__label">Approved <span *ngIf="countObj?.approvedClaim > 0" class="counts">{{ countObj?.approvedClaim }}</span></span>
       </a>
     </li>
     <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['rejected']">
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['claim/not-approved']">
         <i class="side-menu__icon fa fa-times-circle"></i><span class="side-menu__label">Not Approved <span *ngIf="countObj?.notApprovedClaim > 0" class="counts">{{ countObj?.notApprovedClaim }}</span></span>
       </a>
     </li>
     <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['passed']">
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['claim/passed']">
         <i class="side-menu__icon fa fa-check"></i><span class="side-menu__label">Passed <span *ngIf="countObj?.passedClaim > 0" class="counts">{{ countObj?.passedClaim }}</span></span>
       </a>
     </li>
     <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['not-passed']">
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['claim/not-passed']">
         <i class="side-menu__icon fa fa-times"></i><span class="side-menu__label">Not Passed <span *ngIf="countObj?.notPassedClaim > 0" class="counts">{{ countObj?.notPassedClaim }}</span></span>
       </a>
     </li>
     <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['archive']">
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['claim/archive']">
         <i class="side-menu__icon fa fa-archive"></i><span class="side-menu__label">Archive <span *ngIf="countObj?.archiveClaim > 0" class="counts">{{ countObj?.archiveClaim }}</span></span>
       </a>
     </li>

@@ -265,6 +265,8 @@ export class AuthService {
       userId: payload?.userId ?? previousUser?.userId,
       unitId: payload?.unitId ?? previousUser?.unitId,
       unitName: payload?.unitName ?? previousUser?.unitName,
+      gxUnitId: payload?.gxUnitId ?? previousUser?.gxUnitId,
+      gxUnitName: payload?.gxUnitName ?? previousUser?.gxUnitName,
       roleId: payload?.roleId ?? previousUser?.roleId,
       roleTypeId: payload?.roleTypeId ?? previousUser?.roleTypeId,
       desigId: payload?.desigId ?? previousUser?.desigId,

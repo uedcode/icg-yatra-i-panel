@@ -1,0 +1,106 @@
+﻿<!--Page header-->
+        <div class="page-header gov-page-toolbar">
+          <div class="page-leftheader">
+            <h4 class="page-title">{{ pageTitle }}</h4>
+            <ol class="breadcrumb pl-0">
+              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">{{ pageTitle }}</li>
+            </ol>
+          </div>
+          <div>
+            <div>
+              <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
+                  class="fa fa-chevron-left" style="display: inline-block;"></i></button>
+            </div>
+
+            <!-- <div class="breadcrumb_right">
+              <button  type="submit" title="Submit" class="btn btn-dark"  (click)="openAddMapping()">+</button>
+            </div> -->
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-12 col-md-6">
+                    <div class="dataTables_length">
+                      <label>Show</label>
+                      <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
+                        (ngModelChange)="p=1">
+                        <option value="10">10</option>
+                        <!-- <option value="25">25</option> -->
+                        <!-- <option value="50">50</option> -->
+                        <option value="100">100</option>
+                        <option value="100000">All</option>
+                      </select>
+                      <label>entries</label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-12 col-md-3 offset-3">
+                    <div class="dataTables_filter"  title="Search">
+                      <i class="fa fa-search"></i>
+                      <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
+                        [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+                  <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
+                    <thead>
+                      <tr>
+                        <th class="wd-5p">S No.</th>
+                        <th class="wd-20p">Claim ID<i class="fa fa-sort" (click)="sort('customId')"></i></th>
+                        <th class="wd-20p">Claim Type<i class="fa fa-sort" (click)="sort('customId')"></i></th>
+                        <th class="wd-20p">Unit<i class="fa fa-sort" (click)="sort('unit')"></i></th>
+                        <th class="wd-20p">PNO/Name/Rank <i class="fa fa-sort" (click)="sort('fullDescr')"></i></th>
+                        <th class="wd-20p">Claim Remark<i class="fa fa-sort" (click)="sort('remarks')"></i></th>
+                        <th class="wd-20p">View History</th>
+                        <th class="wd-15p">Created On <i class="fa fa-sort" (click)="sort('createdOn')"></i></th>
+                        <th class="wd-15p">Updated On <i class="fa fa-sort" (click)="sort('updatedOn')"></i></th>
+                        <th class="actionBtnWidth">Action </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
+                        <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.claimId || dataObj?.customId || dataObj?.claimId || dataObj?.formId) | showHypen}} </td>
+                        <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.formName) | showHypen}} </td>
+                        <td>{{(dataObj?.yatClaimDTO?.codeUnitDTO?.descr || dataObj?.yatClaimDTO?.codeUnitDTO?.unit || dataObj?.unit) | showHypen}}</td>
+                        <td>{{(dataObj?.fullName || dataObj?.yatClaimDTO?.remark || dataObj?.fullDescr) | showHypen}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.remark || dataObj?.remarks) | showHypen}}</td>
+                         <td>
+                            <button class="btn btn-warning" title="View History" data-target="#viewHistoryModal"
+                              (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">View History</button>
+                          </td>
+                        <td>{{(dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:"medium"}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.updatedOn || dataObj?.updatedOn) | showDate:"medium"}}</td>
+                        <td class="switch_in_table">
+                          <button class="btn btn-warning" title="View Claim" (click)="viewForm(dataObj)"><i
+                              class="fa fa-eye"></i></button>
+                        </td>
+                      </tr>
+
+                      <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
+                        <td colspan="20">No Records Available</td>
+                      </tr>
+                      <tr class="noExl pagination_area" *ngIf="dataList?.length">
+                        <td colspan="20">
+                          <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>
+
+
+
+
+

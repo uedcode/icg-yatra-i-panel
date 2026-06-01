@@ -21,6 +21,7 @@ export class ReturnedComponent implements OnInit {
   codeStatus;
   userIdDetails: any;
   queueState = '';
+  queueModule: 'ADV' | 'CLM' = 'ADV';
 
   constructor(
     private location: Location,
@@ -47,6 +48,8 @@ export class ReturnedComponent implements OnInit {
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
+    const routeData = this.route.snapshot?.data || {};
+    this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
     this.queueState = this.getQueueState();
     this.getState();
   }
@@ -64,6 +67,7 @@ export class ReturnedComponent implements OnInit {
         unitId: this.userIdDetails?.unitId,
         gxUnitId: this.userIdDetails?.unitId,
         claimState: this.queueState,
+        formId: this.resolveQueueFormId(),
       },
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
@@ -106,10 +110,15 @@ export class ReturnedComponent implements OnInit {
   }
 
   private getQueueState(): string {
-    const routePath = this.route.snapshot.routeConfig?.path || '';
-    return routePath === 'not-approved'
+    const routeData = this.route.snapshot?.data || {};
+    const queueState = (routeData['queueState'] || '').toString().toUpperCase();
+    return queueState === 'NA'
       ? this.codeStatus?.notApproved || 'NA'
       : this.codeStatus?.rejected;
+  }
+
+  private resolveQueueFormId(): string {
+    return this.queueModule === 'CLM' ? 'CLM' : 'ADV';
   }
 
 }

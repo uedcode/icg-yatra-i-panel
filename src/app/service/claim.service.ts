@@ -33,7 +33,7 @@ export class ClaimService {
     const options: any =
       config && config.headers ? { headers: config.headers } : {};
 
-    return this.http.post<any>('claim/createOrUpdate', object, options).pipe(
+    return this.http.post<any>('claim/createOrUpdateClaim', object, options).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -82,7 +82,7 @@ export class ClaimService {
    * Old JS: $http.get(url + "/getSingleClaim", config)
    */
   getSingleClaim(config: any) {
-    return this.http.get<any>(`claim/single`, config).pipe(
+    return this.http.get<any>(`claim/getSingleClaim`, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -189,7 +189,7 @@ export class ClaimService {
   }
 
   createOrUpdateClaimFormData(formData: FormData) {
-    return this.http.post<any>('claim/createOrUpdate', formData).pipe(
+    return this.http.post<any>('claim/createOrUpdateClaim', formData).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -613,10 +613,10 @@ export class ClaimService {
 
   /**
    * Get status count (dashboard tiles etc.).
-   * Old JS equivalent: claim/getStatusCount
+   * Legacy parity: claimState/stateCount
    */
   getStatusCount(config: any) {
-    return this.http.get<any>(`claim/getStatusCount`, config).pipe(
+    return this.http.get<any>(`claimState/stateCount`, config).pipe(
       map((res) => {
         this.$common.parseResponse(res);
         return res;

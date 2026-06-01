@@ -1,13 +1,14 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/service/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormManageService } from 'src/app/service/formManage.service';
 import { FormStateService } from 'src/app/service/formState.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
 @Component({
@@ -28,6 +29,7 @@ export class NotPassedComponent implements OnInit {
     public $formState: FormStateService,
     private $claim: ClaimService,
     private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -45,28 +47,30 @@ export class NotPassedComponent implements OnInit {
   resubmitLoadingMap: { [key: string]: boolean } = {};
   saveAsDraftLoadingMap: { [key: string]: boolean } = {};
   archiveLoadingMap: { [key: string]: boolean } = {};
+  readonly moduleType: 'ADV' = 'ADV';
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
-    this.getState();
+this.getState();
   }
-
-  filterDataObj;
+filterDataObj;
   getState() {
     const searchHeaders = this.getLegacySearchHeaders();
+    const formId = this.moduleType;
     const config = {
-      headers: {
+      headers: buildLegacyClaimStateHeaders({
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
         gxUnitId: this.userIdDetails?.unitId,
         claimState: this.codeStatus?.notPassed,
         isArchive: '0',
-        formId: searchHeaders.formId,
+        formId,
+        searchFormId: searchHeaders.formId,
         pno: searchHeaders.pno,
         searchedName: searchHeaders.searchedName,
-      },
+      }),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
@@ -380,4 +384,5 @@ export class NotPassedComponent implements OnInit {
   }
 
 }
+
 

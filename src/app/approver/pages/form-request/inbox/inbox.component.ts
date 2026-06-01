@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormService } from 'src/app/service/form.service';
 import { FormManageService } from 'src/app/service/formManage.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
 @Component({
@@ -41,10 +42,13 @@ export class InboxComponent implements OnInit {
   formObj: any = {};
   noOfPage: any = 10;
   p: any = 1;
+  queueModule: 'ADV' | 'CLM' = 'ADV';
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
+    const routeData = this.route.snapshot?.data || {};
+    this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
     this.handleEsignFeedback();
     this.getState();
   }
@@ -91,14 +95,13 @@ export class InboxComponent implements OnInit {
 
   filterDataObj;
   getState() {
+    const codeRoleList = this.$auth.codeRoleType();
     const config = {
-      headers: {
-        roleTypeId: this.userIdDetails?.roleTypeId,
-        userId: this.userIdDetails?.userId,
-        unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+      headers: buildLegacyClaimStateHeaders({
+        ...this.userIdDetails,
         claimState: this.codeStatus?.inbox,
-      },
+        formId: this.resolveQueueFormId(),
+      }, codeRoleList),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
@@ -139,6 +142,9 @@ export class InboxComponent implements OnInit {
     this.key = key;
     this.reverse = !this.reverse;
   }
-  
+
+  private resolveQueueFormId(): string {
+    return this.queueModule === 'CLM' ? 'CLM' : 'ADV';
+  }
 }
 

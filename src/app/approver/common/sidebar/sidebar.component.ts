@@ -2,6 +2,12 @@ import { AuthService } from 'src/app/service/auth.service';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/common.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import {
+  DEFAULT_SIDEBAR_COUNTS,
+  normalizeSidebarCounts,
+  SidebarCounts,
+} from 'src/app/shared/utils/sidebar-count.util';
+import { buildLegacyStateCountHeaders } from 'src/app/shared/utils/legacy-api.util';
 
 declare var $: any;
 
@@ -18,7 +24,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   userIdDetails;
   codeRoleList;
   config;
-  countObj: any = {};
+  countObj: SidebarCounts = { ...DEFAULT_SIDEBAR_COUNTS };
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
@@ -38,23 +44,12 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     try {
       this.$common.showLoader();
       this.config = {
-        headers: {
-          desigId: this.userIdDetails?.desigId
-        }
-      }
-      if (this.userIdDetails?.unitId) {
-        this.config.headers.unitId = this.userIdDetails?.unitId;
-      }
-      if (this.userIdDetails?.roleTypeId) {
-        this.config.headers.roleTypeId = this.userIdDetails?.roleTypeId;
-      }
-      if (this.userIdDetails?.roleTypeId == this.codeRoleList?.creator) {
-        this.config.headers.userId = this.userIdDetails?.userId;
+        headers: buildLegacyStateCountHeaders(this.userIdDetails, this.codeRoleList)
       }
       this.$claim.getStatusCount(this.config).subscribe((response: any) => {
         this.$common.hideLoader();
         if (response.status === true) {
-          this.countObj = response.object;
+          this.countObj = normalizeSidebarCounts(response.object);
         }
       }, err => {
         this.$common.hideLoader();
@@ -84,5 +79,10 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   openUserManualModal() {
     $("#user_manual_modal").modal('show');
+  }
+
+  queueLink(path: string): string[] {
+    const runtimeModuleId = this.$auth.getRuntimeModuleId();
+    return runtimeModuleId === 'CLM' ? [`../claim/${path}`] : [`../${path}`];
   }
 }

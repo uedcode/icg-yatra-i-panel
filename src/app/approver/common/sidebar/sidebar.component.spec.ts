@@ -66,12 +66,12 @@ describe('SidebarComponent', () => {
       of({
         status: true,
         object: {
-          inbox: 11,
-          outbox: 12,
-          approved: 13,
-          rejected: 14,
-          passed: 15,
-          notPassed: 16
+          inboxCount: 11,
+          outboxCount: 12,
+          approvedCount: 13,
+          notApprovedCount: 14,
+          passedCount: 15,
+          notPassedCount: 16
         }
       }) as any
     );
@@ -102,18 +102,29 @@ describe('SidebarComponent', () => {
     expect(commonService.showLoader).toHaveBeenCalled();
     expect(claimService.getStatusCount).toHaveBeenCalledOnceWith({
       headers: {
-        desigId: 'DESIG-VE1',
-        unitId: 'UNIT-VE',
-        roleTypeId: 'VE1'
+        userId: 'VERIFIER-1',
+        roleTypeId: 'VE1',
+        gxUnitId: 'UNIT-VE'
       }
     });
     expect(component.countObj).toEqual({
+      draft: 0,
       inbox: 11,
       outbox: 12,
       approved: 13,
       rejected: 14,
       passed: 15,
-      notPassed: 16
+      notPassed: 16,
+      archive: 0,
+      newClaim: 0,
+      inboxClaim: 0,
+      outboxClaim: 0,
+      draftClaim: 0,
+      approvedClaim: 0,
+      notApprovedClaim: 0,
+      passedClaim: 0,
+      notPassedClaim: 0,
+      archiveClaim: 0
     });
     expect(commonService.hideLoader).toHaveBeenCalled();
   });
@@ -129,10 +140,9 @@ describe('SidebarComponent', () => {
 
     expect(claimService.getStatusCount).toHaveBeenCalledOnceWith({
       headers: {
-        desigId: 'DESIG-VE1',
+        userId: 'CREATOR-2',
         unitId: 'UNIT-VE',
         roleTypeId: 'CR',
-        userId: 'CREATOR-2'
       }
     });
   });
@@ -148,7 +158,7 @@ describe('SidebarComponent', () => {
 
     expect(claimService.getStatusCount).toHaveBeenCalledOnceWith({
       headers: {
-        desigId: 'DESIG-VE1'
+        userId: 'VERIFIER-1'
       }
     });
   });
@@ -162,18 +172,19 @@ describe('SidebarComponent', () => {
     component.ngOnInit();
 
     expect(commonService.hideLoader).toHaveBeenCalled();
-    expect(component.countObj).toEqual({});
+    expect(component.countObj.inbox).toBe(0);
+    expect(component.countObj.approved).toBe(0);
   });
 
   it('does not overwrite count object when API returns status false', () => {
-    component.countObj = { inbox: 99 };
+    component.countObj.inbox = 99;
     claimService.getStatusCount.and.returnValue(
-      of({ status: false, object: { inbox: 1 } }) as any
+      of({ status: false, object: { inboxCount: 1 } }) as any
     );
 
     component.getCount();
 
-    expect(component.countObj).toEqual({ inbox: 99 });
+    expect(component.countObj.inbox).toBe(99);
     expect(commonService.hideLoader).toHaveBeenCalled();
   });
 

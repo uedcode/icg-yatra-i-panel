@@ -9,6 +9,7 @@ import { FormService } from 'src/app/service/form.service';
 import { FormManageService } from 'src/app/service/formManage.service';
 import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
 
@@ -31,7 +32,8 @@ export class OutboxComponent implements OnInit {
     private router: Router,
     public $formManage: FormManageService,
     private $codeSubForm: CodeSubFormService,
-    private $claim: ClaimService
+    private $claim: ClaimService,
+    private route: ActivatedRoute
 
   ) {}
 
@@ -49,10 +51,13 @@ export class OutboxComponent implements OnInit {
   toggleFilter:boolean=false;
   filterObj:any={};
   formList;
+  queueModule: 'ADV' | 'CLM' = 'ADV';
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
+    const routeData = this.route.snapshot?.data || {};
+    this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
     this.getState();
     this.getForm();
   }
@@ -64,14 +69,13 @@ export class OutboxComponent implements OnInit {
       fromDate: new Date(this.filterObj?.fromDate).getTime(),
       toDate: new Date(this.filterObj?.toDate).getTime(),
     };
+    const codeRoleList = this.$auth.codeRoleType();
     const config = {
-      headers: {
-        roleTypeId: this.userIdDetails?.roleTypeId,
-        userId: this.userIdDetails?.userId,
-        unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+      headers: buildLegacyClaimStateHeaders({
+        ...this.userIdDetails,
         claimState: this.codeStatus?.outbox,
-      },
+        formId: this.resolveQueueFormId(),
+      }, codeRoleList),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
       if (res?.object) {
@@ -84,7 +88,7 @@ export class OutboxComponent implements OnInit {
       this.$common.showLoader();
       this.config = {
         headers: {
-          formId: this.$auth.getRuntimeModuleId(),
+          formId: this.resolveQueueFormId(),
         },
       };
       this.$codeSubForm.get(this.config).subscribe(
@@ -141,5 +145,9 @@ export class OutboxComponent implements OnInit {
   sort(key) {
     this.key = key;
     this.reverse = !this.reverse;
+  }
+
+  private resolveQueueFormId(): string {
+    return this.queueModule === 'CLM' ? 'CLM' : 'ADV';
   }
 }

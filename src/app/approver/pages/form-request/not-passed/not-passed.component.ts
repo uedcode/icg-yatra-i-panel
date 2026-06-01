@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormService } from 'src/app/service/form.service';
 import { FormManageService } from 'src/app/service/formManage.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
 @Component({
@@ -28,6 +29,7 @@ export class NotPassedComponent implements OnInit {
     public $formManage: FormManageService,
     private router: Router,
     private $claim: ClaimService,
+    private route: ActivatedRoute,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -40,23 +42,25 @@ export class NotPassedComponent implements OnInit {
   formObj: any = {};
   noOfPage: any = 10;
   p: any = 1;
+  queueModule: 'ADV' | 'CLM' = 'ADV';
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
+    const routeData = this.route.snapshot?.data || {};
+    this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
     this.getState();
   }
 
   filterDataObj;
   getState() {
+    const codeRoleList = this.$auth.codeRoleType();
     const config = {
-      headers: {
-        roleTypeId: this.userIdDetails?.roleTypeId,
-        userId: this.userIdDetails?.userId,
-        unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+      headers: buildLegacyClaimStateHeaders({
+        ...this.userIdDetails,
         claimState: this.codeStatus?.notPassed,
-      },
+        formId: this.resolveQueueFormId(),
+      }, codeRoleList),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
@@ -97,6 +101,10 @@ export class NotPassedComponent implements OnInit {
     setTimeout(() => {
       $('#viewHistoryModal').modal('show');
     }, 0);
+  }
+
+  private resolveQueueFormId(): string {
+    return this.queueModule === 'CLM' ? 'CLM' : 'ADV';
   }
 
 }

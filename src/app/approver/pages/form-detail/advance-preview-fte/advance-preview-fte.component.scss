@@ -1,0 +1,92 @@
+﻿.detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.review-checklist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+}
+
+.review-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+.review-tab-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.review-tab-btn {
+  min-width: 180px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.review-tab-btn.active {
+  border-color: #17a2b8;
+  background: #eaf8fb;
+}
+
+.review-tab-btn.reviewed {
+  border-color: #28a745;
+}
+
+.review-tab-btn small {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.advance-ceiling {
+  border: 1px dashed #d39e00;
+  background: #fffaf0;
+}
+
+.advance-ceiling .form-label {
+  font-weight: 600;
+}
+
+.ltc-bucket {
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.ltc-bucket-title {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.family-member + .family-member {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed #ddd;
+}
+
+.review-tab-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.review-tab-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+

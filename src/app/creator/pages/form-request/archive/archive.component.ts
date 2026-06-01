@@ -1,10 +1,11 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { ClaimService } from 'src/app/service/claim.service';
 import { CommonService } from 'src/app/service/common.service';
+import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
 @Component({
@@ -35,29 +36,32 @@ export class ArchiveComponent implements OnInit {
     public $auth: AuthService,
     private $claim: ClaimService,
     private $common: CommonService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
+  readonly moduleType: 'ADV' = 'ADV';
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
-    this.getState();
+this.getState();
   }
-
   getState() {
     const searchHeaders = this.getLegacySearchHeaders();
+    const formId = this.moduleType;
     const config = {
-      headers: {
+      headers: buildLegacyClaimStateHeaders({
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
         gxUnitId: this.userIdDetails?.unitId,
         claimState: '',
         isArchive: '1',
-        formId: searchHeaders.formId,
+        formId,
+        searchFormId: searchHeaders.formId,
         pno: searchHeaders.pno,
         searchedName: searchHeaders.searchedName,
-      },
+      }),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
@@ -208,4 +212,5 @@ export class ArchiveComponent implements OnInit {
     }
   }
 }
+
 

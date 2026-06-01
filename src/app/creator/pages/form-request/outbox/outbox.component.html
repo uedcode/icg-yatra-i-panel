@@ -1,10 +1,10 @@
-<!--Page header-->
+﻿<!--Page header-->
         <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
-            <h4 class="page-title">{{pageType}} Outbox</h4>
+            <h4 class="page-title">Outbox</h4>
             <ol class="breadcrumb pl-0">
               <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
-              <li class="breadcrumb-item active" aria-current="page">{{pageType}}
+              <li class="breadcrumb-item active" aria-current="page">
                 Outbox
               </li>
             </ol>
@@ -65,7 +65,7 @@
                     </div>
                     <div class="col-md-3">
                       <div class="form-group">
-                        <label class="form-label"><Table></Table>To Date </label>
+                        <label class="form-label">To Date </label>
                         <input type="date" class="form-control" name="toDate" #toDate="ngModel"
                         [(ngModel)]="filterObj.toDate" min="1000-01-01" max="9999-12-31">
                       </div>
@@ -160,9 +160,8 @@
                     </tbody>
                   </table>
                 </div><app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>
-
-
-
-
-
+</div>
+</div>
+</div>
+</div>
 

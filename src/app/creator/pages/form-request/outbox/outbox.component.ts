@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/service/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
@@ -9,6 +9,7 @@ import { FormService } from 'src/app/service/form.service';
 import { FormManageService } from 'src/app/service/formManage.service';
 import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
 @Component({
@@ -30,7 +31,8 @@ export class OutboxComponent implements OnInit {
     private datePipe: DatePipe,
     public $formManage: FormManageService,
     private $codeSubForm: CodeSubFormService,
-    private $claim: ClaimService
+    private $claim: ClaimService,
+    private route: ActivatedRoute
   ) {}
 
   @Input() dataList: Array<any> = [];
@@ -47,21 +49,21 @@ export class OutboxComponent implements OnInit {
   toggleFilter: any = false;
   formList;
   today;
+  readonly moduleType: 'ADV' = 'ADV';
 
   ngOnInit() {
     this.today = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
-    this.getState();
+this.getState();
     this.getForm();
   }
-
-  getForm() {
+getForm() {
     try {
       this.$common.showLoader();
       this.config = {
         headers: {
-          formId: this.$auth.getRuntimeModuleId(),
+          formId: this.moduleType,
         },
       };
       this.$codeSubForm.get(this.config).subscribe(
@@ -84,18 +86,20 @@ export class OutboxComponent implements OnInit {
   filterDataObj;
   getState() {
     const searchHeaders = this.getLegacySearchHeaders();
+    const formId = this.moduleType;
     const config = {
-      headers: {
+      headers: buildLegacyClaimStateHeaders({
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
         gxUnitId: this.userIdDetails?.unitId,
         claimState: this.codeStatus?.outbox,
         isArchive: '0',
-        formId: searchHeaders.formId,
+        formId,
+        searchFormId: searchHeaders.formId,
         pno: searchHeaders.pno,
         searchedName: searchHeaders.searchedName,
-      },
+      }),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
       const claimStates = Array.isArray(res?.object) ? res.object : [];
@@ -230,4 +234,5 @@ export class OutboxComponent implements OnInit {
     this.reverse = !this.reverse;
   }
 }
+
 

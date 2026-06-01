@@ -51,6 +51,7 @@ import { FormFteComponent } from './pages/form/form-fte/form-fte.component';
 import { FormFteDetailComponent } from './pages/form-detail/form-fte-detail/form-fte-detail.component';
 import { FormPmtDutyComponent } from './pages/form/form-pmt/form-pmt.component';
 import { FormPmtDetailComponent } from './pages/form-detail/form-pmt-detail/form-pmt-detail.component';
+import { FormTydutyDetailComponent } from './pages/form-detail/form-tyduty-detail/form-tyduty-detail.component';
 import { FormResettlementClaimComponent } from './pages/form/form-resettlement-claim/form-resettlement-claim.component';
 import { FormResettlementPreviewComponent } from './pages/form-detail/form-resettlement-preview/form-resettlement-preview.component';
 import { FormLtcAdvanceComponent } from './pages/form/form-ltc/form-ltc.component';
@@ -69,6 +70,24 @@ import { ArchiveComponent } from './pages/form-request/archive/archive.component
 import { PayOutboxComponent } from './pages/pay-request/pay-outbox/pay-outbox.component';
 import { PayApprovedComponent } from './pages/pay-request/pay-approved/pay-approved.component';
 import { PayNotApprovedComponent } from './pages/pay-request/pay-not-approved/pay-not-approved.component';
+import { ClaimInboxComponent } from './pages/form-request/claim-inbox/claim-inbox.component';
+import { ClaimOutboxComponent } from './pages/form-request/claim-outbox/claim-outbox.component';
+import { ClaimDraftComponent } from './pages/form-request/claim-draft/claim-draft.component';
+import { ClaimApprovedComponent } from './pages/form-request/claim-approved/claim-approved.component';
+import { ClaimNotApprovedComponent } from './pages/form-request/claim-not-approved/claim-not-approved.component';
+import { ClaimPassedComponent } from './pages/form-request/claim-passed/claim-passed.component';
+import { ClaimNotPassedComponent } from './pages/form-request/claim-not-passed/claim-not-passed.component';
+import { ClaimArchiveComponent } from './pages/form-request/claim-archive/claim-archive.component';
+import { ClaimFormPmtDutyComponent } from './pages/form/claim-form-pmt-duty/claim-form-pmt-duty.component';
+import { ClaimFormTyDutyComponent } from './pages/form/claim-form-ty-duty/claim-form-ty-duty.component';
+import { ClaimFormFteComponent } from './pages/form/claim-form-fte/claim-form-fte.component';
+import { ClaimFormLtcComponent } from './pages/form/claim-form-ltc/claim-form-ltc.component';
+import { ClaimFormResettlementComponent } from './pages/form/claim-form-resettlement/claim-form-resettlement.component';
+import { ClaimPreviewPmtDutyComponent } from './pages/form-detail/claim-preview-pmt-duty/claim-preview-pmt-duty.component';
+import { ClaimPreviewTyDutyComponent } from './pages/form-detail/claim-preview-ty-duty/claim-preview-ty-duty.component';
+import { ClaimPreviewFteComponent } from './pages/form-detail/claim-preview-fte/claim-preview-fte.component';
+import { ClaimPreviewLtcComponent } from './pages/form-detail/claim-preview-ltc/claim-preview-ltc.component';
+import { ClaimPreviewResettlementComponent } from './pages/form-detail/claim-preview-resettlement/claim-preview-resettlement.component';
 
 const CustomSelectOptions: INgxSelectOptions = {
   // Check the interface for more options
@@ -108,6 +127,7 @@ const CustomSelectOptions: INgxSelectOptions = {
     FormFteDetailComponent,
     FormPmtDutyComponent,
     FormPmtDetailComponent,
+    FormTydutyDetailComponent,
     FormResettlementClaimComponent,
     FormResettlementPreviewComponent,
     FormLtcAdvanceComponent,
@@ -126,6 +146,24 @@ const CustomSelectOptions: INgxSelectOptions = {
     ClaimNewComponent,
     ClaimFormShellComponent,
     ArchiveComponent,
+    ClaimInboxComponent,
+    ClaimOutboxComponent,
+    ClaimDraftComponent,
+    ClaimApprovedComponent,
+    ClaimNotApprovedComponent,
+    ClaimPassedComponent,
+    ClaimNotPassedComponent,
+    ClaimArchiveComponent,
+    ClaimFormPmtDutyComponent,
+    ClaimFormTyDutyComponent,
+    ClaimFormFteComponent,
+    ClaimFormLtcComponent,
+    ClaimFormResettlementComponent,
+    ClaimPreviewPmtDutyComponent,
+    ClaimPreviewTyDutyComponent,
+    ClaimPreviewFteComponent,
+    ClaimPreviewLtcComponent,
+    ClaimPreviewResettlementComponent,
   ],
   imports: [
     RouterModule,

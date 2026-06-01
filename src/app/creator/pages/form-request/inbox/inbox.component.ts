@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/service/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
@@ -9,6 +9,7 @@ import { FormService } from 'src/app/service/form.service';
 import { FormManageService } from 'src/app/service/formManage.service';
 import { FormStateService } from 'src/app/service/formState.service';
 import { ClaimService } from 'src/app/service/claim.service';
+import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
 @Component({
@@ -45,11 +46,14 @@ export class InboxComponent implements OnInit {
   noOfPage: any = 10;
   p: any = 1;
   toggleFilter: any = false;
+  readonly moduleType: 'ADV' = 'ADV';
+  queueLabel = 'Advance';
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
-    this.handleEsignFeedback();
+    this.queueLabel = 'Advance';
+this.handleEsignFeedback();
     this.getState();
   }
 
@@ -96,18 +100,18 @@ export class InboxComponent implements OnInit {
   filterDataObj
   getState() {
     const searchHeaders = this.getLegacySearchHeaders();
+    const formId = this.moduleType;
+    const codeRoleList = this.$auth.codeRoleType();
     const config = {
-      headers: {
-        roleTypeId: this.userIdDetails?.roleTypeId,
-        userId: this.userIdDetails?.userId,
-        unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+      headers: buildLegacyClaimStateHeaders({
+        ...this.userIdDetails,
         claimState: this.codeStatus?.inbox,
+        formId,
         isArchive: '0',
-        formId: searchHeaders.formId,
+        searchFormId: searchHeaders.formId,
         pno: searchHeaders.pno,
         searchedName: searchHeaders.searchedName,
-      },
+      }, codeRoleList),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
@@ -279,4 +283,5 @@ export class InboxComponent implements OnInit {
   }
 
 }
+
 

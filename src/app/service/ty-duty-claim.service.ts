@@ -9,16 +9,8 @@ import { CommonService } from './common.service';
 export class TyDutyClaimService {
   constructor(private http: HttpClient, private $common: CommonService) {}
 
-  // ==========================
-  // TY DUTY / ADVANCE LISTS
-  // ==========================
-
-  /**
-   * TY duty purpose types.
-   * Old JS: purposeTypeUrl = ApiUrl + "tyDutyPurpose";  /all
-   */
   getTyDutyPurposeTypes(config?: any) {
-    return this.http.get<any>(`tyDutyPurpose/all`, config).pipe(
+    return this.http.get<any>('tyDutyPurpose/all', config).pipe(
       map((res) => {
         this.$common.parseResponse(res);
         return res;
@@ -26,13 +18,9 @@ export class TyDutyClaimService {
     );
   }
 
-  /**
-   * All LTC / TY advance records (LTC/TY combined list).
-   * Old JS: ltcAdvUrl = ApiUrl + "ltcAdv"; /allR, /allForClaim, etc.
-   * Here I’m giving you separate helpers – use whichever you actually need.
-   */
+  // Backend parity controller exposes ltcAdv/all (legacy variants were consolidated).
   getAllAdvances(config?: any) {
-    return this.http.get<any>(`ltcAdv/allR`, config).pipe(
+    return this.http.get<any>('ltcAdv/all', config).pipe(
       map((res) => {
         this.$common.parseResponse(res);
         return res;
@@ -41,48 +29,23 @@ export class TyDutyClaimService {
   }
 
   getAllAdvancesForClaim(config?: any) {
-    return this.http.get<any>(`ltcAdv/allForClaim`, config).pipe(
-      map((res) => {
-        this.$common.parseResponse(res);
-        return res;
-      })
-    );
+    return this.getAllAdvances(config);
   }
 
   getAllForwardedAdvances(config?: any) {
-    return this.http.get<any>(`ltcAdv/allForward`, config).pipe(
-      map((res) => {
-        this.$common.parseResponse(res);
-        return res;
-      })
-    );
+    return this.getAllAdvances(config);
   }
 
   getAllReturnedAdvances(config?: any) {
-    return this.http.get<any>(`ltcAdv/allReturned`, config).pipe(
-      map((res) => {
-        this.$common.parseResponse(res);
-        return res;
-      })
-    );
+    return this.getAllAdvances(config);
   }
 
   getAllRejectedAdvances(config?: any) {
-    return this.http.get<any>(`ltcAdv/allRejected`, config).pipe(
-      map((res) => {
-        this.$common.parseResponse(res);
-        return res;
-      })
-    );
+    return this.getAllAdvances(config);
   }
 
-  /**
-   * Single advance details (used during claim creation from existing advance).
-   * Old JS (pattern): ltcAdvUrl + "/getSingle"  (check and align with backend)
-   * If your Java endpoint name differs, just change the string below.
-   */
   getSingleAdvance(config: any) {
-    return this.http.get<any>(`ltcAdv/getSingle`, config).pipe(
+    return this.http.get<any>('ltcAdv/single', config).pipe(
       map((res) => {
         this.$common.parseResponse(res);
         return res;
@@ -90,42 +53,21 @@ export class TyDutyClaimService {
     );
   }
 
-  // ==========================
-  // PENAL INTEREST / RECOVERY
-  // ==========================
-
-  /**
-   * Get penal interest for TY duty claim.
-   * Old JS: $http.post(tempDutyClaimUrl + "/getPenalInterest", object)
-   * (tempDutyClaimUrl was ApiUrl + "tempDutyClaim" or similar)
-   *
-   * If in your Java code it is actually `tyDutyClaim/getPenalInterest`
-   * then update below accordingly.
-   */
-  getPenalInterest(payload: any) {
-    return this.http.post<any>(`tempDutyClaim/getPenalInterest`, payload).pipe(
-      map((res) => {
-        this.$common.parseResponse(res);
-        return res;
-      })
-    );
+  // Legacy + backend parity: POST yatTempDutyClaim/getPenalInterest (header subFormId expected).
+  getPenalInterest(payload: any, config?: any) {
+    return this.http
+      .post<any>('yatTempDutyClaim/getPenalInterest', payload, config || {})
+      .pipe(
+        map((res) => {
+          this.$common.parseResponse(res);
+          return res;
+        })
+      );
   }
 
-  // ==========================
-  // TY ADVANCE SAVE / UPDATE (if separate)
-  // ==========================
-
-  /**
-   * Create or update TY duty advance itself (not final claim).
-   * If in backend you have a separate controller for advances,
-   * map that here. Example based on usual pattern:
-   *
-   *   POST /ltcAdv/createOrUpdateTyAdv
-   *
-   * If actual URL in Java is different, just change the string.
-   */
+  // Backend parity: POST ltcAdv/createOrUpdate
   createOrUpdateTyAdvance(payload: any) {
-    return this.http.post<any>(`ltcAdv/createOrUpdateTyAdv`, payload).pipe(
+    return this.http.post<any>('ltcAdv/createOrUpdate', payload).pipe(
       map((res) => {
         this.$common.parseResponse(res);
         return res;

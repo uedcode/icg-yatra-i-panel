@@ -45,6 +45,32 @@ import { BudgetAllocationComponent } from './pages/settings/budget-allocation/bu
 import { ArchiveComponent } from './pages/form-request/archive/archive.component';
 import { FormAdvanceDetailComponent } from './pages/form-detail/form-advance-detail/form-advance-detail.component';
 import { SettingsLauncherComponent } from './pages/settings/settings-launcher/settings-launcher.component';
+import { ClaimInboxComponent } from './pages/form-request/claim-inbox/claim-inbox.component';
+import { ClaimOutboxComponent } from './pages/form-request/claim-outbox/claim-outbox.component';
+import { ClaimApprovedComponent } from './pages/form-request/claim-approved/claim-approved.component';
+import { ClaimNotApprovedComponent } from './pages/form-request/claim-not-approved/claim-not-approved.component';
+import { ClaimPassedComponent } from './pages/form-request/claim-passed/claim-passed.component';
+import { ClaimNotPassedComponent } from './pages/form-request/claim-not-passed/claim-not-passed.component';
+import { ClaimArchiveComponent } from './pages/form-request/claim-archive/claim-archive.component';
+import { ClaimPreviewVoucherComponent } from './pages/form-detail/claim-preview-voucher/claim-preview-voucher.component';
+import { ClaimMovementUpdateComponent } from './pages/form-detail/claim-movement-update/claim-movement-update.component';
+import { ClaimPreviewPmtDutyComponent } from './pages/form-detail/claim-preview-pmt-duty/claim-preview-pmt-duty.component';
+import { ClaimPreviewTyDutyComponent } from './pages/form-detail/claim-preview-ty-duty/claim-preview-ty-duty.component';
+import { ClaimPreviewFteComponent } from './pages/form-detail/claim-preview-fte/claim-preview-fte.component';
+import { ClaimPreviewLtcComponent } from './pages/form-detail/claim-preview-ltc/claim-preview-ltc.component';
+import { ClaimPreviewResettlementComponent } from './pages/form-detail/claim-preview-resettlement/claim-preview-resettlement.component';
+import { AdvanceFormPmtDutyComponent } from './pages/form-detail/advance-form-pmt-duty/advance-form-pmt-duty.component';
+import { AdvancePreviewPmtDutyComponent } from './pages/form-detail/advance-preview-pmt-duty/advance-preview-pmt-duty.component';
+import { AdvanceFormTyDutyComponent } from './pages/form-detail/advance-form-ty-duty/advance-form-ty-duty.component';
+import { AdvancePreviewTyDutyComponent } from './pages/form-detail/advance-preview-ty-duty/advance-preview-ty-duty.component';
+import { AdvanceFormFteComponent } from './pages/form-detail/advance-form-fte/advance-form-fte.component';
+import { AdvancePreviewFteComponent } from './pages/form-detail/advance-preview-fte/advance-preview-fte.component';
+import { AdvanceFormLtcComponent } from './pages/form-detail/advance-form-ltc/advance-form-ltc.component';
+import { AdvancePreviewLtcComponent } from './pages/form-detail/advance-preview-ltc/advance-preview-ltc.component';
+import { AdvanceFormManualComponent } from './pages/form-detail/advance-form-manual/advance-form-manual.component';
+import { AdvancePreviewManualComponent } from './pages/form-detail/advance-preview-manual/advance-preview-manual.component';
+import { AdvanceFormLtcHistoryComponent } from './pages/form-detail/advance-form-ltc-history/advance-form-ltc-history.component';
+import { AdvancePreviewLtcHistoryComponent } from './pages/form-detail/advance-preview-ltc-history/advance-preview-ltc-history.component';
 
 const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more options
   optionValueField: 'id',
@@ -80,6 +106,32 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         BudgetAllocationComponent,
         SettingsLauncherComponent,
         ArchiveComponent,
+        ClaimInboxComponent,
+        ClaimOutboxComponent,
+        ClaimApprovedComponent,
+        ClaimNotApprovedComponent,
+        ClaimPassedComponent,
+        ClaimNotPassedComponent,
+        ClaimArchiveComponent,
+        ClaimPreviewVoucherComponent,
+        ClaimMovementUpdateComponent,
+        ClaimPreviewPmtDutyComponent,
+        ClaimPreviewTyDutyComponent,
+        ClaimPreviewFteComponent,
+        ClaimPreviewLtcComponent,
+        ClaimPreviewResettlementComponent,
+        AdvanceFormPmtDutyComponent,
+        AdvancePreviewPmtDutyComponent,
+        AdvanceFormTyDutyComponent,
+        AdvancePreviewTyDutyComponent,
+        AdvanceFormFteComponent,
+        AdvancePreviewFteComponent,
+        AdvanceFormLtcComponent,
+        AdvancePreviewLtcComponent,
+        AdvanceFormManualComponent,
+        AdvancePreviewManualComponent,
+        AdvanceFormLtcHistoryComponent,
+        AdvancePreviewLtcHistoryComponent,
     ], imports: [RouterModule,
         CommonModule,
         ApproverRoutingModule,

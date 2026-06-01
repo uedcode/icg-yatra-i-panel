@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import { ClaimService } from 'src/app/service/claim.service';
 import { CommonService } from 'src/app/service/common.service';
+import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
 @Component({
@@ -29,6 +30,7 @@ export class ArchiveComponent implements OnInit {
   formId: any;
   claimId: any;
   pageTitle = 'Claim Archive';
+  queueModule: 'ADV' | 'CLM' = 'ADV';
 
   constructor(
     private location: Location,
@@ -41,6 +43,8 @@ export class ArchiveComponent implements OnInit {
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
+    const routeData = this.route.snapshot?.data || {};
+    this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
     this.pageTitle = this.getPageTitle();
     if (this.userIdDetails?.roleTypeId !== this.$auth.codeRoleType()?.verifier) {
       this.$common.showMessage(`${this.pageTitle} is available for verifier role only.`, 'danger');
@@ -53,18 +57,17 @@ export class ArchiveComponent implements OnInit {
 
   getState() {
     const searchHeaders = this.getLegacySearchHeaders();
+    const codeRoleList = this.$auth.codeRoleType();
     const config = {
-      headers: {
-        roleTypeId: this.userIdDetails?.roleTypeId,
-        userId: this.userIdDetails?.userId,
-        unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+      headers: buildLegacyClaimStateHeaders({
+        ...this.userIdDetails,
         claimState: '',
         isArchive: '1',
-        formId: searchHeaders.formId,
+        formId: this.resolveQueueFormId(),
+        searchFormId: searchHeaders.formId,
         pno: searchHeaders.pno,
         searchedName: searchHeaders.searchedName,
-      },
+      }, codeRoleList),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
@@ -137,8 +140,11 @@ export class ArchiveComponent implements OnInit {
   }
 
   private getPageTitle(): string {
-    const path = this.route.snapshot.routeConfig?.path || '';
-    return path === 'archive' ? 'Archive' : 'Claim Archive';
+    return this.queueModule === 'CLM' ? 'Claim Archive' : 'Archive';
+  }
+
+  private resolveQueueFormId(): string {
+    return this.queueModule === 'CLM' ? 'CLM' : 'ADV';
   }
 }
 

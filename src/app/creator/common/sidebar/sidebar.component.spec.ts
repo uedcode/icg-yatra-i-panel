@@ -54,13 +54,13 @@ describe('SidebarComponent', () => {
       of({
         status: true,
         object: {
-          draft: 2,
-          inbox: 3,
-          outbox: 4,
-          approved: 5,
-          rejected: 6,
-          passed: 7,
-          notPassed: 8
+          draftCount: 2,
+          inboxCount: 3,
+          outboxCount: 4,
+          approvedCount: 5,
+          notApprovedCount: 6,
+          passedCount: 7,
+          notPassedCount: 8
         }
       }) as any
     );
@@ -91,19 +91,29 @@ describe('SidebarComponent', () => {
     expect(commonService.showLoader).toHaveBeenCalled();
     expect(claimService.getStatusCount).toHaveBeenCalledOnceWith({
       headers: {
-        desigId: 'DESIG-1',
+        unitId: 'UNIT-1',
         roleTypeId: 'CR',
         userId: 'CREATOR-1'
       }
     });
     expect(component.countObj).toEqual({
+      archive: 0,
       draft: 2,
       inbox: 3,
       outbox: 4,
       approved: 5,
       rejected: 6,
       passed: 7,
-      notPassed: 8
+      notPassed: 8,
+      newClaim: 0,
+      inboxClaim: 0,
+      outboxClaim: 0,
+      draftClaim: 0,
+      approvedClaim: 0,
+      notApprovedClaim: 0,
+      passedClaim: 0,
+      notPassedClaim: 0,
+      archiveClaim: 0
     });
     expect(commonService.hideLoader).toHaveBeenCalled();
   });
@@ -120,8 +130,8 @@ describe('SidebarComponent', () => {
 
     expect(claimService.getStatusCount).toHaveBeenCalledOnceWith({
       headers: {
-        desigId: 'DESIG-1',
-        unitId: 'UNIT-AP',
+        userId: 'APPROVER-1',
+        gxUnitId: 'UNIT-AP',
         roleTypeId: 'AP'
       }
     });
@@ -136,7 +146,8 @@ describe('SidebarComponent', () => {
     component.ngOnInit();
 
     expect(commonService.hideLoader).toHaveBeenCalled();
-    expect(component.countObj).toEqual({});
+    expect(component.countObj.inbox).toBe(0);
+    expect(component.countObj.approved).toBe(0);
   });
 
   it('renders creator claim and workflow menu labels with count badges', () => {

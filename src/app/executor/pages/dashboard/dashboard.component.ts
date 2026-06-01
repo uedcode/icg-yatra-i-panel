@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth.service';
 import { ClaimService } from 'src/app/service/claim.service';
 import { CommonService } from 'src/app/service/common.service';
+import { buildLegacyStateCountHeaders } from 'src/app/shared/utils/legacy-api.util';
+import { normalizeSidebarCounts } from 'src/app/shared/utils/sidebar-count.util';
 
 @Component({
   selector: 'app-executor-dashboard',
@@ -13,6 +15,7 @@ export class DashboardComponent implements OnInit {
   userIdDetails: any;
   countObj: any = {};
   config: any;
+  codeRoleList: any = {};
 
   constructor(
     public $auth: AuthService,
@@ -22,6 +25,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
+    this.codeRoleList = this.$auth.codeRoleType();
     this.getCount();
   }
 
@@ -29,17 +33,13 @@ export class DashboardComponent implements OnInit {
     try {
       this.$common.showLoader();
       this.config = {
-        headers: {
-          desigId: this.userIdDetails?.desigId,
-          unitId: this.userIdDetails?.unitId,
-          roleTypeId: this.userIdDetails?.roleTypeId,
-        },
+        headers: buildLegacyStateCountHeaders(this.userIdDetails, this.codeRoleList),
       };
       this.$claim.getStatusCount(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
-            this.countObj = response.object || {};
+            this.countObj = normalizeSidebarCounts(response.object);
           }
         },
         () => {
