@@ -1,7 +1,7 @@
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
-import { FaqService } from 'src/app/service/faq.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { FaqService } from 'src/app/service/admin/faq.service';
 declare var $: any;
 
 @Component({

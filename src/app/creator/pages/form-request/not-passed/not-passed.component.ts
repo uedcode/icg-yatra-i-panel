@@ -1,13 +1,13 @@
-﻿import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormManageService } from 'src/app/service/formManage.service';
-import { FormStateService } from 'src/app/service/formState.service';
-import { ClaimService } from 'src/app/service/claim.service';
+import { FormManageService } from 'src/app/service/form/form-manage.service';
+import { FormStateService } from 'src/app/service/form/formState.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 

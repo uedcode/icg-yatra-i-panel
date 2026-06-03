@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { filter, map } from 'rxjs/operators';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { environment } from 'src/environments/environment';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 

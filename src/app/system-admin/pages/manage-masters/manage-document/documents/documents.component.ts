@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
-import { DocumentService } from 'src/app/service/document.service';
-import { AuthService } from 'src/app/service/auth.service';
+import { DocumentService } from 'src/app/service/form/document.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 declare var $: any;
 
 @Component({

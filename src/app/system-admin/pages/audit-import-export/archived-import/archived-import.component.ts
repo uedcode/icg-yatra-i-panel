@@ -1,14 +1,14 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormService } from 'src/app/service/form.service';
-import { FormManageService } from 'src/app/service/formManage.service';
-import { FormStateService } from 'src/app/service/formState.service';
-import { ImportExportAuditService } from 'src/app/service/importExportAudit.service';
+import { FormService } from 'src/app/service/form/form.service';
+import { FormManageService } from 'src/app/service/form/form-manage.service';
+import { FormStateService } from 'src/app/service/form/formState.service';
+import { ImportExportAuditService } from 'src/app/service/admin/importExportAudit.service';
 declare var $: any;
 
 

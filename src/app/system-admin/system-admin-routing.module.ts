@@ -18,7 +18,6 @@ import { FaqComponent } from './pages/manage-masters/manage-faq/faq/faq.componen
 import { SwitchModuleComponent } from './pages/switch-module/switch-module.component';
 import { ProfileSettingComponent } from './pages/profile-setting/profile-setting.component';
 import { ManageApproverComponent } from './pages/manage-user/manage-approver/manage-approver.component';
-import { MappingApproverFormComponent } from './pages/mapping-approver-form/mapping-approver-form.component';
 import { WebDetailComponent } from './pages/web-detail/web-detail.component';
 import { PortComponent } from './pages/manage-masters/manage-port/port/port.component';
 import { AddPortModalComponent } from './pages/manage-masters/manage-port/add-port-modal/add-port-modal.component';
@@ -206,12 +205,6 @@ const routes: Routes = [
     component: ManageApproverComponent,
     canActivate: [AuthGuard],
     data: { title: 'Manage Approver', roles: SYSTEM_ADMIN_ROLES },
-  },
-  {
-    path: 'mapping-approver-form',
-    component: MappingApproverFormComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Mapping Approver Form', roles: SYSTEM_ADMIN_ROLES },
   },
   {
     path: 'web-detail',

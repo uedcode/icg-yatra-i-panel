@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';

@@ -1,4 +1,4 @@
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 
 declare var $: any;

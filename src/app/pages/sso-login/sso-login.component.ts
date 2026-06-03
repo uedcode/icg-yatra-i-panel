@@ -2,8 +2,8 @@ import { HttpParams } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import * as crypto from 'crypto-js';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { DevicetService } from 'src/app/service/device.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { DevicetService } from 'src/app/service/core/device.service';
 import { environment } from 'src/environments/environment';
 declare var $: any;
 

@@ -1,7 +1,7 @@
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
-import { ClaimService } from 'src/app/service/claim.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
 import {
   DEFAULT_SIDEBAR_COUNTS,
   normalizeSidebarCounts,

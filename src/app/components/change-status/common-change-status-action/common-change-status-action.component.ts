@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { FormStateService } from 'src/app/service/formState.service';
-import { SystemAdminService } from 'src/app/service/systemAdmin.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { FormStateService } from 'src/app/service/form/formState.service';
+import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
 declare var $: any;
 
 @Component({

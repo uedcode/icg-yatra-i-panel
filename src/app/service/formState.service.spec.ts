@@ -1,8 +1,8 @@
 import { HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { CommonService } from './common.service';
-import { FormStateService } from './formState.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { FormStateService } from 'src/app/service/form/formState.service';
 
 describe('FormStateService', () => {
   let service: FormStateService;

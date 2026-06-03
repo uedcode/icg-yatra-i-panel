@@ -3,9 +3,9 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, throwError } from 'rxjs';
 
 import { CommonSwitchModuleComponent } from './common-switch-module.component';
-import { CommonService } from 'src/app/service/common.service';
-import { AuthService } from 'src/app/service/auth.service';
-import { UserService } from 'src/app/service/user.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { UserService } from 'src/app/service/admin/user.service';
 import { DeviceService } from 'src/app/service/acl/device.service';
 import { environment } from 'src/environments/environment';
 

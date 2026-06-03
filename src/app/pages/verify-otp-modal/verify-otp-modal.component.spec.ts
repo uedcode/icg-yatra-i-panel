@@ -3,9 +3,9 @@ import { of } from 'rxjs';
 import * as crypto from 'crypto-js';
 
 import { VerifyOtpModalComponent } from './verify-otp-modal.component';
-import { CommonService } from 'src/app/service/common.service';
-import { AuthService } from 'src/app/service/auth.service';
-import { OtpService } from 'src/app/service/otp.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { OtpService } from 'src/app/service/auth/otp.service';
 
 describe('VerifyOtpModalComponent', () => {
   let component: VerifyOtpModalComponent;

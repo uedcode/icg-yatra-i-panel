@@ -1,9 +1,9 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from 'src/app/service/auth.service';
-import { ClaimService } from 'src/app/service/claim.service';
-import { CommonService } from 'src/app/service/common.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
+import { CommonService } from 'src/app/service/core/common.service';
 
 interface MovementGxDetail {
   gxType?: string | null;

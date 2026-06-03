@@ -1,10 +1,10 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
-import { CommonService } from 'src/app/service/common.service';
-import { FormManageService } from 'src/app/service/formManage.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { FormManageService } from 'src/app/service/form/form-manage.service';
 import { environment } from 'src/environments/environment';
 
 @Component({

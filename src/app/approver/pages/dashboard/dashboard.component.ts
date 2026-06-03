@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { ClaimService } from 'src/app/service/claim.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
 import { buildLegacyStateCountHeaders } from 'src/app/shared/utils/legacy-api.util';
 import { normalizeSidebarCounts } from 'src/app/shared/utils/sidebar-count.util';
 

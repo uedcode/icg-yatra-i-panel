@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/service/auth.service';
-import { ClaimService } from 'src/app/service/claim.service';
-import { CommonService } from 'src/app/service/common.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { buildLegacyStateCountHeaders } from 'src/app/shared/utils/legacy-api.util';
 import { normalizeSidebarCounts } from 'src/app/shared/utils/sidebar-count.util';
 

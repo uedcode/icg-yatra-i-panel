@@ -7,12 +7,12 @@ import {
   EventEmitter,
   SimpleChanges,
 } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
 import { NgForm } from '@angular/forms';
-import { DocumentService } from 'src/app/service/document.service';
+import { DocumentService } from 'src/app/service/form/document.service';
 import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { MasterPortService } from 'src/app/service/master/master-port.service';
 import { MasterPortRateService } from 'src/app/service/master/master-port-rate.service';
 import { DatePipe } from '@angular/common';

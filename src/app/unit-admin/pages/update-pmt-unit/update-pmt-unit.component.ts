@@ -1,9 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { SystemAdminService } from 'src/app/service/systemAdmin.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
 
 @Component({
   selector: 'app-update-pmt-unit',

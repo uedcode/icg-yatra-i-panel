@@ -1,9 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { SystemAdminService } from 'src/app/service/systemAdmin.service';
-import { UserService } from 'src/app/service/user.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
+import { UserService } from 'src/app/service/admin/user.service';
 
 @Component({
   selector: 'app-manage-paylevel-transaction',

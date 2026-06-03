@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { AuthService } from 'src/app/service/auth.service';
-import { RuntimeModuleId } from './service/runtime-module.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { RuntimeModuleId } from './service/auth/runtime-module.service';
 
 @Injectable()
 export class AuthGuard  {

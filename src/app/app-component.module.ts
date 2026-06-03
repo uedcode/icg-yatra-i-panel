@@ -25,7 +25,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { CommonChangePasswordComponent } from './components/common-change-password/common-change-password.component';
 import { ShowZeroPipe } from './pipe/show-zero.pipe';
-import { FileExcelService } from './service/fileexcel.service';
+import { FileExcelService } from './service/form/file-excel.service';
 
 import { CommonManageFaqComponent } from './components/faq/common-manage-faq/common-manage-faq.component';
 import { CommonAddFaqModalComponent } from './components/faq/common-add-faq-modal/common-add-faq-modal.component';

@@ -1,14 +1,14 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormService } from 'src/app/service/form.service';
-import { FormManageService } from 'src/app/service/formManage.service';
-import { FormStateService } from 'src/app/service/formState.service';
+import { FormService } from 'src/app/service/form/form.service';
+import { FormManageService } from 'src/app/service/form/form-manage.service';
+import { FormStateService } from 'src/app/service/form/formState.service';
 import { DatePipe } from '@angular/common';
-import { DropdownManageService } from 'src/app/service/dropdownManage.service';
+import { DropdownManageService } from 'src/app/service/form/dropdown-manage.service';
 import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
 import stateJson from 'src/app/creator/json/stateList.json';
 import martialStatusJson from 'src/app/creator/json/martialStatus.json';
@@ -17,7 +17,6 @@ import genderJson from 'src/app/creator/json/genderList.json';
 import shipJson from 'src/app/creator/json/shipList.json';
 import catListJson from 'src/app/creator/json/categoryList.json';
 import * as crypto from 'crypto-js';
-import { ManagePortService } from 'src/app/service/managePort.service';
 import { MasterShipService } from 'src/app/service/master/master-ship.service';
 
 declare var $: any;
@@ -41,7 +40,6 @@ export class PreviewDetailsComponent implements OnInit {
     public $formState: FormStateService,
     private $dropdownManage: DropdownManageService,
     private $codeDocInfo: CodeDocInfoService,
-    private $port: ManagePortService,
     private $ship: MasterShipService,
     private router: Router,
   ) { }

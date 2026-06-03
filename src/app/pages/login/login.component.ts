@@ -3,11 +3,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as crypto from 'crypto-js';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { OtpService } from 'src/app/service/otp.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { OtpService } from 'src/app/service/auth/otp.service';
 import { environment } from 'src/environments/environment';
-import { SecurityService } from 'src/app/service/security.service';
+import { SecurityService } from 'src/app/service/auth/security.service';
 
 declare var $: any;
 

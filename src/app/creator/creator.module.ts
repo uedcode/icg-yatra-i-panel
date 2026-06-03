@@ -18,7 +18,7 @@ import { OrderModule } from 'ngx-order-pipe';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { AuthGuard } from '../auth.guard';
 import { HeaderInterceptor } from '../HeaderInterceptor';
-import { FileExcelService } from 'src/app/service/fileexcel.service';
+import { FileExcelService } from 'src/app/service/form/file-excel.service';
 
 import { CreatorRoutingModule } from './creator-routing.module';
 import { CreatorComponent } from './creator.component';

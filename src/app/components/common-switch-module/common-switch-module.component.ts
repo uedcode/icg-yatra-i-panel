@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { UserService } from 'src/app/service/user.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { UserService } from 'src/app/service/admin/user.service';
 import * as crypto from 'crypto-js';
 import { HttpParams } from '@angular/common/http';
 import { DeviceService } from 'src/app/service/acl/device.service';

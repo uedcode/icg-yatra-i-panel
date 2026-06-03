@@ -1,7 +1,7 @@
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { Component, Inject, OnInit, DOCUMENT } from '@angular/core';
-import { UserService } from 'src/app/service/user.service';
-import { CommonService } from 'src/app/service/common.service';
+import { UserService } from 'src/app/service/admin/user.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 

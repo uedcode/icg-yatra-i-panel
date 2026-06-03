@@ -1,11 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { HolidayService } from 'src/app/service/code/holiday.service';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
 import { Location } from '@angular/common';
-import { DocumentService } from 'src/app/service/document.service';
-import { MappingService } from 'src/app/service/mapping.service';
+import { DocumentService } from 'src/app/service/form/document.service';
+import { MappingService } from 'src/app/service/admin/mapping.service';
 declare var $: any;
 @Component({
     selector: 'app-mapping-unit',

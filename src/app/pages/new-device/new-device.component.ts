@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { SecurityService } from 'src/app/service/security.service';
-import { utilDeviceService } from 'src/app/service/utilDevice.service';
+import { SecurityService } from 'src/app/service/auth/security.service';
+import { utilDeviceService } from 'src/app/service/core/util-device.service';
 import { Router } from '@angular/router';
 import { DeviceService } from 'src/app/service/acl/device.service';
 

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import * as crypto from 'crypto-js';
 import { NgOtpInputComponent } from 'ng-otp-input';
-import { OtpService } from 'src/app/service/otp.service';
+import { OtpService } from 'src/app/service/auth/otp.service';
 
 declare var $: any;
 

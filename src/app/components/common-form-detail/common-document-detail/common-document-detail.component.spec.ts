@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CommonDocumentDetailComponent } from './common-document-detail.component';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
-import { CommonService } from 'src/app/service/common.service';
-import { FormManageService } from 'src/app/service/formManage.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { FormManageService } from 'src/app/service/form/form-manage.service';
 
 describe('CommonDocumentDetailComponent', () => {
   let component: CommonDocumentDetailComponent;

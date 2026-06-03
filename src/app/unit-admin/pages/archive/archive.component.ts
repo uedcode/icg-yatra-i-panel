@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { SystemAdminService } from 'src/app/service/systemAdmin.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
 
 @Component({
   selector: 'app-unit-admin-archive',

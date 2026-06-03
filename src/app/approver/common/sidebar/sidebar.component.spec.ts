@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
 import { SidebarComponent } from './sidebar.component';
-import { AuthService } from 'src/app/service/auth.service';
-import { ClaimService } from 'src/app/service/claim.service';
-import { CommonService } from 'src/app/service/common.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
+import { CommonService } from 'src/app/service/core/common.service';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;

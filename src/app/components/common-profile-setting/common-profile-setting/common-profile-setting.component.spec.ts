@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
 import { CommonProfileSettingComponent } from './common-profile-setting.component';
-import { CommonService } from 'src/app/service/common.service';
-import { AuthService } from 'src/app/service/auth.service';
-import { TotpService } from 'src/app/service/totp.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { TotpService } from 'src/app/service/auth/totp.service';
 
 describe('CommonProfileSettingComponent', () => {
   let component: CommonProfileSettingComponent;

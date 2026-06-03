@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
 import { CommonManageDeviceModalComponent } from './common-manage-device-modal.component';
-import { CommonService } from 'src/app/service/common.service';
-import { DevicetService } from 'src/app/service/device.service';
-import { AuthService } from 'src/app/service/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { DevicetService } from 'src/app/service/core/device.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
 describe('CommonManageDeviceModalComponent', () => {

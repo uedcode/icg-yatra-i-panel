@@ -5,9 +5,9 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { AuthService } from './auth.service';
-import { CommonService } from './common.service';
-import { UserTokenService } from './userToken.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { UserTokenService } from 'src/app/service/auth/user-token.service';
 
 describe('AuthService', () => {
   let service: AuthService;

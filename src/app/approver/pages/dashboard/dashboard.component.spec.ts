@@ -3,9 +3,9 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
 
 import { DashboardComponent } from './dashboard.component';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { ClaimService } from 'src/app/service/claim.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;

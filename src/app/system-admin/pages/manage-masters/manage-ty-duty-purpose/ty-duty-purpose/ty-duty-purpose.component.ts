@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { TyDutyPurposeService } from 'src/app/service/master/ty-duty-purpose.service';
 
 declare var $: any;

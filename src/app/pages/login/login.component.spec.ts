@@ -5,10 +5,10 @@ import { of, throwError } from 'rxjs';
 import * as crypto from 'crypto-js';
 
 import { LoginComponent } from './login.component';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { OtpService } from 'src/app/service/otp.service';
-import { SecurityService } from 'src/app/service/security.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { OtpService } from 'src/app/service/auth/otp.service';
+import { SecurityService } from 'src/app/service/auth/security.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;

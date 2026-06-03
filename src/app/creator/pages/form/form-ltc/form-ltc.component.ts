@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UtilService } from 'src/app/service/util.service';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { ClaimService } from 'src/app/service/claim.service';
-import { DropdownManageService } from 'src/app/service/dropdownManage.service';
-import { FormManageService } from 'src/app/service/formManage.service';
+import { UtilService } from 'src/app/service/core/util.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
+import { DropdownManageService } from 'src/app/service/form/dropdown-manage.service';
+import { FormManageService } from 'src/app/service/form/form-manage.service';
 import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
 import { take } from 'rxjs/operators';
 

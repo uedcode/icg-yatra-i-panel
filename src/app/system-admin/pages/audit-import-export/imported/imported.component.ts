@@ -1,11 +1,11 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
-import { AuthService } from 'src/app/service/auth.service';
-import { FormService } from 'src/app/service/form.service';
-import { ImportExportAuditService } from 'src/app/service/importExportAudit.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { FormService } from 'src/app/service/form/form.service';
+import { ImportExportAuditService } from 'src/app/service/admin/importExportAudit.service';
 import { ActivatedRoute, Router } from '@angular/router';
 declare var $: any;
 

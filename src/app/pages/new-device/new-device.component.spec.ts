@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
 import { NewDeviceComponent } from './new-device.component';
-import { CommonService } from 'src/app/service/common.service';
-import { AuthService } from 'src/app/service/auth.service';
-import { utilDeviceService } from 'src/app/service/utilDevice.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { utilDeviceService } from 'src/app/service/core/util-device.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { DeviceService } from 'src/app/service/acl/device.service';
 import { Router } from '@angular/router';

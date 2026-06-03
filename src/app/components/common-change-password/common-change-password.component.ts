@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { UserService } from 'src/app/service/user.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { UserService } from 'src/app/service/admin/user.service';
 import { HttpParams } from '@angular/common/http';
 import * as crypto from 'crypto-js';
 

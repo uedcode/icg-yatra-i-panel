@@ -8,7 +8,7 @@ import {
   EventEmitter,
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { VersionhistoryService } from 'src/app/service/master/versionhistory.service';
 
 declare var $: any;

@@ -1,8 +1,8 @@
 import {Component, Input, OnInit, Output, ViewChild, EventEmitter, SimpleChanges} from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { MappingService } from 'src/app/service/mapping.service';
+import { MappingService } from 'src/app/service/admin/mapping.service';
 
 declare var $: any;
 

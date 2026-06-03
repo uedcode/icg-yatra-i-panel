@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { MasterPortService } from 'src/app/service/master/master-port.service';
 declare var $: any;
 

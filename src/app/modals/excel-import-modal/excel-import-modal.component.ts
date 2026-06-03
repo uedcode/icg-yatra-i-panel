@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { AuthService } from 'src/app/service/auth.service';
-import { CommonService } from 'src/app/service/common.service';
-import { ImportExportAuditService } from 'src/app/service/importExportAudit.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { ImportExportAuditService } from 'src/app/service/admin/importExportAudit.service';
 import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
 declare var $: any;

@@ -1,10 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
-import { FormStateService } from 'src/app/service/formState.service';
-import { ClaimService } from 'src/app/service/claim.service';
-import { AuthService } from 'src/app/service/auth.service';
+import { FormStateService } from 'src/app/service/form/formState.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 
 declare var $: any;
 

@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { TyDutyPurposeService } from 'src/app/service/master/ty-duty-purpose.service';
 
 declare var $: any;

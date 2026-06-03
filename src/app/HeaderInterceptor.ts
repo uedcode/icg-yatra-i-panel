@@ -1,5 +1,5 @@
-import { AuthTokenService } from 'src/app/service/authToken.service';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthTokenService } from 'src/app/service/auth/auth-token.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, BehaviorSubject } from 'rxjs';
@@ -8,7 +8,7 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { tap, switchMap, catchError, filter, take, mapTo } from 'rxjs/operators';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 
 @Injectable()
 export class HeaderInterceptor implements HttpInterceptor {

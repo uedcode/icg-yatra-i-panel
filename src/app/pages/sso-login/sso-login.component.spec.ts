@@ -3,8 +3,8 @@ import { of, throwError } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 
 import { SsoLoginComponent } from './sso-login.component';
-import { CommonService } from 'src/app/service/common.service';
-import { AuthService } from 'src/app/service/auth.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { Router } from '@angular/router';
 
 describe('SsoLoginComponent', () => {

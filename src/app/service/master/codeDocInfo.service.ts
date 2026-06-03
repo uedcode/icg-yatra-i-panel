@@ -2,7 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { CommonService } from '../common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'

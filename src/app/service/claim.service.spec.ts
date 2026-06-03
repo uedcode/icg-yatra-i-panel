@@ -1,8 +1,8 @@
 import { HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { ClaimService } from './claim.service';
-import { CommonService } from './common.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
+import { CommonService } from 'src/app/service/core/common.service';
 
 describe('ClaimService', () => {
   let service: ClaimService;

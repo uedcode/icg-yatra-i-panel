@@ -1,9 +1,9 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { CommonService } from 'src/app/service/common.service';
+import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
-import { AuthService } from 'src/app/service/auth.service';
-import { ApproverService } from 'src/app/service/approver.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { ApproverService } from 'src/app/service/admin/approver.service';
 import * as crypto from 'crypto-js';
 
 declare var $: any;

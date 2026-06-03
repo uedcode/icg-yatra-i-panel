@@ -1,17 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UtilService } from 'src/app/service/util.service';
-import { AuthService } from 'src/app/service/auth.service';
-import { DropdownManageService } from 'src/app/service/dropdownManage.service';
-import { FormService } from 'src/app/service/form.service';
-import { FormManageService } from 'src/app/service/formManage.service';
-import { FormStateService } from 'src/app/service/formState.service';
-import { MasterShipService } from 'src/app/service/master/master-ship.service';
-import { UserService } from 'src/app/service/user.service';
-import { CommonService } from 'src/app/service/common.service';
-import { ClaimService } from 'src/app/service/claim.service';
-import { ClaimUtilService } from 'src/app/service/claimUtil.service';
+import { UtilService } from 'src/app/service/core/util.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
+import { DropdownManageService } from 'src/app/service/form/dropdown-manage.service';
+import { FormService } from 'src/app/service/form/form.service';
+import { FormManageService } from 'src/app/service/form/form-manage.service';
+import { FormStateService } from 'src/app/service/form/formState.service';
+import { CommonService } from 'src/app/service/core/common.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimUtilService } from 'src/app/service/claim/claim-util.service';
 import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
 
 /* ========= BASIC DTOs YOU ALREADY STARTED ========= */
@@ -273,8 +271,6 @@ export class FormTydutyComponent implements OnInit {
     public $formState: FormStateService,
     public $formManage: FormManageService,
     private $dropdownManage: DropdownManageService,
-    private $ship: MasterShipService,
-    private $user: UserService,
     private $common: CommonService,
     private $claim: ClaimService,
     private $util: ClaimUtilService,
