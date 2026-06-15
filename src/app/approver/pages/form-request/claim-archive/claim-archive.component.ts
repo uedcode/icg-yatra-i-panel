@@ -26,6 +26,7 @@ export class ClaimArchiveComponent implements OnInit {
   toggleFilter: any = false;
   key = 'createdOn';
   reverse = false;
+  restoreLoadingMap: { [key: string]: boolean } = {};
   formId: any;
   claimId: any;
   pageTitle = 'Claim Archive';
@@ -117,6 +118,49 @@ export class ClaimArchiveComponent implements OnInit {
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
     }
+  }
+
+  restoreClaim(data: any): void {
+    const claimStateId =
+      data?.claimStateId ||
+      data?.yatClaimStateDTO?.claimStateId ||
+      data?.yatClaimStateDTO?.id ||
+      data?.id;
+    const listKey = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || claimStateId;
+    if (!claimStateId || this.restoreLoadingMap[listKey]) {
+      return;
+    }
+
+    this.restoreLoadingMap[listKey] = true;
+    const config = {
+      headers: {
+        ids: [String(claimStateId)],
+        isArchive: '0',
+      },
+    };
+
+    this.$claim.changeClaimStatusArchive(config).subscribe({
+      next: (res: any) => {
+        this.restoreLoadingMap[listKey] = false;
+        if (!res?.status) {
+          this.$common.showMessage(res?.message || 'Restore failed.', 'danger');
+          return;
+        }
+
+        this.dataList = this.dataList.filter(
+          (item: any) =>
+            (item?.claimStateId ||
+              item?.yatClaimStateDTO?.claimStateId ||
+              item?.yatClaimStateDTO?.id ||
+              item?.id) != claimStateId
+        );
+        this.$common.showMessage(res?.message || 'Claim restored successfully.', 'success');
+      },
+      error: () => {
+        this.restoreLoadingMap[listKey] = false;
+        this.$common.showMessage('Something went wrong while restoring claim.', 'danger');
+      },
+    });
   }
 
   viewHistory(formId: any, claimId: any = null): void {

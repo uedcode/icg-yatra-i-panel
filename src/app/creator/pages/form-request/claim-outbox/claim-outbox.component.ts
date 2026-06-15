@@ -206,6 +206,32 @@ export class ClaimOutboxComponent implements OnInit {
     );
   }
 
+  downloadRequisition(data: any): void {
+    const url =
+      data?.yatClaimDTO?.inkSignedFileUrl ||
+      data?.yatClaimDTO?.signedFileUrl ||
+      data?.inkSignedFileUrl ||
+      data?.signedFileUrl;
+    if (!url) {
+      this.$common.showMessage('Requisition form is not available.', 'warning');
+      return;
+    }
+    this.$common.download(url);
+  }
+
+  downloadSupportingDocument(data: any): void {
+    const url =
+      data?.yatClaimDTO?.supportingDocUrl ||
+      data?.yatClaimDTO?.supportingDocumentUrl ||
+      data?.supportingDocUrl ||
+      data?.supportingDocumentUrl;
+    if (!url) {
+      this.$common.showMessage('Supporting document is not available.', 'warning');
+      return;
+    }
+    this.$common.download(url);
+  }
+
  formId;
  claimId;
   viewHistory(formId: any, claimId: any = null): void {

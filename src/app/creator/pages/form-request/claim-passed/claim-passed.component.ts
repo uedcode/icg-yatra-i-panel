@@ -44,6 +44,7 @@ export class ClaimPassedComponent implements OnInit {
   p: any = 1;
   toggleFilter: any = false;
   archiveLoadingMap: { [key: string]: boolean } = {};
+  recoveryAdjustedObj: any = null;
   readonly moduleType: 'CLM' = 'CLM';
 
   ngOnInit() {
@@ -220,6 +221,116 @@ filterDataObj;
       error: () => {
         this.archiveLoadingMap[listKey] = false;
         this.$common.showMessage('Something went wrong while archiving claim.', 'danger');
+      },
+    });
+  }
+
+  hasInkSignedFile(data: any): boolean {
+    return !!(data?.yatClaimDTO?.inkSignedFileUrl || data?.inkSignedFileUrl);
+  }
+
+  isDpPayment(data: any): boolean {
+    return (data?.yatClaimDTO?.paymentType || data?.paymentType) === 'DP';
+  }
+
+  hasSupplementaryClaim(data: any): boolean {
+    return !!(data?.yatClaimDTO?.supClaimId || data?.supClaimId);
+  }
+
+  downloadCreditDebit(data: any): void {
+    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
+      return;
+    }
+
+    this.$claim.generateDebitCreditNote({ headers: { claimId } }).subscribe({
+      next: (res: any) => {
+        const responseObject = Array.isArray(res?.object) ? res.object[0] : res?.object;
+        const fileUrl =
+          (typeof responseObject === 'string' ? responseObject : responseObject?.debitCreditNoteFileUrl) ||
+          data?.yatClaimDTO?.debitCreditNoteFileUrl ||
+          data?.debitCreditNoteFileUrl;
+        if (!res?.status || !fileUrl) {
+          this.$common.showMessage(res?.message || 'Credit/Debit document is not available.', 'warning');
+          return;
+        }
+        this.$common.download(fileUrl);
+      },
+      error: () => {
+        this.$common.showMessage('Error while downloading Credit/Debit document.', 'danger');
+      },
+    });
+  }
+
+  downloadDailySlip(data: any): void {
+    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
+      return;
+    }
+
+    this.$claim.fileClaimDailySlip({ headers: { claimId } }).subscribe({
+      next: (res: any) => {
+        const claimObj = Array.isArray(res?.object) ? res.object[0] : res?.object;
+        const fileUrl = claimObj?.debitCreditNoteFileUrl || data?.yatClaimDTO?.debitCreditNoteFileUrl;
+        if (!res?.status || !fileUrl) {
+          this.$common.showMessage(res?.message || 'Daily slip is not available.', 'warning');
+          return;
+        }
+        this.$common.downloadAbsolute(`${this.$common.fileUrl}${fileUrl}`, `VC-${claimObj?.formId || claimId}.pdf`);
+      },
+      error: () => {
+        this.$common.showMessage('Error while downloading daily slip.', 'danger');
+      },
+    });
+  }
+
+  downloadSignedForm(data: any): void {
+    const url =
+      data?.yatClaimDTO?.inkSignedFileUrl ||
+      data?.yatClaimDTO?.signedFileUrl ||
+      data?.inkSignedFileUrl ||
+      data?.signedFileUrl;
+    if (!url) {
+      this.$common.showMessage('Signed form is not available.', 'warning');
+      return;
+    }
+    this.$common.download(url);
+  }
+
+  getRecoveryAdjusted(data: any): void {
+    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
+      return;
+    }
+
+    this.recoveryAdjustedObj = null;
+    this.$claim.getRecoveryAdjustedList({ headers: { claimId } }).subscribe({
+      next: (res: any) => {
+        this.recoveryAdjustedObj = Array.isArray(res?.object) ? res.object[0] || null : res?.object || null;
+        setTimeout(() => $('#recAdjModal').modal('show'), 0);
+      },
+      error: () => {
+        this.$common.showMessage('Error while loading recovery adjusted details.', 'danger');
+      },
+    });
+  }
+
+  createSupplementaryClaim(data: any): void {
+    const claim = data?.yatClaimDTO || {};
+    const claimId = claim?.claimId || data?.claimId || data?.formId;
+    const subFormId = claim?.codeSubFormDTO?.subFormId || data?.subFormId || data?.codeSubFormDTO?.subFormId;
+    const route = this.getCreatorClaimRoute(subFormId, false);
+    if (!claimId || !route) {
+      this.$common.showMessage('Supplementary claim route is not available.', 'warning');
+      return;
+    }
+    this.router.navigate([`${this.$auth.getModuleName()}/${route}`], {
+      queryParams: {
+        subFormId,
+        supId: claimId,
       },
     });
   }

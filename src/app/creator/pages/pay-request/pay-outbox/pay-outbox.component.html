@@ -43,7 +43,7 @@
                   <table class="table table-bordered" style="width:100%">
                     <thead>
                       <tr>
-                        <th class="wd-5p">S No.</th>
+                        <th class="wd-5p">S.No.</th>
                         <th>PNO/Name/Rank</th>
                         <th>Form Status</th>
                         <th>Document</th>
@@ -51,13 +51,13 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let row of dataList | filterComplex : searchObj | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
-                        <td>{{ (i + 1) + (p - 1) * noOfPage }}</td>
+                        <td>{{ (i + 1) + (p - 1) * noOfPage }}.</td>
                         <td>{{ row?.yatPayDetailsDTO?.pno || '-' }}/{{ row?.yatPayDetailsDTO?.name || '-' }}/{{ row?.yatPayDetailsDTO?.rank || '-' }}</td>
                         <td>
                           <span class="btn btn-info btn-sm">{{ row?.onWork || row?.claimState || row?.state || '-' }}</span>
                         </td>
                         <td>
-                          {{ row?.yatPayDetailsDTO?.docName || '-' }}
+                          {{ row?.yatPayDetailsDTO?.docName || '-' }}:
                           <button type="button" class="btn btn-info btn-sm ml-2" (click)="downloadDocument(row)">Download</button>
                         </td>
                       </tr>

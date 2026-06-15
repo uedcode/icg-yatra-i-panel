@@ -132,7 +132,7 @@
                           <button class="btn btn-info" title="Signed Form" (click)="downloadSignedForm(dataObj)">Signed Form</button>
                         </td>
                         <td>
-                          <button class="btn btn-info" title="Extended Period" (click)="viewForm(dataObj)">Extended Period</button>
+                          <button class="btn btn-info" title="Extend duty" [disabled]="isExtendDutyDisabled(dataObj)" (click)="extendDuty(dataObj)">Extend duty</button>
                         </td>
                         <td>
                           <button

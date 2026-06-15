@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { CommonService } from 'src/app/service/core/common.service';
-declare var $: any;
+import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 
 @Component({
   selector: 'app-manual-draft',
@@ -26,8 +26,6 @@ export class ManualDraftComponent implements OnInit {
   toggleFilter: any = false;
   key = 'createdOn';
   reverse = false;
-  formId: any;
-  claimId: any;
 
   constructor(
     private location: Location,
@@ -50,18 +48,17 @@ export class ManualDraftComponent implements OnInit {
 
   getState() {
     const searchHeaders = this.getLegacySearchHeaders();
+    const codeRoleList = this.$auth.codeRoleType();
     const config = {
-      headers: {
-        roleTypeId: this.userIdDetails?.roleTypeId,
-        userId: this.userIdDetails?.userId,
-        unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+      headers: buildLegacyClaimStateHeaders({
+        ...this.userIdDetails,
         claimState: this.codeStatus?.manualDraft || 'MD',
         isArchive: '0',
-        formId: searchHeaders.formId,
+        formId: 'ADV',
+        searchFormId: searchHeaders.formId,
         pno: searchHeaders.pno,
         searchedName: searchHeaders.searchedName,
-      },
+      }, codeRoleList),
     };
 
     this.$claim.getClaimStates(config).subscribe((res: any) => {
@@ -106,22 +103,40 @@ export class ManualDraftComponent implements OnInit {
     this.applyServerSearch();
   }
 
-  viewForm(data: any) {
-    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
-      data,
-      data?.claimState || this.codeStatus?.manualDraft || 'MD'
-    );
-    if (routeUrl) {
-      this.router.navigateByUrl(routeUrl);
+  editManualDraft(data: any): void {
+    const claimId = this.getClaimId(data);
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
+      return;
     }
+    const formUrl = data?.yatClaimDTO?.codeSubFormDTO?.formUrl || 'form-manual-adv';
+    this.router.navigateByUrl(this.$auth.getModuleName() + `/${formUrl}?id=${claimId}&claimId=${claimId}`);
   }
 
-  viewHistory(formId: any, claimId: any = null): void {
-    this.formId = formId;
-    this.claimId = claimId || null;
-    setTimeout(() => {
-      $('#viewHistoryModal').modal('show');
-    }, 0);
+  deleteManualDraft(data: any): void {
+    const claimId = this.getClaimId(data);
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
+      return;
+    }
+
+    this.$claim.deleteClaim({ headers: { ids: [String(claimId)] } }).subscribe({
+      next: (res: any) => {
+        if (!res?.status) {
+          this.$common.showMessage(res?.message || 'Delete failed.', 'danger');
+          return;
+        }
+        this.dataList = this.dataList.filter((item: any) => this.getClaimId(item) != claimId);
+        this.$common.showMessage(res?.message || 'Claim deleted successfully.', 'success');
+      },
+      error: () => {
+        this.$common.showMessage('Something went wrong while deleting claim.', 'danger');
+      },
+    });
+  }
+
+  private getClaimId(data: any): any {
+    return data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || data?.id;
   }
 
   sort(key: string) {

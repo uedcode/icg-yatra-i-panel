@@ -90,33 +90,19 @@
                   <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width: 100%">
                     <thead>
                       <tr>
-                        <th class="wd-5p">S No.</th>
-                        <th class="wd-20p">Claim ID<i class="fa fa-sort" (click)="sort('customId')"></i>
-                        </th>
-                        <th class="wd-20p">Claim Type<i class="fa fa-sort" (click)="sort('customId')"></i>
-                        </th>
-                        <th class="wd-20p">
-                          Unit<i class="fa fa-sort" (click)="sort('unit')"></i>
-                        </th>
-                        <th class="wd-20p">
-                          PNO/Name/Rank
-                          <i class="fa fa-sort" (click)="sort('fullDescr')"></i>
-                        </th>
-                        <th class="wd-20p">Claim Amount<i class="fa fa-sort" (click)="sort('recommendedAmount')"></i>
-                        </th>
-                        <th class="wd-20p">Claim Remark<i class="fa fa-sort" (click)="sort('remarks')"></i>
-                        </th>
-                        <th class="wd-20p">View History</th>
-                        <!-- <th class="wd-20p">Claim State<i class="fa fa-sort" (click)="sort('onWork')"></i></th> -->
-                        <th class="wd-15p">
-                          Created On
-                          <i class="fa fa-sort" (click)="sort('createdOn')"></i>
-                        </th>
-                        <th class="wd-15p">
-                          Updated On
-                          <i class="fa fa-sort" (click)="sort('updatedOn')"></i>
-                        </th>
-                        <th class="actionBtnWidth">Action</th>
+                        <th>S.No.</th>
+                        <th>Form Name</th>
+                        <th>Form ID</th>
+                        <th>Submission Date</th>
+                        <th>Claim Amount</th>
+                        <th>Passed Amount</th>
+                        <th>View Form</th>
+                        <th>Observations</th>
+                        <th>Credit/Debit</th>
+                        <th>Signed Form</th>
+                        <th>Recovery Adjusted</th>
+                        <th>Archive</th>
+                        <th>Supplementary</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -128,43 +114,48 @@
                               : { itemsPerPage: noOfPage, currentPage: p };
                           let i = index
                         ">
-                        <td>{{ i + 1 + (p - 1) * noOfPage }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.claimId || dataObj?.customId || dataObj?.claimId || dataObj?.formId) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.codeUnitDTO?.descr || dataObj?.yatClaimDTO?.codeUnitDTO?.unit || dataObj?.unit) | showHypen }}</td>
-                        <td>{{ (dataObj?.fullName || dataObj?.yatClaimDTO?.remark || dataObj?.fullDescr) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.claimAmt || dataObj?.recommendedAmount) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.remark || dataObj?.remarks) | showHypen }}</td>
+                        <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.claimAmt || dataObj?.claimAmt) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.passedAmt || dataObj?.passedAmt || dataObj?.recommendedAmount) | showHypen }}</td>
                         <td>
-                          <button class="btn btn-warning" title="View History" data-target="#viewHistoryModal"
-                            (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">View History</button>
+                          <button *ngIf="hasInkSignedFile(dataObj)" class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
                         </td>
-                        <!-- <td>{{dataObj?.onWork | showHypen}}</td>   -->
-                        <td>{{ (dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate : "medium" }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.updatedOn || dataObj?.updatedOn) | showDate : "medium" }}</td>
-                        <td class="switch_in_table">
-                          <button class="btn btn-warning" title="View Claim" (click)="viewForm(dataObj)">
-                            <i class="fa fa-eye"></i>
-                          </button>
+                        <td>
+                          <button *ngIf="hasInkSignedFile(dataObj)" class="btn btn-info" title="View" (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">View</button>
+                        </td>
+                        <td>
+                          <button *ngIf="!isDpPayment(dataObj)" class="btn btn-info" title="Download" (click)="downloadCreditDebit(dataObj)">Download</button>
+                          <button *ngIf="isDpPayment(dataObj)" class="btn btn-primary" title="Download" (click)="downloadDailySlip(dataObj)">Download DP</button>
+                        </td>
+                        <td>
+                          <button *ngIf="hasInkSignedFile(dataObj)" class="btn btn-info" title="Download" (click)="downloadSignedForm(dataObj)">Download</button>
+                        </td>
+                        <td>
+                          <button class="btn btn-info" title="View" (click)="getRecoveryAdjusted(dataObj)">View</button>
+                        </td>
+                        <td>
                           <button
-                            class="btn btn-info ml-1"
+                            class="btn btn-info"
                             title="Archive"
                             [disabled]="archiveLoadingMap[dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId || dataObj?.claimStateId]"
                             (click)="archiveClaim(dataObj)"
                           >
-                            <i
-                              class="fa"
-                              [ngClass]="archiveLoadingMap[dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId || dataObj?.claimStateId] ? 'fa-spinner fa-spin' : 'fa-archive'"
-                            ></i>
+                            Archive
                           </button>
+                        </td>
+                        <td>
+                          <button *ngIf="!hasSupplementaryClaim(dataObj)" class="btn btn-info" title="Create" (click)="createSupplementaryClaim(dataObj)">Create</button>
                         </td>
                       </tr>
 
                       <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                        <td colspan="20">No Records Available</td>
+                        <td colspan="13">No Records Available</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="dataList?.length">
-                        <td colspan="20">
+                        <td colspan="13">
                           <pagination-controls (pageChange)="p = $event"></pagination-controls>
                         </td>
                       </tr>
@@ -176,6 +167,40 @@
           </div>
         </div>
 <app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>
+
+<div class="modal fade" id="recAdjModal" tabindex="-1" role="dialog" aria-labelledby="recAdjModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="recAdjModalLabel">Recovery Credit</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th>Recovery Amount (Rs.)</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="recoveryAdjustedObj">
+                <td>{{ recoveryAdjustedObj?.amount | showHypen }}</td>
+                <td [innerHTML]="recoveryAdjustedObj?.remarks || '-'"></td>
+              </tr>
+              <tr *ngIf="!recoveryAdjustedObj">
+                <td colspan="2" class="text-center">No Records</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 

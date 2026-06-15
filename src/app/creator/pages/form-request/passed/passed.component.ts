@@ -251,6 +251,39 @@ filterDataObj;
     this.$common.download(url);
   }
 
+  isExtendDutyDisabled(data: any): boolean {
+    const claim = data?.yatClaimDTO || data || {};
+    const subFormId = claim?.codeSubFormDTO?.subFormId || data?.subFormId;
+    return !!claim?.refClaimId || subFormId !== 'T' || !!claim?.refExtendedAdvId;
+  }
+
+  extendDuty(data: any): void {
+    if (this.isExtendDutyDisabled(data)) {
+      return;
+    }
+
+    const claim = data?.yatClaimDTO || data || {};
+    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
+      return;
+    }
+
+    const route = this.getCreatorClaimRoute('T', false);
+    if (!route) {
+      this.$common.showMessage('TY advance route is not available.', 'warning');
+      return;
+    }
+
+    this.router.navigate([this.$auth.getModuleName() + `/${route}`], {
+      queryParams: {
+        extnId: claimId,
+        extnClaimId: claimId,
+        subFormId: 'T',
+      },
+    });
+  }
+
 }
 
 

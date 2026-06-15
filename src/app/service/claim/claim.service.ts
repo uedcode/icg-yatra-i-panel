@@ -462,6 +462,51 @@ export class ClaimService {
     );
   }
 
+  generateDebitCreditNote(config?: any) {
+    return this.http.get<any>(`debitCreditNote/generateDebitCreditNote`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  fileClaimDailySlip(config?: any) {
+    return this.http.put<any>(`claim/fileClaimDailySlip`, {}, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  fileDownloadedForInkSign(config?: any) {
+    return this.http.put<any>(`claim/fileDownloadedForInkSign`, {}, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  uploadInkSignedFile(formData: FormData) {
+    return this.http.post<any>(`claim/uploadInkSignedFile`, formData).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  changeStatusToUploaded(config?: any) {
+    return this.http.put<any>(`claim/changeStatusToUploaded`, {}, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
   /**
    * Manual advance master.
    * Old JS: manualAdvUrl = ApiUrl + "manualAdv"; /all
