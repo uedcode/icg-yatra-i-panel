@@ -226,16 +226,42 @@ filterDataObj;
   }
 
   downloadVoucher(data: any): void {
-    const url =
-      data?.yatClaimDTO?.voucherFileUrl ||
-      data?.yatClaimDTO?.voucherUrl ||
-      data?.voucherFileUrl ||
-      data?.voucherUrl;
-    if (!url) {
-      this.$common.showMessage('Voucher is not available.', 'warning');
+    const claim = data?.yatClaimDTO || {};
+    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available for voucher download.', 'warning');
       return;
     }
-    this.$common.download(url);
+
+    const config = {
+      headers: {
+        claimId,
+        ...(claim?.codeSubFormDTO?.subFormId ? { subFormId: claim.codeSubFormDTO.subFormId } : {}),
+      },
+    };
+
+    this.$claim.fileDownloadedVoucher(config).subscribe({
+      next: (res: any) => {
+        const voucher = Array.isArray(res?.object) ? res.object[0] || {} : res?.object || {};
+        const voucherPath =
+          voucher?.voucherFileUrl ||
+          claim?.voucherFileUrl ||
+          claim?.voucherUrl ||
+          data?.voucherFileUrl ||
+          data?.voucherUrl;
+        if (!res?.status || !voucherPath) {
+          this.$common.showMessage(res?.message || 'Voucher file is not available.', 'warning');
+          return;
+        }
+
+        const fileName = `VC-${voucher?.formId || claim?.formId || claimId}.pdf`;
+        this.$common.downloadAbsolute(`${this.$common.fileUrl}${voucherPath}`, fileName);
+        this.$common.showMessage(res?.message || 'Voucher downloaded successfully.');
+      },
+      error: () => {
+        this.$common.showMessage('Error while downloading voucher.', 'danger');
+      },
+    });
   }
 
   downloadSignedForm(data: any): void {
@@ -249,6 +275,19 @@ filterDataObj;
       return;
     }
     this.$common.download(url);
+  }
+
+  hasVoucher(data: any): boolean {
+    return !!(data?.yatClaimDTO?.punchingId || data?.yatClaimDTO?.voucherFileUrl || data?.voucherFileUrl);
+  }
+
+  hasSignedForm(data: any): boolean {
+    return !!(
+      data?.yatClaimDTO?.inkSignedFileUrl ||
+      data?.yatClaimDTO?.signedFileUrl ||
+      data?.inkSignedFileUrl ||
+      data?.signedFileUrl
+    );
   }
 
   isExtendDutyDisabled(data: any): boolean {

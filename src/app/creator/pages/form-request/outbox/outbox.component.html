@@ -98,7 +98,6 @@
                         <option value="25">25</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="100000">All</option>
                       </select>
                       <label>entries</label>
                     </div>
@@ -131,8 +130,8 @@
                         <td>{{ (i + 1) + (p - 1) * noOfPage}}.</td>
                         <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen}}</td>
                         <td>{{dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-'}}</td>
-                        <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.formId || dataObj?.claimId) | showHypen}}</td>
-                        <td>{{(dataObj?.yatClaimDTO?.status || dataObj?.onWork || dataObj?.claimState || dataObj?.formState) | showHypen}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.claimId) | showHypen}}</td>
+                        <td>{{(dataObj?.onWork || dataObj?.yatClaimDTO?.status || dataObj?.claimState || dataObj?.formState) | showHypen}}</td>
                         <td>
                           <button type="button" class="btn btn-info" (click)="downloadRequisition(dataObj)">Download</button>
                         </td>

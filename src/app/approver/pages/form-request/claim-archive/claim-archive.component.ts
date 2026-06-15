@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
 @Component({
@@ -15,6 +16,7 @@ declare var $: any;
 })
 export class ClaimArchiveComponent implements OnInit {
   codeStatus: any;
+  roleCodes: any;
   userIdDetails: any;
   @Input() dataList: Array<any> = [];
   @ViewChild('requiredForm', { static: true }) requiredForm: NgForm;
@@ -43,10 +45,11 @@ export class ClaimArchiveComponent implements OnInit {
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
+    this.roleCodes = this.$auth.codeRoleType();
     const routeData = this.route.snapshot?.data || {};
     this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
     this.pageTitle = this.getPageTitle();
-    if (this.userIdDetails?.roleTypeId !== this.$auth.codeRoleType()?.verifier) {
+    if (this.userIdDetails?.roleTypeId !== this.roleCodes?.verifier) {
       this.$common.showMessage(`${this.pageTitle} is available for verifier role only.`, 'danger');
       this.router.navigateByUrl(this.$auth.getModuleName() + '/dashboard');
       return;
@@ -58,46 +61,48 @@ export class ClaimArchiveComponent implements OnInit {
   getState() {
     const searchHeaders = this.getLegacySearchHeaders();
     const config = {
-      headers: {
-        roleTypeId: this.userIdDetails?.roleTypeId,
-        userId: this.userIdDetails?.userId,
-        unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+      headers: buildLegacyClaimStateHeaders({
+        ...this.userIdDetails,
         claimState: '',
         isArchive: '1',
         formId: this.resolveQueueFormId(),
-        searchFormId: searchHeaders.formId,
+        searchFormId: '',
         pno: searchHeaders.pno,
         searchedName: searchHeaders.searchedName,
-      },
+      }, this.roleCodes),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
 
-  private getLegacySearchHeaders(): { formId: string; pno: string; searchedName: string } {
-    const formId = (this.filterObj?.formId || '').toString().trim();
+  private getLegacySearchHeaders(): { pno: string; searchedName: string } {
     const pno = (this.filterObj?.pno || '').toString().trim();
     const searchedName = (this.filterObj?.searchedName || '').toString().trim();
-    if (formId || pno || searchedName) {
-      return { formId, pno, searchedName };
+    if (pno || searchedName) {
+      return { pno, searchedName };
     }
 
     const raw = (this.searchObj || '').toString().trim();
     if (!raw) {
-      return { formId: '', pno: '', searchedName: '' };
+      return { pno: '', searchedName: '' };
     }
     if (/^\d+$/.test(raw)) {
-      return { formId: raw, pno: raw, searchedName: '' };
+      return { pno: raw, searchedName: '' };
     }
-    if (/^[A-Za-z0-9/-]+$/.test(raw)) {
-      return { formId: '', pno: raw, searchedName: '' };
+    if (/^[A-Za-z0-9/-]+$/.test(raw) && !/\s/.test(raw)) {
+      return { pno: raw, searchedName: '' };
     }
-    return { formId: '', pno: '', searchedName: raw };
+    return { pno: '', searchedName: raw };
   }
 
   applyServerSearch(): void {
+    const pno = (this.filterObj?.pno || '').toString().trim();
+    const searchedName = (this.filterObj?.searchedName || '').toString().trim();
+    if (!pno && !searchedName) {
+      this.$common.showMessage('Please enter PNO or Name.', 'danger');
+      return;
+    }
     this.p = 1;
     this.getState();
   }
@@ -116,7 +121,7 @@ export class ClaimArchiveComponent implements OnInit {
   viewForm(data: any) {
     const routeUrl = this.$auth.getApproverWorkflowDetailUrl(data, data?.claimState || '');
     if (routeUrl) {
-      this.router.navigateByUrl(routeUrl);
+      window.open(routeUrl, '_blank');
     }
   }
 

@@ -57,7 +57,7 @@
                         <th>Occurrence Date</th>
                         <th>Form Name</th>
                         <th>Form ID</th>
-                        <th>Remarks</th>
+                        <th *ngIf="!isVerifier1()">Remarks</th>
                         <th>Action</th>
                         <th>Previous Advance</th>
                         </tr>
@@ -69,13 +69,17 @@
                         <td>{{ (dataObj?.fullName || dataObj?.fullDescr) | showHypen }}</td>
                         <td>{{ dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-' }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId) | showHypen }}</td>
-                        <td>{{ (dataObj?.remarks || dataObj?.yatClaimDTO?.remark) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.claimId) | showHypen }}</td>
+                        <td *ngIf="!isVerifier1()">{{ (dataObj?.yatClaimDTO?.remark || dataObj?.remarks) | showHypen }}</td>
                         <td>
-                          <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
+                          <button *ngIf="canViewRow(dataObj)" class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
+                          <button *ngIf="showDisabledView(dataObj)" class="btn btn-info" title="View" [disabled]="true">View</button>
+                          <button *ngIf="canMoveToDraft(dataObj)" class="btn btn-warning" title="Move To Draft" (click)="moveToDraft(dataObj)">Move To Draft</button>
+                          <button *ngIf="showDisabledMoveToDraft(dataObj)" class="btn btn-warning" title="Move To Draft" [disabled]="true">Move To Draft</button>
                         </td>
                         <td>
-                          <button class="btn btn-info" title="Previous Advance" (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">Previous Advance</button>
+                          <button *ngIf="canShowPreviousAdvance(dataObj)" class="btn btn-primary" title="Previous Advance" (click)="openPreviousAdvance(dataObj)">Remarks</button>
+                          <span *ngIf="!canShowPreviousAdvance(dataObj)">-</span>
                         </td>
                       </tr>
 

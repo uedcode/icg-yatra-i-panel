@@ -1,13 +1,10 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormService } from 'src/app/service/form/form.service';
 import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { FormStateService } from 'src/app/service/form/formState.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
@@ -19,6 +16,10 @@ declare var $: any;
     standalone: false
 })
 export class ClaimInboxComponent implements OnInit {
+  readonly codeReadyStatus = {
+    readyForDownload: 'RFD',
+    downloaded: 'DW',
+  } as const;
 
   codeStatus: { activate: string; deactivate: string; pending: string; approved: string; rejected: string; success: string; processing: string; cancel: string; outbox: string; draft: string; inbox: string; };
   userIdDetails: any;
@@ -26,26 +27,21 @@ export class ClaimInboxComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $form: FormService,
     public $formManage: FormManageService,
     private router: Router,
     private route: ActivatedRoute,
-    public $formState: FormStateService,
     private $claim: ClaimService,
   ) { }
 
   @Input() dataList: Array<any> = [];
-  @ViewChild('requiredForm', { static: true }) requiredForm: NgForm;
 
   id: any;
   pageType: any;
   searchObj: any;
   config: any;
   formObj: any = {};
-  filterObj: any = {};
   noOfPage: any = 10;
   p: any = 1;
-  toggleFilter: any = false;
   readonly moduleType: 'CLM' = 'CLM';
   uploadTarget: any = null;
   uploadLoadingMap: { [key: string]: boolean } = {};
@@ -119,13 +115,6 @@ export class ClaimInboxComponent implements OnInit {
   }
 
   private getLegacySearchHeaders(): { formId: string; pno: string; searchedName: string } {
-    const formId = (this.filterObj?.formId || '').toString().trim();
-    const pno = (this.filterObj?.pno || '').toString().trim();
-    const searchedName = (this.filterObj?.searchedName || '').toString().trim();
-    if (formId || pno || searchedName) {
-      return { formId, pno, searchedName };
-    }
-
     const raw = (this.searchObj || '').toString().trim();
     if (!raw) {
       return { formId: '', pno: '', searchedName: '' };
@@ -150,11 +139,6 @@ export class ClaimInboxComponent implements OnInit {
     }
   }
 
-  resetAdvancedFilters(): void {
-    this.filterObj = {};
-    this.applyServerSearch();
-  }
-
   private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
     if (id === 'PMTA' || id === 'PMT') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
@@ -170,7 +154,7 @@ export class ClaimInboxComponent implements OnInit {
     return null;
   }
 
-  viewForm(data) {
+  private navigateToClaimForm(data: any): void {
     const payId = data?.yatPayDetailsDTO?.id || data?.id;
     if (payId && (data?.yatPayDetailsDTO || data?.viewUrl === 'form-pay-details' || data?.formUrl === 'form-pay-details')) {
       this.router.navigateByUrl(this.$auth.getModuleName() + `/form-pay-details?id=${payId}`);
@@ -197,63 +181,62 @@ export class ClaimInboxComponent implements OnInit {
     this.router.navigateByUrl(moduleUrl + `/${data?.viewUrl}?id=${data.formId}`);
   }
 
-  moveToDraft(data) {
-    try {
-      const claim = data?.yatClaimDTO || {};
-      const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-      if (claimId) {
-        const config = {
-          headers: {
-            id: claimId,
-          },
-        };
-        this.$claim.editClaim(config).subscribe(
-          (response: any) => {
-            if (response.status === true) {
-              this.$common.showMessage(`${response.message}`);
-              this.dataList = this.dataList.filter(
-                (elem: any) =>
-                  (elem?.yatClaimDTO?.claimId || elem?.formId || elem?.id) != claimId
-              );
-              setTimeout(() => {
-                let moduleUrl = this.$auth.getModuleName();
-                this.router.navigateByUrl(moduleUrl + `/draft`);
-              }, 1000);
-            }
-          },
-          () => {
-            this.$common.hideLoader();
-          }
-        );
-        return;
-      }
-
-      let config = {
-        headers:{
-          "formId": data?.formId,
-        }
-        // "roleTypeId": this.userIdDetails?.roleTypeId,
-        // "status": this.codeStatus?.draft,
-        // "unitId": data?.unitId,
-        
-        // "codeFormId": this.userIdDetails?.formId,
-      }
-      this.$formState.moveToDraft(config).subscribe(response => {
-        if (response.status === true) {
-          this.$common.showMessage(`${response.message}`);
-          this.dataList = this.dataList.filter(elem => elem?.formId != data?.formId);
-          setTimeout(() => {
-            let moduleUrl = this.$auth.getModuleName();
-            this.router.navigateByUrl(moduleUrl + `/draft`);
-          }, 1000);
-        }
-      }, err => {
-        this.$common.hideLoader();
-      })
-    } catch (error) {
-      this.$common.hideLoader();
-      console.log(error);
+  moveToDraft(data: any): void {
+    const claimId = this.getClaimId(data);
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
+      return;
     }
+
+    const payload = {
+      claimId: String(claimId),
+      roleTypeId: this.userIdDetails?.roleTypeId,
+      userId: this.userIdDetails?.userId,
+      status: this.codeStatus?.draft,
+      remark: 'Moved to Draft',
+    };
+
+    this.$claim.changeClaimStatusById(payload).subscribe({
+      next: (response: any) => {
+        if (!response?.status) {
+          this.$common.showMessage(response?.message || 'Unable to move claim to draft.', 'danger');
+          return;
+        }
+
+        this.$common.showMessage(response?.message || 'Claim moved to draft successfully.', 'success');
+        this.dataList = this.dataList.filter((elem: any) => this.getClaimId(elem) != claimId);
+        setTimeout(() => {
+          this.router.navigateByUrl(this.$auth.getModuleName() + '/claim/draft');
+        }, 1000);
+      },
+      error: () => {
+        this.$common.showMessage('Unable to move claim to draft.', 'danger');
+      },
+    });
+  }
+
+  editClaim(data: any): void {
+    const claimId = this.getClaimId(data);
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
+      return;
+    }
+
+    this.$claim.editClaim({ headers: { id: claimId } }).subscribe({
+      next: (response: any) => {
+        if (!response?.status) {
+          this.$common.showMessage(response?.message || 'Unable to edit claim.', 'danger');
+          return;
+        }
+
+        this.$common.showMessage(response?.message || 'Claim moved to draft for editing.', 'success');
+        this.dataList = this.dataList.filter((elem: any) => this.getClaimId(elem) != claimId);
+        this.navigateToClaimForm(data);
+      },
+      error: () => {
+        this.$common.showMessage('Unable to edit claim.', 'danger');
+      },
+    });
   }
 
   downloadRequisition(data: any): void {
@@ -271,11 +254,31 @@ export class ClaimInboxComponent implements OnInit {
 
   canDownloadInkSigned(data: any): boolean {
     const ready = data?.yatClaimDTO?.isReady || data?.isReady;
-    return ready === 'RFD' || ready === 'DW';
+    return ready === this.codeReadyStatus.readyForDownload || ready === this.codeReadyStatus.downloaded;
   }
 
   canUploadInkSigned(data: any): boolean {
-    return (data?.yatClaimDTO?.isReady || data?.isReady) === 'DW';
+    return (data?.yatClaimDTO?.isReady || data?.isReady) === this.codeReadyStatus.downloaded;
+  }
+
+  canMoveToDraft(data: any): boolean {
+    const ready = (data?.yatClaimDTO?.isReady || data?.isReady || '').toString().trim();
+    return !ready;
+  }
+
+  canEditClaim(data: any): boolean {
+    return (data?.yatClaimDTO?.isDeputation || data?.isDeputation) === '-1';
+  }
+
+  getInboxStatusLabel(data: any): string {
+    const ready = data?.yatClaimDTO?.isReady || data?.isReady;
+    if (ready === this.codeReadyStatus.readyForDownload) {
+      return 'Approved.Please download for signature';
+    }
+    if (ready === this.codeReadyStatus.downloaded) {
+      return 'Pending for upload';
+    }
+    return '-';
   }
 
   downloadInkSignedForSign(data: any): void {

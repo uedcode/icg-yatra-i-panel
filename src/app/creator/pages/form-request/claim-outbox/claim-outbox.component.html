@@ -98,7 +98,6 @@
                         <option value="25">25</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="100000">All</option>
                       </select>
                       <label>entries</label>
                     </div>
@@ -132,17 +131,17 @@
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.subDate || dataObj?.yatClaimDTO?.submissionDate || dataObj?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.claimId) | showHypen }}</td>
                         <td>
                           <button class="btn btn-info" title="Unit Remarks" (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">Unit Remarks</button>
                         </td>
                         <td>{{ (dataObj?.onWork || dataObj?.claimState || dataObj?.formState) | showHypen }}</td>
                         <td>
-                          <button class="btn btn-info" title="Download" (click)="downloadRequisition(dataObj)">Download</button>
+                          <button *ngIf="isESignClaim(dataObj)" class="btn btn-info" title="Download" (click)="downloadRequisition(dataObj)">Download</button>
                         </td>
                         <td>
-                          <button class="btn btn-info" title="Download" (click)="downloadSupportingDocument(dataObj)">Download</button>
+                          <button *ngIf="isESignClaim(dataObj)" class="btn btn-info" title="Download" (click)="downloadSupportingDocument(dataObj)">Download</button>
                         </td>
                         <td>
                           <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>

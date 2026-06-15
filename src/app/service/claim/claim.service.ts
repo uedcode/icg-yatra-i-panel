@@ -224,6 +224,15 @@ export class ClaimService {
     );
   }
 
+  cloneClaim(config?: any) {
+    return this.http.put<any>(`claim/cloneClaim`, {}, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
   deleteClaim(config?: any) {
     return this.http.delete<any>(`claim`, config).pipe(
       map((res) => {

@@ -1,11 +1,9 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Router } from '@angular/router';
-import { FormService } from 'src/app/service/form/form.service';
 import { FormManageService } from 'src/app/service/form/form-manage.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
@@ -25,24 +23,20 @@ export class ClaimApprovedComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $form: FormService,
     public $formManage: FormManageService,
     private router: Router,
     private $claim: ClaimService,
   ) { }
 
   @Input() dataList: Array<any> = [];
-  @ViewChild('requiredForm', { static: true }) requiredForm: NgForm;
 
   id: any;
   pageType: any;
   searchObj: any;
   config: any;
   formObj: any = {};
-  filterObj: any = {};
   noOfPage: any = 10;
   p: any = 1;
-  toggleFilter: any = false;
   readonly moduleType: 'CLM' = 'CLM';
 
   ngOnInit() {
@@ -74,13 +68,6 @@ filterDataObj;
   }
 
   private getLegacySearchHeaders(): { formId: string; pno: string; searchedName: string } {
-    const formId = (this.filterObj?.formId || '').toString().trim();
-    const pno = (this.filterObj?.pno || '').toString().trim();
-    const searchedName = (this.filterObj?.searchedName || '').toString().trim();
-    if (formId || pno || searchedName) {
-      return { formId, pno, searchedName };
-    }
-
     const raw = (this.searchObj || '').toString().trim();
     if (!raw) {
       return { formId: '', pno: '', searchedName: '' };
@@ -105,13 +92,8 @@ filterDataObj;
     }
   }
 
-  resetAdvancedFilters(): void {
-    this.filterObj = {};
-    this.applyServerSearch();
-  }
-
   downloadRequisition(data: any): void {
-    const url = data?.yatClaimDTO?.inkSignedFileUrl || data?.yatClaimDTO?.signedFileUrl || data?.inkSignedFileUrl;
+    const url = data?.yatClaimDTO?.inkSignedFileUrl || data?.inkSignedFileUrl;
     if (!url) {
       this.$common.showMessage('Requisition form is not available.', 'danger');
       return;

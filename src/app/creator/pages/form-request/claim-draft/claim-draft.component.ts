@@ -1,11 +1,9 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Router } from '@angular/router';
-import { FormService } from 'src/app/service/form/form.service';
 import { FormManageService } from 'src/app/service/form/form-manage.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
@@ -18,6 +16,9 @@ declare var $: any;
     standalone: false
 })
 export class ClaimDraftComponent implements OnInit {
+  readonly yatTravelMode = {
+    yatra: 'YT',
+  } as const;
   codeStatus;
   userIdDetails: any;
 
@@ -25,26 +26,24 @@ export class ClaimDraftComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $form: FormService,
     private router: Router,
     public $formManage: FormManageService,
     private $claim: ClaimService,
   ) { }
 
   @Input() dataList: Array<any> = [];
-  // @ViewChild('requiredForm', { static: true }) requiredForm: NgForm;
 
   id: any;
   pageType: any;
   config: any;
   formObj: any = {};
-  filterObj: any = {};
   rowId: any;
   noOfPage: any = 10;
   p = 1;
   searchObj;
-  toggleFilter: any = false;
   readonly moduleType: 'CLM' = 'CLM';
+  formId: any;
+  claimId: any;
 
 
   ngOnInit() {
@@ -76,13 +75,6 @@ filterDataObj
   }
 
   private getLegacySearchHeaders(): { formId: string; pno: string; searchedName: string } {
-    const formId = (this.filterObj?.formId || '').toString().trim();
-    const pno = (this.filterObj?.pno || '').toString().trim();
-    const searchedName = (this.filterObj?.searchedName || '').toString().trim();
-    if (formId || pno || searchedName) {
-      return { formId, pno, searchedName };
-    }
-
     const raw = (this.searchObj || '').toString().trim();
     if (!raw) {
       return { formId: '', pno: '', searchedName: '' };
@@ -105,11 +97,6 @@ filterDataObj
     if (!(this.searchObj || '').toString().trim()) {
       this.applyServerSearch();
     }
-  }
-
-  resetAdvancedFilters(): void {
-    this.filterObj = {};
-    this.applyServerSearch();
   }
 
   deleteRow(id) {
@@ -140,27 +127,6 @@ filterDataObj
       );
       return;
     }
-
-    let config = {
-      headers: {
-        ids: id,
-      },
-    };
-
-    this.$form.delete(config).subscribe(
-      (response: any) => {
-        this.$common.hideLoader();
-        if (response.status === true) {
-          this.$common.showMessage(`${response.message}`);
-          this.dataList = this.dataList.filter((elem) => elem.formId != id);
-        }
-        $('#delete_modal').modal('hide');
-      },
-      (err) => {
-        this.$common.hideLoader();
-      }
-    );
-
   }
 
   reset() {
@@ -229,6 +195,18 @@ filterDataObj
   setDeleteTarget(data: any) {
     this.id = data?.formId || data?.id;
     this.rowId = data?.yatClaimDTO?.claimId || data?.claimId || null;
+  }
+
+  canDeleteClaim(data: any): boolean {
+    return (data?.yatClaimDTO?.claimMode || data?.claimMode) !== this.yatTravelMode.yatra;
+  }
+
+  viewHistory(formId: any, claimId: any = null): void {
+    this.formId = formId;
+    this.claimId = claimId || null;
+    setTimeout(() => {
+      $('#viewHistoryModal').modal('show');
+    }, 0);
   }
 }
 

@@ -115,10 +115,10 @@
                         ">
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.claimId) | showHypen }}</td>
                         <td>{{ dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-' }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.claimAmt || dataObj?.claimAmt) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.passedAmt || dataObj?.passedAmt || dataObj?.recommendedAmount) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.claimPassAmt || dataObj?.yatClaimDTO?.passedAmt || dataObj?.passedAmt || dataObj?.recommendedAmount) | showHypen }}</td>
                         <td>
                           <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
                         </td>
@@ -126,10 +126,10 @@
                           <button class="btn btn-info" title="Observations" (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">Observations</button>
                         </td>
                         <td>
-                          <button class="btn btn-info" title="Voucher" (click)="downloadVoucher(dataObj)">Voucher</button>
+                          <button *ngIf="hasVoucher(dataObj)" class="btn btn-info" title="Voucher" (click)="downloadVoucher(dataObj)">Voucher</button>
                         </td>
                         <td>
-                          <button class="btn btn-info" title="Signed Form" (click)="downloadSignedForm(dataObj)">Signed Form</button>
+                          <button *ngIf="hasSignedForm(dataObj)" class="btn btn-info" title="Signed Form" (click)="downloadSignedForm(dataObj)">Signed Form</button>
                         </td>
                         <td>
                           <button class="btn btn-info" title="Extend duty" [disabled]="isExtendDutyDisabled(dataObj)" (click)="extendDuty(dataObj)">Extend duty</button>

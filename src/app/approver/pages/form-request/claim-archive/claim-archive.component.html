@@ -24,20 +24,14 @@
                   <div class="row">
                     <div class="col-md-3">
                       <div class="form-group">
-                        <label class="form-label">Claim ID</label>
-                        <input type="text" class="form-control" name="formId" [(ngModel)]="filterObj.formId" placeholder="Claim ID">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
                         <label class="form-label">PNO</label>
-                        <input type="text" class="form-control" name="pno" [(ngModel)]="filterObj.pno" placeholder="PNO">
+                        <input type="text" class="form-control" name="pno" [(ngModel)]="filterObj.pno" placeholder="eg. 01361">
                       </div>
                     </div>
                     <div class="col-md-3">
                       <div class="form-group">
                         <label class="form-label">Name</label>
-                        <input type="text" class="form-control" name="searchedName" [(ngModel)]="filterObj.searchedName" placeholder="Name">
+                        <input type="text" class="form-control" name="searchedName" [(ngModel)]="filterObj.searchedName" placeholder="eg. Rakesh Yadav">
                       </div>
                     </div>
                   </div>
@@ -110,7 +104,7 @@
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ (dataObj?.fullName || dataObj?.fullDescr) | showHypen }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.submissionDate || dataObj?.yatClaimDTO?.occDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
                         <td>{{ (dataObj?.claimState || dataObj?.yatClaimDTO?.status || dataObj?.formState) | showHypen }}</td>
                         <td>
                           <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>

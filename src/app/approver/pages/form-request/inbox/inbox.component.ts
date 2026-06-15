@@ -19,8 +19,9 @@ declare var $: any;
 })
 export class InboxComponent implements OnInit {
  
-  codeStatus: { activate: string; deactivate: string; pending: string; approved: string; rejected: string; success: string; processing: string; cancel: string; outbox: string; draft: string; inbox:string; };
+  codeStatus: { activate: string; deactivate: string; pending: string; approved: string; rejected: string; success: string; processing: string; cancel: string; outbox: string; draft: string; inbox:string; manualDraft: string; };
   userIdDetails: any;
+  roleCodes: any;
   constructor(
     private location: Location,
     public $auth: AuthService,
@@ -47,6 +48,7 @@ export class InboxComponent implements OnInit {
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
+    this.roleCodes = this.$auth.codeRoleType();
     const routeData = this.route.snapshot?.data || {};
     this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
     this.handleEsignFeedback();
@@ -109,6 +111,9 @@ export class InboxComponent implements OnInit {
   }
 
   viewForm(data) {
+    if (!this.canViewRow(data)) {
+      return;
+    }
     const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
       data,
       data?.claimState || this.codeStatus?.inbox,
@@ -117,6 +122,93 @@ export class InboxComponent implements OnInit {
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
     }
+  }
+
+  moveToDraft(data: any): void {
+    if (!this.canMoveToDraft(data)) {
+      return;
+    }
+
+    const claim = data?.yatClaimDTO || {};
+    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'danger');
+      return;
+    }
+
+    const payload = {
+      claimId,
+      roleTypeId: this.userIdDetails?.roleTypeId,
+      userId: this.userIdDetails?.userId,
+      status: this.codeStatus?.manualDraft || 'MD',
+      remark: 'Moved to Draft',
+    };
+
+    this.$common.showLoader();
+    this.$claim.changeClaimStatusById(payload).subscribe({
+      next: (response: any) => {
+        this.$common.hideLoader();
+        if (response?.status === true) {
+          this.$common.showMessage(response?.message || 'Moved to draft successfully.', 'success');
+          this.dataList = this.dataList.filter(
+            (item: any) =>
+              (item?.yatClaimDTO?.claimId || item?.claimId || item?.formId || item?.id) != claimId
+          );
+          this.router.navigateByUrl(this.$auth.getModuleName() + '/manual-draft');
+          return;
+        }
+        this.$common.showMessage(response?.message || 'Unable to move request to draft.', 'danger');
+      },
+      error: () => {
+        this.$common.hideLoader();
+        this.$common.showMessage('Unable to move request to draft.', 'danger');
+      },
+    });
+  }
+
+  isVerifier1(): boolean {
+    return this.userIdDetails?.roleTypeId === this.roleCodes?.verifier1;
+  }
+
+  hasClaimState(data: any): boolean {
+    const claimState = data?.yatClaimDTO?.claimState || data?.claimState || data?.statusId;
+    return !this.$auth.isNullOrEmpty(claimState);
+  }
+
+  canViewRow(data: any): boolean {
+    return String(data?.viewIndicator || '') === '1' && this.hasClaimState(data);
+  }
+
+  canMoveToDraft(data: any): boolean {
+    return String(data?.viewIndicator || '') === '1' && !this.hasClaimState(data);
+  }
+
+  showDisabledView(data: any): boolean {
+    return String(data?.viewIndicator || '') === '0' && this.hasClaimState(data);
+  }
+
+  showDisabledMoveToDraft(data: any): boolean {
+    return String(data?.viewIndicator || '') === '0' && !this.hasClaimState(data);
+  }
+
+  canShowPreviousAdvance(data: any): boolean {
+    const claim = data?.yatClaimDTO || {};
+    const subFormId = String(claim?.codeSubFormDTO?.subFormId || data?.subFormId || '').toUpperCase();
+    const refAdvanceId = claim?.refAdvanceId || data?.refAdvanceId;
+    return subFormId === 'T' && !this.$auth.isNullOrEmpty(refAdvanceId);
+  }
+
+  openPreviousAdvance(data: any): void {
+    if (!this.canShowPreviousAdvance(data)) {
+      return;
+    }
+
+    const claim = data?.yatClaimDTO || {};
+    this.formId = null;
+    this.claimId = claim?.refAdvanceId || data?.refAdvanceId || null;
+    setTimeout(() => {
+      $('#viewHistoryModal').modal('show');
+    }, 0);
   }
 
   goBack() {

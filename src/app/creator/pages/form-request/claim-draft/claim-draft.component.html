@@ -14,46 +14,6 @@
               <button type="button" class="btn btn-dark request_view_back"
                 title="Back to Page" (click)="goBack()"><i
                   class="fa fa-chevron-left" style="display: inline-block;"></i></button>
-              <button type="button" class="btn btn-dark request_view_back" title="Filter" (click)="this.toggleFilter = !this.toggleFilter"><i
-                  class="fa fa-filter" style="display: inline-block;"></i></button>
-            </div>
-
-            <!-- <div class="breadcrumb_right">
-              <button  type="submit" title="Submit" class="btn btn-dark"  (click)="openAddMapping()">+</button>
-            </div> -->
-          </div>
-        </div>
-        <div class="row" *ngIf="toggleFilter == true">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-body">
-                <form class="page_form" autocomplete="off" (ngSubmit)="applyServerSearch()" novalidate>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Claim ID</label>
-                        <input type="text" class="form-control" name="formId" [(ngModel)]="filterObj.formId" placeholder="Claim ID">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">PNO</label>
-                        <input type="text" class="form-control" name="pno" [(ngModel)]="filterObj.pno" placeholder="PNO">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Name</label>
-                        <input type="text" class="form-control" name="searchedName" [(ngModel)]="filterObj.searchedName" placeholder="Name">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form_page_btn">
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
-                    <button type="button" class="btn btn-danger" (click)="resetAdvancedFilters()"><i class="fa fa-refresh"></i> Reset</button>
-                  </div>
-                </form>
-              </div>
             </div>
           </div>
         </div>
@@ -69,10 +29,9 @@
                         aria-controls="example" [(ngModel)]="noOfPage"
                         (ngModelChange)="p=1">
                         <option value="10">10</option>
-                        <!-- <option value="25">25</option> -->
-                        <!-- <option value="50">50</option> -->
+                        <option value="25">25</option>
+                        <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="100000">All</option>
                       </select>
                       <label>entries</label>
                     </div>
@@ -106,13 +65,15 @@
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse  | paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
-                        <td>{{ (dataObj?.remarks || dataObj?.yatClaimDTO?.remark) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.updatedOn || dataObj?.updatedOn || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'medium' }}</td>
                         <td>
-                          <button class="btn btn-primary" title="Edit" (click)="actionPage(dataObj)">Edit</button>
+                          <button class="btn btn-info" title="Remarks" (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">Remarks</button>
                         </td>
                         <td>
-                          <button [disabled]="dataObj.isFixed==1"
+                          <button class="btn btn-warning" title="Edit" (click)="actionPage(dataObj)">Edit</button>
+                        </td>
+                        <td>
+                          <button *ngIf="canDeleteClaim(dataObj)"
                             class="btn btn-danger"
                             (click)="setDeleteTarget(dataObj)"
                             data-toggle="modal" data-target="#delete_modal"
@@ -134,6 +95,7 @@
                 </div>
               </div>
             </div><app-delete-modal [deleteData]="id" (deleteConfirmed)="deleteRow($event)"></app-delete-modal>
+            <app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>
     <!-- <app-add-mapping-unit></app-add-mapping-unit> -->
   </div>
 </div>

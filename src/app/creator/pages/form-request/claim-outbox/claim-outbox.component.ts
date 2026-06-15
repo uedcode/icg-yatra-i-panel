@@ -19,6 +19,10 @@ declare var $: any;
     standalone: false
 })
 export class ClaimOutboxComponent implements OnInit {
+  readonly codeSignType = {
+    eSign: 'ES',
+    eSignAlt: 'E_SIGN',
+  } as const;
   codeStatus;
   userIdDetails: any;
 
@@ -209,9 +213,7 @@ export class ClaimOutboxComponent implements OnInit {
   downloadRequisition(data: any): void {
     const url =
       data?.yatClaimDTO?.inkSignedFileUrl ||
-      data?.yatClaimDTO?.signedFileUrl ||
-      data?.inkSignedFileUrl ||
-      data?.signedFileUrl;
+      data?.inkSignedFileUrl;
     if (!url) {
       this.$common.showMessage('Requisition form is not available.', 'warning');
       return;
@@ -221,15 +223,18 @@ export class ClaimOutboxComponent implements OnInit {
 
   downloadSupportingDocument(data: any): void {
     const url =
-      data?.yatClaimDTO?.supportingDocUrl ||
-      data?.yatClaimDTO?.supportingDocumentUrl ||
-      data?.supportingDocUrl ||
-      data?.supportingDocumentUrl;
+      data?.yatClaimDTO?.signedFileUrl ||
+      data?.signedFileUrl;
     if (!url) {
       this.$common.showMessage('Supporting document is not available.', 'warning');
       return;
     }
     this.$common.download(url);
+  }
+
+  isESignClaim(data: any): boolean {
+    const signWith = String(data?.yatClaimDTO?.signWith || data?.signWith || '').toUpperCase();
+    return signWith === this.codeSignType.eSign || signWith === this.codeSignType.eSignAlt;
   }
 
  formId;

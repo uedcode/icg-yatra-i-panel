@@ -1,56 +1,16 @@
 ﻿<!--Page header-->
         <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
-            <h4 class="page-title">Rejected</h4>
+            <h4 class="page-title">Not Approved</h4>
             <ol class="breadcrumb pl-0">
               <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Rejected</li>
+              <li class="breadcrumb-item active" aria-current="page">Not Approved</li>
             </ol>
           </div>
           <div>
             <div>
               <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
                   class="fa fa-chevron-left" style="display: inline-block;"></i></button>
-              <button type="button" class="btn btn-dark request_view_back" title="Filter" (click)="this.toggleFilter = !this.toggleFilter"><i
-                  class="fa fa-filter" style="display: inline-block;"></i></button>
-            </div>
-
-            <!-- <div class="breadcrumb_right">
-              <button  type="submit" title="Submit" class="btn btn-dark"  (click)="openAddMapping()">+</button>
-            </div> -->
-          </div>
-        </div>
-        <div class="row" *ngIf="toggleFilter == true">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-body">
-                <form class="page_form" autocomplete="off" (ngSubmit)="requiredForm.form.valid && applyServerSearch();" #requiredForm="ngForm" novalidate>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Claim ID</label>
-                        <input type="text" class="form-control" name="formId" #formId="ngModel" [(ngModel)]="filterObj.formId" placeholder="Claim ID">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">PNO</label>
-                        <input type="text" class="form-control" name="pno" #pno="ngModel" [(ngModel)]="filterObj.pno" placeholder="PNO">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Name</label>
-                        <input type="text" class="form-control" name="searchedName" #searchedName="ngModel" [(ngModel)]="filterObj.searchedName" placeholder="Name">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form_page_btn">
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
-                    <button type="button" class="btn btn-danger" (click)="resetAdvancedFilters()"><i class="fa fa-refresh"></i> Reset</button>
-                  </div>
-                </form>
-              </div>
             </div>
           </div>
         </div>
@@ -65,10 +25,9 @@
                       <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
                         (ngModelChange)="p=1">
                         <option value="10">10</option>
-                        <!-- <option value="25">25</option> -->
-                        <!-- <option value="50">50</option> -->
+                        <option value="25">25</option>
+                        <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="100000">All</option>
                       </select>
                       <label>entries</label>
                     </div>
@@ -100,7 +59,7 @@
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ (i + 1) + (p - 1) * noOfPage}}.</td>
                         <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen}}</td>
-                        <td>{{(dataObj?.yatClaimDTO?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:"mediumDate"}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.subDate || dataObj?.yatClaimDTO?.submissionDate || dataObj?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:"mediumDate"}}</td>
                         <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.formId || dataObj?.claimId) | showHypen}}</td>
                         <td>{{(dataObj?.yatClaimDTO?.remark || dataObj?.remarks) | showHypen}}</td>
                         <td>
