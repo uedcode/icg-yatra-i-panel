@@ -109,6 +109,15 @@ filterDataObj;
     this.applyServerSearch();
   }
 
+  downloadRequisition(data: any): void {
+    const url = data?.yatClaimDTO?.inkSignedFileUrl || data?.inkSignedFileUrl;
+    if (!url) {
+      this.$common.showMessage('Requisition form is not available.', 'danger');
+      return;
+    }
+    this.$common.download(url);
+  }
+
   private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
     if (id === 'PMTA' || id === 'PMT') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';

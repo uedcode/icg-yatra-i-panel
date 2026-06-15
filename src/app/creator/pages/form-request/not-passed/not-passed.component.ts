@@ -383,6 +383,19 @@ filterDataObj;
     });
   }
 
+  downloadSignedForm(data: any): void {
+    const url =
+      data?.yatClaimDTO?.inkSignedFileUrl ||
+      data?.yatClaimDTO?.signedFileUrl ||
+      data?.inkSignedFileUrl ||
+      data?.signedFileUrl;
+    if (!url) {
+      this.$common.showMessage('Signed form is not available.', 'warning');
+      return;
+    }
+    this.$common.download(url);
+  }
+
 }
 
 

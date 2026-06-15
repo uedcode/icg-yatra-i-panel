@@ -225,6 +225,32 @@ filterDataObj;
     });
   }
 
+  downloadVoucher(data: any): void {
+    const url =
+      data?.yatClaimDTO?.voucherFileUrl ||
+      data?.yatClaimDTO?.voucherUrl ||
+      data?.voucherFileUrl ||
+      data?.voucherUrl;
+    if (!url) {
+      this.$common.showMessage('Voucher is not available.', 'warning');
+      return;
+    }
+    this.$common.download(url);
+  }
+
+  downloadSignedForm(data: any): void {
+    const url =
+      data?.yatClaimDTO?.inkSignedFileUrl ||
+      data?.yatClaimDTO?.signedFileUrl ||
+      data?.inkSignedFileUrl ||
+      data?.signedFileUrl;
+    if (!url) {
+      this.$common.showMessage('Signed form is not available.', 'warning');
+      return;
+    }
+    this.$common.download(url);
+  }
+
 }
 
 

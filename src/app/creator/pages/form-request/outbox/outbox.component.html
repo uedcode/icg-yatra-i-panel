@@ -116,36 +116,28 @@
                   <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
                     <thead>
                       <tr>
-                        <th class="wd-5p">S No.</th>
-                        <th class="wd-20p">Form ID <i class="fa fa-sort" (click)="sort('customId')"></i></th>
-                        <th class="wd-20p">Form Type <i class="fa fa-sort" (click)="sort('customId')"></i></th>
-                        <th class="wd-20p">Unit<i class="fa fa-sort" (click)="sort('unit')"></i></th>
-                        <th class="wd-20p">PNO/Name/Rank <i class="fa fa-sort" (click)="sort('fullDescr')"></i></th>
-                        <th class="wd-20p">On work<i class="fa fa-sort" (click)="sort('onWork')"></i></th>
-                        <th class="wd-20p">View History</th>
-                        <th class="wd-15p">Created On <i class="fa fa-sort" (click)="sort('createdOn')"></i></th>
-                        <th class="wd-15p">Updated On <i class="fa fa-sort" (click)="sort('updatedOn')"></i></th>
-                        <th class="actionBtnWidth">Action </th>
+                        <th>S.No.</th>
+                        <th>Form Name</th>
+                        <th>Occurrence Date</th>
+                        <th>Form ID</th>
+                        <th>Form Status</th>
+                        <th>Requisition Form</th>
+                        <th>View</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
-                        <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
-                        <td>{{(dataObj?.yatClaimDTO?.claimId || dataObj?.customId || dataObj?.claimId || dataObj?.formId) | showHypen}} </td>
-                        <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.formName) | showHypen}} </td>
-                        <td>{{(dataObj?.yatClaimDTO?.codeUnitDTO?.descr || dataObj?.yatClaimDTO?.codeUnitDTO?.unit || dataObj?.unit) | showHypen}}</td>
-                        <td>{{(dataObj?.fullName || dataObj?.yatClaimDTO?.remark || dataObj?.fullDescr) | showHypen}}</td>
-                        <td>{{(dataObj?.onWork || dataObj?.claimState || dataObj?.formState) | showHypen}}</td>
-                         <td>
-                            <button class="btn btn-warning" title="View History" data-target="#viewHistoryModal"
-                              (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">View History</button>
-                          </td>
-                        <td>{{(dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:"medium"}}</td>
-                        <td>{{(dataObj?.yatClaimDTO?.updatedOn || dataObj?.updatedOn) | showDate:"medium"}}</td>
-                        <td class="switch_in_table">
-                          <button class="btn btn-warning" title="View" (click)="viewForm(dataObj)"><i
-                              class="fa fa-eye"></i></button>
+                        <td>{{ (i + 1) + (p - 1) * noOfPage}}.</td>
+                        <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen}}</td>
+                        <td>{{dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-'}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.formId || dataObj?.claimId) | showHypen}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.status || dataObj?.onWork || dataObj?.claimState || dataObj?.formState) | showHypen}}</td>
+                        <td>
+                          <button type="button" class="btn btn-info" (click)="downloadRequisition(dataObj)">Download</button>
+                        </td>
+                        <td>
+                          <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
                         </td>
                       </tr>
 
@@ -159,7 +151,7 @@
                       </tr>
                     </tbody>
                   </table>
-                </div><app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>
+                </div>
 </div>
 </div>
 </div>

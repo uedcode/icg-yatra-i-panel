@@ -112,6 +112,26 @@ filterDataObj
     this.applyServerSearch();
   }
 
+  isTyAdvance(data: any): boolean {
+    const subFormId = (data?.yatClaimDTO?.codeSubFormDTO?.subFormId || data?.subFormId || '').toUpperCase();
+    return subFormId === 'T' || subFormId === 'TYA' || subFormId === 'TY';
+  }
+
+  resubmitForm(data: any): void {
+    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || data?.id;
+    if (!claimId) {
+      this.$common.showMessage('Unable to identify request for resubmit.', 'danger');
+      return;
+    }
+    const config = { headers: { id: claimId } };
+    this.$claim.editClaim(config).subscribe((response: any) => {
+      if (response?.status === true) {
+        this.$common.showMessage(`${response.message}`);
+        this.router.navigateByUrl(this.$auth.getModuleName() + '/draft');
+      }
+    });
+  }
+
   private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
     if (id === 'PMTA' || id === 'PMT') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';

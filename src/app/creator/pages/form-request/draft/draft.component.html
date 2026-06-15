@@ -93,45 +93,28 @@
                     style="width:100%">
                     <thead>
                       <tr>
-                        <th class="wd-5p">S No.</th>
-                        <!--<th class="wd-20p">Temp Id <i class="fa fa-sort"
-                          (click)="sort('formId')"></i></th>-->
-                        <th class="wd-20p">Form Name <i class="fa fa-sort"
-                            (click)="sort('formName')"></i></th>
-                        <th class="wd-20p">Unit<i class="fa fa-sort"
-                            (click)="sort('unit')"></i></th>
-                        <th class="wd-20p">PNO/Name/Rank <i class="fa fa-sort"
-                            (click)="sort('fullDescr')"></i></th>
-                        <th class="wd-15p">Created On <i class="fa fa-sort"
-                            (click)="sort('createdOn')"></i></th>
-                        <th class="wd-15p">Updated On <i class="fa fa-sort"
-                            (click)="sort('updatedOn')"></i></th>
-                        <th class="actionBtnWidth">Action </th>
+                        <th>S.No.</th>
+                        <th>Form Name</th>
+                        <th>Date</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse  | paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
-                       <!-- <td>{{dataObj?.formId | showHypen}} </td>-->
                         <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.formName) | showHypen}} </td>
-                        <td>{{(dataObj?.yatClaimDTO?.codeUnitDTO?.descr || dataObj?.yatClaimDTO?.codeUnitDTO?.unit || dataObj?.unit) | showHypen}}</td>
-                        <td>{{(dataObj?.fullName || dataObj?.yatClaimDTO?.remark || dataObj?.fullDescr) | showHypen}}</td>
-                        <td>{{(dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:"medium" }}</td>
-                        <td>{{(dataObj?.yatClaimDTO?.updatedOn || dataObj?.updatedOn) | showDate:"medium" }}</td>
-                        <td class="switch_in_table">
-                          <!-- <button class="btn btn-warning" title="View"
-                            (click)="viewForm(dataObj)"><i
-                              class="fa fa-eye"></i></button> -->
-                          <button class="btn btn-primary" title="Edit"
-                            (click)="actionPage(dataObj)"><i
-                              class="fa fa-edit"></i></button>
+                        <td>{{(dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn || dataObj?.yatClaimDTO?.updatedOn || dataObj?.updatedOn) | showDate:"medium" }}</td>
+                        <td>
+                          <button class="btn btn-primary" title="Edit" (click)="actionPage(dataObj)">Edit</button>
+                        </td>
+                        <td>
                           <button [disabled]="dataObj.isFixed==1"
                             class="btn btn-danger"
                             (click)="setDeleteTarget(dataObj)"
                             data-toggle="modal" data-target="#delete_modal"
-                            title="Delete"><i class="fa fa-trash"
-                              aria-hidden="true" data-toggle="tooltip"></i></button>
+                            title="Delete">Delete</button>
                         </td>
                       </tr>
 

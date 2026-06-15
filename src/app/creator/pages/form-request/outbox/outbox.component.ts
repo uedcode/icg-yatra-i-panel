@@ -133,6 +133,15 @@ getForm() {
     this.getState();
   }
 
+  downloadRequisition(data: any): void {
+    const url = data?.yatClaimDTO?.inkSignedFileUrl || data?.inkSignedFileUrl;
+    if (!url) {
+      this.$common.showMessage('Requisition form is not available.', 'danger');
+      return;
+    }
+    this.$common.download(url);
+  }
+
   onSearchInput(): void {
     if (!(this.searchObj || '').toString().trim()) {
       this.applyServerSearch();

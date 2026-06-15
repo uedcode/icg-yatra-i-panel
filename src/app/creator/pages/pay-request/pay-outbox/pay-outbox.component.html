@@ -47,7 +47,6 @@
                         <th>PNO/Name/Rank</th>
                         <th>Form Status</th>
                         <th>Document</th>
-                        <th class="actionBtnWidth">View</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -61,15 +60,12 @@
                           {{ row?.yatPayDetailsDTO?.docName || '-' }}
                           <button type="button" class="btn btn-info btn-sm ml-2" (click)="downloadDocument(row)">Download</button>
                         </td>
-                        <td class="switch_in_table">
-                          <button class="btn btn-info btn-sm" title="View" (click)="viewForm(row)">View</button>
-                        </td>
                       </tr>
                       <tr *ngIf="!dataList?.length" class="text-center">
-                        <td colspan="10">No Records</td>
+                        <td colspan="4">No Records</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="dataList?.length">
-                        <td colspan="10">
+                        <td colspan="4">
                           <pagination-controls (pageChange)="p = $event"></pagination-controls>
                         </td>
                       </tr>

@@ -43,6 +43,7 @@ export class ClaimPassedComponent implements OnInit {
   noOfPage: any = 10;
   p: any = 1;
   queueModule: 'ADV' | 'CLM' = 'ADV';
+  archiveLoadingMap: { [key: string]: boolean } = {};
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
@@ -101,6 +102,49 @@ export class ClaimPassedComponent implements OnInit {
     setTimeout(() => {
       $('#viewHistoryModal').modal('show');
     }, 0);
+  }
+
+  archiveClaim(data: any): void {
+    const claimStateId =
+      data?.claimStateId ||
+      data?.yatClaimStateDTO?.claimStateId ||
+      data?.yatClaimStateDTO?.id ||
+      data?.id;
+    const listKey = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || claimStateId;
+    if (!claimStateId || this.archiveLoadingMap[listKey]) {
+      return;
+    }
+
+    this.archiveLoadingMap[listKey] = true;
+    const config = {
+      headers: {
+        ids: [String(claimStateId)],
+        isArchive: '1',
+      },
+    };
+
+    this.$claim.changeClaimStatusArchive(config).subscribe({
+      next: (res: any) => {
+        this.archiveLoadingMap[listKey] = false;
+        if (!res?.status) {
+          this.$common.showMessage(res?.message || 'Archive failed.', 'danger');
+          return;
+        }
+
+        this.dataList = this.dataList.filter(
+          (item: any) =>
+            (item?.claimStateId ||
+              item?.yatClaimStateDTO?.claimStateId ||
+              item?.yatClaimStateDTO?.id ||
+              item?.id) != claimStateId
+        );
+        this.$common.showMessage(res?.message || 'Claim archived successfully.', 'success');
+      },
+      error: () => {
+        this.archiveLoadingMap[listKey] = false;
+        this.$common.showMessage('Something went wrong while archiving claim.', 'danger');
+      },
+    });
   }
 
   private resolveQueueFormId(): string {

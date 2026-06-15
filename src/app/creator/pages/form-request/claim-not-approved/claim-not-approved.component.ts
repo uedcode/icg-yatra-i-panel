@@ -111,6 +111,21 @@ filterDataObj
     this.applyServerSearch();
   }
 
+  resubmitForm(data: any): void {
+    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || data?.id;
+    if (!claimId) {
+      this.$common.showMessage('Unable to identify claim for resubmit.', 'danger');
+      return;
+    }
+    const config = { headers: { id: claimId } };
+    this.$claim.editClaim(config).subscribe((response: any) => {
+      if (response?.status === true) {
+        this.$common.showMessage(`${response.message}`);
+        this.router.navigateByUrl(this.$auth.getModuleName() + '/claim/draft');
+      }
+    });
+  }
+
   private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
     if (id === 'PMTA' || id === 'PMT') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';

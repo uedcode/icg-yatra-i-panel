@@ -155,6 +155,32 @@ this.handleEsignFeedback();
     this.applyServerSearch();
   }
 
+  downloadForInkSign(data: any): void {
+    const url = data?.yatClaimDTO?.inkSignedFileUrl || data?.yatClaimDTO?.signedFileUrl || data?.inkSignedFileUrl;
+    if (!url) {
+      this.$common.showMessage('Signed form is not available for download.', 'danger');
+      return;
+    }
+    this.$common.download(url);
+  }
+
+  deletePermanently(data: any): void {
+    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || data?.id;
+    if (!claimId) {
+      this.$common.showMessage('Unable to identify request for delete.', 'danger');
+      return;
+    }
+    const config = { headers: { ids: [claimId] } };
+    this.$claim.deleteClaim(config).subscribe((response: any) => {
+      if (response?.status === true) {
+        this.$common.showMessage(`${response.message}`);
+        this.dataList = this.dataList.filter(
+          (elem: any) => (elem?.yatClaimDTO?.claimId || elem?.claimId || elem?.formId || elem?.id) !== claimId
+        );
+      }
+    });
+  }
+
   private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
     if (id === 'PMTA' || id === 'PMT') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';

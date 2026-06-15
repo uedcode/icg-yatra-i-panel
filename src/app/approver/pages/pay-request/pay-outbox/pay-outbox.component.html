@@ -41,7 +41,6 @@
             <th>PNO/Name/Rank</th>
             <th>Form Status</th>
             <th>Document</th>
-            <th>View</th>
           </tr>
         </thead>
         <tbody>
@@ -63,10 +62,9 @@
               </button>
               <span *ngIf="!row?.yatPayDetailsDTO?.docUrl" class="ml-2">-</span>
             </td>
-            <td><button class="btn btn-info btn-sm" (click)="viewForm(row)">View</button></td>
           </tr>
           <tr *ngIf="!dataList?.length">
-            <td colspan="5" class="text-center table-empty-state gov-table-empty-state">No Records</td>
+            <td colspan="4" class="text-center table-empty-state gov-table-empty-state">No Records</td>
           </tr>
         </tbody>
       </table>
