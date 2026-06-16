@@ -25,7 +25,8 @@ describe('SsoLoginComponent', () => {
       'login',
       'createSession',
       'getUserDetails',
-      'getModuleName'
+      'getModuleName',
+      'getRuntimeModuleId'
     ]);
     router = jasmine.createSpyObj<Router>('Router', ['navigateByUrl']);
 
@@ -35,6 +36,7 @@ describe('SsoLoginComponent', () => {
     authService.login.and.returnValue(of({ access_token: 'token-1' }) as any);
     authService.getUserDetails.and.returnValue(null);
     authService.getModuleName.and.returnValue('/approver');
+    authService.getRuntimeModuleId.and.returnValue('ADV');
 
     await TestBed.configureTestingModule({
       declarations: [SsoLoginComponent],
@@ -123,7 +125,9 @@ describe('SsoLoginComponent', () => {
     const params = authService.login.calls.mostRecent().args[0] as HttpParams;
     const usernameParam = params.get('username') || '';
     expect(usernameParam.startsWith('sso-user---sso-pass---')).toBeTrue();
-    expect(usernameParam.split('---').length).toBe(3);
+    const usernameParts = usernameParam.split('---');
+    expect(usernameParts.length).toBe(3);
+    expect(usernameParts[2]).toBe('ADV');
     expect(params.get('password')).toBe('sso-pass');
     expect(params.get('grant_type')).toBe('password');
     expect(params.get('is_login')).toBe('1');

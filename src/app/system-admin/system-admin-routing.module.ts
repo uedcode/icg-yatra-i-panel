@@ -15,7 +15,6 @@ import { DocumentsComponent } from './pages/manage-masters/manage-document/docum
 import { AddFaqModalComponent } from './pages/manage-masters/manage-faq/add-faq-modal/add-faq-modal.component';
 import { VersionHistoryComponent } from './pages/manage-masters/manage-version-history/version-history/version-history.component';
 import { FaqComponent } from './pages/manage-masters/manage-faq/faq/faq.component';
-import { SwitchModuleComponent } from './pages/switch-module/switch-module.component';
 import { ProfileSettingComponent } from './pages/profile-setting/profile-setting.component';
 import { ManageApproverComponent } from './pages/manage-user/manage-approver/manage-approver.component';
 import { WebDetailComponent } from './pages/web-detail/web-detail.component';
@@ -187,12 +186,6 @@ const routes: Routes = [
     data: { title: 'TY Duty Purpose', roles: SYSTEM_ADMIN_ROLES },
   },
 
-  {
-    path: 'switch-module',
-    component: SwitchModuleComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Switch Module', roles: SYSTEM_ADMIN_ROLES },
-  },
   {
     path: 'profile-setting',
     component: ProfileSettingComponent,

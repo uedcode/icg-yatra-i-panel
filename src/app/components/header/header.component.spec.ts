@@ -25,7 +25,8 @@ describe('HeaderComponent', () => {
     ]);
     commonService = jasmine.createSpyObj<CommonService>('CommonService', [
       'showLoader',
-      'hideLoader'
+      'hideLoader',
+      'showMessage'
     ]);
     userService = jasmine.createSpyObj<UserService>('UserService', [
       'roles',
@@ -119,6 +120,39 @@ describe('HeaderComponent', () => {
       roleId: 'ROLE-2',
       aclCodeRoleTypeDTO: { roleTypeId: 'AP' }
     })).toBeFalse();
+  });
+
+  it('should switch roles with legacy-compatible headers and refresh the token', () => {
+    userService.roleSwitch.and.returnValue(of({ status: true }) as any);
+    authService.getTokenDetails.and.returnValue({ refreshToken: 'refresh-token' } as any);
+    authService.refresh.and.returnValue(of({ access_token: 'new-token' }) as any);
+
+    component.roleSwitch({
+      id: 'ROLE-2',
+      roleName: 'Approver',
+      aclCodeRoleTypeDTO: { roleTypeId: 'AP' },
+      aclCodeDesignationDTO: { id: 'DESIG-SHOULD-NOT-BE-SENT' },
+    });
+
+    expect(userService.roleSwitch).toHaveBeenCalledWith({
+      headers: {
+        userId: 'USR-1',
+        roleTypeId: 'AP',
+        moduleId: 'ADV',
+      },
+    });
+    expect(authService.refresh).toHaveBeenCalled();
+    expect(authService.createSession).toHaveBeenCalledWith({ access_token: 'new-token' }, 'REFRESH');
+  });
+
+  it('should not call role switch API when selected role is incomplete', () => {
+    component.roleSwitch({ roleName: 'Broken Role' });
+
+    expect(userService.roleSwitch).not.toHaveBeenCalled();
+    expect(commonService.showMessage).toHaveBeenCalledWith(
+      'Unable to switch role: role details are incomplete.',
+      'danger'
+    );
   });
 });
 

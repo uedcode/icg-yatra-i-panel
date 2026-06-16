@@ -8,7 +8,6 @@ import { AuthGuard } from '../auth.guard';
 import { InboxComponent } from './pages/advance/queues/inbox/inbox.component';
 import { OutboxComponent } from './pages/advance/queues/outbox/outbox.component';
 import { ApprovedComponent } from './pages/advance/queues/approved/approved.component';
-import { SwitchModuleComponent } from './pages/support/switch-module/switch-module.component';
 import { ReturnedComponent } from './pages/advance/queues/returned/returned.component';
 import { ProfileSettingComponent } from './pages/support/profile-setting/profile-setting.component';
 import { EsignComponent } from './pages/support/esign/esign/esign.component';
@@ -100,7 +99,6 @@ const routes: Routes = [
       { path: 'not-approved', component: ReturnedComponent, canActivate: [AuthGuard], data: { title: 'Not Approved', roles: ['VE1', 'VE2', 'AP'], queueModule: 'ADV', queueState: 'NA' } },
       { path: 'claim/not-approved', component: ClaimNotApprovedComponent, canActivate: [AuthGuard], data: { title: 'Claim Not Approved', roles: ['VE1', 'VE2', 'AP'], queueModule: 'CLM', queueState: 'NA' } },
       { path: 'not-approved-claim', redirectTo: 'claim/not-approved', pathMatch: 'full' },
-      { path: 'switch-module', component: SwitchModuleComponent, canActivate: [AuthGuard], data: { title: 'Switch Module' } },
       { path: 'profile-setting', component: ProfileSettingComponent, canActivate: [AuthGuard], data: { title: 'Profile Setting' } },
       { path: 'settings', component: SettingsLauncherComponent, canActivate: [AuthGuard], data: { title: 'Settings', roles: ['VE1'] } },
       { path: 'esign', component: EsignComponent, canActivate: [AuthGuard], data: { title: 'Esign', roles: ['VE1', 'VE2', 'AP'] } },

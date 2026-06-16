@@ -57,11 +57,6 @@ export class ManageUnitAdminComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.reset();
       this.formId = params?.formId;
-      // if (this.formId == 'INBA') {
-      //   this.pageName = "INBA";
-      // } else {
-      //   this.pageName = "NGIF";
-      // }
 
       this.getAll();
     });

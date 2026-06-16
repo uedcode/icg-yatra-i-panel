@@ -224,6 +224,7 @@ export class AuthService {
   // userToken delete end
 
   createSession(data, redirectType) {
+    debugger
     // this.updateUserToken(data);
     const payload = data?.object ? data.object : data;
     const activeModule = this.getRuntimeModuleId();
@@ -242,6 +243,11 @@ export class AuthService {
       payload?.expiresIn ??
       localStorage.getItem(this.storageKeys.expiresIn) ??
       '';
+    const tokenPayload = this.decodeAccessTokenPayload(accessToken);
+    const sessionSource = {
+      ...(payload || {}),
+      ...(tokenPayload || {}),
+    };
 
     if (accessToken) {
       this.setWithScopedKey('accessToken', accessToken);
@@ -262,26 +268,31 @@ export class AuthService {
     // }
 
     let accessData = {
-      userId: payload?.userId ?? previousUser?.userId,
-      unitId: payload?.unitId ?? previousUser?.unitId,
-      unitName: payload?.unitName ?? previousUser?.unitName,
-      gxUnitId: payload?.gxUnitId ?? previousUser?.gxUnitId,
-      gxUnitName: payload?.gxUnitName ?? previousUser?.gxUnitName,
-      roleId: payload?.roleId ?? previousUser?.roleId,
-      roleTypeId: payload?.roleTypeId ?? previousUser?.roleTypeId,
-      desigId: payload?.desigId ?? previousUser?.desigId,
-      roleName: payload?.roleName ?? previousUser?.roleName,
-      personName: payload?.personName ?? previousUser?.personName,
-      formId: payload?.formId ?? previousUser?.formId,
-      moduleId: payload?.moduleId ?? previousUser?.moduleId,
-      formName: payload?.formName ?? previousUser?.formName,
-      cadre: payload?.cadre ?? previousUser?.cadre,
-      isSign: payload?.isSign ?? previousUser?.isSign,
+      userId: sessionSource?.userId ?? previousUser?.userId,
+      unitId: sessionSource?.unitId ?? previousUser?.unitId,
+      unitName: sessionSource?.unitName ?? previousUser?.unitName,
+      gxUnitId: sessionSource?.gxUnitId ?? previousUser?.gxUnitId,
+      gxUnitName: sessionSource?.gxUnitName ?? previousUser?.gxUnitName,
+      roleId: sessionSource?.roleId ?? previousUser?.roleId,
+      roleTypeId: sessionSource?.roleTypeId ?? previousUser?.roleTypeId,
+      desigId: sessionSource?.desigId ?? previousUser?.desigId,
+      roleName: sessionSource?.roleName ?? previousUser?.roleName,
+      personName: sessionSource?.personName ?? previousUser?.personName,
+      formId: sessionSource?.formId ?? previousUser?.formId,
+      moduleId: sessionSource?.moduleId ?? previousUser?.moduleId,
+      formName: sessionSource?.formName ?? previousUser?.formName,
+      cadre: sessionSource?.cadre ?? previousUser?.cadre,
+      isSign: sessionSource?.isSign ?? previousUser?.isSign,
+      aclRoleDTOs:
+        sessionSource?.aclRoleDTOs ??
+        sessionSource?.aclRoles ??
+        previousUser?.aclRoleDTOs ??
+        previousUser?.aclRoles,
       // "sessionTime": data.sessionTime,
       // "permissionChangeDt": data.permissionChangeDt,
-      userPermission: previousUser?.userPermission
-        ? JSON.stringify(previousUser.userPermission)
-        : '',
+      userPermission:
+        sessionSource?.userPermission ??
+        (previousUser?.userPermission ? JSON.stringify(previousUser.userPermission) : ''),
     };
 
     let userDetailsArray = [];
@@ -302,6 +313,28 @@ export class AuthService {
       }
     } else {
       location.reload();
+    }
+  }
+
+  private decodeAccessTokenPayload(accessToken: string): any {
+    if (!accessToken || typeof accessToken !== 'string') {
+      return {};
+    }
+    const parts = accessToken.split('.');
+    if (parts.length < 2) {
+      return {};
+    }
+    try {
+      const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
+      return JSON.parse(decodeURIComponent(
+        atob(padded)
+          .split('')
+          .map((char) => `%${(`00${char.charCodeAt(0).toString(16)}`).slice(-2)}`)
+          .join('')
+      ));
+    } catch {
+      return {};
     }
   }
 

@@ -25,7 +25,6 @@ import { ChangePasswordComponent } from './pages/support/change-password/change-
 import { InboxComponent } from './pages/advance/queues/inbox/inbox.component';
 import { OutboxComponent } from './pages/advance/queues/outbox/outbox.component';
 import { ApprovedComponent } from './pages/advance/queues/approved/approved.component';
-import { SwitchModuleComponent } from './pages/support/switch-module/switch-module.component';
 import { ReturnedComponent } from './pages/advance/queues/returned/returned.component';
 import { ProfileSettingComponent } from './pages/support/profile-setting/profile-setting.component';
 import { EsignComponent } from './pages/support/esign/esign/esign.component';
@@ -87,7 +86,6 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         OutboxComponent,
         ApprovedComponent,
         ReturnedComponent,
-        SwitchModuleComponent,
         ProfileSettingComponent,
         FaqComponent,
         WebDetailComponent,

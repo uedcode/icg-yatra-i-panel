@@ -5,7 +5,6 @@ import { UnitAdminComponent } from './unit-admin.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { RoleComponent } from './pages/role/role.component';
 import { AuthGuard } from '../auth.guard';
-import { SwitchModuleComponent } from './pages/switch-module/switch-module.component';
 import { ProfileSettingComponent } from './pages/profile-setting/profile-setting.component';
 import { FaqComponent } from './pages/faq/faq.component';
 import { WebDetailComponent } from './pages/web-detail/web-detail.component';
@@ -64,12 +63,6 @@ const routes: Routes = [
         component: ManagePaylevelTransactionComponent,
         canActivate: [AuthGuard],
         data: { title: 'Manage Paylevel Transaction', roles: UNIT_ADMIN_ROLES },
-      },
-      {
-        path: 'switch-module',
-        component: SwitchModuleComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'Switch Module', roles: UNIT_ADMIN_ROLES }
       },
       {
         path: 'profile-setting',

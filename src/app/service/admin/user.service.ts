@@ -43,22 +43,13 @@ export class UserService {
     );
   }
   roleSwitch(config) {
-    return this.http.put<any>(`user/roleSwitch`, null, config).pipe(
+    return this.http.put<any>(`user/roleSwitch`, {}, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
       })
     );
   }
-  moduleSwitch(config) {
-    return this.http.post<any>(`user/moduleSwitch`,null, config).pipe(
-      map((response: any) => {
-        this.$common.parseResponse(response);
-        return response;
-      })
-    );
-  }
-
   getUserByPno(config) {
     return this.http.post<any>(`user/getUserByPno`, null, config).pipe(
       map((response: any) => {

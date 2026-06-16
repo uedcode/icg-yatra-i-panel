@@ -45,6 +45,15 @@ describe('AuthService', () => {
     isSign: 'Y',
   };
 
+  const makeJwt = (payload: any): string => {
+    const base64Url = (value: any) =>
+      btoa(JSON.stringify(value))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/g, '');
+    return `${base64Url({ alg: 'none', typ: 'JWT' })}.${base64Url(payload)}.`;
+  };
+
   beforeEach(() => {
     spyOn(console, 'log');
 
@@ -202,6 +211,42 @@ describe('AuthService', () => {
         userPermission: { claimCreate: true },
       })
     );
+  });
+
+  it('should update switched role details from refreshed JWT payload', () => {
+    service.createSession(sessionPayload, 'NONE');
+    router.navigateByUrl.calls.reset();
+
+    const switchedToken = makeJwt({
+      userId: 'U1',
+      unitId: 'UNIT1',
+      roleId: 'ROLE-AP',
+      roleTypeId: 'AP',
+      roleName: 'Approver',
+      personName: 'Test User',
+      formId: 'FORM-AP',
+      moduleId: 'ADV',
+    });
+
+    service.createSession(
+      {
+        access_token: switchedToken,
+        refresh_token: 'refresh-token-2',
+        expires_in: '3600',
+      },
+      'REFRESH'
+    );
+
+    const storedUser = service.getUserDetails();
+    expect(storedUser).toEqual(
+      jasmine.objectContaining({
+        roleId: 'ROLE-AP',
+        roleTypeId: 'AP',
+        roleName: 'Approver',
+        formId: 'FORM-AP',
+      })
+    );
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/approver/dashboard');
   });
 
   it('should resolve module names for active Yatra roles', () => {

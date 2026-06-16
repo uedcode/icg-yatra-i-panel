@@ -27,6 +27,7 @@ describe('LoginComponent', () => {
     authService = jasmine.createSpyObj<AuthService>('AuthService', [
       'createSession',
       'getModuleName',
+      'getRuntimeModuleId',
       'getUserDetails',
       'login'
     ]);
@@ -41,6 +42,7 @@ describe('LoginComponent', () => {
 
     authService.getUserDetails.and.returnValue(null);
     authService.getModuleName.and.returnValue('/creator');
+    authService.getRuntimeModuleId.and.returnValue('ADV');
     router.navigateByUrl.and.returnValue(Promise.resolve(true));
 
     return TestBed.configureTestingModule({
@@ -172,7 +174,9 @@ describe('LoginComponent', () => {
     expect(params.get('grant_type')).toBe('password');
     expect(params.get('is_login')).toBe('1');
     expect(params.get('password')).toBeTruthy();
-    expect(params.get('username')?.split('---').length).toBe(3);
+    const usernameParts = params.get('username')?.split('---') || [];
+    expect(usernameParts.length).toBe(3);
+    expect(usernameParts[2]).toBe('ADV');
     expect(commonService.hideLoader).toHaveBeenCalled();
     expect(commonService.showMessage).toHaveBeenCalledWith('Login Successfully');
     expect(authService.createSession).toHaveBeenCalledOnceWith(response, 'LOGIN');

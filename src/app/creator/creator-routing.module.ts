@@ -13,7 +13,6 @@ import { ApprovedComponent } from './pages/advance/queues/approved/approved.comp
 import { NewComponent } from './pages/advance/launcher/new.component';
 
 import { InboxComponent } from './pages/advance/queues/inbox/inbox.component';
-import { SwitchModuleComponent } from './pages/support/switch-module/switch-module.component';
 import { ReturnedComponent } from './pages/advance/queues/returned/returned.component';
 import { CreatorProfileComponent } from './pages/support/profile/creator-profile.component';
 import { ProfileSettingComponent } from './pages/support/profile-setting/profile-setting.component';
@@ -95,12 +94,6 @@ const routes: Routes = [
         component: ChangePasswordComponent,
         canActivate: [AuthGuard],
         data: { title: 'Change Password', roles: CREATOR_ROLES },
-      },
-      {
-        path: 'switch-module',
-        component: SwitchModuleComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'Switch Module', roles: CREATOR_ROLES },
       },
       {
         path: 'claim/new',

@@ -28,8 +28,6 @@ import { NgOtpInputModule } from 'ng-otp-input';
 import { ForgotPasswordModalComponent } from './modals/forgot-password-modal/forgot-password-modal.component';
 import { RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings, RECAPTCHA_SETTINGS } from "ng-recaptcha";
 import { environment } from 'src/environments/environment';
-import { SwitchModuleExternalComponent } from './pages/switch-module-external/switch-module-external.component';
-import { NewDeviceComponent } from './pages/new-device/new-device.component';
 import { VerifyTotpModalComponent } from './pages/verify-totp-modal/verify-totp-modal.component';
 import { PublicFaqComponent } from './pages/public-faq/public-faq.component';
 import { PublicVersionHistoryComponent } from './pages/public-version-history/public-version-history.component';
@@ -51,8 +49,6 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         VerifyOtpModalComponent,
         VerifyTotpModalComponent,
         ForgotPasswordModalComponent,
-        NewDeviceComponent,
-        SwitchModuleExternalComponent,
         PublicFaqComponent,
         PublicVersionHistoryComponent,
         PublicPreviewUpdatePnoComponent,

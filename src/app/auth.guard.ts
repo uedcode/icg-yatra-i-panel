@@ -46,7 +46,7 @@ export class AuthGuard  {
                 returnVal = false;
             }
 
-            let list = ['/view-file', '/switch-module', '/new-device', '/common-profile-setting', '/common-new-device'];
+            let list = ['/view-file', '/common-profile-setting'];
             if(list.includes(completeUrl)){
                 returnVal = true;
             }

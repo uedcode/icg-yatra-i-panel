@@ -49,7 +49,6 @@ export class AuthTokenService {
         var params = new HttpParams();
         params = params.append('refresh_token', this.getRefreshToken());
         params = params.append('grant_type', 'refresh_token');
-        params = params.append('is_login', '0');
     
         return this.http.post<any>(`oauth/token`, params, 
         ).pipe(tap((tokens: Tokens) => {

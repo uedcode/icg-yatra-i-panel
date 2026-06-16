@@ -37,9 +37,7 @@ import { LoginFooterComponent } from './components/login-footer/login-footer.com
 import { CommonWebDetailComponent } from './components/common-web-detail/common-web-detail/common-web-detail.component';
 import { CommonContactDetailModalComponent } from './components/common-web-detail/common-contact-detail-modal/common-contact-detail-modal.component';
 import { CommonUserManualModalComponent } from './components/common-web-detail/common-user-manual-modal/common-user-manual-modal.component';
-import { CommonSwitchModuleComponent } from './components/common-switch-module/common-switch-module.component';
 import { CommonProfileSettingComponent } from './components/common-profile-setting/common-profile-setting/common-profile-setting.component';
-import { CommonNewDeviceComponent } from './components/common-new-device/common-new-device.component';
 import { CommonEnableTOtpModalComponent } from './components/common-profile-setting/common-enable-t-otp-modal/common-enable-t-otp-modal.component';
 import { CommonManageDeviceModalComponent } from './components/common-profile-setting/common-manage-device-modal/common-manage-device-modal.component';
 import { CommonDocumentComponent } from './components/common-form-detail/common-document/common-document.component';
@@ -109,11 +107,9 @@ const CustomSelectOptions: INgxSelectOptions = {
     CommonWebDetailComponent,
     CommonContactDetailModalComponent,
     CommonUserManualModalComponent,
-    CommonSwitchModuleComponent,
     LoginFooterComponent,
     CommonProfileSettingComponent,
     CommonEnableTOtpModalComponent,
-    CommonNewDeviceComponent,
     CommonManageDeviceModalComponent,
     CommonDocumentComponent,
     CommonDocumentDetailComponent,
@@ -158,7 +154,6 @@ const CustomSelectOptions: INgxSelectOptions = {
     CommonWebDetailComponent,
     CommonContactDetailModalComponent,
     CommonUserManualModalComponent,
-    CommonSwitchModuleComponent,
     LoginFooterComponent,
     CommonProfileSettingComponent,
     CommonEnableTOtpModalComponent,

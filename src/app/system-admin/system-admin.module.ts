@@ -32,7 +32,6 @@ import { DocumentsComponent } from './pages/manage-masters/manage-document/docum
 import { AddDocumentsModalComponent } from './pages/manage-masters/manage-document/add-documents-modal/add-documents-modal.component';
 import { AddFaqModalComponent } from './pages/manage-masters/manage-faq/add-faq-modal/add-faq-modal.component';
 import { FaqComponent } from './pages/manage-masters/manage-faq/faq/faq.component';
-import { SwitchModuleComponent } from './pages/switch-module/switch-module.component';
 import { ProfileSettingComponent } from './pages/profile-setting/profile-setting.component';
 import { ManageApproverComponent } from './pages/manage-user/manage-approver/manage-approver.component';
 import { WebDetailComponent } from './pages/web-detail/web-detail.component';
@@ -103,7 +102,6 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         AddTyDutyPurposeModalComponent,
         EsignReportComponent,
         StatisticsComponent,
-        SwitchModuleComponent,
         ProfileSettingComponent,
         ManageApproverComponent,
         InboxComponent,

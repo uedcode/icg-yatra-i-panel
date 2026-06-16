@@ -26,7 +26,6 @@ import { CreatorComponent } from './creator.component';
 import { SidebarComponent } from './common/shell/sidebar/sidebar.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ChangePasswordComponent } from './pages/support/change-password/change-password.component';
-import { SwitchModuleComponent } from './pages/support/switch-module/switch-module.component';
 
 import { OutboxComponent } from './pages/advance/queues/outbox/outbox.component';
 import { DraftComponent } from './pages/advance/queues/draft/draft.component';
@@ -100,7 +99,6 @@ const CustomSelectOptions: INgxSelectOptions = {
     DashboardComponent,
     ChangePasswordComponent,
     CreatorComponent,
-    SwitchModuleComponent,
     // new component add here
     InboxComponent,
     OutboxComponent,

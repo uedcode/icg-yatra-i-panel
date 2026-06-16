@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
-import { SwitchModuleExternalComponent } from './pages/switch-module-external/switch-module-external.component';
 import { CommonProfileSettingComponent } from './components/common-profile-setting/common-profile-setting/common-profile-setting.component';
 import { CommonViewFileComponent } from './components/common-view-file/common-view-file.component';
 import { AuthGuard } from './auth.guard';
@@ -31,12 +30,6 @@ const routes: Routes = [
     component: CommonViewFileComponent,
     canActivate: [AuthGuard],
     data: { title: 'View File' },
-  },
-  {
-    path: 'switch-module',
-    component: SwitchModuleExternalComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Switch Module' },
   },
   {
     path: 'common-profile-setting',

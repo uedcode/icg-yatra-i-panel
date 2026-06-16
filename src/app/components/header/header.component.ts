@@ -69,36 +69,23 @@ export class HeaderComponent implements OnInit {
   roleSwitch(dataObj) {
     try {
       this.$common.showLoader();
-      const designation = dataObj?.aclCodeDesignationDTO;
       const roleType = dataObj?.aclCodeRoleTypeDTO;
-      const resolvedRoleTypeId = roleType?.roleTypeId || roleType?.id;
+      const resolvedRoleTypeId = roleType?.roleTypeId || dataObj?.roleTypeId || roleType?.id;
       this.config = {
         headers: {
+          userId: this.userIdDetails?.userId,
+          roleTypeId: resolvedRoleTypeId,
           moduleId: this.$auth.getRuntimeModuleId()
         }
       }
-      
-      if (designation?.id) {
-        this.config.headers.desigId = designation.id;
+      if (!this.config.headers.userId || !this.config.headers.roleTypeId) {
+        this.$common.hideLoader();
+        this.$common.showMessage('Unable to switch role: role details are incomplete.', 'danger');
+        return;
       }
-      if (resolvedRoleTypeId) {
-        this.config.headers.roleTypeId = resolvedRoleTypeId;
-      }
-      // if (dataObj?.userGroupDTO?.id) {
-      //   this.config.headers.userGroupId = dataObj?.userGroupDTO?.id;
-      // }
-      if (this.userIdDetails?.userId) {
-        this.config.headers.userId = this.userIdDetails?.userId;
-      }
-      if (this.getRoleId(dataObj)) {
-        this.config.headers.roleId = this.getRoleId(dataObj);
-      }
-      // if (this.userIdDetails?.formId) {
-      //   this.config.headers.formId = this.userIdDetails?.formId;
-      // }
       this.$user.roleSwitch(this.config).subscribe((response: any) => {
         this.$common.hideLoader();
-        
+        debugger
         if (response.status === true) {
           this.refreshToken();
           // let moduleUrl = this.$auth.getModuleName();
@@ -121,7 +108,6 @@ export class HeaderComponent implements OnInit {
       var params = new HttpParams();
       params = params.append('refresh_token', tokenObject.refreshToken);
       params = params.append('grant_type', 'refresh_token');
-      params = params.append('is_login', '0');
       this.$auth.refresh(params).subscribe((response) => {
         this.$auth.createSession(response, 'REFRESH');
         this.$common.hideLoader();

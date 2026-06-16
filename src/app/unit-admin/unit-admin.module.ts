@@ -21,7 +21,6 @@ import { SidebarComponent } from './common/sidebar/sidebar.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ChangePasswordComponent } from './pages/change-password/change-password.component';
 import { RoleComponent } from './pages/role/role.component';
-import { SwitchModuleComponent } from './pages/switch-module/switch-module.component';
 import { ProfileSettingComponent } from './pages/profile-setting/profile-setting.component';
 import { FaqComponent } from './pages/faq/faq.component';
 import { WebDetailComponent } from './pages/web-detail/web-detail.component';
@@ -48,7 +47,6 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         UpdatePmtUnitComponent,
         ReportTyDutyComponent,
         ManagePaylevelTransactionComponent,
-        SwitchModuleComponent,
         ProfileSettingComponent,
         FaqComponent,
         WebDetailComponent,

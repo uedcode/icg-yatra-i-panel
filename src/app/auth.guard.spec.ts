@@ -118,10 +118,7 @@ describe('AuthGuard', () => {
 
     const allowedUrls = [
       '/view-file',
-      '/switch-module',
-      '/new-device',
       '/common-profile-setting',
-      '/common-new-device',
     ];
 
     allowedUrls.forEach((url) => {
