@@ -67,6 +67,6 @@ export const environment = {
     favicon: 'assets/images/logo.png',
     name: 'ICG Yatra',
     slogan: 'ICG Yatra',
-    buildNo: 'Version v1.1.0 Build 20251227_1000',
+    buildNo: 'Version v1.1.0 Build 20260616_1600',
   },
 };
