@@ -23,6 +23,12 @@ export class FormPmtDetailComponent implements OnInit {
   ) {}
 
   formObj: any = {};
+  preview: any = {
+    claims: {},
+    pmt: {},
+    travelRows: [],
+    documentDtos: [],
+  };
   claimId: string | null = null;
   subFormId: string = 'P';
   supplementaryId: string | null = null;
@@ -57,6 +63,7 @@ export class FormPmtDetailComponent implements OnInit {
       headers: {
         claimId: this.claimId,
         subFormId: this.subFormId,
+        isFetch: 'true',
         isPreview: 'true',
         userId: this.userIdDetails?.userId ?? '',
       },
@@ -77,11 +84,7 @@ export class FormPmtDetailComponent implements OnInit {
           return;
         }
 
-        const obj = Array.isArray(response?.object)
-          ? response.object[0]
-          : response?.object;
-        this.formObj = obj || {};
-        this.documentDtos = this.formObj?.yatDocsDTOs || [];
+        this.parsePreviewResponse(response);
       },
       error: (err) => {
         this.$common.hideLoader();
@@ -97,6 +100,18 @@ export class FormPmtDetailComponent implements OnInit {
     return Number.isNaN(num)
       ? value
       : this.datePipe.transform(new Date(num), 'yyyy-MM-dd');
+  }
+
+  display(value: any) {
+    return value === null || value === undefined || value === '' ? '-' : value;
+  }
+
+  get pmt(): any {
+    return this.preview?.pmt || {};
+  }
+
+  get travelRows(): any[] {
+    return this.preview?.travelRows || [];
   }
 
   goBack() {
@@ -132,6 +147,38 @@ export class FormPmtDetailComponent implements OnInit {
       return this.previewKind === 'claim' ? 'resettlement claim preview' : 'resettlement preview';
     }
     return this.previewKind === 'claim' ? 'PMT claim preview' : 'PMT preview';
+  }
+
+  private parsePreviewResponse(response: any): void {
+    const claims = this.unwrapClaimObject(response?.object);
+    const pmt = this.firstItem(claims?.yatPermDutyAdvDTOs);
+
+    this.formObj = claims;
+    this.documentDtos = this.asArray(claims?.yatDocsDTOs);
+    this.preview = {
+      claims,
+      pmt,
+      travelRows: this.asArray(claims?.yatDtsDetailDTOs),
+      documentDtos: this.documentDtos,
+    };
+  }
+
+  private unwrapClaimObject(object: any): any {
+    if (Array.isArray(object)) {
+      return object[0] || {};
+    }
+    return object || {};
+  }
+
+  private firstItem(value: any): any {
+    if (Array.isArray(value)) {
+      return value[0] || {};
+    }
+    return value || {};
+  }
+
+  private asArray(value: any): any[] {
+    return Array.isArray(value) ? value : [];
   }
 }
 

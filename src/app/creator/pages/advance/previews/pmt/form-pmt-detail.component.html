@@ -54,12 +54,12 @@
                   </div>
                 </div>
 
-                <div class="PersonalDetail container" *ngIf="formObj?.yatPermDutyAdvDTOs?.length">
+                <div class="PersonalDetail container" *ngIf="pmt">
                   <h4>{{ detailHeading }}</h4>
                   <div class="container row">
                     <div class="col-md-4">
                       <label class="form-label">Transfer To</label>
-                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.permTransTo | showHypen }}</p>
+                      <p>{{ pmt?.permTransTo | showHypen }}</p>
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Applied To</label>
@@ -67,44 +67,44 @@
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">W.E.F Date</label>
-                      <p>{{ asDate(formObj?.yatPermDutyAdvDTOs?.[0]?.wefDate) | showHypen }}</p>
+                      <p>{{ asDate(pmt?.wefDate) | showHypen }}</p>
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Station From</label>
-                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.stnFrom | showHypen }}</p>
+                      <p>{{ pmt?.stnFrom | showHypen }}</p>
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Station To</label>
-                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.stnTo | showHypen }}</p>
+                      <p>{{ pmt?.stnTo | showHypen }}</p>
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Distance</label>
-                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.distance | showHypen }}</p>
+                      <p>{{ pmt?.distance | showHypen }}</p>
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">PMT Type</label>
-                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.pmtType | showHypen }}</p>
+                      <p>{{ pmt?.pmtType | showHypen }}</p>
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Family Type</label>
-                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.familyType | showHypen }}</p>
+                      <p>{{ pmt?.familyType | showHypen }}</p>
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Advance Amount</label>
-                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.advAmt | showHypen }}</p>
+                      <p>{{ pmt?.advAmt | showHypen }}</p>
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Total Amount</label>
-                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.totalAmt | showHypen }}</p>
+                      <p>{{ pmt?.totalAmt | showHypen }}</p>
                     </div>
                     <div class="col-md-4">
                       <label class="form-label">Total Budgeted Amount</label>
-                      <p>{{ formObj?.yatPermDutyAdvDTOs?.[0]?.totalBudgetedAmt | showHypen }}</p>
+                      <p>{{ pmt?.totalBudgetedAmt | showHypen }}</p>
                     </div>
                   </div>
                 </div>
 
-                <div class="PersonalDetail container" *ngIf="formObj?.yatDtsDetailDTOs?.length">
+                <div class="PersonalDetail container" *ngIf="travelRows?.length">
                   <h4>Travel Details</h4>
                   <div class="table-responsive">
                     <table class="table table-bordered" style="width: 100%">
@@ -120,7 +120,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let dataObj of formObj?.yatDtsDetailDTOs; let i = index">
+                        <tr *ngFor="let dataObj of travelRows; let i = index">
                           <td>{{ i + 1 }}</td>
                           <td>{{ dataObj?.source | showHypen }}</td>
                           <td>{{ dataObj?.destination | showHypen }}</td>

@@ -1,1 +1,48 @@
-<app-form-pmt-detail></app-form-pmt-detail>
+<div class="wrapper">
+  <div class="container mt-3">
+    <button type="button" class="btn btn-sm btn-warning mb-3" (click)="goBack()">BACK</button>
+    <h4><strong>{{ previewTitle }}</strong></h4>
+    <section class="mt-4">
+      <h5><strong>Claim Summary</strong></h5>
+      <div class="row" *ngFor="let field of summaryFields"><div class="col-md-4 fw-bold">{{ field.label }}</div><div class="col-md-8">{{ display(field.value) }}</div></div>
+    </section>
+    <section class="mt-4">
+      <h5><strong>(a) Personal Details</strong></h5>
+      <div class="row" *ngFor="let field of personalFields"><div class="col-md-4 fw-bold">{{ field.label }}</div><div class="col-md-8">{{ display(field.value) }}</div></div>
+    </section>
+    <section class="mt-4">
+      <h5><strong>(b) Claim Details</strong></h5>
+      <div class="row" *ngFor="let field of claimFields"><div class="col-md-4 fw-bold">{{ field.label }}</div><div class="col-md-8">{{ display(field.value) }}</div></div>
+    </section>
+    <section class="mt-4">
+      <h5><strong>(c) Travel Details</strong></h5>
+      <table class="table table-bordered table-sm">
+        <thead class="table-primary"><tr><th>From</th><th>To</th><th>Travel Mode</th><th>DTS</th><th>Amount (In Rs.)</th><th>Reason for Not Using DTS</th><th>Remarks</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let row of travelRows"><td>{{ display(row.from) }}</td><td>{{ display(row.to) }}</td><td>{{ display(row.mode) }}</td><td>{{ display(row.dts) }}</td><td>{{ display(row.amount) }}</td><td>{{ display(row.reason) }}</td><td>{{ display(row.remarks) }}</td></tr>
+          <tr *ngIf="!travelRows.length"><td colspan="7" class="text-center">No Record Found</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="mt-4" *ngIf="familyRows.length">
+      <h5><strong>(d) Family / Guest Details</strong></h5>
+      <table class="table table-bordered table-sm"><thead class="table-primary"><tr><th>Name</th><th>Relation</th><th>Age</th><th>Gender</th></tr></thead><tbody><tr *ngFor="let row of familyRows"><td>{{ display(row.name) }}</td><td>{{ display(row.relation) }}</td><td>{{ display(row.age) }}</td><td>{{ display(row.gender) }}</td></tr></tbody></table>
+    </section>
+    <section class="mt-4">
+      <h5><strong>(e) Bank Details</strong></h5>
+      <div class="row" *ngFor="let field of bankFields"><div class="col-md-4 fw-bold">{{ field.label }}</div><div class="col-md-8">{{ display(field.value) }}</div></div>
+    </section>
+    <section class="mt-4">
+      <h5><strong>(f) Documents</strong></h5>
+      <table class="table table-bordered table-sm"><thead class="table-primary"><tr><th>Document Name</th><th>Document Type</th><th>Status</th></tr></thead><tbody><tr *ngFor="let doc of documentDtos"><td>{{ display(doc.documentName || doc.docName || doc.name) }}</td><td>{{ display(doc.documentType || doc.docType) }}</td><td>{{ doc.fileUrl || doc.fileName ? 'Attached' : 'Not Attached' }}</td></tr><tr *ngIf="!documentDtos.length"><td colspan="3" class="text-center">No Record Found</td></tr></tbody></table>
+    </section>
+    <section class="mt-4">
+      <h5><strong>(g) Remarks</strong></h5>
+      <p>{{ display(formObj?.internalRemarks || formObj?.remarks || claim?.remarks) }}</p>
+    </section>
+    <section class="mt-4" *ngIf="formObj?.advClaimId || formObj?.supClaimId">
+      <button type="button" class="btn btn-info me-2" *ngIf="formObj?.advClaimId" (click)="openRelatedPreview('preview-pmt-duty', formObj.advClaimId)">View Advance</button>
+      <button type="button" class="btn btn-info" *ngIf="formObj?.supClaimId" (click)="openRelatedPreview('preview-pmt-duty-claim', formObj.supClaimId)">View Supplementary Claim</button>
+    </section>
+  </div>
+</div>

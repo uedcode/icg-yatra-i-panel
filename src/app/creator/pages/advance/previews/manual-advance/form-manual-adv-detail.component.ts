@@ -36,6 +36,7 @@ export class FormManualAdvDetailComponent implements OnInit {
         headers: {
           claimId,
           subFormId: 'M',
+          isFetch: 'true',
           isPreview: 'true',
           userId: this.userIdDetails?.userId ?? '',
         },
@@ -44,9 +45,8 @@ export class FormManualAdvDetailComponent implements OnInit {
       this.$claim.getSingleClaim(config).subscribe(
         (res: any) => {
           this.$common.hideLoader();
-          if (res?.status && res.object?.length) {
-            this.claim = res.object[0];
-            this.manual = this.claim?.yatManualAdvDTOs?.[0] || {};
+          if (res?.status) {
+            this.parsePreviewResponse(res);
           }
         },
         (err) => {
@@ -55,6 +55,25 @@ export class FormManualAdvDetailComponent implements OnInit {
         }
       );
     });
+  }
+
+  private parsePreviewResponse(response: any): void {
+    this.claim = this.unwrapClaimObject(response?.object);
+    this.manual = this.firstItem(this.claim?.yatManualAdvDTOs);
+  }
+
+  private unwrapClaimObject(object: any): any {
+    if (Array.isArray(object)) {
+      return object[0] || {};
+    }
+    return object || {};
+  }
+
+  private firstItem(value: any): any {
+    if (Array.isArray(value)) {
+      return value[0] || {};
+    }
+    return value || {};
   }
 }
 

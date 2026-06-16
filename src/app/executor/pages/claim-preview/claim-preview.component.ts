@@ -47,7 +47,7 @@ export class ClaimPreviewComponent implements OnInit {
         isPreview: 'true',
       },
     };
-    this.$claim.getSingleClaim(config).subscribe({
+    this.$claim.getSingleClaimPreview(config).subscribe({
       next: (response: any) => {
         let obj = response?.object;
         if (Array.isArray(obj)) obj = obj[0] || null;

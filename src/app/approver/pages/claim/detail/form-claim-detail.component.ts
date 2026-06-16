@@ -97,7 +97,7 @@ export class FormClaimDetailComponent implements OnInit {
       (config.headers as any).supCLaimId = this.supplementaryId;
     }
 
-    this.$claim.getSingleClaim(config).subscribe({
+    this.$claim.getSingleClaimPreview(config).subscribe({
       next: (response: any) => {
         this.$common.hideLoader();
         let obj = response?.object;

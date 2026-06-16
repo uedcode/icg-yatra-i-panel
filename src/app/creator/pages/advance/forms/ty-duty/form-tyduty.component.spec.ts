@@ -93,9 +93,9 @@ describe('FormTydutyComponent', () => {
     const component = createComponent();
     component.claims.claimId = 555;
     component.supplementryId = 'SUP-TY-1';
-    component.navigatePreview('TYA', 555);
-    expect(component.router.navigate).toHaveBeenCalledWith(['../form-tyduty-detail'], {
-      queryParams: { claimId: 555, subFormId: 'T', supId: 'SUP-TY-1' }
+    component.navigatePreview('', 555);
+    expect(component.router.navigate).toHaveBeenCalledWith(['../preview-ty-duty'], {
+      queryParams: { id: 555, supId: 'SUP-TY-1' }
     });
   });
 

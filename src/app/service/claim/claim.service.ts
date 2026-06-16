@@ -87,9 +87,22 @@ export class ClaimService {
 
   /**
    * Get a single claim by id + type, etc.
-   * Old JS: $http.get(url + "/getSingleClaim", config)
+   * Old JS: $http.get(url + "/single", config)
    */
   getSingleClaim(config: any) {
+    return this.http.get<any>(`claim/single`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  /**
+   * Claim preview/details endpoint.
+   * Legacy claim preview flow uses /getSingleClaim, not /single.
+   */
+  getSingleClaimPreview(config: any) {
     return this.http.get<any>(`claim/getSingleClaim`, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);

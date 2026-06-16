@@ -49,7 +49,7 @@ import { FormFteComponent } from './pages/advance/forms/fte/form-fte.component';
 import { FormFteDetailComponent } from './pages/advance/previews/fte/form-fte-detail.component';
 import { FormPmtDutyComponent } from './pages/advance/forms/pmt/form-pmt.component';
 import { FormPmtDetailComponent } from './pages/advance/previews/pmt/form-pmt-detail.component';
-import { FormTydutyDetailComponent } from './pages/advance/previews/ty-duty/form-tyduty-detail.component';
+import { PreviewTyDutyComponent } from './pages/advance/previews/ty-duty/preview-ty-duty.component';
 import { FormResettlementClaimComponent } from './pages/claim/forms/resettlement/form-resettlement-claim/form-resettlement-claim.component';
 import { FormResettlementPreviewComponent } from './pages/claim/previews/resettlement-linked/form-resettlement-preview.component';
 import { FormLtcAdvanceComponent } from './pages/advance/forms/ltc/form-ltc.component';
@@ -123,7 +123,7 @@ const CustomSelectOptions: INgxSelectOptions = {
     FormFteDetailComponent,
     FormPmtDutyComponent,
     FormPmtDetailComponent,
-    FormTydutyDetailComponent,
+    PreviewTyDutyComponent,
     FormResettlementClaimComponent,
     FormResettlementPreviewComponent,
     FormLtcAdvanceComponent,

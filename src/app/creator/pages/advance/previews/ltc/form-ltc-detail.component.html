@@ -10,7 +10,7 @@
       <strong>{{ previewHeading }}</strong>
     </div>
     <div class="card-body">
-      <div class="row" *ngIf="formObj?.yatLtcAdvDTOs?.[0] as adv">
+      <div class="row" *ngIf="ltc as adv">
         <div class="col-md-3"><strong>Name:</strong> {{ display(adv.name) }}</div>
         <div class="col-md-3"><strong>Rank:</strong> {{ display(adv.rank) }}</div>
         <div class="col-md-3"><strong>PNO:</strong> {{ display(adv.pno) }}</div>
@@ -53,14 +53,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of formObj?.yatFamilyDetailDTOs">
+          <tr *ngFor="let row of familyRows">
             <td>{{ display(row.memberName) }}</td>
             <td>{{ display(row.age) }}</td>
             <td>{{ display(row.relation) }}</td>
             <td>{{ display(row.occupation) }}</td>
             <td>{{ row.checkedIndicator ? 'Yes' : 'No' }}</td>
           </tr>
-          <tr *ngIf="!formObj?.yatFamilyDetailDTOs?.length">
+          <tr *ngIf="!familyRows?.length">
             <td colspan="5" class="text-center">No family details available.</td>
           </tr>
         </tbody>
@@ -86,7 +86,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of formObj?.yatDtsDetailDTOs">
+          <tr *ngFor="let row of travelRows">
             <td>{{ display(row.source) }}</td>
             <td>{{ display(row.destination) }}</td>
             <td>
@@ -98,7 +98,7 @@
             <td>{{ display(row.reasonForNoDts) }}</td>
             <td>{{ display(row.remarks) }}</td>
           </tr>
-          <tr *ngIf="!formObj?.yatDtsDetailDTOs?.length">
+          <tr *ngIf="!travelRows?.length">
             <td colspan="7" class="text-center">No travel details available.</td>
           </tr>
         </tbody>

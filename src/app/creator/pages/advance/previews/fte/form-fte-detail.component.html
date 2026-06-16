@@ -36,22 +36,22 @@
                   </div>
                 </div>
 
-                <div class="PersonalDetail container" *ngIf="formObj?.yatForeignDutyAdvDTOs?.length">
+                <div class="PersonalDetail container" *ngIf="fte">
                   <h4>{{ detailHeading }}</h4>
                   <div class="container row">
-                    <div class="col-md-4"><label class="form-label">Transfer To</label><p>{{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.tempTransTo) }}</p></div>
-                    <div class="col-md-4"><label class="form-label">Station Proceeding To</label><p>{{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.stationProceedingTo) }}</p></div>
-                    <div class="col-md-4"><label class="form-label">Duty Station</label><p>{{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.dutyStation) }}</p></div>
-                    <div class="col-md-4"><label class="form-label">Purpose Type</label><p>{{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.purposeType) }}</p></div>
-                    <div class="col-md-4"><label class="form-label">Duration</label><p>{{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.duration) }}</p></div>
-                    <div class="col-md-4"><label class="form-label">Advance Amount</label><p>{{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.advAmt) }}</p></div>
-                    <div class="col-md-4"><label class="form-label">Total Amount</label><p>{{ display(formObj?.yatForeignDutyAdvDTOs?.[0]?.totalAmt) }}</p></div>
-                    <div class="col-md-4"><label class="form-label">W.E.F Date</label><p>{{ display(asDate(formObj?.yatForeignDutyAdvDTOs?.[0]?.wefDate)) }}</p></div>
-                    <div class="col-md-4"><label class="form-label">GX Date</label><p>{{ display(asDate(formObj?.yatForeignDutyAdvDTOs?.[0]?.gxDate)) }}</p></div>
+                    <div class="col-md-4"><label class="form-label">Transfer To</label><p>{{ display(fte?.tempTransTo) }}</p></div>
+                    <div class="col-md-4"><label class="form-label">Station Proceeding To</label><p>{{ display(fte?.stationProceedingTo) }}</p></div>
+                    <div class="col-md-4"><label class="form-label">Duty Station</label><p>{{ display(fte?.dutyStation) }}</p></div>
+                    <div class="col-md-4"><label class="form-label">Purpose Type</label><p>{{ display(fte?.purposeType) }}</p></div>
+                    <div class="col-md-4"><label class="form-label">Duration</label><p>{{ display(fte?.duration) }}</p></div>
+                    <div class="col-md-4"><label class="form-label">Advance Amount</label><p>{{ display(fte?.advAmt) }}</p></div>
+                    <div class="col-md-4"><label class="form-label">Total Amount</label><p>{{ display(fte?.totalAmt) }}</p></div>
+                    <div class="col-md-4"><label class="form-label">W.E.F Date</label><p>{{ display(asDate(fte?.wefDate)) }}</p></div>
+                    <div class="col-md-4"><label class="form-label">GX Date</label><p>{{ display(asDate(fte?.gxDate)) }}</p></div>
                   </div>
                 </div>
 
-                <div class="PersonalDetail container" *ngIf="formObj?.yatDtsDetailDTOs?.length">
+                <div class="PersonalDetail container" *ngIf="travelRows?.length">
                   <h4>Travel Details</h4>
                   <div class="table-responsive">
                     <table class="table table-bordered" style="width: 100%">
@@ -59,7 +59,7 @@
                         <tr><th>SL</th><th>Source</th><th>Destination</th><th>Mode</th><th>DTS</th><th>Amount</th></tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let dataObj of formObj?.yatDtsDetailDTOs; let i = index">
+                        <tr *ngFor="let dataObj of travelRows; let i = index">
                           <td>{{ i + 1 }}</td>
                           <td>{{ display(dataObj?.source) }}</td>
                           <td>{{ display(dataObj?.destination) }}</td>

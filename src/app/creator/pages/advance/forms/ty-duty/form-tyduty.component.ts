@@ -1302,12 +1302,22 @@ export class FormTydutyComponent implements OnInit {
     // Add sign/appliedTo validation if needed
   }
   navigatePreview(type, id) {
-    this.router.navigate([`../${this.getPreviewRoute()}`], {
-      queryParams: {
-        claimId: id || this.claims.claimId || this.claimIdParam,
-        subFormId: this.activeSubFormId,
-        ...(this.supplementryId ? { supId: this.supplementryId } : {}),
-      },
+    const route = type || this.getPreviewRoute();
+    const previewId = id || this.claims.claimId || this.claimIdParam;
+    const isClaimPreview = this.activeFormKind === 'claim' || route.includes('claim');
+    const queryParams = isClaimPreview
+      ? {
+          claimId: previewId,
+          subFormId: this.activeSubFormId,
+          ...(this.supplementryId ? { supId: this.supplementryId } : {}),
+        }
+      : {
+          id: previewId,
+          ...(this.supplementryId ? { supId: this.supplementryId } : {}),
+        };
+
+    this.router.navigate([`../${route}`], {
+      queryParams,
     });
   }
 
@@ -1718,7 +1728,7 @@ export class FormTydutyComponent implements OnInit {
   }
 
   private getPreviewRoute(): string {
-    return this.activeFormKind === 'claim' ? 'preview-ty-duty-claim' : 'form-tyduty-detail';
+    return this.activeFormKind === 'claim' ? 'preview-ty-duty-claim' : 'preview-ty-duty';
   }
 
   // TAB NAVIGATION (NEXT / PREVIOUS)

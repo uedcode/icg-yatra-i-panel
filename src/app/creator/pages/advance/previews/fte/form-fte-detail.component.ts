@@ -22,6 +22,12 @@ export class FormFteDetailComponent implements OnInit {
   ) {}
 
   formObj: any = {};
+  preview: any = {
+    claims: {},
+    fte: {},
+    travelRows: [],
+    documentDtos: [],
+  };
   claimId: string | null = null;
   subFormId: string = 'F';
   supplementaryId: string | null = null;
@@ -50,6 +56,7 @@ export class FormFteDetailComponent implements OnInit {
       headers: {
         claimId: this.claimId,
         subFormId: this.subFormId,
+        isFetch: 'true',
         isPreview: 'true',
         userId: this.userIdDetails?.userId ?? '',
       },
@@ -70,11 +77,7 @@ export class FormFteDetailComponent implements OnInit {
           return;
         }
 
-        const obj = Array.isArray(response?.object)
-          ? response.object[0]
-          : response?.object;
-        this.formObj = obj || {};
-        this.documentDtos = this.formObj?.yatDocsDTOs || [];
+        this.parsePreviewResponse(response);
       },
       error: (err) => {
         this.$common.hideLoader();
@@ -96,6 +99,14 @@ export class FormFteDetailComponent implements OnInit {
     return value === null || value === undefined || value === '' ? '-' : value;
   }
 
+  get fte(): any {
+    return this.preview?.fte || {};
+  }
+
+  get travelRows(): any[] {
+    return this.preview?.travelRows || [];
+  }
+
   get previewHeading(): string {
     return this.subFormId === 'FTE' ? 'FTE Claim Preview' : 'FTE Advance Preview';
   }
@@ -113,6 +124,38 @@ export class FormFteDetailComponent implements OnInit {
     if (id === 'FTE') return 'FTE';
     if (id === 'FTEA') return 'F';
     return 'F';
+  }
+
+  private parsePreviewResponse(response: any): void {
+    const claims = this.unwrapClaimObject(response?.object);
+    const fte = this.firstItem(claims?.yatForeignDutyAdvDTOs);
+
+    this.formObj = claims;
+    this.documentDtos = this.asArray(claims?.yatDocsDTOs);
+    this.preview = {
+      claims,
+      fte,
+      travelRows: this.asArray(claims?.yatDtsDetailDTOs),
+      documentDtos: this.documentDtos,
+    };
+  }
+
+  private unwrapClaimObject(object: any): any {
+    if (Array.isArray(object)) {
+      return object[0] || {};
+    }
+    return object || {};
+  }
+
+  private firstItem(value: any): any {
+    if (Array.isArray(value)) {
+      return value[0] || {};
+    }
+    return value || {};
+  }
+
+  private asArray(value: any): any[] {
+    return Array.isArray(value) ? value : [];
   }
 }
 

@@ -24,7 +24,7 @@ import { FaqComponent } from './pages/support/faq/faq.component';
 import { WebDetailComponent } from './pages/support/web-detail/web-detail.component';
 import { PassedComponent } from './pages/advance/queues/passed/passed.component';
 import { NotPassedComponent } from './pages/advance/queues/not-passed/not-passed.component';
-import { FormTydutyDetailComponent } from './pages/advance/previews/ty-duty/form-tyduty-detail.component';
+import { PreviewTyDutyComponent } from './pages/advance/previews/ty-duty/preview-ty-duty.component';
 import { FormTydutyComponent } from './pages/advance/forms/ty-duty/form-tyduty.component';
 import { FormFteDetailComponent } from './pages/advance/previews/fte/form-fte-detail.component';
 import { FormFteComponent } from './pages/advance/forms/fte/form-fte.component';
@@ -142,9 +142,8 @@ const routes: Routes = [
       },
       {
         path: 'form-tyduty-detail',
-        component: FormTydutyDetailComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'TY Duty Detail', roles: CREATOR_ROLES },
+        redirectTo: 'preview-ty-duty',
+        pathMatch: 'full',
       },
       {
         path: 'preview-ty-duty-claim',
@@ -154,7 +153,7 @@ const routes: Routes = [
       },
       {
         path: 'preview-ty-duty',
-        component: FormTydutyDetailComponent,
+        component: PreviewTyDutyComponent,
         canActivate: [AuthGuard],
         data: { title: 'TY Duty Advance Preview', roles: CREATOR_ROLES },
       },
@@ -226,7 +225,7 @@ const routes: Routes = [
       },
       {
         path: 'preview-pm-resettlementaim',
-        component: FormResettlementPreviewComponent,
+        component: ClaimPreviewResettlementComponent,
         canActivate: [AuthGuard],
         data: { title: 'Resettlement Supplementary Preview', roles: CREATOR_ROLES, subFormId: 'RS', previewKind: 'claim' },
       },

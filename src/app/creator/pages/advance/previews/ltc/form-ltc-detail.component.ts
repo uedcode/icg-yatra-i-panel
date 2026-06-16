@@ -13,6 +13,13 @@ import { CommonService } from 'src/app/service/core/common.service';
 })
 export class FormLtcDetailComponent implements OnInit {
   formObj: any = null;
+  preview: any = {
+    claims: {},
+    ltc: {},
+    familyRows: [],
+    travelRows: [],
+    documentDtos: [],
+  };
   claimId: string | null = null;
   subFormId: string = 'L';
   supplementaryId: string | null = null;
@@ -50,6 +57,7 @@ export class FormLtcDetailComponent implements OnInit {
       headers: {
         claimId: this.claimId,
         subFormId: this.subFormId,
+        isFetch: 'true',
         isPreview: 'true',
         userId: this.userIdDetails?.userId ?? '',
       },
@@ -61,10 +69,7 @@ export class FormLtcDetailComponent implements OnInit {
     this.$claim.getSingleClaim(config).subscribe({
       next: (response: any) => {
         this.$common.hideLoader();
-        let obj = response?.object;
-        if (Array.isArray(obj)) obj = obj[0] || null;
-        this.formObj = obj;
-        this.documentDtos = Array.isArray(obj?.yatDocsDTOs) ? obj.yatDocsDTOs : [];
+        this.parsePreviewResponse(response);
       },
       error: () => {
         this.$common.hideLoader();
@@ -87,6 +92,18 @@ export class FormLtcDetailComponent implements OnInit {
     return str ? str : '-';
   }
 
+  get ltc(): any {
+    return this.preview?.ltc || {};
+  }
+
+  get familyRows(): any[] {
+    return this.preview?.familyRows || [];
+  }
+
+  get travelRows(): any[] {
+    return this.preview?.travelRows || [];
+  }
+
   get previewHeading(): string {
     return this.subFormId === 'LTC' ? 'LTC Claim Preview' : 'LTC Advance Preview';
   }
@@ -100,6 +117,39 @@ export class FormLtcDetailComponent implements OnInit {
     if (id === 'LTC') return 'LTC';
     if (id === 'LTCA') return 'L';
     return 'L';
+  }
+
+  private parsePreviewResponse(response: any): void {
+    const claims = this.unwrapClaimObject(response?.object);
+    const ltc = this.firstItem(claims?.yatLtcAdvDTOs);
+
+    this.formObj = claims;
+    this.documentDtos = this.asArray(claims?.yatDocsDTOs);
+    this.preview = {
+      claims,
+      ltc,
+      familyRows: this.asArray(claims?.yatFamilyDetailDTOs),
+      travelRows: this.asArray(claims?.yatDtsDetailDTOs),
+      documentDtos: this.documentDtos,
+    };
+  }
+
+  private unwrapClaimObject(object: any): any {
+    if (Array.isArray(object)) {
+      return object[0] || {};
+    }
+    return object || {};
+  }
+
+  private firstItem(value: any): any {
+    if (Array.isArray(value)) {
+      return value[0] || {};
+    }
+    return value || {};
+  }
+
+  private asArray(value: any): any[] {
+    return Array.isArray(value) ? value : [];
   }
 }
 

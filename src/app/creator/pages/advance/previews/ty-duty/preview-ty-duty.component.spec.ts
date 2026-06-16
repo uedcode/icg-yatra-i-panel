@@ -1,9 +1,9 @@
 import { of, throwError } from 'rxjs';
-import { FormTydutyDetailComponent } from './form-tyduty-detail.component';
+import { PreviewTyDutyComponent } from './preview-ty-duty.component';
 
-describe('FormTydutyDetailComponent', () => {
+describe('PreviewTyDutyComponent', () => {
   const createComponent = () => {
-    const component = Object.create(FormTydutyDetailComponent.prototype) as any;
+    const component = Object.create(PreviewTyDutyComponent.prototype) as any;
     component.location = jasmine.createSpyObj('Location', ['back']);
     component.route = {
       snapshot: { data: { subFormId: 'TYA' } },
@@ -14,7 +14,7 @@ describe('FormTydutyDetailComponent', () => {
     component.$common = jasmine.createSpyObj('CommonService', ['showLoader', 'hideLoader', 'showMessage']);
     component.$claim = jasmine.createSpyObj('ClaimService', ['getSingleClaim']);
     component.$claim.getSingleClaim.and.returnValue(of({ status: true, object: [{ claimId: '701', yatDocsDTOs: [{ id: 1 }] }] }));
-    component.$auth = {} as any;
+    component.$auth = jasmine.createSpyObj('AuthService', ['viewFile']);
     return component;
   };
 
@@ -64,11 +64,17 @@ describe('FormTydutyDetailComponent', () => {
     expect(component.location.back).toHaveBeenCalled();
   });
 
-  it('uses claim-specific headings for TY claim preview', () => {
+  it('uses legacy headings and exposes TY detail helpers', () => {
     const component = createComponent();
-    component.subFormId = 'TYD';
-    expect(component.previewHeading).toBe('TY Duty Claim Preview');
-    expect(component.detailHeading).toBe('TY Duty Claim Details');
+    component.formObj = {
+      formId: 'F1',
+      extendedAdvId: 'OLD',
+      yatTempDutyAdvDTOs: [{ availedCategory: '1', accHToDutyKms: 50, accHToDutyPerDay: 10 }]
+    };
+    expect(component.previewHeading).toBe('Requisition for TY Duty Advance');
+    expect(component.headingFormId).toBe('F1');
+    expect(component.gxLabelPrefix).toBe('Authority');
+    expect(component.accHToDutyRateLabel).toBe('50 per day(Kms)');
   });
 });
 

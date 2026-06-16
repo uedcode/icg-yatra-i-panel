@@ -179,7 +179,7 @@ getForm() {
     if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
     if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
-    if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
+    if (id === 'T') return detail ? 'preview-ty-duty' : 'form-tyduty';
     if (id === 'F') return detail ? 'form-fte-detail' : 'form-fte';
     if (id === 'L') return detail ? 'form-ltc-detail' : 'form-ltc';
     if (id === 'M') return detail ? 'form-manual-adv-detail' : 'form-manual-adv';
@@ -202,9 +202,12 @@ getForm() {
     const route = this.getCreatorClaimRoute(subFormId, true);
 
     if (claimId && route) {
+      const queryString = route === 'preview-ty-duty'
+        ? `id=${claimId}`
+        : `claimId=${claimId}&subFormId=${subFormId}`;
       this.router.navigateByUrl(
         this.$auth.getModuleName() +
-          `/${route}?claimId=${claimId}&subFormId=${subFormId}`
+          `/${route}?${queryString}`
       );
       return;
     }
