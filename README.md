@@ -31,9 +31,3 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 https://stackoverflow.com/questions/64213874/how-to-generate-a-lazy-loading-module-using-angular-cli
 ## Sample
 ng generate module superadmin --module app --routing true --route super-admin
-
-## PILOTAGE
-ng generate module system-admin --module app --routing true --route system-admin
-ng generate module unit-admin --module app --routing true --route unit-admin
-ng generate module creator --module app --routing true --route creator
-ng generate module approver --module app --routing true --route approver
