@@ -55,6 +55,18 @@ export function buildLegacyClaimStateHeaders(
   roles: LegacyCountHeaderRoles = {}
 ): Record<string, string> {
   const headers = buildLegacyStateCountHeaders(input, roles);
+  const roleTypeId = String(input?.roleTypeId || '');
+  const isVerifierApproverQueue =
+    roleTypeId === String(roles?.verifier || '') ||
+    roleTypeId === String(roles?.verifier1 || '') ||
+    roleTypeId === String(roles?.verifier2 || '') ||
+    roleTypeId === String(roles?.approver || '');
+
+  // Legacy verifier/approver queue list calls pass an empty userId and rely on gxUnitId.
+  if (isVerifierApproverQueue) {
+    delete headers.userId;
+    delete headers.unitId;
+  }
 
   if (input?.claimState !== undefined) {
     headers.claimState = String(input.claimState || '');

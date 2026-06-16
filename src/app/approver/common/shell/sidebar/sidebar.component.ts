@@ -87,8 +87,4 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     $("#user_manual_modal").modal('show');
   }
 
-  queueLink(path: string): string[] {
-    const runtimeModuleId = this.$auth.getRuntimeModuleId();
-    return runtimeModuleId === 'CLM' ? [`../claim/${path}`] : [`../${path}`];
-  }
 }
