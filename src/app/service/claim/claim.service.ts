@@ -2,12 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { CommonService } from 'src/app/service/core/common.service';
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ClaimService {
+  private readonly statusCountRefreshSubject = new Subject<void>();
+  readonly statusCountRefresh$ = this.statusCountRefreshSubject.asObservable();
+
   getCodeYatAdvPayLevel(config?: any) {
     return this.http.get<any>(`payLevel/getAll`, config).pipe(
       map((res) => {
@@ -18,6 +22,10 @@ export class ClaimService {
   }
   constructor(private http: HttpClient, private $common: CommonService) {}
   private apiUrl = environment.api;
+
+  notifyStatusCountRefresh(): void {
+    this.statusCountRefreshSubject.next();
+  }
 
   // ==========================
   // CORE CLAIM OPERATIONS
@@ -159,10 +167,10 @@ export class ClaimService {
 
   /**
    * Get verifier unit for a claim.
-   * Old JS: $http.get(url + "/getVerifierUnit", config)
+   * Old JS: $http.put(url + "/getVerifierUnit", {}, config)
    */
   getVerifierUnit(config: any) {
-    return this.http.get<any>(`claim/getVerifierUnit`, config).pipe(
+    return this.http.put<any>(`claim/getVerifierUnit`, {}, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -181,6 +189,15 @@ export class ClaimService {
    */
   getClaimStates(config?: any) {
     return this.http.get<any>(`claimState/all`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  getClaimHistory(config?: any) {
+    return this.http.get<any>(`claim/claimHistory`, config).pipe(
       map((res) => {
         this.$common.parseResponse(res);
         return res;
@@ -433,6 +450,15 @@ export class ClaimService {
 
   createOrUpdatePayDetails(payload: any) {
     return this.http.post<any>(`yatPayDetails/createOrUpdate`, payload).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  uploadTempPayDocument(formData: FormData) {
+    return this.http.post<any>(`tempDocInfo/createOrUpdate`, formData).pipe(
       map((res) => {
         this.$common.parseResponse(res);
         return res;

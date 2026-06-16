@@ -44,6 +44,7 @@ export class ClaimNotPassedComponent implements OnInit {
   p: any = 1;
   queueModule: 'ADV' | 'CLM' = 'ADV';
   archiveLoadingMap: { [key: string]: boolean } = {};
+  claimObservations: any[] = [];
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
@@ -94,14 +95,23 @@ export class ClaimNotPassedComponent implements OnInit {
     this.reverse = !this.reverse;
   }
 
-  formId;
-  claimId;
-  viewHistory(formId: any, claimId: any = null): void {
-    this.formId = formId;
-    this.claimId = claimId || null;
-    setTimeout(() => {
-      $('#viewHistoryModal').modal('show');
-    }, 0);
+  loadClaimObservations(data: any): void {
+    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
+      return;
+    }
+
+    this.claimObservations = [];
+    this.$claim.getClaimObservations({ headers: { claimId: String(claimId) } }).subscribe({
+      next: (res: any) => {
+        this.claimObservations = Array.isArray(res?.object) ? res.object : [];
+        setTimeout(() => $('#claimObservationModal').modal('show'), 0);
+      },
+      error: () => {
+        this.$common.showMessage('Unable to load claim observations.', 'danger');
+      },
+    });
   }
 
   archiveClaim(data: any): void {
@@ -139,6 +149,7 @@ export class ClaimNotPassedComponent implements OnInit {
               item?.id) != claimStateId
         );
         this.$common.showMessage(res?.message || 'Claim archived successfully.', 'success');
+        this.$claim.notifyStatusCountRefresh();
       },
       error: () => {
         this.archiveLoadingMap[listKey] = false;
@@ -158,6 +169,15 @@ export class ClaimNotPassedComponent implements OnInit {
       return;
     }
     this.$common.download(url);
+  }
+
+  hasSignedForm(data: any): boolean {
+    return !!(
+      data?.yatClaimDTO?.inkSignedFileUrl ||
+      data?.yatClaimDTO?.signedFileUrl ||
+      data?.inkSignedFileUrl ||
+      data?.signedFileUrl
+    );
   }
 
   private resolveQueueFormId(): string {

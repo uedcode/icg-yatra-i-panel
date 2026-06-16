@@ -222,6 +222,7 @@ export class FormTydutyComponent implements OnInit {
   selectedTravelIndex: number | null = null;
 
   claimIdParam: string | null = null;
+  resubClaimId: string | null = null;
   extnClaimId: string | null = null;
   selectedUserForTyDuty: any;
 
@@ -230,6 +231,8 @@ export class FormTydutyComponent implements OnInit {
   claimId: any;
   gxFormModel: any;
   showErrors: any;
+  activeFormKind: 'advance' | 'claim' = 'advance';
+  activeSubFormId: string = this.codeClaim.tyAdv;
 
   allowOnlyNumbers(e: KeyboardEvent): void {
     // allow control keys
@@ -439,8 +442,12 @@ export class FormTydutyComponent implements OnInit {
   bankObj;
   private initFromRoute(): void {
     const qp = this.route.snapshot.queryParamMap;
-    this.claimIdParam = qp.get('claimId');
-    this.extnClaimId = qp.get('extnClaimId');
+    this.activeFormKind = this.resolveFormKind(this.route.snapshot.data?.['formKind']);
+    this.activeSubFormId = this.activeFormKind === 'claim' ? 'TYD' : this.codeClaim.tyAdv;
+    this.claims.codeSubFormDTO = { subFormId: this.activeSubFormId };
+    this.claimIdParam = qp.get('claimId') || qp.get('resubId');
+    this.resubClaimId = qp.get('resubId');
+    this.extnClaimId = qp.get('extnClaimId') || qp.get('extnId');
     this.supplementryId = qp.get('supId');
     const gxUnitIdStr = qp.get('gxUnitId');
     this.gxUnitId = gxUnitIdStr ? +gxUnitIdStr : null;
@@ -1035,9 +1042,9 @@ export class FormTydutyComponent implements OnInit {
       this.$common.showLoader();
       const headers: any = {
         isPreview: 'false',
-        gxUnitId: this.userIdDetails?.unitId ?? '',
+        gxUnitId: String(this.gxUnitId || this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId || ''),
         userId: this.userIdDetails?.userId ?? '',
-        subFormId: 'T',
+        subFormId: this.activeSubFormId,
         isFetch: 'true',
         claimId: '',
       };
@@ -1294,7 +1301,7 @@ export class FormTydutyComponent implements OnInit {
     this.router.navigate(['../form-tyduty-detail'], {
       queryParams: {
         claimId: id || this.claims.claimId || this.claimIdParam,
-        subFormId: 'T',
+        subFormId: this.activeSubFormId,
         ...(this.supplementryId ? { supId: this.supplementryId } : {}),
       },
     });
@@ -1313,7 +1320,7 @@ export class FormTydutyComponent implements OnInit {
     }
 
     if (this.supplementryId && savedClaimId) {
-      this.router.navigate([moduleUrl + '/form-tyduty'], {
+      this.router.navigate([moduleUrl + `/${this.getCurrentFormRoute()}`], {
         queryParams: {
           claimId: savedClaimId,
           supId: this.supplementryId,
@@ -1332,7 +1339,7 @@ export class FormTydutyComponent implements OnInit {
     const config = {
       headers: {
         userId: this.userIdDetails?.userId || '',
-        gxUnitId: String(this.gxUnitId || this.userIdDetails?.unitId || ''),
+        gxUnitId: String(this.gxUnitId || this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId || ''),
       },
     };
 
@@ -1582,11 +1589,10 @@ export class FormTydutyComponent implements OnInit {
         tempClaim.aclUserDTO = { userId: this.userIdDetails.userId };
       }
 
-      if (!tempClaim.codeSubFormDTO) {
-        tempClaim.codeSubFormDTO = {
-          subFormId: this.claims?.codeSubFormDTO?.subFormId ?? 'T',
-        };
-      }
+      tempClaim.codeSubFormDTO = {
+        ...(tempClaim.codeSubFormDTO || {}),
+        subFormId: this.activeSubFormId,
+      };
       if (tempClaim.codeUnitDTO && this.claims?.codeUnitDTO?.unit) {
         tempClaim.codeUnitDTO = {
           unit: this.claims.codeUnitDTO.unit,
@@ -1598,6 +1604,12 @@ export class FormTydutyComponent implements OnInit {
       }
       if (this.supplementryId) {
         tempClaim.supClaimId = this.supplementryId;
+      }
+      if (this.resubClaimId) {
+        tempClaim.refAdvanceId = this.resubClaimId;
+      }
+      if (this.extnClaimId) {
+        tempClaim.extendedAdvId = this.extnClaimId;
       }
       tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
 
@@ -1645,6 +1657,12 @@ export class FormTydutyComponent implements OnInit {
           if (obj.id || obj.claimId) {
             this.claims.claimId = obj.claimId || obj.id;
           }
+          if (this.resubClaimId) {
+            (this.claims as any).refAdvanceId = this.resubClaimId;
+          }
+          if (this.extnClaimId) {
+            (this.claims as any).extendedAdvId = this.extnClaimId;
+          }
 
           if (respStatus === this.codeClaimState.outbox) {
             this.$common.showMessage(
@@ -1681,6 +1699,18 @@ export class FormTydutyComponent implements OnInit {
       this.$common.hideLoader();
       this.disableBtn = false;
     }
+  }
+
+  private resolveFormKind(rawFormKind: any): 'advance' | 'claim' {
+    if (String(rawFormKind || '').toLowerCase() === 'claim') {
+      return 'claim';
+    }
+    const routePath = this.route.snapshot.routeConfig?.path || '';
+    return routePath.includes('claim') ? 'claim' : 'advance';
+  }
+
+  private getCurrentFormRoute(): string {
+    return this.activeFormKind === 'claim' ? 'form-ty-duty-claim' : 'form-tyduty';
   }
 
   // TAB NAVIGATION (NEXT / PREVIOUS)

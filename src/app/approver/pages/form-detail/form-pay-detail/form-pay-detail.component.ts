@@ -1,8 +1,10 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { CommonService } from 'src/app/service/core/common.service';
+declare var $: any;
 
 @Component({
   selector: 'app-form-pay-detail',
@@ -17,6 +19,7 @@ export class FormPayDetailComponent implements OnInit {
   codeRoleType: any;
   userIdDetails: any;
   formRemark = '';
+  selectedStatus = '';
   readonly payStateCodes = {
     outbox: 'OB',
     approved: 'AP',
@@ -28,7 +31,8 @@ export class FormPayDetailComponent implements OnInit {
     private router: Router,
     private $auth: AuthService,
     private $claim: ClaimService,
-    private $common: CommonService
+    private $common: CommonService,
+    private datePipe: DatePipe
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +48,12 @@ export class FormPayDetailComponent implements OnInit {
   }
 
   private loadDetails(id: string): void {
-    const config = { headers: { id } };
+    const config = {
+      headers: {
+        pid: this.userIdDetails?.userId,
+        id,
+      },
+    };
     this.$common.showLoader();
     this.$claim.getPayDetails(config).subscribe(
       (res: any) => {
@@ -72,7 +81,13 @@ export class FormPayDetailComponent implements OnInit {
   }
 
   get currentState(): string {
-    return this.payDetails?.statusId || this.payDetails?.payState || this.payDetails?.formState || '';
+    return (
+      this.payDetails?.statusId ||
+      this.payDetails?.payState ||
+      this.payDetails?.formState ||
+      this.payDetails?.state ||
+      ''
+    );
   }
 
   get canTakeAction(): boolean {
@@ -84,15 +99,22 @@ export class FormPayDetailComponent implements OnInit {
     const validRole =
       role === this.codeRoleType?.verifier1 || role === this.codeRoleType?.verifier2;
 
-    return validRole && this.currentState === this.codeStatus?.inbox;
+    const state = (this.currentState || '').toString().trim();
+    return validRole && (!state || state === this.codeStatus?.inbox);
+  }
+
+  get showActionSection(): boolean {
+    return this.mode === 'action' && this.canTakeAction;
   }
 
   getActionPlaceholder(status: string): string {
     return this.getDefaultRemark(status) || 'Enter remark';
   }
 
-  setActionRemark(status: string): void {
+  openRemarkModal(status: string): void {
     this.formRemark = this.getDefaultRemark(status);
+    this.selectedStatus = status;
+    $('#payRemarkModal').modal('show');
   }
 
   viewDocument(): void {
@@ -104,7 +126,15 @@ export class FormPayDetailComponent implements OnInit {
     this.$auth.viewFile(docUrl);
   }
 
-  applyAction(status: string): void {
+  asDate(value: any): string {
+    if (!value) return '-';
+    const date = typeof value === 'number' || /^\d+$/.test(`${value}`)
+      ? new Date(Number(value))
+      : new Date(value);
+    return Number.isNaN(date.getTime()) ? `${value}` : (this.datePipe.transform(date, 'dd-MMM-yyyy') || '-');
+  }
+
+  applyAction(status: string = this.selectedStatus): void {
     const payId = this.payDetails?.id;
     if (!payId) return;
     if (!this.canTakeAction) {
@@ -136,6 +166,8 @@ export class FormPayDetailComponent implements OnInit {
     this.$claim.changePayStatusById(payload).subscribe((res: any) => {
       if (res?.status) {
         this.$common.showMessage(res?.message || 'Status updated successfully.');
+        $('#payRemarkModal').modal('hide');
+        this.$claim.notifyStatusCountRefresh();
         this.router.navigateByUrl(`${this.$auth.getModuleName()}/pay-inbox`);
       }
     });
@@ -163,9 +195,6 @@ export class FormPayDetailComponent implements OnInit {
       return this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier1
         ? 'Verified'
         : 'Approved';
-    }
-    if (status === this.payStateCodes.notApproved) {
-      return 'Rejected';
     }
     return '';
   }

@@ -27,6 +27,7 @@ export class FormClaimDetailComponent implements OnInit {
   } as const;
   claimId: string | null = null;
   subFormId: string | null = null;
+  supplementaryId: string | null = null;
   statusId: string | null = null;
   actionable = false;
   formObj: any = null;
@@ -64,7 +65,10 @@ export class FormClaimDetailComponent implements OnInit {
     this.route.queryParamMap.subscribe((params) => {
       const routeParams = this.route.snapshot.paramMap;
       this.claimId = params.get('claimId') || params.get('id') || routeParams.get('claimId');
-      this.subFormId = this.normalizeSubFormId(params.get('subFormId') || routeParams.get('subFormId'));
+      this.supplementaryId = params.get('supId');
+      this.subFormId = this.normalizeSubFormId(
+        params.get('subFormId') || routeParams.get('subFormId') || this.route.snapshot.data?.['subFormId']
+      );
       this.statusId = params.get('statusId') || routeParams.get('statusId');
       this.actionable =
         (params.get('actionable') === '1' || routeParams.get('actionable') === '1') &&
@@ -86,8 +90,12 @@ export class FormClaimDetailComponent implements OnInit {
         claimId: this.claimId,
         subFormId: this.subFormId,
         isPreview: 'true',
+        userId: this.userIdDetails?.userId ?? '',
       },
     };
+    if (this.supplementaryId) {
+      (config.headers as any).supCLaimId = this.supplementaryId;
+    }
 
     this.$claim.getSingleClaim(config).subscribe({
       next: (response: any) => {
@@ -115,7 +123,7 @@ export class FormClaimDetailComponent implements OnInit {
         claimId: this.claimId,
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
-        unitId: this.userIdDetails?.unitId,
+        unitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
       },
     };
 
@@ -205,22 +213,10 @@ export class FormClaimDetailComponent implements OnInit {
   }
 
   getTertiaryActionStatus(): string {
-    if (this.isVerifierResettlementMode()) {
-      return this.codeStatus?.notPassed;
-    }
-    if (this.isApprovingRole()) {
-      return this.codeStatus?.notApproved;
-    }
     return '';
   }
 
   getTertiaryActionLabel(): string {
-    if (this.isVerifierResettlementMode()) {
-      return 'Not Passed';
-    }
-    if (this.isApprovingRole()) {
-      return 'Reject';
-    }
     return '';
   }
 
@@ -249,11 +245,7 @@ export class FormClaimDetailComponent implements OnInit {
   }
 
   private isLocallyAllowedTargetStatus(status: string): boolean {
-    const allowed = this.isVerifierResettlementMode()
-      ? [this.codeStatus?.outbox, this.codeStatus?.returned, this.codeStatus?.notPassed]
-      : this.isApprovingRole()
-        ? [this.codeStatus?.outbox, this.codeStatus?.returned, this.codeStatus?.notApproved]
-        : [this.codeStatus?.outbox, this.codeStatus?.returned];
+    const allowed = [this.codeStatus?.outbox, this.codeStatus?.returned];
     return allowed.includes(status);
   }
 
@@ -335,6 +327,9 @@ export class FormClaimDetailComponent implements OnInit {
       claimId: this.claimId,
       roleTypeId: this.userIdDetails?.roleTypeId,
       userId: this.userIdDetails?.userId,
+      financialYear: this.userIdDetails?.financialYear,
+      moduleId: this.userIdDetails?.moduleId,
+      subFormId: this.subFormId,
       status,
       remark,
     };
@@ -350,7 +345,8 @@ export class FormClaimDetailComponent implements OnInit {
             response?.message || 'Claim status updated successfully.',
             'success'
           );
-          this.router.navigateByUrl(this.$auth.getModuleName() + '/inbox');
+          this.$claim.notifyStatusCountRefresh();
+          this.router.navigateByUrl(this.$auth.getModuleName() + '/inbox-claim');
           return;
         }
         this.$common.showMessage(
@@ -476,7 +472,7 @@ export class FormClaimDetailComponent implements OnInit {
   }
 
   subForm(): string {
-    return this.normalizeSubFormId(this.subFormId);
+    return this.canonicalSubFormId(this.subFormId);
   }
 
   get primaryAdvanceDetails(): any {
@@ -576,8 +572,9 @@ export class FormClaimDetailComponent implements OnInit {
     }
 
     const query = [`claimId=${encodeURIComponent(String(claimId))}`];
-    if (subFormId) {
-      query.push(`subFormId=${encodeURIComponent(subFormId)}`);
+    const relatedSubFormId = this.relatedPreviewSubFormId(route, subFormId);
+    if (relatedSubFormId) {
+      query.push(`subFormId=${encodeURIComponent(relatedSubFormId)}`);
     }
     window.open(`${this.$auth.getModuleName()}/${route}?${query.join('&')}`, '_blank');
   }
@@ -591,6 +588,8 @@ export class FormClaimDetailComponent implements OnInit {
     let fallbackRemark = '';
     if (status === this.codeStatus?.outbox) {
       if (this.isVerifier1()) {
+        fallbackRemark = 'Verified';
+      } else if (this.isVerifier2()) {
         fallbackRemark = 'Verified';
       } else if (this.isApprovingRole()) {
         fallbackRemark = 'Approved';
@@ -615,6 +614,10 @@ export class FormClaimDetailComponent implements OnInit {
 
   private isVerifier1(): boolean {
     return this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier1;
+  }
+
+  private isVerifier2(): boolean {
+    return this.userIdDetails?.roleTypeId === this.codeRoleType?.verifier2;
   }
 
   private isApprovingRole(): boolean {
@@ -694,6 +697,33 @@ export class FormClaimDetailComponent implements OnInit {
     const id = String(subFormId || '').toUpperCase();
     if (id === 'R' || id === 'RES' || id === 'RESCLM') return 'RS';
     return id;
+  }
+
+  private canonicalSubFormId(subFormId: any): string {
+    const id = this.normalizeSubFormId(subFormId);
+    if (id === 'PMT' || id === 'PMTA' || id === 'PMTCLM') return 'P';
+    if (id === 'TYD' || id === 'TYA' || id === 'TY' || id === 'TYCLM') return 'T';
+    if (id === 'FTE' || id === 'FTEA' || id === 'FTECLM') return 'F';
+    if (id === 'LTC' || id === 'LTCA' || id === 'LTCCLM') return 'L';
+    return id;
+  }
+
+  private relatedPreviewSubFormId(route: string, subFormId?: string): string {
+    const id = this.normalizeSubFormId(subFormId || this.subFormId);
+    if (route === 'preview-pmt-duty' || route === 'preview-ty-duty' || route === 'preview-fte-advance' || route === 'preview-ltc-advance') {
+      return this.canonicalSubFormId(id);
+    }
+    return this.legacyClaimSubFormId(id);
+  }
+
+  private legacyClaimSubFormId(subFormId: any): string {
+    const id = this.canonicalSubFormId(subFormId);
+    if (id === 'P') return 'PMT';
+    if (id === 'T') return 'TYD';
+    if (id === 'F') return 'FTE';
+    if (id === 'L') return 'LTC';
+    if (id === 'RS' || id === 'R' || id === 'RES') return 'RS';
+    return this.normalizeSubFormId(subFormId);
   }
 }
 

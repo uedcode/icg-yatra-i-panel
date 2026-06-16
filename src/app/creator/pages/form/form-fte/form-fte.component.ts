@@ -350,7 +350,7 @@ export class FormFteComponent implements OnInit {
     this.router.navigate(['../form-fte-detail'], {
       queryParams: {
         claimId: id || this.claims?.claimId || this.claimIdParam,
-        subFormId: 'F',
+        subFormId: this.activeSubFormId,
         ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
       },
     });
@@ -369,7 +369,7 @@ export class FormFteComponent implements OnInit {
     }
 
     if (this.supplementaryId && savedClaimId) {
-      this.router.navigate([moduleUrl + '/form-fte'], {
+      this.router.navigate([moduleUrl + `/${this.getCurrentFormRoute()}`], {
         queryParams: {
           claimId: savedClaimId,
           supId: this.supplementaryId,
@@ -379,6 +379,18 @@ export class FormFteComponent implements OnInit {
     }
 
     this.router.navigateByUrl(moduleUrl + `/draft`);
+  }
+
+  private resolveFormKind(rawFormKind: any): 'advance' | 'claim' {
+    if (String(rawFormKind || '').toLowerCase() === 'claim') {
+      return 'claim';
+    }
+    const routePath = this.route.snapshot.routeConfig?.path || '';
+    return routePath.includes('claim') ? 'claim' : 'advance';
+  }
+
+  private getCurrentFormRoute(): string {
+    return this.activeFormKind === 'claim' ? 'form-fte-claim' : 'form-fte';
   }
 
   checkValidSignType(
@@ -396,7 +408,7 @@ export class FormFteComponent implements OnInit {
     const config = {
       headers: {
         userId: this.userIdDetails?.userId || '',
-        gxUnitId: String(this.userIdDetails?.unitId || ''),
+        gxUnitId: String(this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId || ''),
       },
     };
 
@@ -435,6 +447,7 @@ export class FormFteComponent implements OnInit {
 
   /* ==== ROUTE PARAMS ==== */
   claimIdParam: string | null = null;
+  resubClaimId: string | null = null;
   supplementaryId: string | null = null;
 
   /* ==== COMMON STATE ==== */
@@ -462,6 +475,8 @@ export class FormFteComponent implements OnInit {
   // Claim model
   claims: ClaimsFteAdv = this.createEmptyClaims();
   //isIfscNull: any;
+  activeFormKind: 'advance' | 'claim' = 'advance';
+  activeSubFormId: string = this.codeClaim.fteAdv;
 
   constructor(
     private route: ActivatedRoute,
@@ -501,7 +516,11 @@ export class FormFteComponent implements OnInit {
 
   private initFromRoute(): void {
     const qp = this.route.snapshot.queryParamMap;
-    this.claimIdParam = qp.get('claimId');
+    this.activeFormKind = this.resolveFormKind(this.route.snapshot.data?.['formKind']);
+    this.activeSubFormId = this.activeFormKind === 'claim' ? this.codeClaim.fteClm : this.codeClaim.fteAdv;
+    this.claims.codeSubFormDTO = { subFormId: this.activeSubFormId };
+    this.claimIdParam = qp.get('claimId') || qp.get('resubId');
+    this.resubClaimId = qp.get('resubId');
     this.supplementaryId = qp.get('supId');
   }
 
@@ -616,9 +635,9 @@ export class FormFteComponent implements OnInit {
 
       const headers: any = {
         isPreview: 'false',
-        gxUnitId: this.userIdDetails?.unitId ?? '',
+        gxUnitId: String(this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId || ''),
         userId: this.userIdDetails?.userId ?? '',
-        subFormId: this.codeClaim.fteAdv,
+        subFormId: this.activeSubFormId,
         isFetch: 'true',
         claimId: '',
       };
@@ -743,6 +762,9 @@ export class FormFteComponent implements OnInit {
               yatClaimBankDetailDTO:
                 obj.yatClaimBankDetailDTO || this.claims.yatClaimBankDetailDTO,
             };
+            if (this.resubClaimId) {
+              (this.claims as any).refAdvanceId = this.resubClaimId;
+            }
 
             this.documentDtos = this.claims.yatDocsDTOs || [];
             this.$codeDocInfo.setDocument(this.documentDtos as []);
@@ -981,10 +1003,10 @@ export class FormFteComponent implements OnInit {
         tempClaim.aclUserDTO = { userId: this.userIdDetails.userId };
       }
 
-      // subForm
-      if (!tempClaim.codeSubFormDTO) {
-        tempClaim.codeSubFormDTO = { subFormId: this.codeClaim.fteAdv };
-      }
+      tempClaim.codeSubFormDTO = {
+        ...(tempClaim.codeSubFormDTO || {}),
+        subFormId: this.activeSubFormId,
+      };
 
       // unit
       if (tempClaim.codeUnitDTO && this.claims?.codeUnitDTO?.unit) {
@@ -994,6 +1016,7 @@ export class FormFteComponent implements OnInit {
       // sign
       if (!tempClaim.signWith) tempClaim.signWith = this.codeSignType.eSign;
       if (this.supplementaryId) tempClaim.supClaimId = this.supplementaryId;
+      if (this.resubClaimId) tempClaim.refAdvanceId = this.resubClaimId;
       tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
 
       // ifsc flag

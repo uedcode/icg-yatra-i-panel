@@ -14,48 +14,11 @@
               <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()">
                 <i class="fa fa-chevron-left" style="display: inline-block"></i>
               </button>
-              <button type="button" class="btn btn-dark request_view_back" title="Filter" (click)="this.toggleFilter = !this.toggleFilter">
-                <i class="fa fa-filter" style="display: inline-block"></i>
-              </button>
             </div>
 
             <!-- <div class="breadcrumb_right">
               <button  type="submit" title="Submit" class="btn btn-dark"  (click)="openAddMapping()">+</button>
             </div> -->
-          </div>
-        </div>
-        <div class="row" *ngIf="toggleFilter == true">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-body">
-                <form class="page_form" autocomplete="off" (ngSubmit)="requiredForm.form.valid && applyServerSearch();" #requiredForm="ngForm" novalidate>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Claim ID</label>
-                        <input type="text" class="form-control" name="formId" #formId="ngModel" [(ngModel)]="filterObj.formId" placeholder="Claim ID">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">PNO</label>
-                        <input type="text" class="form-control" name="pno" #pno="ngModel" [(ngModel)]="filterObj.pno" placeholder="PNO">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Name</label>
-                        <input type="text" class="form-control" name="searchedName" #searchedName="ngModel" [(ngModel)]="filterObj.searchedName" placeholder="Name">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form_page_btn">
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
-                    <button type="button" class="btn btn-danger" (click)="resetAdvancedFilters()"><i class="fa fa-refresh"></i> Reset</button>
-                  </div>
-                </form>
-              </div>
-            </div>
           </div>
         </div>
         <div class="row">
@@ -69,10 +32,9 @@
                       <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
                         (ngModelChange)="p = 1">
                         <option value="10">10</option>
-                        <!-- <option value="25">25</option> -->
-                        <!-- <option value="50">50</option> -->
+                        <option value="25">25</option>
+                        <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="100000">All</option>
                       </select>
                       <label>entries</label>
                     </div>
@@ -116,18 +78,18 @@
                         ">
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.claimId) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.subDate || dataObj?.yatClaimDTO?.submissionDate || dataObj?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.claimAmt || dataObj?.claimAmt) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.passedAmt || dataObj?.passedAmt || dataObj?.recommendedAmount) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.claimPassAmt || dataObj?.yatClaimDTO?.passedAmt || dataObj?.passedAmt || dataObj?.recommendedAmount) | showHypen }}</td>
                         <td>
                           <button *ngIf="hasInkSignedFile(dataObj)" class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
                         </td>
                         <td>
-                          <button *ngIf="hasInkSignedFile(dataObj)" class="btn btn-info" title="View" (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">View</button>
+                          <button *ngIf="hasInkSignedFile(dataObj)" class="btn btn-info" title="View" (click)="loadClaimObservations(dataObj)">View</button>
                         </td>
                         <td>
-                          <button *ngIf="!isDpPayment(dataObj)" class="btn btn-info" title="Download" (click)="downloadCreditDebit(dataObj)">Download</button>
+                          <button *ngIf="canDownloadCreditDebit(dataObj)" class="btn btn-info" title="Download" (click)="downloadCreditDebit(dataObj)">Download</button>
                           <button *ngIf="isDpPayment(dataObj)" class="btn btn-primary" title="Download" (click)="downloadDailySlip(dataObj)">Download DP</button>
                         </td>
                         <td>
@@ -166,7 +128,40 @@
             </div>
           </div>
         </div>
-<app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>
+<div class="modal fade" id="claimObservationModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>S.No.</th>
+                <th>Observation</th>
+                <th>Created On</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let observation of claimObservations; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ (observation?.descr || observation?.claimObservation || observation?.remarks || observation?.remark) | showHypen }}</td>
+                <td>{{ observation?.createdOn | showDate:'medium' }}</td>
+              </tr>
+              <tr *ngIf="!claimObservations.length">
+                <td colspan="3" class="text-center">No Records Available</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="modal fade" id="recAdjModal" tabindex="-1" role="dialog" aria-labelledby="recAdjModalLabel">
   <div class="modal-dialog" role="document">

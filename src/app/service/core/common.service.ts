@@ -255,10 +255,18 @@ getFileNameFromUrl(url: string): string {
   }
 
   download(url) {
-   
-      
-      url=`${this.fileUrl}${url}`
-    fetch(url).then(response => response.blob())
+    if (!url) {
+      this.showMessage("File doesn't exist", 'danger');
+      return;
+    }
+
+    url = /^https?:\/\//i.test(url) ? url : `${this.fileUrl}${url}`;
+    fetch(url).then(response => {
+      if (!response.ok) {
+        throw new Error('File not found');
+      }
+      return response.blob();
+    })
       .then(blob => {
         const blobUrl = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -270,6 +278,9 @@ getFileNameFromUrl(url: string): string {
         a.click();
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
+      })
+      .catch(() => {
+        this.showMessage("File doesn't exist", 'danger');
       });
 
 

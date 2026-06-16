@@ -154,6 +154,7 @@ export class ArchiveComponent implements OnInit {
               item?.id) != claimStateId
         );
         this.$common.showMessage(res?.message || 'Claim restored successfully.', 'success');
+        this.$claim.notifyStatusCountRefresh();
       },
       error: () => {
         this.restoreLoadingMap[listKey] = false;

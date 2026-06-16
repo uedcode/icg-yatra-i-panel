@@ -95,6 +95,7 @@ export class CommonChangeStatusActionComponent implements OnInit {
       if (this.isSignRequired == '1' && (this.state == 'OB' || this.state == 'AP')) {
         this.tempFormObj = { id: this.formId };
         this.tempFormObj.formRemarks = this.formObj?.remark;
+        this.tempFormObj.status = this.state;
         //this.tempFormObj.recommendedAmount = this.formObj?.recommendedAmount;
         this.tempFormObj.billAmount = this.formObj?.billAmount;
         this.tempFormObj.balanceAmount = this.formObj?.balanceAmount;
@@ -191,6 +192,7 @@ export class CommonChangeStatusActionComponent implements OnInit {
             if (this.isSignRequired == '1' && (this.state == 'OB' || this.state == 'AP')) {
               this.tempFormObj = { id: this.formId };
               this.tempFormObj.formRemarks = this.formObj?.remark;
+              this.tempFormObj.status = this.state;
               this.tempFormObj.recommendedAmount = this.formObj?.recommendedAmount;
               this.tempFormObj.allotedBudget = this.formObj?.allotedBudget;
               this.tempFormObj.progressiveExpenditureAmt = this.formObj?.progressiveExpenditureAmt;

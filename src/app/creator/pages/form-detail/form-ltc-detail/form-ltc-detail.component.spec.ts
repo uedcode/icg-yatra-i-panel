@@ -6,6 +6,7 @@ describe('FormLtcDetailComponent', () => {
     const component = Object.create(FormLtcDetailComponent.prototype) as any;
     component.route = {
       snapshot: {
+        data: { subFormId: 'LTC' },
         queryParamMap: {
           get: (key: string) => ({ claimId: '501', subFormId: 'LTC' } as any)[key] || null
         }
@@ -26,7 +27,7 @@ describe('FormLtcDetailComponent', () => {
     spyOn(component, 'getClaimDetails');
     component.ngOnInit();
     expect(component.claimId).toBe('501');
-    expect(component.subFormId).toBe('L');
+    expect(component.subFormId).toBe('LTC');
     expect(component.getClaimDetails).toHaveBeenCalled();
   });
 
@@ -60,6 +61,12 @@ describe('FormLtcDetailComponent', () => {
     const component = createComponent();
     component.goBack();
     expect(component.location.back).toHaveBeenCalled();
+  });
+
+  it('uses claim-specific heading for LTC claim preview', () => {
+    const component = createComponent();
+    component.subFormId = 'LTC';
+    expect(component.previewHeading).toBe('LTC Claim Preview');
   });
 });
 

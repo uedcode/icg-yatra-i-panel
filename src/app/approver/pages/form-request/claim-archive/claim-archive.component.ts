@@ -115,7 +115,9 @@ export class ClaimArchiveComponent implements OnInit {
 
   resetAdvancedFilters(): void {
     this.filterObj = {};
-    this.applyServerSearch();
+    this.searchObj = '';
+    this.p = 1;
+    this.getState();
   }
 
   viewForm(data: any) {
@@ -160,6 +162,7 @@ export class ClaimArchiveComponent implements OnInit {
               item?.id) != claimStateId
         );
         this.$common.showMessage(res?.message || 'Claim restored successfully.', 'success');
+        this.$claim.notifyStatusCountRefresh();
       },
       error: () => {
         this.restoreLoadingMap[listKey] = false;

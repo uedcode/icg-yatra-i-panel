@@ -31,10 +31,9 @@
                       <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
                         (ngModelChange)="p=1">
                         <option value="10">10</option>
-                        <!-- <option value="25">25</option> -->
-                        <!-- <option value="50">50</option> -->
+                        <option value="25">25</option>
+                        <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="100000">All</option>
                       </select>
                       <label>entries</label>
                     </div>
@@ -67,7 +66,7 @@
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj  | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ (dataObj?.fullName || dataObj?.fullDescr) | showHypen }}</td>
-                        <td>{{ dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-' }}</td>
+                        <td>{{ dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate' }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.claimId) | showHypen }}</td>
                         <td *ngIf="!isVerifier1()">{{ (dataObj?.yatClaimDTO?.remark || dataObj?.remarks) | showHypen }}</td>
@@ -76,6 +75,7 @@
                           <button *ngIf="showDisabledView(dataObj)" class="btn btn-info" title="View" [disabled]="true">View</button>
                           <button *ngIf="canMoveToDraft(dataObj)" class="btn btn-warning" title="Move To Draft" (click)="moveToDraft(dataObj)">Move To Draft</button>
                           <button *ngIf="showDisabledMoveToDraft(dataObj)" class="btn btn-warning" title="Move To Draft" [disabled]="true">Move To Draft</button>
+                          <span *ngIf="!canMoveToDraft(dataObj) && !showDisabledMoveToDraft(dataObj)">-</span>
                         </td>
                         <td>
                           <button *ngIf="canShowPreviousAdvance(dataObj)" class="btn btn-primary" title="Previous Advance" (click)="openPreviousAdvance(dataObj)">Remarks</button>
@@ -84,10 +84,10 @@
                       </tr>
 
                       <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                        <td colspan="8">No Records Available</td>
+                        <td [attr.colspan]="!isVerifier1() ? 8 : 7">No Records Available</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="dataList?.length">
-                        <td colspan="8">
+                        <td [attr.colspan]="!isVerifier1() ? 8 : 7">
                           <pagination-controls (pageChange)="p = $event"></pagination-controls>
                         </td>
                       </tr>

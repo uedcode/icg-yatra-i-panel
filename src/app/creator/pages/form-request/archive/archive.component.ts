@@ -1,12 +1,10 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
-declare var $: any;
 
 @Component({
   selector: 'app-archive',
@@ -18,26 +16,20 @@ export class ArchiveComponent implements OnInit {
   codeStatus: any;
   userIdDetails: any;
   @Input() dataList: Array<any> = [];
-  @ViewChild('requiredForm', { static: true }) requiredForm: NgForm;
 
   searchObj: any;
   noOfPage: any = 10;
   p: any = 1;
-  filterObj: any = {};
-  toggleFilter: any = false;
   key = 'descr';
   reverse = false;
   restoreLoadingMap: { [key: string]: boolean } = {};
-  formId: any;
-  claimId: any;
 
   constructor(
     private location: Location,
     public $auth: AuthService,
     private $claim: ClaimService,
     private $common: CommonService,
-    private router: Router,
-    private route: ActivatedRoute
+    private router: Router
   ) {}
   readonly moduleType: 'ADV' = 'ADV';
 
@@ -47,20 +39,19 @@ export class ArchiveComponent implements OnInit {
 this.getState();
   }
   getState() {
-    const searchHeaders = this.getLegacySearchHeaders();
     const formId = this.moduleType;
     const config = {
       headers: buildLegacyClaimStateHeaders({
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
         claimState: '',
         isArchive: '1',
         formId,
-        searchFormId: searchHeaders.formId,
-        pno: searchHeaders.pno,
-        searchedName: searchHeaders.searchedName,
+        searchFormId: '',
+        pno: '',
+        searchedName: '',
       }),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
@@ -68,49 +59,12 @@ this.getState();
     });
   }
 
-  private getLegacySearchHeaders(): { formId: string; pno: string; searchedName: string } {
-    const formId = (this.filterObj?.formId || '').toString().trim();
-    const pno = (this.filterObj?.pno || '').toString().trim();
-    const searchedName = (this.filterObj?.searchedName || '').toString().trim();
-    if (formId || pno || searchedName) {
-      return { formId, pno, searchedName };
-    }
-
-    const raw = (this.searchObj || '').toString().trim();
-    if (!raw) {
-      return { formId: '', pno: '', searchedName: '' };
-    }
-    if (/^\d+$/.test(raw)) {
-      return { formId: raw, pno: raw, searchedName: '' };
-    }
-    if (/^[A-Za-z0-9/-]+$/.test(raw)) {
-      return { formId: '', pno: raw, searchedName: '' };
-    }
-    return { formId: '', pno: '', searchedName: raw };
-  }
-
-  applyServerSearch(): void {
-    this.p = 1;
-    this.getState();
-  }
-
-  onSearchInput(): void {
-    if (!(this.searchObj || '').toString().trim()) {
-      this.applyServerSearch();
-    }
-  }
-
-  resetAdvancedFilters(): void {
-    this.filterObj = {};
-    this.applyServerSearch();
-  }
-
   private getCreatorClaimRoute(subFormId: string | null): string | null {
     const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT') return 'preview-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY') return 'preview-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE') return 'preview-fte-claim';
-    if (id === 'LTCA' || id === 'LTC') return 'preview-ltc-claim';
+    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return 'preview-pmt-duty-claim';
+    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return 'preview-ty-duty-claim';
+    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return 'preview-fte-claim';
+    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return 'preview-ltc-claim';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return 'preview-resettlement-claim';
     if (id === 'P') return 'form-pmt-detail';
     if (id === 'T') return 'form-tyduty-detail';
@@ -145,7 +99,16 @@ this.getState();
       return;
     }
 
-    this.router.navigateByUrl(this.$auth.getModuleName() + `/${data?.viewUrl}?id=${data.formId}`);
+    const legacyViewUrl =
+      claim?.codeSubFormDTO?.viewUrl ||
+      data?.codeSubFormDTO?.viewUrl ||
+      data?.viewUrl;
+    const legacyViewId = claimId || claim?.formId || data?.formId || data?.id;
+    if (legacyViewUrl && legacyViewId) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${legacyViewId}`
+      );
+    }
   }
 
   restoreClaim(data: any): void {
@@ -189,14 +152,6 @@ this.getState();
         this.$common.showMessage('Something went wrong while restoring claim.', 'danger');
       },
     });
-  }
-
-  viewHistory(formId: any, claimId: any = null): void {
-    this.formId = formId;
-    this.claimId = claimId || null;
-    setTimeout(() => {
-      $('#viewHistoryModal').modal('show');
-    }, 0);
   }
 
   sort(key: string) {

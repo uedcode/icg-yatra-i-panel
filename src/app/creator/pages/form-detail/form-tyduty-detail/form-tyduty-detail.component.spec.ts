@@ -5,7 +5,10 @@ describe('FormTydutyDetailComponent', () => {
   const createComponent = () => {
     const component = Object.create(FormTydutyDetailComponent.prototype) as any;
     component.location = jasmine.createSpyObj('Location', ['back']);
-    component.route = { queryParams: of({ claimId: '701', subFormId: 'TYA' }) };
+    component.route = {
+      snapshot: { data: { subFormId: 'TYA' } },
+      queryParams: of({ claimId: '701', subFormId: 'TYA' })
+    };
     component.datePipe = jasmine.createSpyObj('DatePipe', ['transform']);
     component.datePipe.transform.and.returnValue('2026-03-01');
     component.$common = jasmine.createSpyObj('CommonService', ['showLoader', 'hideLoader', 'showMessage']);
@@ -59,6 +62,13 @@ describe('FormTydutyDetailComponent', () => {
     expect(component.asDate(undefined)).toBeNull();
     component.goBack();
     expect(component.location.back).toHaveBeenCalled();
+  });
+
+  it('uses claim-specific headings for TY claim preview', () => {
+    const component = createComponent();
+    component.subFormId = 'TYD';
+    expect(component.previewHeading).toBe('TY Duty Claim Preview');
+    expect(component.detailHeading).toBe('TY Duty Claim Details');
   });
 });
 

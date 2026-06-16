@@ -141,10 +141,10 @@ export class ClaimInboxComponent implements OnInit {
 
   private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE') return detail ? 'preview-fte-claim' : 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
+    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
+    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
+    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
+    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
     if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
     if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
@@ -152,33 +152,6 @@ export class ClaimInboxComponent implements OnInit {
     if (id === 'L') return detail ? 'form-ltc-detail' : 'form-ltc';
     if (id === 'M') return detail ? 'form-manual-adv-detail' : 'form-manual-adv';
     return null;
-  }
-
-  private navigateToClaimForm(data: any): void {
-    const payId = data?.yatPayDetailsDTO?.id || data?.id;
-    if (payId && (data?.yatPayDetailsDTO || data?.viewUrl === 'form-pay-details' || data?.formUrl === 'form-pay-details')) {
-      this.router.navigateByUrl(this.$auth.getModuleName() + `/form-pay-details?id=${payId}`);
-      return;
-    }
-
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-    const subFormId =
-      claim?.codeSubFormDTO?.subFormId ||
-      data?.subFormId ||
-      data?.codeSubFormDTO?.subFormId;
-    const route = this.getCreatorClaimRoute(subFormId, false);
-
-    if (claimId && route) {
-      this.router.navigateByUrl(
-        this.$auth.getModuleName() +
-          `/${route}?claimId=${claimId}&subFormId=${subFormId}`
-      );
-      return;
-    }
-
-    let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(moduleUrl + `/${data?.viewUrl}?id=${data.formId}`);
   }
 
   moveToDraft(data: any): void {
@@ -193,7 +166,9 @@ export class ClaimInboxComponent implements OnInit {
       roleTypeId: this.userIdDetails?.roleTypeId,
       userId: this.userIdDetails?.userId,
       status: this.codeStatus?.draft,
-      remark: 'Moved to Draft',
+      remark: '',
+      financialYear: this.userIdDetails?.financialYear,
+      moduleId: this.userIdDetails?.moduleId,
     };
 
     this.$claim.changeClaimStatusById(payload).subscribe({
@@ -204,9 +179,10 @@ export class ClaimInboxComponent implements OnInit {
         }
 
         this.$common.showMessage(response?.message || 'Claim moved to draft successfully.', 'success');
+        this.$claim.notifyStatusCountRefresh();
         this.dataList = this.dataList.filter((elem: any) => this.getClaimId(elem) != claimId);
         setTimeout(() => {
-          this.router.navigateByUrl(this.$auth.getModuleName() + '/claim/draft');
+          this.router.navigateByUrl(this.$auth.getModuleName() + '/draft-claim');
         }, 1000);
       },
       error: () => {
@@ -230,8 +206,8 @@ export class ClaimInboxComponent implements OnInit {
         }
 
         this.$common.showMessage(response?.message || 'Claim moved to draft for editing.', 'success');
+        this.$claim.notifyStatusCountRefresh();
         this.dataList = this.dataList.filter((elem: any) => this.getClaimId(elem) != claimId);
-        this.navigateToClaimForm(data);
       },
       error: () => {
         this.$common.showMessage('Unable to edit claim.', 'danger');
@@ -283,6 +259,7 @@ export class ClaimInboxComponent implements OnInit {
 
   downloadInkSignedForSign(data: any): void {
     const claimId = this.getClaimId(data);
+    const isReady = data?.yatClaimDTO?.isReady || data?.isReady || '';
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'warning');
       return;
@@ -292,6 +269,7 @@ export class ClaimInboxComponent implements OnInit {
       headers: {
         claimId: String(claimId),
         isInbox: '1',
+        isReady: String(isReady),
         signType: 'true',
       },
     };
@@ -374,6 +352,7 @@ export class ClaimInboxComponent implements OnInit {
         const uploadedClaim = Array.isArray(res?.object) ? res.object[0] : res?.object;
         this.dataList = this.dataList.filter((item: any) => this.getClaimId(item) != claimId);
         this.$common.showMessage(res?.message || 'File uploaded successfully.', 'success');
+        this.$claim.notifyStatusCountRefresh();
         if (uploadedClaim?.isReady === 'DW') {
           this.changeStatusToUploaded(claimId);
         }
@@ -409,6 +388,7 @@ export class ClaimInboxComponent implements OnInit {
     const config = {
       headers: {
         ids: [claimId],
+        isApproved: '0',
       },
     };
     this.$claim.deleteClaim(config).subscribe({
@@ -422,6 +402,7 @@ export class ClaimInboxComponent implements OnInit {
             (item?.yatClaimDTO?.claimId || item?.claimId || item?.formId || item?.id) != claimId
         );
         this.$common.showMessage(res?.message || 'Claim deleted successfully.', 'success');
+        this.$claim.notifyStatusCountRefresh();
       },
       error: () => {
         this.$common.showMessage('Something went wrong while deleting claim.', 'danger');

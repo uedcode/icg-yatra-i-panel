@@ -139,5 +139,18 @@ export class HeaderComponent implements OnInit {
     return dataObj?.roleId || dataObj?.id;
   }
 
+  getRoleTypeId(dataObj: any) {
+    return dataObj?.aclCodeRoleTypeDTO?.roleTypeId || dataObj?.roleTypeId;
+  }
+
+  isCurrentRole(dataObj: any): boolean {
+    const currentRoleTypeId = this.userIdDetails?.roleTypeId;
+    const roleTypeId = this.getRoleTypeId(dataObj);
+    if (currentRoleTypeId && roleTypeId) {
+      return currentRoleTypeId === roleTypeId;
+    }
+    return this.userIdDetails?.roleId == this.getRoleId(dataObj);
+  }
+
 }
 

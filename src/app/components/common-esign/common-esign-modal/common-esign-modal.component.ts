@@ -34,21 +34,34 @@ export class CommonEsignModalComponent implements OnInit {
     // this.prepareForESign();
   }
 
+  private buildESignRequest(eSignTransDocDTOs?: any[]) {
+    return {
+      "claimId": this.tempFormObj?.claimId ?? this.tempFormObj?.id,
+      "roleTypeId": this.tempFormObj?.roleTypeId ?? this.userIdDetails?.roleTypeId,
+      "desigId": this.userIdDetails?.desigId,
+      "userId": this.tempFormObj?.userId ?? this.userIdDetails?.userId,
+      "status": this.tempFormObj?.status ?? "OB",
+      "remark": this.tempFormObj?.remark ?? this.tempFormObj?.formRemarks,
+      "financialYear": this.tempFormObj?.financialYear ?? this.userIdDetails?.financialYear,
+      "moduleId": this.tempFormObj?.moduleId ?? this.userIdDetails?.moduleId,
+      "redPercent": this.tempFormObj?.redPercent,
+      "redAmount": this.tempFormObj?.redAmount,
+      "redRemarks": this.tempFormObj?.redRemarks,
+      "unitId": this.userIdDetails?.unitId,
+      "formId": this.tempFormObj?.formId ?? this.tempFormObj?.id,
+      "recommendedAmount": this.tempFormObj?.recommendedAmount,
+      "allotedBudget": this.tempFormObj?.allotedBudget,
+      "balanceAmt": this.tempFormObj?.balanceAmount,
+      "progressiveExpenditureAmt": this.tempFormObj?.progressiveExpenditureAmt,
+      "balance": this.tempFormObj?.balance,
+      ...(eSignTransDocDTOs ? { "eSignTransDocDTOs": eSignTransDocDTOs } : {}),
+    };
+  }
+
   prepareForESign() {
     this.$common.showLoader();
     try {
-      let req = {
-        "roleTypeId": this.userIdDetails?.roleTypeId,
-        "desigId": this.userIdDetails?.desigId,
-        "userId": this.userIdDetails?.userId,
-        "formId": this.tempFormObj?.id,
-        "recommendedAmount": this.tempFormObj?.recommendedAmount,
-        "allotedBudget": this.tempFormObj?.allotedBudget ,
-        "balanceAmt": this.tempFormObj?.balanceAmount,
-        "progressiveExpenditureAmt": this.tempFormObj?.progressiveExpenditureAmt,
-        "balance": this.tempFormObj?.balance,
-        "unitId": this.userIdDetails?.unitId,
-      }
+      let req = this.buildESignRequest();
 
       this.$esign.prepareForESign(req).subscribe(
         (response: any) => {
@@ -71,23 +84,10 @@ export class CommonEsignModalComponent implements OnInit {
   performESign() {
     this.$common.showLoader();
     try {
-      
       let req = {
-        "roleTypeId": this.userIdDetails?.roleTypeId,
-        "desigId": this.userIdDetails?.desigId,
-        "userId": this.userIdDetails?.userId,
-        "remark": this.tempFormObj?.formRemarks,
-        "status": "OB",
-        "unitId":this.userIdDetails?.unitId,
+        ...this.buildESignRequest(this.documentList),
         "codeFormId": "",
-        "formId": this.tempFormObj?.id,
         "name": this.userIdDetails?.personName,
-        "eSignTransDocDTOs": this.documentList,
-        "recommendedAmount": this.tempFormObj?.recommendedAmount,
-        "allotedBudget": this.tempFormObj?.allotedBudget ,
-        "balanceAmt": this.tempFormObj?.balanceAmount,
-        "progressiveExpenditureAmt": this.tempFormObj?.progressiveExpenditureAmt,
-        "balance": this.tempFormObj?.balance,
       }
       
       this.$esign.performESign(req).subscribe(

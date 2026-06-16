@@ -14,44 +14,29 @@
       <div class="col-md-4 mb-2"><strong>Present Unit:</strong> {{ payDetails?.videPresentUnit || '-' }}</div>
       <div class="col-md-4 mb-2"><strong>New Pay Level:</strong> {{ payDetails?.newPayLevel || '-' }}</div>
       <div class="col-md-4 mb-2"><strong>New Basic Pay:</strong> {{ payDetails?.newBasicPay || '-' }}</div>
-      <div class="col-md-4 mb-2"><strong>From Date:</strong> {{ payDetails?.fromDt || '-' }}</div>
+      <div class="col-md-4 mb-2"><strong>From Date:</strong> {{ asDate(payDetails?.fromDt) }}</div>
       <div class="col-md-4 mb-2"><strong>Reason For Change:</strong> {{ payDetails?.reason || '-' }}</div>
-      <div class="col-md-8 mb-2">
-        <strong>Document:</strong> {{ payDetails?.docName || '-' }}
+      <div class="col-md-8 mb-2" *ngIf="payDetails?.reason">
+        <strong>{{ payDetails?.docName || 'Document' }} (PDF) (Upto 512 KB):</strong>
         <button *ngIf="payDetails?.docUrl" type="button" class="btn btn-info btn-sm ml-2" (click)="viewDocument()">View</button>
         <span *ngIf="!payDetails?.docUrl" class="ml-2">-</span>
       </div>
       <div class="col-md-4 mb-2"><strong>Verifier Remarks:</strong> {{ payDetails?.verifier1Remark || '-' }}</div>
       <div class="col-md-4 mb-2"><strong>Approver Remarks:</strong> {{ payDetails?.approverRemark || '-' }}</div>
-      <div class="col-md-4 mb-2"><strong>Created On:</strong> {{ payDetails?.createdOn || '-' }}</div>
+      <div class="col-md-4 mb-2"><strong>Created On:</strong> {{ asDate(payDetails?.createdOn) }}</div>
     </div>
 
-    <div *ngIf="mode === 'action'" class="mt-3">
+    <div *ngIf="showActionSection" class="mt-3">
       <div class="alert alert-info">
         Review the uploaded pay document and existing remarks before taking action.
       </div>
-      <div *ngIf="!canTakeAction" class="alert alert-warning">
-        Action mode is available only for verifier inbox items. This record is currently in
-        <strong>{{ currentState | codeStatus:'-' }}</strong> state.
-      </div>
-      <div class="form-group">
-        <label for="pay-form-remark">Remark</label>
-        <textarea
-          id="pay-form-remark"
-          class="form-control"
-          rows="3"
-          [(ngModel)]="formRemark"
-          [placeholder]="getActionPlaceholder(payStateCodes.outbox)"
-        ></textarea>
-      </div>
-
       <div class="d-flex flex-wrap gap-2">
         <button
           *ngIf="canReject"
           class="btn btn-danger mr-2 mb-2"
           type="button"
           [disabled]="!canTakeAction"
-          (click)="setActionRemark(payStateCodes.notApproved); applyAction(payStateCodes.notApproved)"
+          (click)="openRemarkModal(payStateCodes.notApproved)"
         >
           Reject
         </button>
@@ -59,8 +44,40 @@
           class="btn btn-success mb-2"
           type="button"
           [disabled]="!canTakeAction"
-          (click)="setActionRemark(payStateCodes.outbox); applyAction(payStateCodes.outbox)"
+          (click)="openRemarkModal(payStateCodes.outbox)"
         >
           {{ getPrimaryActionLabel() }}
         </button>
+      </div>
+    </div>
+  </div>
+</div>
 
+<div class="modal fade" id="payRemarkModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Remark</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="pay-form-remark">Remarks <span class="text-danger">*</span></label>
+          <textarea
+            id="pay-form-remark"
+            class="form-control"
+            rows="3"
+            [(ngModel)]="formRemark"
+            [placeholder]="getActionPlaceholder(selectedStatus || payStateCodes.outbox)"
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info" (click)="applyAction()">Submit</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

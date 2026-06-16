@@ -52,17 +52,12 @@ export class CommonViewFormHistoryModalComponent implements OnInit {
 
       this.$common.showLoader();
       if (this.claimId) {
-        const userDetails = this.$auth.getUserDetails();
         this.config = {
           headers: {
             claimId: this.claimId,
-            roleTypeId: userDetails?.roleTypeId,
-            userId: userDetails?.userId,
-            unitId: userDetails?.unitId,
-            gxUnitId: userDetails?.unitId,
           },
         };
-        this.$claim.getClaimStates(this.config).subscribe(
+        this.$claim.getClaimHistory(this.config).subscribe(
           (response: any) => {
             this.$common.hideLoader();
             this.stateList = response?.status === true && Array.isArray(response?.object)
@@ -126,6 +121,41 @@ export class CommonViewFormHistoryModalComponent implements OnInit {
       this.p = 1;
       this.getAll();
     }
+  }
+
+  isClaimHistoryMode(): boolean {
+    return !!this.claimId;
+  }
+
+  openClaimHistoryItem(row: any): void {
+    const targetUrl = this.resolveClaimHistoryUrl(row);
+    if (!targetUrl) {
+      return;
+    }
+    window.open(targetUrl, '_blank');
+  }
+
+  private resolveClaimHistoryUrl(row: any): string | null {
+    const userDetails = this.$auth.getUserDetails();
+    const roleCodes = this.$auth.codeRoleType();
+    const roleTypeId = userDetails?.roleTypeId;
+
+    if (
+      roleTypeId === roleCodes?.verifier ||
+      roleTypeId === roleCodes?.verifier1 ||
+      roleTypeId === roleCodes?.verifier2 ||
+      roleTypeId === roleCodes?.approver
+    ) {
+      return this.$auth.getApproverWorkflowDetailUrl(row, row?.claimState || row?.status || '');
+    }
+
+    const moduleUrl = this.$auth.getModuleName();
+    const viewUrl = String(row?.codeSubFormDTO?.viewUrl || '').replace(/^\/+/, '');
+    const claimId = row?.claimId;
+    if (!moduleUrl || !viewUrl || !claimId) {
+      return null;
+    }
+    return `${moduleUrl}/${viewUrl}?id=${encodeURIComponent(String(claimId))}`;
   }
   // data shorting end
 }

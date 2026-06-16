@@ -201,6 +201,7 @@ export class FormLtcAdvanceComponent implements OnInit {
   disableHomeTown: any;
   userIdDetails: any;
   claimIdParam: string | null = null;
+  resubClaimId: string | null = null;
   supplementaryId: string | null = null;
   documentDtos: any[] = [];
   codeClaim = { ltcAdv: 'L' } as const;
@@ -241,7 +242,8 @@ export class FormLtcAdvanceComponent implements OnInit {
 
   private initFromRoute(): void {
     const qp = this.route.snapshot.queryParamMap;
-    this.claimIdParam = qp.get('claimId');
+    this.claimIdParam = qp.get('claimId') || qp.get('resubId');
+    this.resubClaimId = qp.get('resubId');
     this.supplementaryId = qp.get('supId');
   }
 
@@ -613,7 +615,6 @@ export class FormLtcAdvanceComponent implements OnInit {
 
       const headers: any = {
         isPreview: 'false',
-        gxUnitId: this.userIdDetails?.unitId ?? '',
         userId: this.userIdDetails?.userId ?? '',
         subFormId: this.activeSubFormId,
         isFetch: 'true',
@@ -719,6 +720,9 @@ export class FormLtcAdvanceComponent implements OnInit {
               ...(obj.yatClaimBankDetailDTO || {}),
             },
           };
+          if (this.resubClaimId) {
+            (this.claims as any).refAdvanceId = this.resubClaimId;
+          }
 
           this.showGxFileBrowse = !this.claims.gxFormFileUrl;
           this.documentDtos = this.claims.yatDocsDTOs || [];
@@ -777,6 +781,7 @@ export class FormLtcAdvanceComponent implements OnInit {
         claimId,
         subFormId: this.activeSubFormId,
         userId: this.userIdDetails?.userId ?? '',
+        gxUnitId: String(this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId || ''),
       },
     };
 
@@ -1131,6 +1136,7 @@ export class FormLtcAdvanceComponent implements OnInit {
 
       tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
       if (this.supplementaryId) tempClaim.supClaimId = this.supplementaryId;
+      if (this.resubClaimId) tempClaim.refAdvanceId = this.resubClaimId;
       tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
       tempClaim.occDate = this.UtilService.toMillis(tempClaim.occDate);
 
@@ -1227,7 +1233,8 @@ export class FormLtcAdvanceComponent implements OnInit {
 
   private resolveSubFormId(rawSubFormId: any): string {
     const id = String(rawSubFormId || '').toUpperCase();
-    if (id === 'LTC' || id === 'L' || id === 'LC') return 'L';
+    if (id === 'LTC' || id === 'LTCCLM') return this.activeFormKind === 'claim' ? 'LTC' : 'L';
+    if (id === 'L' || id === 'LC') return 'L';
     return 'L';
   }
 

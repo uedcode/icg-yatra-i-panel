@@ -221,6 +221,7 @@ export class OutboxComponent implements OnInit {
         const uploadedClaim = Array.isArray(res?.object) ? res.object[0] : res?.object;
         this.dataList = this.dataList.filter((item: any) => this.getClaimId(item) != claimId);
         this.$common.showMessage(res?.message || 'File uploaded successfully.', 'success');
+        this.$claim.notifyStatusCountRefresh();
         if (uploadedClaim?.isReady === 'DW') {
           this.changeStatusToUploaded(claimId);
         }
@@ -252,19 +253,15 @@ export class OutboxComponent implements OnInit {
   }
 
   deletePermanently(data: any): void {
-    const claimStateId =
-      data?.claimStateId ||
-      data?.yatClaimStateDTO?.claimStateId ||
-      data?.yatClaimStateDTO?.id ||
-      data?.id;
-    if (!claimStateId) {
-      this.$common.showMessage('Claim state id is not available.', 'warning');
+    const claimId = this.getClaimId(data);
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
       return;
     }
 
     const config = {
       headers: {
-        ids: [String(claimStateId)],
+        ids: [String(claimId)],
       },
     };
     this.$claim.deleteClaim(config).subscribe({
@@ -274,13 +271,10 @@ export class OutboxComponent implements OnInit {
           return;
         }
         this.dataList = this.dataList.filter(
-          (item: any) =>
-            (item?.claimStateId ||
-              item?.yatClaimStateDTO?.claimStateId ||
-              item?.yatClaimStateDTO?.id ||
-              item?.id) != claimStateId
+          (item: any) => this.getClaimId(item) != claimId
         );
         this.$common.showMessage(res?.message || 'Claim deleted successfully.', 'success');
+        this.$claim.notifyStatusCountRefresh();
       },
       error: () => {
         this.$common.showMessage('Something went wrong while deleting claim.', 'danger');

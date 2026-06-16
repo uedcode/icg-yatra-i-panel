@@ -1,5 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -18,18 +17,13 @@ export class ClaimArchiveComponent implements OnInit {
   codeStatus: any;
   userIdDetails: any;
   @Input() dataList: Array<any> = [];
-  @ViewChild('requiredForm', { static: true }) requiredForm: NgForm;
 
   searchObj: any;
   noOfPage: any = 10;
   p: any = 1;
-  filterObj: any = {};
-  toggleFilter: any = false;
   key = 'descr';
   reverse = false;
   restoreLoadingMap: { [key: string]: boolean } = {};
-  formId: any;
-  claimId: any;
 
   constructor(
     private location: Location,
@@ -45,20 +39,19 @@ export class ClaimArchiveComponent implements OnInit {
 this.getState();
   }
   getState() {
-    const searchHeaders = this.getLegacySearchHeaders();
     const formId = this.moduleType;
     const config = {
       headers: buildLegacyClaimStateHeaders({
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
         claimState: '',
         isArchive: '1',
         formId,
-        searchFormId: searchHeaders.formId,
-        pno: searchHeaders.pno,
-        searchedName: searchHeaders.searchedName,
+        searchFormId: '',
+        pno: '',
+        searchedName: '',
       }),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
@@ -66,55 +59,18 @@ this.getState();
     });
   }
 
-  private getLegacySearchHeaders(): { formId: string; pno: string; searchedName: string } {
-    const formId = (this.filterObj?.formId || '').toString().trim();
-    const pno = (this.filterObj?.pno || '').toString().trim();
-    const searchedName = (this.filterObj?.searchedName || '').toString().trim();
-    if (formId || pno || searchedName) {
-      return { formId, pno, searchedName };
-    }
-
-    const raw = (this.searchObj || '').toString().trim();
-    if (!raw) {
-      return { formId: '', pno: '', searchedName: '' };
-    }
-    if (/^\d+$/.test(raw)) {
-      return { formId: raw, pno: raw, searchedName: '' };
-    }
-    if (/^[A-Za-z0-9/-]+$/.test(raw)) {
-      return { formId: '', pno: raw, searchedName: '' };
-    }
-    return { formId: '', pno: '', searchedName: raw };
-  }
-
-  applyServerSearch(): void {
-    this.p = 1;
-    this.getState();
-  }
-
-  onSearchInput(): void {
-    if (!(this.searchObj || '').toString().trim()) {
-      this.applyServerSearch();
-    }
-  }
-
-  resetAdvancedFilters(): void {
-    this.filterObj = {};
-    this.applyServerSearch();
-  }
-
-  private getCreatorClaimRoute(subFormId: string | null): string | null {
+  private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT') return 'preview-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY') return 'preview-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE') return 'preview-fte-claim';
-    if (id === 'LTCA' || id === 'LTC') return 'preview-ltc-claim';
-    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return 'preview-resettlement-claim';
-    if (id === 'P') return 'form-pmt-detail';
-    if (id === 'T') return 'form-tyduty-detail';
-    if (id === 'F') return 'form-fte-detail';
-    if (id === 'L') return 'form-ltc-detail';
-    if (id === 'M') return 'form-manual-adv-detail';
+    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
+    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
+    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
+    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
+    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
+    if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
+    if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
+    if (id === 'F') return detail ? 'form-fte-detail' : 'form-fte';
+    if (id === 'L') return detail ? 'form-ltc-detail' : 'form-ltc';
+    if (id === 'M') return detail ? 'form-manual-adv-detail' : 'form-manual-adv';
     return null;
   }
 
@@ -134,7 +90,7 @@ this.getState();
     const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
     const subFormId =
       claim?.codeSubFormDTO?.subFormId || data?.subFormId || data?.codeSubFormDTO?.subFormId;
-    const route = this.getCreatorClaimRoute(subFormId);
+    const route = this.getCreatorClaimRoute(subFormId, true);
 
     if (claimId && route) {
       this.router.navigateByUrl(
@@ -143,7 +99,16 @@ this.getState();
       return;
     }
 
-    this.router.navigateByUrl(this.$auth.getModuleName() + `/${data?.viewUrl}?id=${data.formId}`);
+    const legacyViewUrl =
+      claim?.codeSubFormDTO?.viewUrl ||
+      data?.viewUrl ||
+      data?.formUrl;
+    if (claimId && legacyViewUrl) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${claimId}`
+      );
+      return;
+    }
   }
 
   restoreClaim(data: any): void {
@@ -180,6 +145,7 @@ this.getState();
               item?.yatClaimStateDTO?.id ||
               item?.id) != claimStateId
         );
+        this.$claim.notifyStatusCountRefresh();
         this.$common.showMessage(res?.message || 'Claim restored successfully.', 'success');
       },
       error: () => {
@@ -187,14 +153,6 @@ this.getState();
         this.$common.showMessage('Something went wrong while restoring claim.', 'danger');
       },
     });
-  }
-
-  viewHistory(formId: any, claimId: any = null): void {
-    this.formId = formId;
-    this.claimId = claimId || null;
-    setTimeout(() => {
-      $('#viewHistoryModal').modal('show');
-    }, 0);
   }
 
   sort(key: string) {

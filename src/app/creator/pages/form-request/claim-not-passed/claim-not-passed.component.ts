@@ -56,7 +56,7 @@ filterDataObj;
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
         claimState: this.codeStatus?.notPassed,
         isArchive: '0',
         formId,
@@ -97,10 +97,10 @@ filterDataObj;
 
   private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE') return detail ? 'preview-fte-claim' : 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
+    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
+    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
+    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
+    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
     if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
     if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
@@ -133,16 +133,16 @@ filterDataObj;
       return;
     }
 
-    let moduleUrl = this.$auth.getModuleName();
-    const queryParams = [`id=${data.formId}`];
-
-    if (data?.subFormId) {
-      queryParams.push(`subFormId=${data.subFormId}`);
+    const legacyViewUrl =
+      claim?.codeSubFormDTO?.viewUrl ||
+      data?.viewUrl ||
+      data?.formUrl;
+    if (claimId && legacyViewUrl) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${claimId}`
+      );
+      return;
     }
-
-    this.router.navigateByUrl(
-      moduleUrl + `/${data?.viewUrl}?${queryParams.join('&')}`
-    );
   }
 
   goBack() {
@@ -253,6 +253,8 @@ filterDataObj;
           userId: this.userIdDetails?.userId,
           status: this.codeStatus?.draft,
           remark: '',
+          financialYear: this.userIdDetails?.financialYear,
+          moduleId: this.userIdDetails?.moduleId,
         };
 
         this.$claim.changeClaimStatusById(payload).subscribe({
@@ -268,8 +270,9 @@ filterDataObj;
                 (elem?.yatClaimDTO?.claimId || elem?.claimId || elem?.formId) != claimId
             );
             this.$common.showMessage(statusRes?.message || 'Claim resubmitted successfully.', 'success');
+            this.$claim.notifyStatusCountRefresh();
             setTimeout(() => {
-              this.router.navigateByUrl(this.$auth.getModuleName() + '/claim/draft');
+              this.router.navigateByUrl(this.$auth.getModuleName() + '/draft-claim');
             }, 1000);
           },
           error: () => {
@@ -320,6 +323,7 @@ filterDataObj;
               item?.yatClaimStateDTO?.id ||
               item?.id) != claimStateId
         );
+        this.$claim.notifyStatusCountRefresh();
         this.$common.showMessage(res?.message || 'Claim archived successfully.', 'success');
       },
       error: () => {

@@ -67,10 +67,9 @@
                       <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
                         (ngModelChange)="p=1">
                         <option value="10">10</option>
-                        <!-- <option value="25">25</option> -->
-                        <!-- <option value="50">50</option> -->
+                        <option value="25">25</option>
+                        <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="100000">All</option>
                       </select>
                       <label>entries</label>
                     </div>
@@ -107,25 +106,28 @@
                         <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.formId || dataObj?.claimId) | showHypen}}</td>
                         <td>{{(dataObj?.yatClaimDTO?.remark || dataObj?.remarks) | showHypen}}</td>
                         <td>
-                          <button class="btn btn-info" title="Move To Draft" (click)="moveToDraft(dataObj)">Move To Draft</button>
-                          <button class="btn btn-info ml-1" title="Download" (click)="downloadForInkSign(dataObj)">Download</button>
+                          <button *ngIf="canPerformEsign(dataObj)" class="btn btn-info" title="Perform E-Sign" (click)="performEsign(dataObj)">Perform E-Sign</button>
+                          <button *ngIf="canMoveToDraft(dataObj)" class="btn btn-warning" title="Move To Draft" (click)="moveToDraft(dataObj)">Move To Draft</button>
+                          <button *ngIf="canDownloadInkSigned(dataObj)" class="btn btn-info ml-1" title="Download" (click)="downloadInkSignedForSign(dataObj)">Download</button>
+                          <button *ngIf="canUploadInkSigned(dataObj)" class="btn btn-info ml-1" title="Upload" (click)="triggerInkSignedUpload(dataObj, inkSignedInput)">Upload</button>
                         </td>
-                        <td>{{(dataObj?.yatClaimDTO?.status || dataObj?.claimState || dataObj?.formState) | showHypen}}</td>
+                        <td>{{ getInboxStatusLabel(dataObj) }}</td>
                         <td>
                           <button class="btn btn-danger" title="Delete" (click)="deletePermanently(dataObj)">Delete</button>
                         </td>
                       </tr>
 
                       <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                        <td colspan="20">No Records Available</td>
+                        <td colspan="8">No Records Available</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="dataList?.length">
-                        <td colspan="20">
+                        <td colspan="8">
                           <pagination-controls (pageChange)="p = $event"></pagination-controls>
                         </td>
                       </tr>
                     </tbody>
                   </table>
+                  <input #inkSignedInput type="file" accept="application/pdf" class="d-none" (change)="uploadInkSignedFile($event)" />
                 </div>
 </div>
 </div>

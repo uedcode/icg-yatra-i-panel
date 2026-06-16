@@ -192,10 +192,24 @@ export class InboxComponent implements OnInit {
   }
 
   canShowPreviousAdvance(data: any): boolean {
+    if (this.queueModule === 'CLM') {
+      return false;
+    }
     const claim = data?.yatClaimDTO || {};
     const subFormId = String(claim?.codeSubFormDTO?.subFormId || data?.subFormId || '').toUpperCase();
     const refAdvanceId = claim?.refAdvanceId || data?.refAdvanceId;
     return subFormId === 'T' && !this.$auth.isNullOrEmpty(refAdvanceId);
+  }
+
+  isClaimQueue(): boolean {
+    return this.queueModule === 'CLM';
+  }
+
+  canShowViewHistory(data: any): boolean {
+    if (!this.isClaimQueue()) {
+      return false;
+    }
+    return !this.$auth.isNullOrEmpty(data?.yatClaimDTO?.initClaimId);
   }
 
   openPreviousAdvance(data: any): void {

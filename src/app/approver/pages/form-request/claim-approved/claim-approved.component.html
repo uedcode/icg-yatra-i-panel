@@ -65,11 +65,11 @@
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ (dataObj?.fullName || dataObj?.fullDescr) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.subDate || dataObj?.yatClaimDTO?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId) | showHypen }}</td>
-                        <td>{{ (dataObj?.remarks || dataObj?.yatClaimDTO?.remark) | showHypen }}</td>
-                        <td>{{ (dataObj?.claimState || dataObj?.yatClaimDTO?.status || dataObj?.formState) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.claimId) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.remark || dataObj?.remarks || dataObj?.yatClaimDTO?.claimRemark || dataObj?.claimRemark) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.status || dataObj?.claimState || dataObj?.formState) | showHypen }}</td>
                         <td>
                           <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
                         </td>

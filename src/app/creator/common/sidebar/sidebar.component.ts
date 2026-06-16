@@ -2,6 +2,7 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
+import { Subscription } from 'rxjs';
 import {
   DEFAULT_SIDEBAR_COUNTS,
   normalizeSidebarCounts,
@@ -19,6 +20,7 @@ declare var $: any;
 })
 export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   submenuShow: boolean = false;
+  private statusCountRefreshSub?: Subscription;
   constructor(
     public $auth: AuthService,
     private $common: CommonService,
@@ -33,6 +35,9 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeRoleList = this.$auth.codeRoleType();
+    this.statusCountRefreshSub = this.$claim.statusCountRefresh$.subscribe(() => {
+      this.getCount();
+    });
     this.getCount();
   }
 
@@ -42,6 +47,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     $(document).off('click.creatorSidebar', "[data-toggle='slide']");
+    this.statusCountRefreshSub?.unsubscribe();
   }
   
   getCount() {

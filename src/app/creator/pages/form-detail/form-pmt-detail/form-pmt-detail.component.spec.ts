@@ -14,7 +14,8 @@ describe('FormPmtDetailComponent', () => {
     component.$common = jasmine.createSpyObj('CommonService', ['showLoader', 'hideLoader', 'showMessage']);
     component.$claim = jasmine.createSpyObj('ClaimService', ['getSingleClaim']);
     component.$claim.getSingleClaim.and.returnValue(of({ status: true, object: [{ claimId: '101', yatDocsDTOs: [{ id: 1 }] }] }));
-    component.$auth = {} as any;
+    component.$auth = jasmine.createSpyObj('AuthService', ['getUserDetails']);
+    component.$auth.getUserDetails.and.returnValue({ userId: '501' });
     return component;
   };
 
@@ -24,6 +25,30 @@ describe('FormPmtDetailComponent', () => {
     expect(component.claimId).toBe('101');
     expect(component.subFormId).toBe('P');
     expect(component.$claim.getSingleClaim).toHaveBeenCalled();
+    expect(component.$claim.getSingleClaim.calls.mostRecent().args[0].headers).toEqual(
+      jasmine.objectContaining({
+        claimId: '101',
+        subFormId: 'P',
+        isPreview: 'true',
+        userId: '501',
+      })
+    );
+  });
+
+  it('passes supplementary claim id when previewing a supplementary form', () => {
+    const component = createComponent();
+    component.route.queryParams = of({ claimId: '101', subFormId: 'RS', supId: '202' });
+    component.ngOnInit();
+    expect(component.claimId).toBe('101');
+    expect(component.subFormId).toBe('RS');
+    expect(component.$claim.getSingleClaim.calls.mostRecent().args[0].headers).toEqual(
+      jasmine.objectContaining({
+        claimId: '101',
+        subFormId: 'RS',
+        supCLaimId: '202',
+        userId: '501',
+      })
+    );
   });
 
   it('shows message when claim id is missing', () => {
@@ -64,6 +89,14 @@ describe('FormPmtDetailComponent', () => {
     component.previewKind = 'claim';
     expect(component.previewHeading).toBe('Resettlement Claim Preview');
     expect(component.detailHeading).toBe('Resettlement Details');
+  });
+
+  it('uses claim-specific detail heading for PMT claim preview', () => {
+    const component = createComponent();
+    component.subFormId = 'PMT';
+    component.previewKind = 'claim';
+    expect(component.previewHeading).toBe('PMT Duty Claim Preview');
+    expect(component.detailHeading).toBe('PMT Claim Details');
   });
 
   it('formats epoch dates and falls back for non-numeric values', () => {

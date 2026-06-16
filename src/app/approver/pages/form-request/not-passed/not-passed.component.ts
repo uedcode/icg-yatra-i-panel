@@ -139,6 +139,7 @@ export class NotPassedComponent implements OnInit {
               item?.id) != claimStateId
         );
         this.$common.showMessage(res?.message || 'Claim archived successfully.', 'success');
+        this.$claim.notifyStatusCountRefresh();
       },
       error: () => {
         this.archiveLoadingMap[listKey] = false;

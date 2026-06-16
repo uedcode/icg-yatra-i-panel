@@ -54,8 +54,8 @@ filterDataObj
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
-        claimState: this.codeStatus?.rejected,
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
+        claimState: this.codeStatus?.notApproved,
         isArchive: '0',
         formId,
         searchFormId: searchHeaders.formId,
@@ -106,6 +106,8 @@ filterDataObj
       userId: this.userIdDetails?.userId,
       status: this.codeStatus?.draft,
       remark: '',
+      financialYear: this.userIdDetails?.financialYear,
+      moduleId: this.userIdDetails?.moduleId,
     };
 
     this.$claim.changeClaimStatusById(payload).subscribe((response: any) => {
@@ -115,22 +117,23 @@ filterDataObj
       }
 
       this.$common.showMessage(response?.message || 'Claim resubmitted successfully.', 'success');
+      this.$claim.notifyStatusCountRefresh();
       this.dataList = this.dataList.filter(
         (item: any) =>
           (item?.yatClaimDTO?.claimId || item?.claimId || item?.formId || item?.id) != claimId
       );
       setTimeout(() => {
-        this.router.navigateByUrl(this.$auth.getModuleName() + '/claim/draft');
+        this.router.navigateByUrl(this.$auth.getModuleName() + '/draft-claim');
       }, 1000);
     });
   }
 
   private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE') return detail ? 'preview-fte-claim' : 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
+    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
+    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
+    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
+    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
     if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
     if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
@@ -163,8 +166,16 @@ filterDataObj
       return;
     }
 
-    let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(moduleUrl + `/${data?.viewUrl}?id=${data.formId}`);
+    const legacyViewUrl =
+      claim?.codeSubFormDTO?.viewUrl ||
+      data?.viewUrl ||
+      data?.formUrl;
+    if (claimId && legacyViewUrl) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${claimId}`
+      );
+      return;
+    }
   }
 
   goBack() {

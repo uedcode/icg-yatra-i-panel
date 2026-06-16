@@ -267,6 +267,7 @@ export class AdvanceFormFteComponent implements OnInit {
     const config = {
       headers: {
         claimId: this.claimId,
+        userId: this.userIdDetails?.userId || '',
         subFormId: this.subFormId,
         isPreview: 'true',
       },
@@ -374,7 +375,7 @@ export class AdvanceFormFteComponent implements OnInit {
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
       },
     };
 
@@ -733,8 +734,11 @@ export class AdvanceFormFteComponent implements OnInit {
 
     const payload = {
       claimId: this.claimId,
+      subFormId: this.subFormId,
       roleTypeId: this.userIdDetails?.roleTypeId,
       userId: this.userIdDetails?.userId,
+      financialYear: this.userIdDetails?.financialYear,
+      moduleId: this.userIdDetails?.moduleId,
       status,
       remark,
       redPercent: this.redPercentage ?? undefined,
@@ -753,6 +757,7 @@ export class AdvanceFormFteComponent implements OnInit {
             response?.message || 'Advance status updated successfully.',
             'success'
           );
+          this.$claim.notifyStatusCountRefresh();
           this.router.navigateByUrl(this.$auth.getModuleName() + '/inbox');
           return;
         }
@@ -958,6 +963,9 @@ export class AdvanceFormFteComponent implements OnInit {
       balanceAmount: this.formObj?.balanceAmount,
       progressiveExpenditureAmt: this.formObj?.progressiveExpenditureAmt,
       balance: this.formObj?.balance,
+      redPercent: this.redPercentage ?? undefined,
+      redAmount: this.redPercentage !== null ? this.redAmount || undefined : undefined,
+      redRemarks: this.redPercentage !== null ? (this.redRemarks || undefined) : undefined,
     };
     $('#esign_modal').modal('show');
   }

@@ -109,6 +109,11 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'new-claim',
+        redirectTo: 'claim-new',
+        pathMatch: 'full',
+      },
+      {
         path: 'movement-update-claim',
         component: MovementUpdateClaimComponent,
         canActivate: [AuthGuard],
@@ -146,7 +151,7 @@ const routes: Routes = [
         path: 'preview-ty-duty-claim',
         component: ClaimPreviewTyDutyComponent,
         canActivate: [AuthGuard],
-        data: { title: 'TY Duty Claim Preview', roles: CREATOR_ROLES },
+        data: { title: 'TY Duty Claim Preview', roles: CREATOR_ROLES, subFormId: 'TYD', previewKind: 'claim' },
       },
       {
         path: 'preview-ty-duty',
@@ -182,7 +187,7 @@ const routes: Routes = [
         path: 'preview-pmt-duty-claim',
         component: ClaimPreviewPmtDutyComponent,
         canActivate: [AuthGuard],
-        data: { title: 'PMT Duty Claim Preview', roles: CREATOR_ROLES, subFormId: 'P', previewKind: 'claim' },
+        data: { title: 'PMT Duty Claim Preview', roles: CREATOR_ROLES, subFormId: 'PMT', previewKind: 'claim' },
       },
       {
         path: 'preview-pmt-duty',
@@ -194,13 +199,13 @@ const routes: Routes = [
         path: 'preview-fte-claim',
         component: ClaimPreviewFteComponent,
         canActivate: [AuthGuard],
-        data: { title: 'FTE Claim Preview', roles: CREATOR_ROLES },
+        data: { title: 'FTE Claim Preview', roles: CREATOR_ROLES, subFormId: 'FTE', previewKind: 'claim' },
       },
       {
         path: 'preview-ltc-claim',
         component: ClaimPreviewLtcComponent,
         canActivate: [AuthGuard],
-        data: { title: 'LTC Claim Preview', roles: CREATOR_ROLES },
+        data: { title: 'LTC Claim Preview', roles: CREATOR_ROLES, subFormId: 'LTC', previewKind: 'claim' },
       },
       {
         path: 'preview-ltc-advance',
@@ -238,6 +243,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { title: 'Inbox - Claim', roles: CREATOR_ROLES, queueModule: 'CLM' },
       },
+      { path: 'inbox-claim', redirectTo: 'claim/inbox', pathMatch: 'full' },
       {
         path: 'outbox',
         component: OutboxComponent,
@@ -250,6 +256,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { title: 'Outbox - Claim', roles: CREATOR_ROLES, queueModule: 'CLM', queueState: 'OB' },
       },
+      { path: 'outbox-claim', redirectTo: 'claim/outbox', pathMatch: 'full' },
       {
         path: 'draft',
         component: DraftComponent,
@@ -262,6 +269,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { title: 'Draft - Claim', roles: CREATOR_ROLES, queueModule: 'CLM', queueState: 'DR' },
       },
+      { path: 'draft-claim', redirectTo: 'claim/draft', pathMatch: 'full' },
       {
         path: 'approved',
         component: ApprovedComponent,
@@ -274,18 +282,21 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { title: 'Approved - Claim', roles: CREATOR_ROLES, queueModule: 'CLM', queueState: 'AP' },
       },
+      { path: 'approved-claim', redirectTo: 'claim/approved', pathMatch: 'full' },
       {
         path: 'rejected',
         component: ReturnedComponent,
         canActivate: [AuthGuard],
         data: { title: 'Not Approved - Advance', roles: CREATOR_ROLES, queueModule: 'ADV', queueState: 'NA' },
       },
+      { path: 'not-approved', redirectTo: 'rejected', pathMatch: 'full' },
       {
         path: 'claim/not-approved',
         component: ClaimNotApprovedComponent,
         canActivate: [AuthGuard],
         data: { title: 'Not Approved - Claim', roles: CREATOR_ROLES, queueModule: 'CLM', queueState: 'NA' },
       },
+      { path: 'not-approved-claim', redirectTo: 'claim/not-approved', pathMatch: 'full' },
       {
         path: 'new',
         component: NewComponent,
@@ -358,6 +369,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { title: 'Passed - Claim', roles: CREATOR_ROLES, queueModule: 'CLM', queueState: 'PS' },
       },
+      { path: 'passed-claim', redirectTo: 'claim/passed', pathMatch: 'full' },
       {
         path: 'not-passed',
         component: NotPassedComponent,
@@ -370,6 +382,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { title: 'Not Passed - Claim', roles: CREATOR_ROLES, queueModule: 'CLM', queueState: 'NP' },
       },
+      { path: 'not-passed-claim', redirectTo: 'claim/not-passed', pathMatch: 'full' },
       {
         path: 'archive',
         component: ArchiveComponent,
@@ -382,6 +395,8 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { title: 'Archive - Claim', roles: CREATOR_ROLES, queueModule: 'CLM', queueState: 'AC' },
       },
+      { path: 'archive-claim', redirectTo: 'claim/archive', pathMatch: 'full' },
+      { path: 'claim-archive', redirectTo: 'claim/archive', pathMatch: 'full' },
       {
         path: 'form-tyduty',
         component: FormTydutyComponent,
@@ -458,25 +473,25 @@ const routes: Routes = [
         path: 'form-pmt-duty-claim',
         component: ClaimFormPmtDutyComponent,
         canActivate: [AuthGuard],
-        data: { title: 'PMT Duty Claim', roles: CREATOR_ROLES, subFormId: 'P', formKind: 'claim' },
+        data: { title: 'PMT Duty Claim', roles: CREATOR_ROLES, subFormId: 'PMT', formKind: 'claim' },
       },
       {
         path: 'form-ty-duty-claim',
         component: ClaimFormTyDutyComponent,
         canActivate: [AuthGuard],
-        data: { title: 'TY Duty Claim', roles: CREATOR_ROLES },
+        data: { title: 'TY Duty Claim', roles: CREATOR_ROLES, subFormId: 'TYD', formKind: 'claim' },
       },
       {
         path: 'form-fte-claim',
         component: ClaimFormFteComponent,
         canActivate: [AuthGuard],
-        data: { title: 'FTE Claim', roles: CREATOR_ROLES },
+        data: { title: 'FTE Claim', roles: CREATOR_ROLES, subFormId: 'FTE', formKind: 'claim' },
       },
       {
         path: 'form-ltc-claim',
         component: ClaimFormLtcComponent,
         canActivate: [AuthGuard],
-        data: { title: 'LTC Claim', roles: CREATOR_ROLES, subFormId: 'L', formKind: 'claim' },
+        data: { title: 'LTC Claim', roles: CREATOR_ROLES, subFormId: 'LTC', formKind: 'claim' },
       },
       {
         path: 'form-resettlement-claim',

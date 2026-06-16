@@ -5,7 +5,10 @@ describe('FormFteDetailComponent', () => {
   const createComponent = () => {
     const component = Object.create(FormFteDetailComponent.prototype) as any;
     component.location = jasmine.createSpyObj('Location', ['back']);
-    component.route = { queryParams: of({ claimId: '301', subFormId: 'FTE' }) };
+    component.route = {
+      snapshot: { data: { subFormId: 'FTE' } },
+      queryParams: of({ claimId: '301', subFormId: 'FTE' })
+    };
     component.datePipe = jasmine.createSpyObj('DatePipe', ['transform']);
     component.datePipe.transform.and.returnValue('2026-02-01');
     component.$common = jasmine.createSpyObj('CommonService', ['showLoader', 'hideLoader', 'showMessage']);
@@ -20,7 +23,7 @@ describe('FormFteDetailComponent', () => {
     spyOn(component, 'getClaimDetails');
     component.ngOnInit();
     expect(component.claimId).toBe('301');
-    expect(component.subFormId).toBe('F');
+    expect(component.subFormId).toBe('FTE');
     expect(component.getClaimDetails).toHaveBeenCalled();
   });
 
@@ -64,6 +67,13 @@ describe('FormFteDetailComponent', () => {
     expect(component.asDate(null)).toBeNull();
     component.goBack();
     expect(component.location.back).toHaveBeenCalled();
+  });
+
+  it('uses claim-specific headings for FTE claim preview', () => {
+    const component = createComponent();
+    component.subFormId = 'FTE';
+    expect(component.previewHeading).toBe('FTE Claim Preview');
+    expect(component.detailHeading).toBe('FTE Claim Details');
   });
 });
 

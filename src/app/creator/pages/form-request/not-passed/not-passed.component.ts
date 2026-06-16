@@ -4,9 +4,7 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { FormStateService } from 'src/app/service/form/formState.service';
+import { Router } from '@angular/router';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
@@ -25,11 +23,8 @@ export class NotPassedComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    public $formManage: FormManageService,
-    public $formState: FormStateService,
     private $claim: ClaimService,
     private router: Router,
-    private route: ActivatedRoute,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -45,8 +40,8 @@ export class NotPassedComponent implements OnInit {
   p: any = 1;
   toggleFilter: any = false;
   resubmitLoadingMap: { [key: string]: boolean } = {};
-  saveAsDraftLoadingMap: { [key: string]: boolean } = {};
   archiveLoadingMap: { [key: string]: boolean } = {};
+  claimObservations: any[] = [];
   readonly moduleType: 'ADV' = 'ADV';
 
   ngOnInit() {
@@ -63,7 +58,7 @@ filterDataObj;
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
         claimState: this.codeStatus?.notPassed,
         isArchive: '0',
         formId,
@@ -116,10 +111,10 @@ filterDataObj;
 
   private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE') return detail ? 'preview-fte-claim' : 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
+    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
+    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
+    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
+    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
     if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
     if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
@@ -142,26 +137,26 @@ filterDataObj;
       claim?.codeSubFormDTO?.subFormId ||
       data?.subFormId ||
       data?.codeSubFormDTO?.subFormId;
-    const route = this.getCreatorClaimRoute(subFormId, false);
+    const route = this.getCreatorClaimRoute(subFormId, true);
 
     if (claimId && route) {
       this.router.navigateByUrl(
         this.$auth.getModuleName() +
-          `/${route}?claimId=${claimId}&subFormId=${subFormId}&state=${this.codeStatus?.notPassed}`
+          `/${route}?claimId=${claimId}&subFormId=${subFormId}`
       );
       return;
     }
 
-    let moduleUrl = this.$auth.getModuleName();
-    const queryParams = [`id=${data.formId}`, `state=${this.codeStatus?.notPassed}`];
-
-    if (data?.subFormId) {
-      queryParams.push(`subFormId=${data.subFormId}`);
+    const legacyViewUrl =
+      claim?.codeSubFormDTO?.viewUrl ||
+      data?.codeSubFormDTO?.viewUrl ||
+      data?.viewUrl;
+    const legacyViewId = claimId || claim?.formId || data?.formId || data?.id;
+    if (legacyViewUrl && legacyViewId) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${legacyViewId}`
+      );
     }
-
-    this.router.navigateByUrl(
-      moduleUrl + `/${data?.viewUrl}?${queryParams.join('&')}`
-    );
   }
 
   goBack() {
@@ -190,152 +185,53 @@ filterDataObj;
     }, 0);
   }
 
-  /*
-  resubmitForm(data: any) {
-  if (!data?.formId) return;
-
-  // prevent double click
-  if (this.resubmitLoadingMap[data.formId]) return;
-  this.resubmitLoadingMap[data.formId] = true;
-
-  this.config = {
-    headers: {
-      id: data.formId,
-      userId:this.userIdDetails?.userId || '',
-      roleId:this.userIdDetails?.roleId || '',
-      desigId:this.userIdDetails.desigId || '',
-      unitId:this.userIdDetails.unitId || '',
-    },
-  };
- 
-  this.$form.resubmit(this.config).subscribe({
-    next: (res: any) => {
-      this.resubmitLoadingMap[data.formId] = false;
-
-      if (res?.status && res?.object?.length) {
-        const newForm = res.object[0];
-
-        // Option-1: open new form in edit/view page
-        // If backend returns new id: newForm.id
-        let moduleUrl = this.$auth.getModuleName();
-
-        // aapke project me viewUrl is list item ka hota hai, but resubmit ke baad
-        // normally edit form page open karna better hota hai.
-        // If you have editUrl return from backend, use that. Else reuse existing viewUrl.
-        const redirectUrl = data?.formUrl;
-
-        if (redirectUrl) {
-          this.router.navigateByUrl(
-            moduleUrl + `/${redirectUrl}?id=${newForm.id}`
-          );
-        } else {
-          // fallback: just reload list
-          this.getState();
-        }
-
-        // Optional toast
-        this.$common?.showMessage?.('Form resubmitted successfully.');
-      } else {
-        this.$common?.showMessage?.(res?.message || 'Resubmit failed.');
-      }
-    },
-    error: (err) => {
-      this.resubmitLoadingMap[data.formId] = false;
-      this.$common?.showMessage?.('Something went wrong while resubmitting.');
-      console.error(err);
-    },
-  });
-}
-  */
-
-  saveAsDraft(data: any) {
-    const draftKey = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
-    if (!draftKey || this.saveAsDraftLoadingMap[draftKey]) {
+  loadClaimObservations(data: any): void {
+    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
       return;
     }
 
-    this.saveAsDraftLoadingMap[draftKey] = true;
-
-    const claimId = data?.yatClaimDTO?.claimId || data?.claimId;
-    if (claimId) {
-      const moveToDraftConfig: any = {
-        headers: {
-          id: claimId,
-        },
-      };
-
-      this.$claim.editClaim(moveToDraftConfig).subscribe({
-        next: (res: any) => {
-          this.saveAsDraftLoadingMap[draftKey] = false;
-
-          if (!res?.status) {
-            this.$common?.showMessage?.(res?.message || 'Save as draft failed.');
-            return;
-          }
-
-          this.dataList = this.dataList.filter(
-            (elem: any) =>
-              (elem?.yatClaimDTO?.claimId || elem?.claimId || elem?.formId) != claimId
-          );
-
-          this.$common?.showMessage?.(res?.message || 'Form saved to draft successfully.');
-          this.router.navigateByUrl(this.$auth.getModuleName() + `/draft`);
-        },
-        error: (err) => {
-          this.saveAsDraftLoadingMap[draftKey] = false;
-          this.$common?.showMessage?.('Something went wrong while moving the form to draft.');
-          console.error(err);
-        },
-      });
-      return;
-    }
-
-    const moveToDraftConfig: any = {
-      headers: {
-        formId: data.formId,
-      },
-    };
-
-    this.$formState.saveAsDraft(moveToDraftConfig).subscribe({
+    this.claimObservations = [];
+    this.$claim.getClaimObservations({ headers: { claimId: String(claimId) } }).subscribe({
       next: (res: any) => {
-        this.saveAsDraftLoadingMap[draftKey] = false;
-
-        if (!res?.status) {
-          this.$common?.showMessage?.(res?.message || 'Save as draft failed.');
-          return;
-        }
-
-        const movedForm = res?.object?.[0] || data;
-        const editUrl = this.$auth.getFormEditUrl(movedForm, {
-          formId: movedForm?.id || data?.formId,
-          formUrl:
-            movedForm?.formUrl ||
-            movedForm?.codeSubFormDTO?.formUrl ||
-            data?.formUrl,
-          subFormId:
-            movedForm?.subFormId ||
-            movedForm?.codeSubFormDTO?.subFormId ||
-            data?.subFormId,
-        });
-
-        this.dataList = this.dataList.filter(elem => elem?.formId != data?.formId);
-
-        if (!editUrl) {
-          this.$common?.showMessage?.(
-            'Form saved to draft successfully, but edit page could not be opened.'
-          );
-          this.router.navigateByUrl(this.$auth.getModuleName() + `/draft`);
-          return;
-        }
-
-        this.$common?.showMessage?.(res?.message || 'Form saved to draft successfully.');
-        this.router.navigateByUrl(editUrl);
+        this.claimObservations = Array.isArray(res?.object) ? res.object : [];
+        setTimeout(() => $('#claimObservationModal').modal('show'), 0);
       },
-      error: (err) => {
-        this.saveAsDraftLoadingMap[draftKey] = false;
-        this.$common?.showMessage?.('Something went wrong while moving the form to draft.');
-        console.error(err);
+      error: () => {
+        this.$common.showMessage('Error while loading claim observations.', 'danger');
       },
+    });
+  }
+
+  resubmitForm(data: any): void {
+    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    const subFormId =
+      data?.yatClaimDTO?.codeSubFormDTO?.subFormId ||
+      data?.codeSubFormDTO?.subFormId ||
+      data?.subFormId;
+    const route = this.getCreatorClaimRoute(subFormId, false);
+    const loadingKey = claimId || data?.formId;
+
+    if (!loadingKey || this.resubmitLoadingMap[loadingKey]) {
+      return;
+    }
+
+    if (!claimId || !route) {
+      this.$common.showMessage('Resubmit route is not available for this advance form.', 'warning');
+      return;
+    }
+
+    this.resubmitLoadingMap[loadingKey] = true;
+    this.router.navigate([this.$auth.getModuleName() + `/${route}`], {
+      queryParams: {
+        id: claimId,
+        claimId,
+        resubId: claimId,
+        subFormId,
+      },
+    }).finally(() => {
+      this.resubmitLoadingMap[loadingKey] = false;
     });
   }
 
@@ -375,6 +271,7 @@ filterDataObj;
               item?.id) != claimStateId
         );
         this.$common.showMessage(res?.message || 'Claim archived successfully.', 'success');
+        this.$claim.notifyStatusCountRefresh();
       },
       error: () => {
         this.archiveLoadingMap[listKey] = false;
@@ -394,6 +291,19 @@ filterDataObj;
       return;
     }
     this.$common.download(url);
+  }
+
+  hasSignedForm(data: any): boolean {
+    return !!(
+      data?.yatClaimDTO?.inkSignedFileUrl ||
+      data?.yatClaimDTO?.signedFileUrl ||
+      data?.inkSignedFileUrl ||
+      data?.signedFileUrl
+    );
+  }
+
+  isResubmitted(data: any): boolean {
+    return String(data?.yatClaimDTO?.isResubmitted || data?.isResubmitted || '') === '1';
   }
 
 }

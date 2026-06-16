@@ -43,8 +43,11 @@
               <i class="dropdown-icon fa fa-home"></i> Home
             </a> -->
             <a class="dropdown-item cursor_pointer" *ngFor="let dataObj of dataList"
-              [hidden]="userIdDetails?.roleId==getRoleId(dataObj)" (click)="roleSwitch(dataObj)">
+              [hidden]="isCurrentRole(dataObj)" (click)="roleSwitch(dataObj)">
               {{ dataObj?.roleName }}
+              <span *ngIf="dataObj?.aclCodeRoleTypeDTO">
+                ({{ dataObj?.aclCodeRoleTypeDTO?.roleType || dataObj?.aclCodeRoleTypeDTO?.descr || dataObj?.aclCodeRoleTypeDTO?.roleTypeId }}<span *ngIf="dataObj?.moduleName">/{{ dataObj?.moduleName }}</span>)
+              </span>
               <span *ngIf="dataObj?.aclCodeDesignationDTO">
                 ({{ dataObj?.aclCodeDesignationDTO?.descr }})
               </span>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
@@ -11,17 +12,25 @@ import { CommonService } from 'src/app/service/core/common.service';
 })
 export class FormLtcAvailedHistoryDetailComponent implements OnInit {
   claimId = '';
+  userIdDetails: any;
   rows: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
+    public $auth: AuthService,
     private $claim: ClaimService,
     private $common: CommonService
   ) {}
 
   ngOnInit(): void {
+    this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.route.queryParamMap.subscribe((params) => {
-      this.claimId = params.get('id') || '';
+      this.claimId =
+        params.get('claimId') ||
+        params.get('id') ||
+        params.get('formId') ||
+        params.get('supId') ||
+        '';
       if (!this.claimId) return;
       this.loadData();
     });
@@ -31,6 +40,7 @@ export class FormLtcAvailedHistoryDetailComponent implements OnInit {
     const config = {
       headers: {
         claimId: this.claimId,
+        userId: this.userIdDetails?.userId || '',
         isFetch: '1',
       },
     };

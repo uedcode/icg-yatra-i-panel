@@ -15,6 +15,8 @@ export class FormLtcDetailComponent implements OnInit {
   formObj: any = null;
   claimId: string | null = null;
   subFormId: string = 'L';
+  supplementaryId: string | null = null;
+  userIdDetails: any;
   documentDtos: any[] = [];
 
   constructor(
@@ -27,13 +29,16 @@ export class FormLtcDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
+    this.subFormId = this.normalizeSubFormId(this.route.snapshot.data?.['subFormId']);
     this.claimId =
       this.route.snapshot.queryParamMap.get('claimId') ||
       this.route.snapshot.queryParamMap.get('id') ||
       this.route.snapshot.queryParamMap.get('formId') ||
       this.route.snapshot.queryParamMap.get('supId');
+    this.supplementaryId = this.route.snapshot.queryParamMap.get('supId');
     this.subFormId = this.normalizeSubFormId(
-      this.route.snapshot.queryParamMap.get('subFormId')
+      this.route.snapshot.queryParamMap.get('subFormId') || this.subFormId
     );
     if (this.claimId) this.getClaimDetails();
   }
@@ -46,8 +51,12 @@ export class FormLtcDetailComponent implements OnInit {
         claimId: this.claimId,
         subFormId: this.subFormId,
         isPreview: 'true',
+        userId: this.userIdDetails?.userId ?? '',
       },
     };
+    if (this.supplementaryId) {
+      (config.headers as any).supCLaimId = this.supplementaryId;
+    }
 
     this.$claim.getSingleClaim(config).subscribe({
       next: (response: any) => {
@@ -78,13 +87,18 @@ export class FormLtcDetailComponent implements OnInit {
     return str ? str : '-';
   }
 
+  get previewHeading(): string {
+    return this.subFormId === 'LTC' ? 'LTC Claim Preview' : 'LTC Advance Preview';
+  }
+
   goBack(): void {
     this.location.back();
   }
 
   private normalizeSubFormId(subFormId: any): string {
     const id = String(subFormId || '').toUpperCase();
-    if (id === 'LTCA' || id === 'LTC') return 'L';
+    if (id === 'LTC') return 'LTC';
+    if (id === 'LTCA') return 'L';
     return 'L';
   }
 }

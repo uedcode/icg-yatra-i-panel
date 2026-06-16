@@ -44,6 +44,7 @@ export class ClaimDraftComponent implements OnInit {
   readonly moduleType: 'CLM' = 'CLM';
   formId: any;
   claimId: any;
+  unitRemarks: any[] = [];
 
 
   ngOnInit() {
@@ -60,7 +61,7 @@ filterDataObj
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
         claimState: this.codeStatus?.draft,
         isArchive: '0',
         formId,
@@ -105,6 +106,7 @@ filterDataObj
       const config = {
         headers: {
           ids: [claimId],
+          isApproved: '0',
         },
       };
 
@@ -117,6 +119,7 @@ filterDataObj
               (elem: any) =>
                 (elem?.yatClaimDTO?.claimId || elem?.claimId || elem?.formId || elem?.id) != claimId
             );
+            this.$claim.notifyStatusCountRefresh();
           }
           this.rowId = null;
           $('#delete_modal').modal('hide');
@@ -150,10 +153,10 @@ filterDataObj
 
   private getCreatorClaimRoute(subFormId: string | null): string | null {
     const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT') return 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY') return 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE') return 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC') return 'form-ltc-claim';
+    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return 'form-pmt-duty-claim';
+    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return 'form-ty-duty-claim';
+    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return 'form-fte-claim';
+    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return 'form-ltc-claim';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return 'form-resettlement-claim';
     if (id === 'P') return 'form-pmt';
     if (id === 'T') return 'form-tyduty';
@@ -185,11 +188,16 @@ filterDataObj
       return;
     }
 
-    let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(
-      moduleUrl +
-      `/${data?.formUrl}?id=${data.formId}&subFormId=${data.subFormId}`
-    );
+    const legacyFormUrl =
+      claim?.codeSubFormDTO?.formUrl ||
+      data?.formUrl ||
+      data?.viewUrl;
+    if (claimId && legacyFormUrl) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() + `/${legacyFormUrl}?id=${claimId}`
+      );
+      return;
+    }
   }
 
   setDeleteTarget(data: any) {
@@ -201,12 +209,21 @@ filterDataObj
     return (data?.yatClaimDTO?.claimMode || data?.claimMode) !== this.yatTravelMode.yatra;
   }
 
-  viewHistory(formId: any, claimId: any = null): void {
-    this.formId = formId;
-    this.claimId = claimId || null;
-    setTimeout(() => {
-      $('#viewHistoryModal').modal('show');
-    }, 0);
+  viewUnitRemarks(claimId: any): void {
+    if (!claimId) {
+      return;
+    }
+    this.unitRemarks = [];
+    this.$claim.getClaimRemarks({ headers: { claimId: String(claimId) } }).subscribe({
+      next: (res: any) => {
+        this.unitRemarks = Array.isArray(res?.object) ? res.object : [];
+        setTimeout(() => $('#unitRemarksModal').modal('show'), 0);
+      },
+      error: () => {
+        this.unitRemarks = [];
+        this.$common.showMessage('Unable to load unit remarks.', 'danger');
+      },
+    });
   }
 }
 

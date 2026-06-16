@@ -145,6 +145,12 @@ export class MovementUpdateClaimComponent implements OnInit {
     return this.movement.claimMode === this.yatTravelMode.manual;
   }
 
+  get visibleModeOptions(): Array<{ id: string; label: string }> {
+    return this.modeOptions.filter(
+      (option) => option.id !== this.yatTravelMode.yatra || this.movement.claimMode === this.yatTravelMode.yatra
+    );
+  }
+
   get canOpenClaimForm(): boolean {
     return !!this.getClaimFormRoute(this.movement.subFormId || '');
   }
@@ -431,7 +437,7 @@ export class MovementUpdateClaimComponent implements OnInit {
       this.$common.showMessage('Please select Purpose.', 'danger');
       return;
     }
-    if (!this.validateVoucherInputs()) {
+    if (!this.validateVoucherInputs(this.codeClaimState.draft)) {
       return;
     }
     if (!this.validateManualSettlement()) {
@@ -637,8 +643,8 @@ export class MovementUpdateClaimComponent implements OnInit {
     return true;
   }
 
-  private validateVoucherInputs(): boolean {
-    if (this.movement.claimMode !== this.yatTravelMode.manual) {
+  private validateVoucherInputs(claimStateId: string): boolean {
+    if (claimStateId !== 'INIT' || this.movement.claimMode !== this.yatTravelMode.manual) {
       return true;
     }
     if (this.isNilOrSupplementary) {

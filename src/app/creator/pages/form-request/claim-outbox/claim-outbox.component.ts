@@ -53,6 +53,7 @@ export class ClaimOutboxComponent implements OnInit {
   formList;
   today;
   readonly moduleType: 'CLM' = 'CLM';
+  unitRemarks: any[] = [];
 
   ngOnInit() {
     this.today = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
@@ -96,7 +97,7 @@ export class ClaimOutboxComponent implements OnInit {
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
         claimState: this.codeStatus?.outbox,
         isArchive: '0',
         formId: this.moduleType,
@@ -168,10 +169,10 @@ export class ClaimOutboxComponent implements OnInit {
 
   private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE') return detail ? 'preview-fte-claim' : 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
+    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
+    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
+    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
+    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
     if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
     if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
@@ -204,10 +205,16 @@ export class ClaimOutboxComponent implements OnInit {
       return;
     }
 
-    let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(
-      moduleUrl + `/${data?.viewUrl}?id=${data.formId}`
-    );
+    const legacyViewUrl =
+      claim?.codeSubFormDTO?.viewUrl ||
+      data?.viewUrl ||
+      data?.formUrl;
+    if (claimId && legacyViewUrl) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${claimId}`
+      );
+      return;
+    }
   }
 
   downloadRequisition(data: any): void {
@@ -237,14 +244,21 @@ export class ClaimOutboxComponent implements OnInit {
     return signWith === this.codeSignType.eSign || signWith === this.codeSignType.eSignAlt;
   }
 
- formId;
- claimId;
-  viewHistory(formId: any, claimId: any = null): void {
-    this.formId = formId;
-    this.claimId = claimId || null;
-    setTimeout(() => {
-      $('#viewHistoryModal').modal('show');
-    }, 0);
+  viewUnitRemarks(claimId: any): void {
+    if (!claimId) {
+      return;
+    }
+    this.unitRemarks = [];
+    this.$claim.getClaimRemarks({ headers: { claimId: String(claimId) } }).subscribe({
+      next: (res: any) => {
+        this.unitRemarks = Array.isArray(res?.object) ? res.object : [];
+        setTimeout(() => $('#unitRemarksModal').modal('show'), 0);
+      },
+      error: () => {
+        this.unitRemarks = [];
+        this.$common.showMessage('Unable to load unit remarks.', 'danger');
+      },
+    });
   }
   reset() {
     this.filterObj = {};

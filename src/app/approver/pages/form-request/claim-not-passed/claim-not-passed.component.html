@@ -67,18 +67,18 @@
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.claimId) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.subDate || dataObj?.yatClaimDTO?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.claimAmt || dataObj?.claimAmt) | showHypen }}</td>
-                        <td>{{ (dataObj?.remarks || dataObj?.yatClaimDTO?.remark) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.claimRemark || dataObj?.claimRemark || dataObj?.remarks || dataObj?.yatClaimDTO?.remark) | showHypen }}</td>
                         <td>
                           <button class="btn btn-info" title="View Form" (click)="viewForm(dataObj)">View Form</button>
                         </td>
                         <td>
-                          <button class="btn btn-info" title="Observations" (click)="viewHistory(dataObj?.formId, dataObj?.yatClaimDTO?.claimId || dataObj?.claimId)">Observations</button>
+                          <button class="btn btn-info" title="Observations" (click)="loadClaimObservations(dataObj)">View</button>
                         </td>
                         <td>
-                          <button class="btn btn-info" title="Signed Form" (click)="downloadSignedForm(dataObj)">Signed Form</button>
+                          <button *ngIf="hasSignedForm(dataObj)" class="btn btn-info" title="Signed Form" (click)="downloadSignedForm(dataObj)">Download</button>
                         </td>
                         <td>
                           <button class="btn btn-info" title="Archive"
@@ -102,7 +102,40 @@
             </div>
           </div>
         </div>
-<app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>
+<div class="modal fade" id="claimObservationModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>S.No.</th>
+                <th>Observation</th>
+                <th>Created On</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let observation of claimObservations; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ (observation?.descr || observation?.claimObservation || observation?.remarks || observation?.remark) | showHypen }}</td>
+                <td>{{ observation?.createdOn | showDate:'medium' }}</td>
+              </tr>
+              <tr *ngIf="!claimObservations.length">
+                <td colspan="3" class="text-center">No Records Available</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 

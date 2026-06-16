@@ -41,9 +41,13 @@ export class PayNotApprovedComponent implements OnInit {
       headers: {
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
-        unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        unitId: '',
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
         state: this.payStateCodes.notApproved,
+        isArchive: '0',
+        formId: '',
+        pno: '',
+        searchedName: '',
       },
     };
     this.$claim.getPayStates(config).subscribe((res: any) => {

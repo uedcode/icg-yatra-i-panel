@@ -9,6 +9,39 @@
       </div>
       <div class="modal-body form_modal_body">
         <div class="table-responsive">
+          <table id="exportData" class="table table-bordered" style="width:100%" *ngIf="isClaimHistoryMode(); else workflowHistoryTable">
+            <thead>
+              <tr>
+                <th>FormId</th>
+                <th>Submission Date</th>
+                <th>View</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let dataObj of stateList | filterComplex : searchObj | paginate: { itemsPerPage: noOfPage, currentPage: p }"
+              >
+                <td>{{ dataObj?.formId | showHypen }}</td>
+                <td>{{ dataObj?.subDate | showDate:'mediumDate' }}</td>
+                <td>
+                  <button
+                    *ngIf="dataObj?.codeSubFormDTO?.viewUrl && dataObj?.claimId"
+                    type="button"
+                    class="btn btn-info"
+                    title="View"
+                    (click)="openClaimHistoryItem(dataObj)"
+                  >
+                    View
+                  </button>
+                  <span *ngIf="!(dataObj?.codeSubFormDTO?.viewUrl && dataObj?.claimId)">-</span>
+                </td>
+              </tr>
+              <tr *ngIf="!stateList.length" class="text-center">
+                <td colspan="20">No Records Available</td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #workflowHistoryTable>
           <table id="exportData" class="table table-bordered" style="width:100%">
             <thead>
               <tr>
@@ -33,6 +66,7 @@
               </tr>
             </tbody>
           </table>
+          </ng-template>
         </div>
       </div>
     </div>

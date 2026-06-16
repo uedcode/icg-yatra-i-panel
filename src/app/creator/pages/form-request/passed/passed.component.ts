@@ -45,6 +45,7 @@ export class PassedComponent implements OnInit {
   p: any = 1;
   toggleFilter: any = false;
   archiveLoadingMap: { [key: string]: boolean } = {};
+  claimObservations: any[] = [];
   readonly moduleType: 'ADV' = 'ADV';
 
   ngOnInit() {
@@ -61,7 +62,7 @@ filterDataObj;
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
         claimState: this.codeStatus?.passed,
         isArchive: '0',
         formId,
@@ -114,10 +115,10 @@ filterDataObj;
 
   private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
     const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE') return detail ? 'preview-fte-claim' : 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
+    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
+    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
+    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
+    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
     if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
     if (id === 'T') return detail ? 'form-tyduty-detail' : 'form-tyduty';
@@ -149,10 +150,16 @@ filterDataObj;
       return;
     }
 
-    let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(
-      moduleUrl + `/${data?.viewUrl}?id=${data.formId}`
-    );
+    const legacyViewUrl =
+      claim?.codeSubFormDTO?.viewUrl ||
+      data?.codeSubFormDTO?.viewUrl ||
+      data?.viewUrl;
+    const legacyViewId = claimId || claim?.formId || data?.formId || data?.id;
+    if (legacyViewUrl && legacyViewId) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${legacyViewId}`
+      );
+    }
   }
 
   goBack() {
@@ -179,6 +186,25 @@ filterDataObj;
     setTimeout(() => {
       $('#viewHistoryModal').modal('show');
     }, 0);
+  }
+
+  loadClaimObservations(data: any): void {
+    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
+      return;
+    }
+
+    this.claimObservations = [];
+    this.$claim.getClaimObservations({ headers: { claimId: String(claimId) } }).subscribe({
+      next: (res: any) => {
+        this.claimObservations = Array.isArray(res?.object) ? res.object : [];
+        setTimeout(() => $('#claimObservationModal').modal('show'), 0);
+      },
+      error: () => {
+        this.$common.showMessage('Error while loading claim observations.', 'danger');
+      },
+    });
   }
 
   archiveClaim(data: any): void {

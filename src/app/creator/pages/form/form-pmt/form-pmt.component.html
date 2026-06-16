@@ -14,7 +14,7 @@
             <div class="row mrg_btm_5">
               <div class="col-md-3">
                 <button type="button" class="btn btn-info" [disabled]="isPreviewDisabled"
-                  (click)="navigatePreview('preview-pmt-duty','')">
+                  (click)="navigatePreview('', '')">
                   Preview
                 </button>
               </div>
@@ -67,6 +67,11 @@
                           </li>
                           <li role="presentation">
                             <a id="ship5-tab" href="#ship5" aria-controls="ship5" role="tab" data-toggle="tab">
+                              Supporting Documents
+                            </a>
+                          </li>
+                          <li role="presentation">
+                            <a id="ship6-tab" href="#ship6" aria-controls="ship6" role="tab" data-toggle="tab">
                               Remarks
                             </a>
                           </li>
@@ -383,6 +388,56 @@
                               </div>
                             </div>
 
+                            <div class="row" *ngIf="isResettlementClaimMode">
+                              <div class="col-md-4" *ngIf="claims?.yatPermDutyAdvDTOs?.[0]?.advVoucherNumber && claims?.claimMode === 'YT'">
+                                <div class="form-group">
+                                  <div class="row">
+                                    <div class="col-md-4 padd_5">
+                                      <label class="control-label">Advance Voucher</label>
+                                    </div>
+                                    <div class="col-md-8 padd_5">
+                                      <button type="button" class="btn btn-info"
+                                        (click)="openLinkedPreview('preview-voucher')">
+                                        View
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="col-md-4" *ngIf="claims?.claimMode === 'YT' && claims?.advClaimId">
+                                <div class="form-group">
+                                  <div class="row">
+                                    <div class="col-md-4 padd_5">
+                                      <label class="control-label">Linked Advance Form</label>
+                                    </div>
+                                    <div class="col-md-8 padd_5">
+                                      <button type="button" class="btn btn-info"
+                                        (click)="openLinkedPreview('preview-resettlement', claims?.advClaimId)">
+                                        View
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="col-md-4" *ngIf="claims?.supClaimId">
+                                <div class="form-group">
+                                  <div class="row">
+                                    <div class="col-md-4 padd_5">
+                                      <label class="control-label">Linked Claim Form</label>
+                                    </div>
+                                    <div class="col-md-8 padd_5">
+                                      <button type="button" class="btn btn-info"
+                                        (click)="openLinkedPreview('preview-pm-resettlementaim', claims?.supClaimId)">
+                                        View
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
                             <!-- Row 7: PMT Type + Family Type -->
                             <div class="row">
                               <div class="col-md-6">
@@ -486,7 +541,7 @@
                             <!-- Bottom Buttons (Tab 1) -->
                             <div style="margin-top: 5px;">
                               <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="saveClaim(codeClaim?.pmtAdv, codeClaimState?.draft)">
+                                (click)="saveClaim(currentFormCode, codeClaimState?.draft)">
                                 Save as Draft
                               </button>
 
@@ -651,7 +706,7 @@
                               </button>
 
                               <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="saveClaim(codeClaim?.pmtAdv, codeClaimState?.draft)">
+                                (click)="saveClaim(currentFormCode, codeClaimState?.draft)">
                                 Save as Draft
                               </button>
 
@@ -924,7 +979,7 @@
                               </button>
 
                               <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="saveClaim(codeClaim?.pmtAdv, codeClaimState?.draft)">
+                                (click)="saveClaim(currentFormCode, codeClaimState?.draft)">
                                 Save as Draft
                               </button>
 
@@ -1042,7 +1097,7 @@
                               </button>
 
                               <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="saveClaim(codeClaim?.pmtAdv, codeClaimState?.draft)">
+                                (click)="saveClaim(currentFormCode, codeClaimState?.draft)">
                                 Save as Draft
                               </button>
 
@@ -1057,6 +1112,28 @@
                           <div id="ship5" class="tab-pane fade">
 
                             <app-common-document [documentDtos]="documentDtos"></app-common-document>
+
+                            <div style="margin-top: 10px;">
+                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                (click)="previousTabActive()">
+                                Previous
+                              </button>
+
+                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                (click)="saveClaim(currentFormCode, codeClaimState?.draft)">
+                                Save as Draft
+                              </button>
+
+                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                (click)="nextTabActive()">
+                                Next
+                              </button>
+                            </div>
+
+                          </div>
+
+                          <!-- ================= TAB 6: REMARKS ================= -->
+                          <div id="ship6" class="tab-pane fade">
 
                             <div class="form-group">
                               <div class="row">
@@ -1079,7 +1156,7 @@
                               </button>
 
                               <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="saveClaim(codeClaim?.pmtAdv, codeClaimState?.draft)">
+                                (click)="saveClaim(currentFormCode, codeClaimState?.draft)">
                                 Save as Draft
                               </button>
 

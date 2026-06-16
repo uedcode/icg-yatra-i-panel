@@ -1,20 +1,29 @@
-﻿<div class="page-header gov-page-toolbar">
-  <h4 class="page-title">Pay Details Preview</h4>
+<div class="page-header gov-page-toolbar">
+  <h4 class="page-title">Pay Detail</h4>
 </div>
 
 <div class="card">
   <div class="card-body">
     <div class="row">
-      <div class="col-md-4 mb-2"><strong>PNO:</strong> {{ payDetails?.pno || '-' }}</div>
       <div class="col-md-4 mb-2"><strong>Name:</strong> {{ payDetails?.name || '-' }}</div>
       <div class="col-md-4 mb-2"><strong>Rank:</strong> {{ payDetails?.rank || '-' }}</div>
-      <div class="col-md-4 mb-2"><strong>From Date:</strong> {{ payDetails?.fromDt || '-' }}</div>
-      <div class="col-md-4 mb-2"><strong>To Date:</strong> {{ payDetails?.toDt || '-' }}</div>
-      <div class="col-md-4 mb-2"><strong>Type:</strong> {{ payDetails?.type || '-' }}</div>
-      <div class="col-md-4 mb-2"><strong>Document:</strong> {{ payDetails?.docName || '-' }}</div>
-      <div class="col-md-12 mb-2"><strong>Remark:</strong> {{ payDetails?.remark || '-' }}
+      <div class="col-md-4 mb-2"><strong>Personnel Number:</strong> {{ payDetails?.pno || '-' }}</div>
+      <div class="col-md-4 mb-2"><strong>State:</strong> {{ (payDetails?.statusId || payDetails?.payState || payDetails?.formState) | codeStatus:'-' }}</div>
+      <div class="col-md-4 mb-2"><strong>Current Pay Level:</strong> {{ payDetails?.payLevel || '-' }}</div>
+      <div class="col-md-4 mb-2"><strong>Current Basic Pay:</strong> {{ payDetails?.basicPay || '-' }}</div>
+      <div class="col-md-4 mb-2"><strong>Present Unit:</strong> {{ payDetails?.videPresentUnit || '-' }}</div>
+      <div class="col-md-4 mb-2"><strong>New Pay Level:</strong> {{ payDetails?.newPayLevel || '-' }}</div>
+      <div class="col-md-4 mb-2"><strong>New Basic Pay:</strong> {{ payDetails?.newBasicPay || '-' }}</div>
+      <div class="col-md-4 mb-2"><strong>From Date:</strong> {{ asDate(payDetails?.fromDt) }}</div>
+      <div class="col-md-4 mb-2"><strong>Reason For Change:</strong> {{ payDetails?.reason || '-' }}</div>
+      <div class="col-md-8 mb-2">
+        <strong>{{ payDetails?.docName || 'Document' }} (PDF) (Upto 512 KB):</strong>
+        <button *ngIf="payDetails?.docUrl" type="button" class="btn btn-info btn-sm ml-2" (click)="viewDocument()">View</button>
+        <span *ngIf="!payDetails?.docUrl" class="ml-2">-</span>
+      </div>
+      <div class="col-md-4 mb-2"><strong>Verifier Remarks:</strong> {{ payDetails?.verifier1Remark || '-' }}</div>
+      <div class="col-md-4 mb-2"><strong>Approver Remarks:</strong> {{ payDetails?.approverRemark || '-' }}</div>
+      <div class="col-md-4 mb-2"><strong>Created On:</strong> {{ asDate(payDetails?.createdOn) }}</div>
+    </div>
+  </div>
 </div>
-</div>
-</div>
-</div>
-

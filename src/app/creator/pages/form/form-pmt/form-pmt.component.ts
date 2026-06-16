@@ -137,6 +137,9 @@ interface Claims {
   aclUserDTO?: any;
   roleTypeId?: any;
   claimState?: string | null;
+  claimMode?: string | null;
+  advClaimId?: string | number | null;
+  supClaimId?: string | number | null;
 
   pno?: string | null;
   name?: string | null;
@@ -211,6 +214,7 @@ export class FormPmtDutyComponent implements OnInit {
 
   gxUnitId: number | null = null;
   claimIdParam: string | null = null;
+  resubClaimId: string | null = null;
   supplementaryId: string | null = null;
   activeSubFormId = 'P';
   activeFormKind: 'advance' | 'claim' = 'advance';
@@ -248,15 +252,16 @@ export class FormPmtDutyComponent implements OnInit {
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
     this.today = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
-    this.activeSubFormId = this.resolveSubFormId(this.route.snapshot.data?.['subFormId']);
     this.activeFormKind = this.resolveFormKind(this.route.snapshot.data?.['formKind']);
+    this.activeSubFormId = this.resolveSubFormId(this.route.snapshot.data?.['subFormId']);
     this.claims.codeSubFormDTO = {
       ...(this.claims.codeSubFormDTO || {}),
       subFormId: this.activeSubFormId,
     };
 
     const qp = this.route.snapshot.queryParamMap;
-    this.claimIdParam = qp.get('claimId');
+    this.claimIdParam = qp.get('claimId') || qp.get('resubId');
+    this.resubClaimId = qp.get('resubId');
     this.supplementaryId = qp.get('supId');
 
     const gxUnitIdStr = qp.get('gxUnitId');
@@ -391,7 +396,7 @@ export class FormPmtDutyComponent implements OnInit {
 
       const headers: any = {
         isPreview: 'false',
-        gxUnitId: this.userIdDetails?.unitId ?? '',
+        gxUnitId: String(this.gxUnitId || this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId || ''),
         userId: this.userIdDetails?.userId ?? '',
         subFormId: this.activeSubFormId,
         isFetch: 'true',
@@ -447,6 +452,9 @@ export class FormPmtDutyComponent implements OnInit {
             yatClaimBankDetailDTO:
               obj.yatClaimBankDetailDTO || this.claims.yatClaimBankDetailDTO,
           };
+          if (this.resubClaimId) {
+            (this.claims as any).refAdvanceId = this.resubClaimId;
+          }
           this.claimId = this.claims.claimId;
           this.documentDtos = this.claims.yatDocsDTOs || [];
           this.$codeDocInfo.setDocument(this.documentDtos as []);
@@ -1128,6 +1136,7 @@ export class FormPmtDutyComponent implements OnInit {
       }
       if (!tempClaim.signWith) tempClaim.signWith = 'ES';
       if (this.supplementaryId) tempClaim.supClaimId = this.supplementaryId;
+      if (this.resubClaimId) tempClaim.refAdvanceId = this.resubClaimId;
       tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
 
       tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
@@ -1190,7 +1199,7 @@ export class FormPmtDutyComponent implements OnInit {
   }
 
   saveDraft(): void {
-    this.saveClaim(this.codeClaim.pmtAdv, this.codeClaimState.draft);
+    this.saveClaim(this.currentFormCode, this.codeClaimState.draft);
   }
 
   submitPmt(): void {
@@ -1207,7 +1216,7 @@ export class FormPmtDutyComponent implements OnInit {
       return;
     }
 
-    this.saveClaim(this.codeClaim.pmtAdv, this.codeClaimState.outbox);
+    this.saveClaim(this.currentFormCode, this.codeClaimState.outbox);
   }
 
   /* ===================== VALIDATE ===================== */
@@ -1316,7 +1325,7 @@ export class FormPmtDutyComponent implements OnInit {
   }
 
   validatePmt(type?: string): void {
-    if (type && type !== this.codeClaim.pmtAdv) return;
+    if (type && type !== this.codeClaim.pmtAdv && type !== this.codeClaim.resettleClm) return;
 
     try {
       const okSections = this.runPmtClientValidationOnly();
@@ -1480,6 +1489,25 @@ export class FormPmtDutyComponent implements OnInit {
     });
   }
 
+  get isResettlementClaimMode(): boolean {
+    return this.isResettlementMode();
+  }
+
+  openLinkedPreview(route: string, linkedClaimId?: any): void {
+    const claimId = linkedClaimId || this.claims.claimId || this.claimIdParam;
+    if (!route || !claimId) {
+      this.$common.showMessage('Linked form is not available.', 'warning');
+      return;
+    }
+
+    this.router.navigate([`../${route}`], {
+      queryParams: {
+        claimId,
+        subFormId: this.activeSubFormId,
+      },
+    });
+  }
+
   private navigateAfterSave(
     status: string,
     savedClaimId?: string | null
@@ -1513,7 +1541,7 @@ export class FormPmtDutyComponent implements OnInit {
     const config = {
       headers: {
         userId: this.userIdDetails?.userId || '',
-        gxUnitId: String(this.gxUnitId || this.userIdDetails?.unitId || ''),
+        gxUnitId: String(this.gxUnitId || this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId || ''),
       },
     };
 
@@ -1535,14 +1563,14 @@ export class FormPmtDutyComponent implements OnInit {
   }
   checkValidSignType(signWith: string | null, appliedTo: string | null): void {}
 
-  goToTab(tabId: 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5'): void {
+  goToTab(tabId: 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5' | 'ship6'): void {
     const link = document.querySelector<HTMLAnchorElement>(
       `a[href="#${tabId}"]`
     );
     if (link) link.click();
   }
 
-  private tabIds: string[] = ['ship', 'ship2', 'ship3', 'ship4', 'ship5'];
+  private tabIds: string[] = ['ship', 'ship2', 'ship3', 'ship4', 'ship5', 'ship6'];
 
   private getActiveTabId(): string {
     const activeLink = document.querySelector<HTMLAnchorElement>(
@@ -1693,7 +1721,8 @@ export class FormPmtDutyComponent implements OnInit {
   private resolveSubFormId(rawSubFormId: any): string {
     const id = String(rawSubFormId || '').toUpperCase();
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return this.codeClaim.resettleClm;
-    if (id === 'PMTA' || id === 'PMT' || id === 'P') return this.codeClaim.pmtAdv;
+    if (id === 'PMT' || id === 'PMTCLM') return this.activeFormKind === 'claim' ? 'PMT' : this.codeClaim.pmtAdv;
+    if (id === 'PMTA' || id === 'P') return this.codeClaim.pmtAdv;
     return this.codeClaim.pmtAdv;
   }
 
@@ -1710,6 +1739,10 @@ export class FormPmtDutyComponent implements OnInit {
     return this.activeFormKind === 'claim'
       ? 'REQUISITION FOR PMT DUTY CLAIM'
       : 'REQUISITION FOR PMT DUTY ADVANCE';
+  }
+
+  get currentFormCode(): string {
+    return this.activeSubFormId;
   }
 
   private getCurrentFormRoute(): string {

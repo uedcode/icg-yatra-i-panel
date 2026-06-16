@@ -15,6 +15,8 @@ export class ClaimNewComponent implements OnInit {
   userIdDetails: any;
   noOfPage = 10;
   p = 1;
+  searchObj = '';
+  deleteLoadingMap: { [key: string]: boolean } = {};
 
   constructor(
     private $auth: AuthService,
@@ -57,18 +59,44 @@ export class ClaimNewComponent implements OnInit {
   }
 
   openClaimForm(row: any): void {
+    const claimId = row?.claimId || row?.yatClaimDTO?.claimId || row?.id || '';
+    if (!claimId) {
+      this.$common.showMessage('Claim id is not available.', 'warning');
+      return;
+    }
+
+    const config = { headers: { claimId: String(claimId) } };
+    this.$claim.validateMovement(config).subscribe((res: any) => {
+      if (!res?.status) {
+        this.$common.showMessage(res?.message || 'Unable to validate movement.', 'danger');
+        return;
+      }
+
+      this.$common.showMessage(res?.message || 'Movement validated successfully.');
+      const validationResult = Array.isArray(res?.object) ? res.object[0] || null : res?.object || null;
+      this.openClaimFormAfterValidation(row, validationResult);
+    });
+  }
+
+  private openClaimFormAfterValidation(row: any, validationResult: any = null): void {
+    const claimId = row?.claimId || row?.yatClaimDTO?.claimId || row?.id || '';
     const subFormId = (
+      validationResult?.subFormId ||
+      validationResult?.purpose ||
+      validationResult?.codeSubFormDTO?.subFormId ||
       row?.subFormId ||
       row?.codeSubFormDTO?.subFormId ||
       row?.yatClaimDTO?.codeSubFormDTO?.subFormId ||
       ''
     ).toUpperCase();
     const formUrl =
+      validationResult?.formUrl ||
+      validationResult?.url ||
+      validationResult?.codeSubFormDTO?.formUrl ||
       row?.formUrl ||
       row?.codeSubFormDTO?.formUrl ||
       row?.yatClaimDTO?.codeSubFormDTO?.formUrl ||
       '';
-    const claimId = row?.claimId || row?.yatClaimDTO?.claimId || row?.id || '';
     const route = this.getClaimFormRoute(subFormId, formUrl);
     if (!route) {
       this.$common.showMessage(
@@ -81,6 +109,34 @@ export class ClaimNewComponent implements OnInit {
       queryParams: {
         claimId,
         subFormId,
+      },
+    });
+  }
+
+  deleteClaim(row: any): void {
+    const claimId = row?.claimId || row?.yatClaimDTO?.claimId || row?.id || '';
+    if (!claimId || this.deleteLoadingMap[claimId]) {
+      return;
+    }
+
+    this.deleteLoadingMap[claimId] = true;
+    this.$claim.deleteClaim({ headers: { ids: [String(claimId)] } }).subscribe({
+      next: (res: any) => {
+        this.deleteLoadingMap[claimId] = false;
+        if (!res?.status) {
+          this.$common.showMessage(res?.message || 'Unable to delete claim.', 'danger');
+          return;
+        }
+
+        this.dataList = this.dataList.filter(
+          (item: any) => (item?.claimId || item?.yatClaimDTO?.claimId || item?.id) != claimId
+        );
+        this.$claim.notifyStatusCountRefresh();
+        this.$common.showMessage(res?.message || 'Claim deleted successfully.', 'success');
+      },
+      error: () => {
+        this.deleteLoadingMap[claimId] = false;
+        this.$common.showMessage('Something went wrong while deleting claim.', 'danger');
       },
     });
   }
@@ -102,7 +158,7 @@ export class ClaimNewComponent implements OnInit {
 
     const id = (subFormId || '').toUpperCase();
     if (id === 'P' || id === 'PMT' || id === 'PMTA' || id === 'PMTCLM') return 'form-pmt-duty-claim';
-    if (id === 'T' || id === 'TY' || id === 'TYA' || id === 'TYCLM') return 'form-ty-duty-claim';
+    if (id === 'T' || id === 'TY' || id === 'TYA' || id === 'TYD' || id === 'TYCLM') return 'form-ty-duty-claim';
     if (id === 'F' || id === 'FTE' || id === 'FTEA' || id === 'FTECLM') return 'form-fte-claim';
     if (id === 'L' || id === 'LTC' || id === 'LTCA' || id === 'LTCCLM') return 'form-ltc-claim';
     if (id === 'R' || id === 'RS' || id === 'RES' || id === 'RESCLM') return 'form-resettlement-claim';

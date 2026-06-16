@@ -29,13 +29,19 @@ export class ClaimFormShellComponent implements OnInit {
 
   openVoucher(): void {
     this.router.navigate([`${this.$auth.getModuleName()}/preview-voucher`], {
-      queryParams: { claimId: this.claimId },
+      queryParams: {
+        claimId: this.claimId,
+        ...(this.subFormId ? { subFormId: this.subFormId } : {}),
+      },
     });
   }
 
   openMovement(): void {
     this.router.navigate([`${this.$auth.getModuleName()}/movement-update-claim`], {
-      queryParams: { claimId: this.claimId },
+      queryParams: {
+        claimId: this.claimId,
+        ...(this.subFormId ? { subFormId: this.subFormId } : {}),
+      },
     });
   }
 }

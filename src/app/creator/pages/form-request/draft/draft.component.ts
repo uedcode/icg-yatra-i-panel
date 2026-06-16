@@ -62,7 +62,7 @@ filterDataObj
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
         claimState: this.codeStatus?.draft,
         isArchive: '0',
         formId,
@@ -131,6 +131,7 @@ filterDataObj
               (elem: any) =>
                 (elem?.yatClaimDTO?.claimId || elem?.claimId || elem?.formId || elem?.id) != claimId
             );
+            this.$claim.notifyStatusCountRefresh();
           }
           this.rowId = null;
           $('#delete_modal').modal('hide');
@@ -154,6 +155,7 @@ filterDataObj
         if (response.status === true) {
           this.$common.showMessage(`${response.message}`);
           this.dataList = this.dataList.filter((elem) => elem.formId != id);
+          this.$claim.notifyStatusCountRefresh();
         }
         $('#delete_modal').modal('hide');
       },
@@ -185,10 +187,10 @@ filterDataObj
 
   private getCreatorClaimRoute(subFormId: string | null): string | null {
     const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT') return 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY') return 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE') return 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC') return 'form-ltc-claim';
+    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return 'form-pmt-duty-claim';
+    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return 'form-ty-duty-claim';
+    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return 'form-fte-claim';
+    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return 'form-ltc-claim';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return 'form-resettlement-claim';
     if (id === 'P') return 'form-pmt';
     if (id === 'T') return 'form-tyduty';
@@ -220,11 +222,16 @@ filterDataObj
       return;
     }
 
-    let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(
-      moduleUrl +
-      `/${data?.formUrl}?id=${data.formId}&subFormId=${data.subFormId}`
-    );
+    const legacyFormUrl =
+      claim?.codeSubFormDTO?.formUrl ||
+      data?.codeSubFormDTO?.formUrl ||
+      data?.formUrl;
+    const legacyFormId = claimId || claim?.formId || data?.formId || data?.id;
+    if (legacyFormUrl && legacyFormId) {
+      this.router.navigateByUrl(
+        this.$auth.getModuleName() + `/${legacyFormUrl}?id=${legacyFormId}`
+      );
+    }
   }
 
   setDeleteTarget(data: any) {

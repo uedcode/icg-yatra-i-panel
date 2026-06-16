@@ -35,10 +35,12 @@ describe('HeaderComponent', () => {
     authService.getUserDetails.and.returnValue({
       userId: 'USR-1',
       roleId: 'ROLE-1',
+      roleTypeId: 'CR',
       formId: 'FORM-1',
       personName: 'Test User',
       roleName: 'Creator'
     } as any);
+    authService.getRuntimeModuleId = jasmine.createSpy().and.returnValue('ADV');
     userService.roles.and.returnValue(
       of({ status: true, object: [{ id: 'R1', roleName: 'Approver' }] }) as any
     );
@@ -76,7 +78,7 @@ describe('HeaderComponent', () => {
       headers: {
         userId: 'USR-1',
         roleId: 'ROLE-1',
-        formId: 'FORM-1'
+        moduleId: 'ADV'
       }
     });
     expect(component.dataList).toEqual([{ id: 'R1', roleName: 'Approver' }]);
@@ -106,6 +108,17 @@ describe('HeaderComponent', () => {
   it('should return roleId fallback from getRoleId helper', () => {
     expect(component.getRoleId({ roleId: 'ROLE-2', id: 'ROW-2' })).toBe('ROLE-2');
     expect(component.getRoleId({ id: 'ROW-3' })).toBe('ROW-3');
+  });
+
+  it('should hide current role by legacy roleTypeId comparison', () => {
+    expect(component.isCurrentRole({
+      roleId: 'ROLE-2',
+      aclCodeRoleTypeDTO: { roleTypeId: 'CR' }
+    })).toBeTrue();
+    expect(component.isCurrentRole({
+      roleId: 'ROLE-2',
+      aclCodeRoleTypeDTO: { roleTypeId: 'AP' }
+    })).toBeFalse();
   });
 });
 

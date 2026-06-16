@@ -12,6 +12,7 @@ import { CommonService } from 'src/app/service/core/common.service';
 })
 export class FormManualAdvComponent implements OnInit {
   claimId = '';
+  resubClaimId = '';
   disableBtn = false;
   isEdit = false;
 
@@ -64,7 +65,8 @@ export class FormManualAdvComponent implements OnInit {
       };
     }
     this.route.queryParamMap.subscribe((params) => {
-      this.claimId = params.get('id') || '';
+      this.claimId = params.get('id') || params.get('claimId') || params.get('resubId') || '';
+      this.resubClaimId = params.get('resubId') || '';
       this.isEdit = !!this.claimId;
       if (this.isEdit) {
         this.loadExisting();
@@ -131,6 +133,7 @@ export class FormManualAdvComponent implements OnInit {
 
     const req: any = this.$auth.getFormDetails(this.codeClaim.manualAdv, status);
     req.claimId = this.claimId || '';
+    if (this.resubClaimId) req.refAdvanceId = this.resubClaimId;
     req.codeSubFormDTO = { subFormId: this.codeClaim.manualAdv };
     req.occDate = Date.now();
 

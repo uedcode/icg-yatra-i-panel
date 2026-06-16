@@ -37,10 +37,14 @@ export class PayInboxComponent implements OnInit {
     const config = {
       headers: {
         roleTypeId: this.userIdDetails?.roleTypeId,
-        userId: this.userIdDetails?.userId,
-        unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        userId: '',
+        unitId: '',
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
         state: this.codeStatus?.inbox,
+        isArchive: '0',
+        formId: '',
+        pno: '',
+        searchedName: '',
       },
     };
     this.$claim.getPayStates(config).subscribe((res: any) => {
@@ -56,7 +60,7 @@ export class PayInboxComponent implements OnInit {
     const payId = row?.yatPayDetailsDTO?.id || row?.id;
     if (!payId) return;
     this.router.navigateByUrl(
-      `${this.$auth.getModuleName()}/form-pay-detail?id=${payId}&mode=action`
+      `${this.$auth.getModuleName()}/form-pay-details?id=${payId}&mode=action`
     );
   }
 

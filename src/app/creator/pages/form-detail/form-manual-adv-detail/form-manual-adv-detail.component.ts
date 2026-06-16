@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
@@ -12,22 +13,31 @@ import { CommonService } from 'src/app/service/core/common.service';
 export class FormManualAdvDetailComponent implements OnInit {
   claim: any = {};
   manual: any = {};
+  userIdDetails: any;
 
   constructor(
     private route: ActivatedRoute,
+    public $auth: AuthService,
     private $claim: ClaimService,
     private $common: CommonService
   ) {}
 
   ngOnInit(): void {
+    this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.route.queryParamMap.subscribe((params) => {
-      const claimId = params.get('id') || '';
+      const claimId =
+        params.get('claimId') ||
+        params.get('id') ||
+        params.get('formId') ||
+        params.get('supId') ||
+        '';
       if (!claimId) return;
       const config = {
         headers: {
           claimId,
           subFormId: 'M',
-          isPreview: '1',
+          isPreview: 'true',
+          userId: this.userIdDetails?.userId ?? '',
         },
       };
       this.$common.showLoader();

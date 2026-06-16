@@ -26,9 +26,10 @@
           [(ngModel)]="movement.claimMode"
           name="claimMode"
           (ngModelChange)="onClaimModeChange()"
+          [disabled]="movement.claimMode === yatTravelMode.yatra"
         >
           <option [ngValue]="null" disabled>Select Mode Type</option>
-          <option *ngFor="let option of modeOptions" [ngValue]="option.id">
+          <option *ngFor="let option of visibleModeOptions" [ngValue]="option.id">
             {{ option.label }}
           </option>
         </select>
@@ -41,6 +42,7 @@
           [(ngModel)]="movement.subFormId"
           name="subFormId"
           (ngModelChange)="onPurposeChange()"
+          [disabled]="movement.claimMode === yatTravelMode.yatra"
         >
           <option [ngValue]="null" disabled>Select Purpose Type</option>
           <option *ngFor="let option of purposeOptions" [ngValue]="option.id">

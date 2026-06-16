@@ -25,19 +25,23 @@ export class FormPmtDetailComponent implements OnInit {
   formObj: any = {};
   claimId: string | null = null;
   subFormId: string = 'P';
+  supplementaryId: string | null = null;
+  userIdDetails: any;
   documentDtos: any[] = [];
   today: string | null = null;
 
   ngOnInit() {
+    this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.today = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
-    this.subFormId = this.normalizeSubFormId(this.route.snapshot.data?.['subFormId']);
     this.previewKind =
       String(this.route.snapshot.data?.['previewKind'] || '').toLowerCase() === 'claim'
         ? 'claim'
         : 'advance';
+    this.subFormId = this.normalizeSubFormId(this.route.snapshot.data?.['subFormId']);
     this.route.queryParams.subscribe((params) => {
       this.claimId =
         params?.claimId || params?.id || params?.formId || params?.supId || null;
+      this.supplementaryId = params?.supId || null;
       this.subFormId = this.normalizeSubFormId(params?.subFormId || this.subFormId);
       this.getClaimDetails();
     });
@@ -54,8 +58,12 @@ export class FormPmtDetailComponent implements OnInit {
         claimId: this.claimId,
         subFormId: this.subFormId,
         isPreview: 'true',
+        userId: this.userIdDetails?.userId ?? '',
       },
     };
+    if (this.supplementaryId) {
+      (config.headers as any).supCLaimId = this.supplementaryId;
+    }
 
     this.$common.showLoader();
     this.$claim.getSingleClaim(config).subscribe({
@@ -97,7 +105,8 @@ export class FormPmtDetailComponent implements OnInit {
 
   private normalizeSubFormId(subFormId: any): string {
     const id = String(subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT') return 'P';
+    if (id === 'PMT' || id === 'PMTCLM') return this.previewKind === 'claim' ? 'PMT' : 'P';
+    if (id === 'PMTA') return 'P';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return 'RS';
     return 'P';
   }
@@ -114,7 +123,8 @@ export class FormPmtDetailComponent implements OnInit {
   }
 
   get detailHeading(): string {
-    return this.isResettlementSubForm() ? 'Resettlement Details' : 'PMT Advance Details';
+    if (this.isResettlementSubForm()) return 'Resettlement Details';
+    return this.previewKind === 'claim' ? 'PMT Claim Details' : 'PMT Advance Details';
   }
 
   private getPreviewDisplayName(): string {

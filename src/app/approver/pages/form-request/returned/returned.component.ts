@@ -65,7 +65,7 @@ export class ReturnedComponent implements OnInit {
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
         claimState: this.queueState,
         formId: this.resolveQueueFormId(),
       },

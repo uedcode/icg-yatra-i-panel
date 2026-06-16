@@ -21,6 +21,7 @@ export class ClaimInboxComponent implements OnInit {
  
   codeStatus: { activate: string; deactivate: string; pending: string; approved: string; rejected: string; success: string; processing: string; cancel: string; outbox: string; draft: string; inbox:string; };
   userIdDetails: any;
+  roleCodes: any;
   constructor(
     private location: Location,
     public $auth: AuthService,
@@ -47,6 +48,7 @@ export class ClaimInboxComponent implements OnInit {
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
+    this.roleCodes = this.$auth.codeRoleType();
     const routeData = this.route.snapshot?.data || {};
     this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
     this.handleEsignFeedback();
@@ -109,6 +111,9 @@ export class ClaimInboxComponent implements OnInit {
   }
 
   viewForm(data) {
+    if (!this.canViewRow(data)) {
+      return;
+    }
     const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
       data,
       data?.claimState || this.codeStatus?.inbox,
@@ -117,6 +122,22 @@ export class ClaimInboxComponent implements OnInit {
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
     }
+  }
+
+  isVerifier1(): boolean {
+    return this.userIdDetails?.roleTypeId === this.roleCodes?.verifier1;
+  }
+
+  canViewRow(data: any): boolean {
+    return String(data?.viewIndicator || '') === '1';
+  }
+
+  showDisabledView(data: any): boolean {
+    return String(data?.viewIndicator || '') === '0';
+  }
+
+  canShowViewHistory(data: any): boolean {
+    return !this.$auth.isNullOrEmpty(data?.yatClaimDTO?.initClaimId);
   }
 
   goBack() {

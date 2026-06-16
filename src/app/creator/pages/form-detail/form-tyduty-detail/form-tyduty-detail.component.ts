@@ -24,13 +24,18 @@ export class FormTydutyDetailComponent implements OnInit {
   formObj: any = {};
   claimId: string | null = null;
   subFormId: string = 'T';
+  supplementaryId: string | null = null;
+  userIdDetails: any;
   documentDtos: any[] = [];
 
   ngOnInit() {
+    this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
+    this.subFormId = this.normalizeSubFormId(this.route.snapshot.data?.['subFormId']);
     this.route.queryParams.subscribe((params) => {
       this.claimId =
         params?.claimId || params?.id || params?.formId || params?.supId || null;
-      this.subFormId = this.normalizeSubFormId(params?.subFormId);
+      this.supplementaryId = params?.supId || null;
+      this.subFormId = this.normalizeSubFormId(params?.subFormId || this.subFormId);
       this.getClaimDetails();
     });
   }
@@ -46,8 +51,12 @@ export class FormTydutyDetailComponent implements OnInit {
         claimId: this.claimId,
         subFormId: this.subFormId,
         isPreview: 'true',
+        userId: this.userIdDetails?.userId ?? '',
       },
     };
+    if (this.supplementaryId) {
+      (config.headers as any).supCLaimId = this.supplementaryId;
+    }
 
     this.$common.showLoader();
     this.$claim.getSingleClaim(config).subscribe({
@@ -87,12 +96,21 @@ export class FormTydutyDetailComponent implements OnInit {
     return value === null || value === undefined || value === '' ? '-' : value;
   }
 
+  get previewHeading(): string {
+    return this.subFormId === 'TYD' ? 'TY Duty Claim Preview' : 'TY Duty Advance Preview';
+  }
+
+  get detailHeading(): string {
+    return this.subFormId === 'TYD' ? 'TY Duty Claim Details' : 'TY Duty Advance Details';
+  }
+
   goBack() {
     this.location.back();
   }
 
   private normalizeSubFormId(subFormId: any): string {
     const id = String(subFormId || '').toUpperCase();
+    if (id === 'TYD' || id === 'TYC' || id === 'TYCLM') return 'TYD';
     if (id === 'TYA' || id === 'TY') return 'T';
     return 'T';
   }

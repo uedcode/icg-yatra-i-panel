@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
-import { Router } from '@angular/router';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({
@@ -23,7 +22,6 @@ export class PayOutboxComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $claim: ClaimService,
-    private router: Router,
     private $common: CommonService
   ) {}
 
@@ -38,20 +36,18 @@ export class PayOutboxComponent implements OnInit {
       headers: {
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
-        unitId: this.userIdDetails?.unitId,
-        gxUnitId: this.userIdDetails?.unitId,
+        unitId: '',
+        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
         state: this.codeStatus?.outbox,
+        isArchive: '0',
+        formId: '',
+        pno: '',
+        searchedName: '',
       },
     };
     this.$claim.getPayStates(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
-  }
-
-  viewForm(row: any): void {
-    const payId = row?.yatPayDetailsDTO?.id || row?.id;
-    if (!payId) return;
-    this.router.navigateByUrl(`${this.$auth.getModuleName()}/form-pay-details?id=${payId}`);
   }
 
   downloadDocument(row: any): void {
