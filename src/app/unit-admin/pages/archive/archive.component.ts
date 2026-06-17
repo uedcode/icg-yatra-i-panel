@@ -18,13 +18,13 @@ export class ArchiveComponent implements OnInit {
   searchObj: any;
   noOfPage: any = 10;
   p: any = 1;
-  key: string = 'pno';
+  key = 'pno';
   reverse = false;
 
   constructor(
     private location: Location,
     public $auth: AuthService,
-    private $common: CommonService,
+    public $common: CommonService,
     private $systemAdmin: SystemAdminService
   ) {}
 
@@ -40,15 +40,14 @@ export class ArchiveComponent implements OnInit {
       const config = {
         headers: {
           unitId: this.userIdDetails?.unitId,
+          verAppIndicator: '1',
+          isArchive: '1',
         },
       };
       this.$systemAdmin.getUnitAdminRoles(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
-          const allRows = Array.isArray(response?.object) ? response.object : [];
-          this.dataList = allRows.filter(
-            (row: any) => row?.aclCodeStatusDTO?.statusId === this.codeStatusList?.deactivate
-          );
+          this.dataList = response?.status === true && Array.isArray(response?.object) ? response.object : [];
         },
         () => {
           this.$common.hideLoader();
@@ -61,25 +60,25 @@ export class ArchiveComponent implements OnInit {
     }
   }
 
-  openChangeStatusModal(data: any, statusCode: string): void {
-    this.tempObj = { ...data };
-    this.tempObj.currentStatus = statusCode;
+  openChangeStatusModal(data: any): void {
+    this.tempObj = { ...data, isArchive: '0' };
   }
 
-  changeStatus(tempObj: any): void {
+  changeStatusArchive(tempObj = this.tempObj): void {
     try {
+      const roleId = this.getRoleId(tempObj);
       const config = {
         headers: {
-          roleId: this.getRoleId(tempObj),
-          statusId: tempObj.currentStatus,
+          ids: roleId,
+          isArchive: tempObj?.isArchive || '0',
         },
       };
-      this.$systemAdmin.changeStatus(config).subscribe(
+      this.$systemAdmin.changeStatusArchive(config).subscribe(
         (response: any) => {
           if (response?.status === true) {
             this.$common.showMessage(`${response.message}`);
             this.dataList = this.dataList.filter(
-              (row: any) => this.getRoleId(row) !== this.getRoleId(tempObj)
+              (row: any) => this.getRoleId(row) !== roleId
             );
           }
         },
@@ -109,5 +108,37 @@ export class ArchiveComponent implements OnInit {
   getRoleId(dataObj: any): any {
     return dataObj?.roleId || dataObj?.id;
   }
-}
 
+  getUserName(dataObj: any): string {
+    return dataObj?.aclUserDTO?.name || dataObj?.name || dataObj?.nameDescr || dataObj?.nameShort || '';
+  }
+
+  getUserPno(dataObj: any): string {
+    const nested = dataObj?.aclUserDTO?.pno;
+    if (nested) return nested;
+    if (dataObj?.pno && dataObj?.suf) return `${dataObj.pno}-${dataObj.suf}`;
+    return dataObj?.pno || dataObj?.pNo || '';
+  }
+
+  getUserPhone(dataObj: any): string {
+    return dataObj?.aclUserDTO?.phone || dataObj?.phone || dataObj?.mobileNo || '';
+  }
+
+  getUserRank(dataObj: any): string {
+    return dataObj?.aclUserDTO?.rank || dataObj?.rank || dataObj?.rankDescr || '';
+  }
+
+  getStatusLabel(dataObj: any): string {
+    const statusId = dataObj?.aclCodeStatusDTO?.statusId;
+    if (statusId === this.codeStatusList?.activate) return 'Activated';
+    if (statusId === this.codeStatusList?.deactivate) return 'Deactivated';
+    return '-';
+  }
+
+  viewAuthDoc(dataObj: any) {
+    const url = dataObj?.authDocUrl;
+    if (url) {
+      this.$auth.viewFile(url);
+    }
+  }
+}

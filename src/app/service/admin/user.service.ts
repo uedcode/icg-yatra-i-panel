@@ -58,5 +58,23 @@ export class UserService {
       })
     );
   }
+
+  getAll(config) {
+    return this.http.get<any>(`user/all`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  getSingle(config) {
+    return this.http.get<any>(`user/single`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
 }
 

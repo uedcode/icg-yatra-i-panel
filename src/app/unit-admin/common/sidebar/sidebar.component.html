@@ -15,18 +15,19 @@
   <ul class="side-menu sidebar_page_scroll">
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['unit-admin']"><i class="side-menu__icon fa fa-user"></i><span
+        [routerLink]="['manage-unit-admin']"><i class="side-menu__icon fa fa-user"></i><span
           class="side-menu__label">Manage Unit Admin </span></a>
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
-        [routerLink]="['role']"><i class="side-menu__icon fa fa-users"></i><span
+        [routerLink]="['manage-role']"><i class="side-menu__icon fa fa-users"></i><span
           class="side-menu__label">Manage Role </span></a>
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
         [routerLink]="['archive']"><i class="side-menu__icon fa fa-archive"></i><span
-          class="side-menu__label">Archive </span></a>
+          class="side-menu__label">Archive </span>
+        <span class="badge" *ngIf="archiveCount != 0">{{archiveCount}}</span></a>
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"

@@ -1,5 +1,6 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
 
 declare var $: any;
 
@@ -11,15 +12,17 @@ declare var $: any;
 })
 export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   submenuShow: boolean = false;
-  constructor(public $auth: AuthService) {}
+  constructor(public $auth: AuthService, private $systemAdmin: SystemAdminService) {}
 
   userIdDetails;
   codeRoleList;
+  archiveCount = 0;
 
   ngOnInit(): void {
     
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeRoleList = this.$auth.codeRoleType();
+    this.getArchiveCount();
   }
   ngAfterViewInit(): void {
     this.sidebarDropdown();
@@ -48,5 +51,30 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   openUserManualModal() {
     $("#user_manual_modal").modal('show');
+  }
+
+  getArchiveCount(): void {
+    const unitId = this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId || '';
+    if (!unitId) {
+      this.archiveCount = 0;
+      return;
+    }
+
+    const config = {
+      headers: {
+        unitId,
+        verAppIndicator: '1',
+        isArchive: '1'
+      }
+    };
+
+    this.$systemAdmin.getUnitAdminRoles(config).subscribe(
+      (response: any) => {
+        this.archiveCount = response?.status === true ? (response.object || []).length : 0;
+      },
+      () => {
+        this.archiveCount = 0;
+      }
+    );
   }
 }

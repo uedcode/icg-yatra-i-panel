@@ -16,7 +16,7 @@ import { ManagePaylevelTransactionComponent } from './pages/manage-paylevel-tran
 
 const UNIT_ADMIN_ROLES = ['UN'];
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: UnitAdminComponent,
@@ -35,10 +35,22 @@ const routes: Routes = [
         data: { title: 'Role', roles: UNIT_ADMIN_ROLES },
       },
       {
+        path: 'manage-role',
+        component: RoleComponent,
+        canActivate: [AuthGuard],
+        data: { title: 'Manage Role', roles: UNIT_ADMIN_ROLES },
+      },
+      {
         path: 'unit-admin',
         component: UnitAdminRoleComponent,
         canActivate: [AuthGuard],
         data: { title: 'Unit Admin', roles: UNIT_ADMIN_ROLES },
+      },
+      {
+        path: 'manage-unit-admin',
+        component: UnitAdminRoleComponent,
+        canActivate: [AuthGuard],
+        data: { title: 'Manage Unit Admin', roles: UNIT_ADMIN_ROLES },
       },
       {
         path: 'archive',

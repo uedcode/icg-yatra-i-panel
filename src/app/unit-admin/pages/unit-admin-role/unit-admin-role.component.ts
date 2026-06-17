@@ -4,102 +4,80 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ActivatedRoute } from '@angular/router';
 import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
-import { MappingService } from 'src/app/service/admin/mapping.service';
 import { UserService } from 'src/app/service/admin/user.service';
-import { DropdownService } from 'src/app/service/form/dropdown.service';
-declare var $: any;
 
 @Component({
-    selector: 'app-unit-admin-role',
-    templateUrl: './unit-admin-role.component.html',
-    styleUrls: ['./unit-admin-role.component.css'],
-    standalone: false
+  selector: 'app-unit-admin-role',
+  templateUrl: './unit-admin-role.component.html',
+  styleUrls: ['./unit-admin-role.component.css'],
+  standalone: false
 })
 export class UnitAdminRoleComponent implements OnInit {
-
   constructor(
     private location: Location,
     public $auth: AuthService,
-    private $common: CommonService,
+    public $common: CommonService,
     private $systemAdmin: SystemAdminService,
-    private $dropdown: DropdownService,
     private $user: UserService
   ) { }
 
   @Input() dataList: Array<any> = [];
   @ViewChild('requiredForm', { static: true }) requiredForm: NgForm;
 
-  id: any;
-  pageType: any;
   searchObj: any;
   config: any;
   userObj: any = {};
   noOfPage: any = 10;
   p: any = 1;
-  disableBtn: boolean = true;
+  disableBtn = true;
 
-  userGroupId: any;
-  userIdDetails;
-  codeRoleList;
-  roleType;
+  userIdDetails: any;
+  codeRoleList: any;
+  codeStatusList: any;
   formObj: any = {};
-  codeStatusList;
-  roleList: any = [];
-  desigList: any = [];
-  selecteType: any = [
-    {
-      "id": "NO",
-      "descr": "Navigating Officer"
-    },
-    {
-      "id": "CO",
-      "descr": "Commanding Officer"
-    }
-  ];
-  ngOnInit(): void {
+  userList: any[] = [];
+  authDocFile: File | null = null;
+  tempObj: any;
+  key = 'descr';
+  reverse = false;
 
+  cadreList = [
+    { id: 'OP', descr: 'Officer' },
+    { id: 'EP', descr: 'Enrolled Personnel' },
+    { id: 'CP', descr: 'Civilian Staff' }
+  ];
+
+  ngOnInit(): void {
     this.codeRoleList = this.$auth.codeRoleType();
     this.codeStatusList = this.$auth.codeStatus();
     this.userIdDetails = this.$auth.getUserDetails();
     this.reset();
     this.getAll();
-    this.getRoleTypeList();
-    this.getDesignationList();
   }
 
-  getDetails(formObj = null) {
+  loadUsersForCadre() {
     try {
-      // if (!this.formObj?.role) {
-      //   return this.$common.showMessage('Please select Role', 'danger');
-      // } 
-      if (!this.formObj?.pno) {
-        return this.$common.showMessage('Please Enter PNO', 'danger');
+      if (!this.formObj?.cadre) {
+        this.userList = [];
+        this.clearSelectedUser();
+        return;
       }
       this.$common.showLoader();
       this.config = {
-        headers: {},
+        headers: {
+          unitId: this.userIdDetails?.unitId,
+          cadre: this.formObj?.cadre
+        },
       };
-      if (formObj) {
-        // if (formObj?.codeHrUnit) {
-        //   this.config.headers.unit = formObj?.codeHrUnit;
-        // }
-        if (formObj?.pno) {
-          this.config.headers.pNo = formObj?.pno;
-        }
-      }
-      this.$user.getUserByPno(this.config).subscribe(
+      this.$user.getAll(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status == true) {
-            this.$common.showMessage(response.message);
-            this.userObj = response.object[0];
-            this.disableBtn = false;
-            // this.getAll();
+            this.userList = this.normalizeUserList(response.object || []);
           }
         },
-        (err) => {
+        () => {
           this.$common.hideLoader();
         }
       );
@@ -109,49 +87,102 @@ export class UnitAdminRoleComponent implements OnInit {
     }
   }
 
-  doSearch() {
-    this.getDetails(this.formObj);
+  onCadreChange() {
+    this.clearSelectedUser();
+    this.loadUsersForCadre();
   }
-  pnoReset() {
-    this.formObj = {};
+
+  onUserChange(userId: string) {
+    if (!userId) {
+      this.clearSelectedUser(false);
+      return;
+    }
+    try {
+      this.$common.showLoader();
+      this.config = {
+        headers: {
+          userId
+        },
+      };
+      this.$user.getSingle(this.config).subscribe(
+        (response: any) => {
+          this.$common.hideLoader();
+          if (response.status == true) {
+            this.userObj = this.normalizeUserOption(response.object?.[0] || this.findUserById(userId) || {});
+            this.formObj.pno = this.getUserPno(this.userObj);
+            this.disableBtn = false;
+          }
+        },
+        () => {
+          this.$common.hideLoader();
+        }
+      );
+    } catch (error) {
+      this.$common.hideLoader();
+      console.log(error);
+    }
+  }
+
+  clearSelectedUser(clearUserId = true) {
+    if (clearUserId) {
+      this.formObj.userId = '';
+    }
+    this.formObj.pno = '';
+    this.userObj = {};
+    this.disableBtn = true;
   }
 
   reset() {
-    // this.requiredForm.resetForm();
-    // Manually reset userObj since some fields are disabled and won't be reset automatically
+    this.formObj = {
+      codeUnit: this.userIdDetails?.unitId || '',
+      cadre: '',
+      userId: '',
+      pno: '',
+      authNo: '',
+      authDate: '',
+      fromDateTime: ''
+    };
+    this.userList = [];
     this.userObj = {};
+    this.authDocFile = null;
+    this.disableBtn = true;
+    this.requiredForm?.resetForm(this.formObj);
   }
-
 
   saveRecord() {
     try {
+      const validationMessage = this.validateSave();
+      if (validationMessage) {
+        return this.$common.showMessage(validationMessage, 'danger');
+      }
+
       this.$common.showLoader();
-      let req = {
-        "aclCodeRoleTypeDTO": {
-          "id": 'UN'
+      const req = {
+        aclCodeRoleTypeDTO: {
+          roleTypeId: this.codeRoleList?.unitAdmin || 'UN'
         },
-        "aclCodeStatusDTO": {
-          "statusId": "AC"
+        aclCodeStatusDTO: {
+          statusId: this.codeStatusList?.activate || 'AC'
         },
-        "aclUserDTO": {
-          "userId": this.userObj?.pid
+        aclUserDTO: {
+          userId: this.getSelectedUserId(),
+          cadre: this.formObj?.cadre
         },
-        "codeUnitDTO": {
-          "unit": this.userIdDetails?.unitId
+        codeUnitDTO: {
+          unit: this.userIdDetails?.unitId
         },
-        name: this.userObj?.nameDescr,
-        rank: this.userObj?.rankDescr,
-        pno: this.userObj?.pno + '-' + this.userObj?.suf,
+        roleName: 'Unit Admin',
+        authNo: this.formObj?.authNo,
+        authDate: this.toMillis(this.formObj?.authDate),
+        fromDateTime: this.toMillis(this.formObj?.fromDateTime),
       };
 
-      this.$systemAdmin.createOrUpdate(req).subscribe(
-        (response) => {
+      const formData = this.buildRoleFormData(req);
+      this.$systemAdmin.createOrUpdate(formData).subscribe(
+        (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
             this.$common.showMessage(`${response.message}`);
-            let object = response.object[0];
-            this.dataList.push(object);
-            this.disableBtn = true;
             this.reset();
             this.getAll();
           }
@@ -174,14 +205,16 @@ export class UnitAdminRoleComponent implements OnInit {
       this.config = {
         headers: {
           unitId: this.userIdDetails?.unitId,
-          roleTypeId: 'UN'
+          roleTypeId: this.codeRoleList?.unitAdmin || 'UN',
+          verAppIndicator: '0',
+          isArchive: '0'
         },
       };
       this.$systemAdmin.getAll(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
-            this.dataList = response.object;
+            this.dataList = response.object || [];
           }
         },
         (err) => {
@@ -195,95 +228,71 @@ export class UnitAdminRoleComponent implements OnInit {
     }
   }
 
-  tempObj;
   openChangeStatusModal(data, statusCode) {
-
     this.tempObj = { ...data };
     this.tempObj.currentStatus = statusCode;
   }
 
   changeStatus(tempObj) {
-
     try {
-      // if (tempObj?.id == this.userIdDetails?.roleId) {
-      //   return this.$common.showMessage("You can't Deactivate yourself.", 'danger');
-      // }
-      var config = {
+      const config = {
         headers: {
-          "roleId": this.getRoleId(tempObj),
-          "statusId": tempObj.currentStatus,
+          roleId: this.getRoleId(tempObj),
+          statusId: tempObj.currentStatus,
         }
-      }
-      this.$systemAdmin.changeStatus(config).subscribe(response => {
+      };
+      this.$systemAdmin.changeStatus(config).subscribe((response: any) => {
         if (response.status === true) {
-          tempObj.aclCodeStatusDTO.statusId = tempObj.currentStatus;
+          this.updateRowStatus(tempObj);
           this.$common.showMessage(`${response.message}`);
         }
-      }, err => {
+      }, () => {
         this.$common.hideLoader();
-      })
+      });
     } catch (error) {
       this.$common.hideLoader();
       console.log(error);
     }
   }
 
-  // get list of code role type
-  getRoleTypeList() {
-    try {
+  onAuthDocSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+    if (file && file.type !== 'application/pdf') {
+      this.$common.showMessage('Please select PDF file', 'danger');
+      input.value = '';
+      this.authDocFile = null;
+      return;
+    }
+    this.authDocFile = file;
+  }
 
-      this.$common.showLoader();
-      this.config = {
-        headers: {
-          visibilityIndicator: '1'
-        },
-      };
-      this.$dropdown.getCodeRoleType(this.config).subscribe(
-        (response: any) => {
-          this.$common.hideLoader();
-          if (response.status === true) {
-            let list = response.object;
-            this.roleList = list;
-          }
-        },
-        (err) => {
-          this.$common.hideLoader();
-          console.log(err);
-        }
-      );
-    } catch (error) {
-      this.$common.hideLoader();
-      console.log(error);
+  viewAuthDoc(dataObj: any) {
+    const url = dataObj?.authDocUrl;
+    if (url) {
+      this.$auth.viewFile(url);
     }
   }
 
-  // get list of code designation type
-  getDesignationList() {
-    try {
+  validateSave(): string {
+    if (!this.formObj?.cadre) return 'Please Select Cadre';
+    if (!this.getSelectedUserId()) return 'Please Select User';
+    if (!this.formObj?.authNo) return 'Please Enter Authorization No';
+    if (!this.formObj?.authDate) return 'Please Select Authorization Date';
+    if (!this.authDocFile) return 'Please Select Scanned copy of Authorization';
+    if (!this.formObj?.fromDateTime) return 'Please Select From Date and Time';
+    const duplicate = this.dataList.some((row: any) => row?.aclUserDTO?.userId === this.getSelectedUserId());
+    if (duplicate) return 'User already exist as Unit Admin';
+    return '';
+  }
 
-      this.$common.showLoader();
-      this.config = {
-        headers: {
-          visibilityIndicator: '1'
-        },
-      };
-      this.$dropdown.getCodeDesignation(this.config).subscribe(
-        (response: any) => {
-          this.$common.hideLoader();
-          if (response.status === true) {
-            let list = response.object;
-            this.desigList = list;
-          }
-        },
-        (err) => {
-          this.$common.hideLoader();
-          console.log(err);
-        }
-      );
-    } catch (error) {
-      this.$common.hideLoader();
-      console.log(error);
+  buildRoleFormData(req: any): FormData {
+    const formData = new FormData();
+    formData.append('aclRoleDTO', JSON.stringify(req));
+    if (this.authDocFile) {
+      formData.append('authDocUrl', this.authDocFile);
     }
+    return formData;
   }
 
   goBack() {
@@ -295,9 +304,6 @@ export class UnitAdminRoleComponent implements OnInit {
     }
   }
 
-  // data shorting starts
-  key: string = 'descr';
-  reverse: boolean = false;
   sort(key) {
     this.key = key;
     this.reverse = !this.reverse;
@@ -306,6 +312,75 @@ export class UnitAdminRoleComponent implements OnInit {
   getRoleId(dataObj: any) {
     return dataObj?.roleId || dataObj?.id;
   }
-  // data shorting ends
-}
 
+  getSelectedUserId(): string {
+    return this.formObj?.userId || this.userObj?.selectId || this.userObj?.userId || this.userObj?.pid || this.userObj?.id || '';
+  }
+
+  getUserName(dataObj: any): string {
+    return dataObj?.aclUserDTO?.name || dataObj?.name || dataObj?.nameDescr || dataObj?.nameShort || '';
+  }
+
+  getUserPno(dataObj: any): string {
+    const nested = dataObj?.aclUserDTO?.pno;
+    if (nested) return nested;
+    if (dataObj?.pno && dataObj?.suf) return `${dataObj.pno}-${dataObj.suf}`;
+    return dataObj?.pno || dataObj?.pNo || '';
+  }
+
+  getUserPhone(dataObj: any): string {
+    return dataObj?.aclUserDTO?.phone || dataObj?.phone || dataObj?.mobileNo || '';
+  }
+
+  getUserRank(dataObj: any): string {
+    return dataObj?.aclUserDTO?.rank || dataObj?.rank || dataObj?.rankDescr || '';
+  }
+
+  getUserOptionLabel(dataObj: any): string {
+    if (dataObj?.selectLabel) return dataObj.selectLabel;
+    const name = this.getUserName(dataObj);
+    const pno = this.getUserPno(dataObj);
+    if (name && pno) return `${name} (${pno})`;
+    return name || pno || this.getSelectedUserId();
+  }
+
+  findUserById(userId: string): any {
+    return (this.userList || []).find((user: any) => {
+      return (user?.selectId || user?.userId || user?.pid || user?.id) === userId;
+    });
+  }
+
+  normalizeUserList(users: any[]): any[] {
+    return (users || []).map((user: any) => this.normalizeUserOption(user));
+  }
+
+  normalizeUserOption(user: any): any {
+    const selectId = user?.userId || user?.pid || user?.id || '';
+    return {
+      ...user,
+      selectId,
+      selectLabel: this.getUserOptionLabel({ ...user, selectId })
+    };
+  }
+
+  toMillis(value: any): number {
+    if (!value) return 0;
+    if (typeof value === 'number') return value;
+    const time = new Date(value).getTime();
+    return Number.isNaN(time) ? 0 : time;
+  }
+
+  updateRowStatus(tempObj: any) {
+    const roleId = this.getRoleId(tempObj);
+    this.dataList = this.dataList.map((row: any) => {
+      if (this.getRoleId(row) !== roleId) return row;
+      return {
+        ...row,
+        aclCodeStatusDTO: {
+          ...(row?.aclCodeStatusDTO || {}),
+          statusId: tempObj.currentStatus
+        }
+      };
+    });
+  }
+}

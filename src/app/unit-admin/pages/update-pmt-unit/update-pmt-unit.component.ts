@@ -22,7 +22,7 @@ export class UpdatePmtUnitComponent implements OnInit {
   pnoList: any[] = [];
   tempObj: any;
   searchObj: any;
-  noOfPage: any = 10;
+  noOfPage: any = 5;
   p: any = 1;
   key = 'codeHrDataDTO.pno';
   reverse = false;

@@ -17,7 +17,7 @@ export class ReportTyDutyComponent implements OnInit {
   dataList: any[] = [];
   tempObj: any;
   searchObj: any;
-  noOfPage: any = 10;
+  noOfPage: any = 5;
   p: any = 1;
   key = 'codeHrDataDTO.pno';
   reverse = false;
@@ -38,7 +38,7 @@ export class ReportTyDutyComponent implements OnInit {
 
   getPnoList(): void {
     const gxUnit = this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId || '';
-    this.$systemAdmin.getPnoList({ headers: { gxUnit } }).subscribe(
+    this.$systemAdmin.getPnoList({ headers: { gxUnit, unit: '' } }).subscribe(
       (response: any) => {
         this.pnoList = Array.isArray(response?.object) ? response.object : [];
       },

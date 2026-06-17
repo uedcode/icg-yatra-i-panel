@@ -102,9 +102,11 @@
                     <div class="dataTables_length">
                       <label>Show</label>
                       <select class="form-control" name="noOfPage" [(ngModel)]="noOfPage" (ngModelChange)="p = 1">
+                        <option value="5">5</option>
                         <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="100000">All</option>
                       </select>
                       <label>entries</label>
                     </div>
@@ -128,7 +130,7 @@
                   <table class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
                     <thead>
                       <tr>
-                        <th>SL</th>
+                        <th>S.No.</th>
                         <th>From Unit <i class="fa fa-sort" (click)="sort('fromUnitDTO.descr')"></i></th>
                         <th>PNO <i class="fa fa-sort" (click)="sort('codeHrDataDTO.pno')"></i></th>
                         <th>Name <i class="fa fa-sort" (click)="sort('codeHrDataDTO.nameDescr')"></i></th>
@@ -158,7 +160,7 @@
                         </td>
                       </tr>
                       <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                        <td colspan="7">No Records Available</td>
+                        <td colspan="7">No Records</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="dataList?.length">
                         <td colspan="7">
@@ -167,12 +169,14 @@
                       </tr>
                     </tbody>
                   </table>
-                </div><app-change-status-modal
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+<app-change-status-modal
   [changeData]="tempObj"
   (changeStatusConfirmed)="changeStatus($event)">
 </app-change-status-modal>
-</div>
-</div>
-</div>
-</div>
 

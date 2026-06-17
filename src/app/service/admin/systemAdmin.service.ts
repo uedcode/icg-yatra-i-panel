@@ -31,8 +31,10 @@ export class SystemAdminService {
   }
 
   createOrUpdate(object) {
-    const formData = new FormData();
-    formData.append('aclRoleDTO', JSON.stringify(object));
+    const formData = object instanceof FormData ? object : new FormData();
+    if (!(object instanceof FormData)) {
+      formData.append('aclRoleDTO', JSON.stringify(object));
+    }
     return this.http.post<any>(`role/createOrUpdate`, formData).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
@@ -52,6 +54,15 @@ export class SystemAdminService {
 
   changeStatus(config) {
     return this.http.put<any>(`role/changeStatus`, null, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  changeStatusArchive(config) {
+    return this.http.put<any>(`role/changeStatusArchive`, null, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;

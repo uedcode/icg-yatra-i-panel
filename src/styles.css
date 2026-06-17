@@ -1734,12 +1734,21 @@ form sup {
   font-weight: 700;
 }
 
-.invalid-msg,
-.required-msg {
+.invalid-msg {
   display: block;
   margin-top: 4px;
   font-size: 0.76rem;
   line-height: 1.3;
+}
+
+sup.required-msg {
+  display: inline;
+  margin-top: 0;
+  margin-left: 2px;
+  color: #a52626;
+  font-size: 0.76rem;
+  line-height: 1;
+  vertical-align: super;
 }
 
 .form_page_btn {
@@ -1774,6 +1783,135 @@ form sup {
   }
 
   .form_page_btn .btn {
+    width: 100%;
+  }
+}
+
+/* Global form/table consistency layer */
+.page_form {
+  margin-bottom: 18px;
+}
+
+.page_form .row {
+  row-gap: 6px;
+}
+
+.page_form .form-control,
+.page_form ngx-select .ngx-select__toggle {
+  min-height: 38px;
+  border-color: #bfd0e0;
+  border-radius: 4px;
+  color: #0b2740;
+  font-size: 0.86rem;
+}
+
+.page_form .form-control:focus,
+.page_form ngx-select .ngx-select__toggle:focus,
+.page_form ngx-select.ngx-select_focused .ngx-select__toggle {
+  border-color: #1d5f99;
+  box-shadow: 0 0 0 0.12rem rgba(29, 95, 153, 0.12);
+}
+
+.page_form .form-control:disabled,
+.page_form .form-control[readonly],
+.page_form ngx-select.ngx-select_disabled .ngx-select__toggle,
+.page_form ngx-select[disabled] .ngx-select__toggle {
+  background: #f5f8fb;
+  border-color: #cbd7e3;
+  color: #52677a;
+  cursor: not-allowed;
+}
+
+.page_form ngx-select .ngx-select__toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 6px 10px;
+  background: #fff;
+}
+
+.page_form ngx-select .ngx-select__placeholder,
+.page_form ngx-select .ngx-select__selected {
+  padding-top: 0 !important;
+  color: #71859a;
+  font-size: 0.86rem;
+}
+
+.page_form ngx-select .ngx-select__selected-single {
+  max-width: calc(100% - 20px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page_form input[type="file"].form-control {
+  min-height: 38px;
+  padding: 5px 8px;
+  line-height: 1.6;
+  background: #fff;
+}
+
+.page_form input[type="file"].form-control::file-selector-button {
+  margin-right: 10px;
+  border: 1px solid #9fb7ce;
+  border-radius: 3px;
+  background: #f5f9fd;
+  color: #0b2740;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.page_form .btn {
+  min-height: 34px;
+  margin-top: 4px;
+}
+
+.dataTables_length,
+.dataTables_filter {
+  min-height: 38px;
+  align-items: center;
+}
+
+.dataTables_filter {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.dataTables_filter .form-control,
+.dataTables_filter .form-control-sm {
+  min-height: 34px;
+  border-color: #bfd0e0;
+  border-radius: 18px;
+}
+
+.gov-table-wrap-premium,
+.table-wrap-premium {
+  margin-top: 8px;
+}
+
+.gov-table-wrap-premium table thead th,
+.table-wrap-premium table thead th {
+  vertical-align: middle;
+  white-space: nowrap;
+  font-size: 0.78rem;
+}
+
+.gov-table-wrap-premium table tbody td,
+.table-wrap-premium table tbody td {
+  vertical-align: middle;
+}
+
+@media (max-width: 767px) {
+  .dataTables_length,
+  .dataTables_filter {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .dataTables_filter .form-control,
+  .dataTables_filter .form-control-sm {
     width: 100%;
   }
 }
