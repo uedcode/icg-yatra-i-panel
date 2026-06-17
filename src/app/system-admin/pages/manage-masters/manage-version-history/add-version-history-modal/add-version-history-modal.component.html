@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="manage_admin">{{formObj.verHisId ? 'Update' :
-          'Add'}} Version History</h5>
+          'Add'}} Yatra Version</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="reset()">
           <span aria-hidden="true">×</span>
         </button>
@@ -16,7 +16,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="form-label">Title<sup class="required-msg">*</sup></label>
-                  <input type="text" class="form-control" placeholder="Title" maxlength="50" [(ngModel)]="formObj.title"
+                  <input type="text" class="form-control" placeholder="eg. Yatra" maxlength="100" [(ngModel)]="formObj.title"
                     #title="ngModel" name="title" required>
                   <div *ngIf="title.touched || (mainForm.submitted && title.invalid)">
                     <div *ngIf="title.errors?.required" class="invalid-msg">Title
@@ -29,8 +29,8 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label class="form-label">Description<sup class="required-msg">*</sup></label>
-                  <input type="text" class="form-control" placeholder="Description" maxlength="50"
-                    [(ngModel)]="formObj.descr" #descr="ngModel" name="descr" required appNotSpecialCharecter>
+                  <textarea rows="6" class="form-control" placeholder="eg. Best Software" maxlength="999"
+                    [(ngModel)]="formObj.descr" #descr="ngModel" name="descr" required></textarea>
                   <div *ngIf="descr.touched || (mainForm.submitted && descr.invalid)">
                     <div *ngIf="descr.errors?.required" class="invalid-msg">Description
                       is required

@@ -1,0 +1,49 @@
+.settings-intro {
+  margin-bottom: 16px;
+  color: #23344d;
+  font-weight: 500;
+}
+
+.settings-card-link {
+  color: inherit;
+  display: block;
+  margin-bottom: 18px;
+  text-decoration: none;
+}
+
+.settings-card {
+  align-items: center;
+  background: #fff;
+  border: 1px solid #d8e2ef;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(15, 43, 78, 0.08);
+  display: flex;
+  min-height: 112px;
+  padding: 20px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.settings-card:hover {
+  box-shadow: 0 8px 18px rgba(15, 43, 78, 0.14);
+  transform: translateY(-2px);
+}
+
+.settings-card-icon {
+  align-items: center;
+  background: #0f5593;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  flex: 0 0 58px;
+  font-size: 24px;
+  height: 58px;
+  justify-content: center;
+  margin-right: 18px;
+  width: 58px;
+}
+
+.settings-card h4 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}

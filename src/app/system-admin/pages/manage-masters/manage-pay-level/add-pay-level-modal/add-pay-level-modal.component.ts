@@ -54,14 +54,10 @@ export class AddPayLevelModalComponent implements OnInit {
             const object = response.object[0];
             this.$common.showMessage(`${response.message}`);
             $('#addPayLevel').modal('hide');
-            if (!this.record || !this.record.payLevel) {
-              this.dataList.push(object);
-            } else {
-              const index = this.dataList.findIndex(
-                (elem) => elem.payLevel == object.payLevel
-              );
-              if (index > -1) this.dataList[index] = object;
-            }
+            const index = this.dataList.findIndex(
+              (elem) => elem.payLevel == object.payLevel
+            );
+            if (index > -1) this.dataList[index] = object;
             this.dataList = [...this.dataList];
             this.setRecordData.emit(this.dataList);
             this.reset();

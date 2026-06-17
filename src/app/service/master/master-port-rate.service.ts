@@ -11,7 +11,7 @@ export class MasterPortRateService {
   constructor(private $common: CommonService, private http: HttpClient) { }
   
   get(config) {   
-    return this.http.get<any>(`masterPortRate/all`,config).pipe(
+    return this.http.get<any>(`portRate/all`,config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -20,7 +20,7 @@ export class MasterPortRateService {
   }
 
   createOrUpdate(object) {
-    return this.http.post<any>(`masterPortRate/createOrUpdate`, object).pipe(
+    return this.http.post<any>(`portRate/createOrUpdate`, object).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -28,8 +28,17 @@ export class MasterPortRateService {
     );
   }
 
-  delete(ids) {
-    return this.http.get<any>(`masterPortRate/deleteByIds`, ids).pipe(
+  delete(config) {
+    return this.http.delete<any>(`portRate`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  getPortRateStations(config?: any) {
+    return this.http.get<any>(`codeStation/getPortRateStations`, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;

@@ -14,7 +14,13 @@ import { CommonService } from 'src/app/service/core/common.service';
 export class HeaderInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  private readonly legacyBaseApiPrefixes = ['codeMisc/', 'utilPno/'];
+  private readonly legacyBaseApiPrefixes = [
+    'codeMisc',
+    'utilPno',
+    'faq',
+    'versionHistory',
+    'businessRule',
+  ];
 
   constructor(private $common: CommonService, public AuthTokenService: AuthTokenService, public $auth: AuthService) { }
 
@@ -136,7 +142,7 @@ export class HeaderInterceptor implements HttpInterceptor {
   }
 
   private isLegacyBaseApi(url: string): boolean {
-    return this.legacyBaseApiPrefixes.some(prefix => url.startsWith(prefix));
+    return this.legacyBaseApiPrefixes.some(prefix => url === prefix || url.startsWith(`${prefix}/`));
   }
 
   private buildRequestUrl(endpoint: string, relativeUrl: string, isAbsoluteURL: boolean, originalUrl: string): string {

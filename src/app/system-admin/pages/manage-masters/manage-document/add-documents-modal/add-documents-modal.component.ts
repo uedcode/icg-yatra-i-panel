@@ -11,7 +11,6 @@ import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
 import { NgForm } from '@angular/forms';
 import { DocumentService } from 'src/app/service/form/document.service';
-import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 
 @Component({
@@ -27,7 +26,9 @@ export class AddDocumentsModalComponent implements OnInit {
   @Output() setRecordData = new EventEmitter();
 
   formObj: any = {
-    isRequired: "No",
+    ltcClaim: '0',
+    pmtClaim: '0',
+    tyClaim: '0',
   };
   disableBtn = false;
   config;
@@ -35,44 +36,19 @@ export class AddDocumentsModalComponent implements OnInit {
   constructor(
     private $common: CommonService,
     private $document: DocumentService,
-    private $codeSubForm: CodeSubFormService,
     public $auth: AuthService
   ) { }
 
-  dropdownList: any = [];
   userIdDetails;
-  documentStatusList: any = [
-    {
-      descr: "Yes"
-    },
-    {
-      descr: "No"
-    }
-  ];
-  visibilityIndicatorList: any = [
-    {
-      "descr": "No",
-      "id": "0",
-    },
-    {
-      "descr": "Yes",
-      "id":"1",
-    }
-  ];
+
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
-    this.getCodeSubForm();
   }
 
 
   saveRecord() {
     
-    let obj = {
-      ...this.formObj,
-      codeSubFormDTO: {
-        subFormId: this.formObj.subFormId,
-      },
-    };
+    const obj = { ...this.formObj };
     try {
       this.$common.showLoader();
       this.disableBtn = true;
@@ -110,42 +86,13 @@ export class AddDocumentsModalComponent implements OnInit {
     }
   }
 
-  // get list of forms
-  getCodeSubForm() {
-    try {
-      
-      this.$common.showLoader();
-      this.config = {
-        headers: {
-          formId: this.userIdDetails?.moduleId,
-        },
-      };
-      this.$codeSubForm.get(this.config).subscribe(
-        (response: any) => {
-          this.$common.hideLoader();
-          if (response.status === true) {
-            let list = response.object;
-            
-            this.dropdownList = list;
-          }
-        },
-        (err) => {
-          this.$common.hideLoader();
-          console.log(err);
-        }
-      );
-    } catch (error) {
-      this.$common.hideLoader();
-      console.log(error);
-    }
-  }
-
   reset() {
     this.formObj = {
-      isRequired: "No",
-      codeSubFormDTO: {},
+      ltcClaim: '0',
+      pmtClaim: '0',
+      tyClaim: '0',
     };
-    this.mainForm.resetForm();
+    this.mainForm.resetForm(this.formObj);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -153,11 +100,11 @@ export class AddDocumentsModalComponent implements OnInit {
     if (!changes) return;
     if (changes.record && changes.record.currentValue) {
       this.formObj = changes.record.currentValue;
-      this.formObj.subFormId = this.formObj?.codeSubFormDTO?.subFormId;
     } else if (changes.record) {
       this.formObj = {
-        isRequired: "No",
-        codeSubFormDTO: {},
+        ltcClaim: '0',
+        pmtClaim: '0',
+        tyClaim: '0',
       };
     }
   }

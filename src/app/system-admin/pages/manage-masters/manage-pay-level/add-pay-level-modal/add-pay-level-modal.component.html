@@ -3,68 +3,86 @@
     <div class="modal-content">
       <form #mainForm="ngForm" (ngSubmit)="mainForm.valid && saveRecord()">
         <div class="modal-header">
-          <h4 class="modal-title">{{ record?.payLevel ? 'Update Pay Level' : 'Add Pay Level' }}</h4>
+          <h4 class="modal-title">Update Pay Level</h4>
           <button type="button" class="close" data-dismiss="modal" (click)="reset()">&times;</button>
         </div>
         <div class="modal-body">
           <div class="row">
-            <div class="col-md-6">
-              <label>Pay Level <span class="text-danger">*</span></label>
-              <input class="form-control" type="text" name="payLevel" [(ngModel)]="formObj.payLevel" #payLevel="ngModel" required />
-              <div *ngIf="payLevel.invalid && (payLevel.dirty || payLevel.touched || mainForm.submitted)" class="invalid-msg">
-                Pay Level is required.
-              </div>
+            <div class="col-md-4">
+              <label>Pay Level</label>
+              <input class="form-control" type="text" name="description" [(ngModel)]="formObj.description" readonly />
             </div>
-            <div class="col-md-6">
-              <label>Description</label>
-              <input class="form-control" type="text" name="description" [(ngModel)]="formObj.description" />
+            <div class="col-md-4">
+              <label>Transportation of personal effect (Kg)<span class="text-danger">*</span></label>
+              <input class="form-control" type="text" maxlength="10" name="pmtKg" [(ngModel)]="formObj.pmtKg" #pmtKg="ngModel" required />
+              <div *ngIf="pmtKg.invalid && (pmtKg.dirty || pmtKg.touched || mainForm.submitted)" class="invalid-msg">Pmt Kg is required.</div>
             </div>
-            <div class="col-md-4 mt-3">
-              <label>TY Accommodation</label>
-              <input class="form-control" type="number" name="tyAccommodation" [(ngModel)]="formObj.tyAccommodation" />
-            </div>
-            <div class="col-md-4 mt-3">
-              <label>TY Travel</label>
-              <input class="form-control" type="number" name="tyTravel" [(ngModel)]="formObj.tyTravel" />
+            <div class="col-md-4">
+              <label>Transportation of personal effect (Per Kg)<span class="text-danger">*</span></label>
+              <input class="form-control" type="text" maxlength="10" name="pmtPerKg" [(ngModel)]="formObj.pmtPerKg" #pmtPerKg="ngModel" required />
+              <div *ngIf="pmtPerKg.invalid && (pmtPerKg.dirty || pmtPerKg.touched || mainForm.submitted)" class="invalid-msg">Pmt per Kg is required.</div>
             </div>
             <div class="col-md-4 mt-3">
-              <label>TY Food</label>
-              <input class="form-control" type="number" name="tyFood" [(ngModel)]="formObj.tyFood" />
+              <label>Accommodation rate per day<span class="text-danger">*</span></label>
+              <input class="form-control" type="text" maxlength="10" name="tyAccommodation" [(ngModel)]="formObj.tyAccommodation" #tyAccommodation="ngModel" required />
+              <div *ngIf="tyAccommodation.invalid && (tyAccommodation.dirty || tyAccommodation.touched || mainForm.submitted)" class="invalid-msg">Accommodation rate is required.</div>
             </div>
             <div class="col-md-4 mt-3">
-              <label>PMT KG</label>
-              <input class="form-control" type="number" name="pmtKg" [(ngModel)]="formObj.pmtKg" />
+              <label>Food rate per day<span class="text-danger">*</span></label>
+              <input class="form-control" type="text" maxlength="10" name="tyFood" [(ngModel)]="formObj.tyFood" #tyFood="ngModel" required />
+              <div *ngIf="tyFood.invalid && (tyFood.dirty || tyFood.touched || mainForm.submitted)" class="invalid-msg">Food rate is required.</div>
             </div>
             <div class="col-md-4 mt-3">
-              <label>PMT Per KG</label>
-              <input class="form-control" type="number" name="pmtPerKg" [(ngModel)]="formObj.pmtPerKg" />
+              <label>Travel within city<span class="text-danger">*</span></label>
+              <input class="form-control" type="text" maxlength="10" name="tyTravel" [(ngModel)]="formObj.tyTravel" #tyTravel="ngModel" required />
+              <div *ngIf="tyTravel.invalid && (tyTravel.dirty || tyTravel.touched || mainForm.submitted)" class="invalid-msg">Travel within city is required.</div>
             </div>
             <div class="col-md-4 mt-3">
-              <label>Availed Category</label>
-              <input class="form-control" type="number" name="availedCategory" [(ngModel)]="formObj.availedCategory" />
+              <label>Availed Category<span class="text-danger">*</span></label>
+              <select class="form-control" name="availedCategory" [(ngModel)]="formObj.availedCategory" #availedCategory="ngModel" required>
+                <option value="">Select</option>
+                <option [ngValue]="0">0</option>
+                <option [ngValue]="1">1</option>
+                <option [ngValue]="2">2</option>
+              </select>
+              <div *ngIf="availedCategory.invalid && (availedCategory.dirty || availedCategory.touched || mainForm.submitted)" class="invalid-msg">Availed Category is required.</div>
             </div>
             <div class="col-md-4 mt-3">
-              <label>Train Class</label>
-              <input class="form-control" type="text" name="trainClass" [(ngModel)]="formObj.trainClass" />
+              <label>Air Class<span class="text-danger">*</span></label>
+              <select class="form-control" name="airClass" [(ngModel)]="formObj.airClass" #airClass="ngModel" required>
+                <option value="">Select</option>
+                <option value="NA">NA</option>
+                <option value="Economy Class">Economy Class</option>
+                <option value="Business Class">Business Class</option>
+              </select>
+              <div *ngIf="airClass.invalid && (airClass.dirty || airClass.touched || mainForm.submitted)" class="invalid-msg">Air Class is required.</div>
             </div>
             <div class="col-md-4 mt-3">
-              <label>Air Class</label>
-              <input class="form-control" type="text" name="airClass" [(ngModel)]="formObj.airClass" />
+              <label>Ship Class<span class="text-danger">*</span></label>
+              <select class="form-control" name="shipClass" [(ngModel)]="formObj.shipClass" #shipClass="ngModel" required>
+                <option value="">Select</option>
+                <option value="Bunk Class">Bunk Class</option>
+                <option value="Cabin Class">Cabin Class</option>
+              </select>
+              <div *ngIf="shipClass.invalid && (shipClass.dirty || shipClass.touched || mainForm.submitted)" class="invalid-msg">Ship Class is required.</div>
             </div>
             <div class="col-md-4 mt-3">
-              <label>Ship Class</label>
-              <input class="form-control" type="text" name="shipClass" [(ngModel)]="formObj.shipClass" />
+              <label>Train Class<span class="text-danger">*</span></label>
+              <select class="form-control" name="trainClass" [(ngModel)]="formObj.trainClass" #trainClass="ngModel" required>
+                <option value="">Select</option>
+                <option value="AC 1st Class">AC 1st Class</option>
+                <option value="AC 2nd Class">AC 2nd Class</option>
+                <option value="AC 3rd Class">AC 3rd Class</option>
+              </select>
+              <div *ngIf="trainClass.invalid && (trainClass.dirty || trainClass.touched || mainForm.submitted)" class="invalid-msg">Train Class is required.</div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="reset()">Close</button>
-          <button type="submit" class="btn btn-primary" [disabled]="disableBtn">
-            {{ record?.payLevel ? 'Update' : 'Save' }}
-          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="disableBtn">Update</button>
         </div>
       </form>
     </div>
   </div>
 </div>
-

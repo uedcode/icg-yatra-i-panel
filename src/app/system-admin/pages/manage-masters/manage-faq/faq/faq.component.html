@@ -1,9 +1,9 @@
 <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
-            <h4 class="page-title">FAQs</h4>
+            <h4 class="page-title">FAQ update</h4>
             <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item"><a [routerLink]="['/dashboard']">Dashboard</a></li>
-              <li class="breadcrumb-item active" aria-current="page">FAQs</li>
+              <li class="breadcrumb-item"><a>Yatra</a></li>
+              <li class="breadcrumb-item active" aria-current="page">FAQ update</li>
             </ol>
           </div>
           <div>
@@ -27,7 +27,6 @@
                           <option value="25">25</option>
                           <option value="50">50</option>
                           <option value="100">100</option>
-                          <option value="1000">1000</option>
                         </select> entries</label></div>
                   </div>
                   <div class="col-sm-12 col-md-3 offset-3">
@@ -46,16 +45,13 @@
                     style="width:100%">
                     <thead>
                       <tr>
-                        <th class="wd-15p">SL</th>
+                        <th class="wd-15p">S.No.</th>
                         <th class="wd-15p">Question <i class="fa fa-sort"
                             (click)="sort('ques')"></i></th>
                         <th class="wd-15p">Answer <i class="fa fa-sort"
                             (click)="sort('ans')"></i></th>
-                        <th class="wd-15p">Created On <i class="fa fa-sort"
-                            (click)="sort('ans')"></i></th>
-                        <th class="wd-15p">Updated On <i class="fa fa-sort"
-                            (click)="sort('ans')"></i></th>
-                            <th class="actionBtnWidth">Action</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -66,14 +62,14 @@
                         <td>
                           <div [innerHTML]="dataObj?.ans"></div>
                         </td>
-                        <td>{{dataObj?.createdOn | showDate:"medium"}}</td>
-                        <td>{{dataObj?.updatedOn | showDate:"medium"}}</td>
                         <td class="noExl">
                           <button [disabled]="dataObj.isFixed==1"
                             class="btn btn-primary"
                             (click)="editRecord(dataObj)"
                             data-toggle="tooltip" title="Edit"><i
                               class="fa fa-pencil" aria-hidden="true"></i></button>
+                        </td>
+                        <td class="noExl">
                           <button [disabled]="dataObj.isFixed==1"
                             class="btn btn-danger" data-toggle="modal"
                             data-target="#delete_modal" title="Delete"

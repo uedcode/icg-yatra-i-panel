@@ -5,7 +5,6 @@ import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { DropdownService } from 'src/app/service/form/dropdown.service';
-import { MappingService } from 'src/app/service/admin/mapping.service';
 import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
 import { UserService } from 'src/app/service/admin/user.service';
 
@@ -28,7 +27,6 @@ export class ManageRoleComponent implements OnInit {
     private $common: CommonService,
     private $systemAdmin: SystemAdminService,
     private $dropdown: DropdownService,
-    private $mapping: MappingService,
     private $user: UserService
   ) { }
 
@@ -230,7 +228,7 @@ export class ManageRoleComponent implements OnInit {
   getUnitList() {
     try {
       this.$common.showLoader();
-      this.$mapping.getUnit({ headers: {} }).subscribe(
+      this.$systemAdmin.getCodeUnits({ headers: {} }).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {

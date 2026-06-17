@@ -54,11 +54,6 @@ export class PayLevelComponent implements OnInit {
     }
   }
 
-  openAddModal() {
-    this.dataObj = {};
-    $('#addPayLevel').modal('show');
-  }
-
   editRecord(record: any) {
     this.dataObj = { ...record };
     $('#addPayLevel').modal('show');
@@ -69,4 +64,3 @@ export class PayLevelComponent implements OnInit {
     this.reverse = !this.reverse;
   }
 }
-

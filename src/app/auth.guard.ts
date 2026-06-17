@@ -83,7 +83,7 @@ export class AuthGuard  {
       'form-ltc',
       'form-manual-adv',
       'form-ltc-availed-history',
-      'pay-',
+      '/pay-',
       'manual-draft',
       'budget-allocation'
     ];

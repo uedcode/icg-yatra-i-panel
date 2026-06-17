@@ -7,10 +7,10 @@
           <button type="button" class="close" data-dismiss="modal" (click)="reset()">&times;</button>
         </div>
         <div class="modal-body">
-          <label>Description <span class="text-danger">*</span></label>
-          <input class="form-control" type="text" name="descr" [(ngModel)]="formObj.descr" #descr="ngModel" required />
+          <label>Purpose <span class="text-danger">*</span></label>
+          <input class="form-control" type="text" maxlength="100" placeholder="eg. Investiture Ceremony" name="descr" [(ngModel)]="formObj.descr" #descr="ngModel" required />
           <div *ngIf="descr.invalid && (descr.dirty || descr.touched || mainForm.submitted)" class="invalid-msg">
-            Description is required.
+            Purpose is required.
           </div>
         </div>
         <div class="modal-footer">
@@ -23,4 +23,3 @@
     </div>
   </div>
 </div>
-

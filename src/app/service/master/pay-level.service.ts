@@ -26,6 +26,15 @@ export class PayLevelService {
       })
     );
   }
+
+  delete(config: any) {
+    return this.http.delete<any>(`payLevel`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
 }
 
 

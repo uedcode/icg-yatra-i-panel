@@ -1,107 +1,89 @@
-﻿<div class="page-header gov-page-toolbar">
-          <div class="page-leftheader">
-            <h4 class="page-title">Pay Level</h4>
-            <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item">
-                <a [routerLink]="['../dashboard']">Dashboard</a>
-              </li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Pay Level
-              </li>
-            </ol>
+<div class="page-header gov-page-toolbar">
+  <div class="page-leftheader">
+    <h4 class="page-title">Pay level entitlements</h4>
+    <ol class="breadcrumb pl-0">
+      <li class="breadcrumb-item"><a>Yatra</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Pay level entitlements</li>
+    </ol>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <div class="dataTables_length">
+              <label>Show</label>
+              <select class="form-control" name="noOfPage" [(ngModel)]="noOfPage" (ngModelChange)="p=1">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              <label>entries</label>
+            </div>
           </div>
-          <div>
-            <button type="button" class="btn btn-primary" (click)="openAddModal()" title="Add">
-              <i class="fa fa-plus"></i>
-            </button>
+
+          <div class="col-sm-12 col-md-3 offset-3">
+            <div class="dataTables_filter" title="Search">
+              <i class="fa fa-search"></i>
+              <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1" [(ngModel)]="searchObj" name="searchObj" />
+            </div>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-md-12 col-lg-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-sm-12 col-md-6">
-                    <div class="dataTables_length">
-                      <label>Show</label>
-                      <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage" (ngModelChange)="p=1">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                        <option value="100000">All</option>
-                      </select>
-                      <label>entries</label>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-12 col-md-3 offset-3">
-                    <div class="dataTables_filter" title="Search">
-                      <i class="fa fa-search"></i>
-                      <input
-                        type="search"
-                        class="form-control form-control-sm"
-                        placeholder="Search"
-                        (keyup)="p=1"
-                        [(ngModel)]="searchObj"
-                        name="searchObj"
-                        aria-controls="example"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
-                  <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width: 100%">
-                    <thead>
-                      <tr>
-                        <th class="wd-5p">SL</th>
-                        <th class="wd-20p">
-                          Pay Level
-                          <i class="fa fa-sort" (click)="sort('payLevel')"></i>
-                        </th>
-                        <th class="wd-20p">
-                          Description
-                          <i class="fa fa-sort" (click)="sort('description')"></i>
-                        </th>
-                        <th class="wd-20p">
-                          TY Accommodation
-                          <i class="fa fa-sort" (click)="sort('tyAccommodation')"></i>
-                        </th>
-                        <th class="wd-20p">
-                          PMT Per KG
-                          <i class="fa fa-sort" (click)="sort('pmtPerKg')"></i>
-                        </th>
-                        <th class="actionBtnWidth">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let dataObj of dataList | filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
-                        <td>{{ (i + 1) + (p - 1) * noOfPage }}</td>
-                        <td>{{ dataObj?.payLevel | showHypen }}</td>
-                        <td>{{ dataObj?.description | showHypen }}</td>
-                        <td>{{ dataObj?.tyAccommodation | showHypen }}</td>
-                        <td>{{ dataObj?.pmtPerKg | showHypen }}</td>
-                        <td>
-                          <button class="btn btn-primary" title="Edit" (click)="editRecord(dataObj)">
-                            <i class="fa fa-edit"></i>
-                          </button>
-                        </td>
-                      </tr>
-                      <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                        <td colspan="20">No Records Available</td>
-                      </tr>
-                      <tr class="noExl pagination_area" *ngIf="dataList?.length">
-                        <td colspan="20">
-                          <pagination-controls (pageChange)="p = $event"></pagination-controls>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div><app-add-pay-level-modal [record]="dataObj" [dataList]="dataList" (setRecordData)="dataList = $event"></app-add-pay-level-modal>
+        <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+          <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width: 100%">
+            <thead>
+              <tr>
+                <th>S.No.</th>
+                <th>Pay Level <i class="fa fa-sort" (click)="sort('description')"></i></th>
+                <th>Pmt Kg <i class="fa fa-sort" (click)="sort('pmtKg')"></i></th>
+                <th>Pmt per Kg <i class="fa fa-sort" (click)="sort('pmtPerKg')"></i></th>
+                <th>Ty Accommodation <i class="fa fa-sort" (click)="sort('tyAccommodation')"></i></th>
+                <th>Ty Food <i class="fa fa-sort" (click)="sort('tyFood')"></i></th>
+                <th>Ty Travel <i class="fa fa-sort" (click)="sort('tyTravel')"></i></th>
+                <th>Availed Category <i class="fa fa-sort" (click)="sort('availedCategory')"></i></th>
+                <th>Air Class <i class="fa fa-sort" (click)="sort('airClass')"></i></th>
+                <th>Ship Class <i class="fa fa-sort" (click)="sort('shipClass')"></i></th>
+                <th>Train Class <i class="fa fa-sort" (click)="sort('trainClass')"></i></th>
+                <th>Edit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let dataObj of dataList | filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                <td>{{ (i + 1) + (p - 1) * noOfPage }}.</td>
+                <td>{{ dataObj?.description | showHypen }}</td>
+                <td>{{ dataObj?.pmtKg | showHypen }}</td>
+                <td>{{ dataObj?.pmtPerKg | showHypen }}</td>
+                <td>{{ dataObj?.tyAccommodation | showHypen }}</td>
+                <td>{{ dataObj?.tyFood | showHypen }}</td>
+                <td>{{ dataObj?.tyTravel | showHypen }}</td>
+                <td>{{ dataObj?.availedCategory | showHypen }}</td>
+                <td>{{ dataObj?.airClass | showHypen }}</td>
+                <td>{{ dataObj?.shipClass | showHypen }}</td>
+                <td>{{ dataObj?.trainClass | showHypen }}</td>
+                <td>
+                  <button class="btn btn-primary" title="Edit" (click)="editRecord(dataObj)">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
+                <td colspan="20">No Records</td>
+              </tr>
+              <tr class="noExl pagination_area" *ngIf="dataList?.length">
+                <td colspan="20">
+                  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <app-add-pay-level-modal [record]="dataObj" [dataList]="dataList" (setRecordData)="dataList = $event"></app-add-pay-level-modal>
+      </div>
+    </div>
+  </div>
 </div>
-</div>
-</div>
-</div>
-

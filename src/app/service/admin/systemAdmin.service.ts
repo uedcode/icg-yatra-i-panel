@@ -69,6 +69,16 @@ export class SystemAdminService {
       })
     );
   }
+
+  getCodeUnits(config) {
+    return this.http.get<any>(`codeUnit/all`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
   getForwardTo(config) {
     return this.http.get<any>(`role/byUser`, config).pipe(
       map((response: any) => {

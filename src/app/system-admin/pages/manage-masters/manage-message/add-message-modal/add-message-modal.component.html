@@ -3,21 +3,21 @@
     <div class="modal-content">
       <form #mainForm="ngForm" (ngSubmit)="mainForm.valid && saveRecord()">
         <div class="modal-header">
-          <h4 class="modal-title">{{ formObj.id ? 'Update Message' : 'Add Message' }}</h4>
+          <h4 class="modal-title">{{ formObj.id ? 'Update Yatra Initial Message' : 'Add Yatra Initial Message' }}</h4>
           <button type="button" class="close" data-dismiss="modal" (click)="reset()">&times;</button>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-md-12">
               <label>Title <span class="text-danger">*</span></label>
-              <input class="form-control" type="text" name="title" [(ngModel)]="formObj.title" #title="ngModel" required />
+              <input class="form-control" type="text" maxlength="100" placeholder="eg. Indian Coast Guard Personnel COVID-19" name="title" [(ngModel)]="formObj.title" #title="ngModel" required />
               <div *ngIf="title.invalid && (title.dirty || title.touched || mainForm.submitted)" class="invalid-msg">
                 Title is required.
               </div>
             </div>
             <div class="col-md-12 mt-3">
               <label>Description <span class="text-danger">*</span></label>
-              <textarea class="form-control" rows="4" name="descr" [(ngModel)]="formObj.descr" #descr="ngModel" required></textarea>
+              <textarea class="form-control" rows="6" maxlength="499" placeholder="eg. This form is to be filled Every Sunday commencing 26 Apr 2020 by all Officers." name="descr" [(ngModel)]="formObj.descr" #descr="ngModel" required></textarea>
               <div *ngIf="descr.invalid && (descr.dirty || descr.touched || mainForm.submitted)" class="invalid-msg">
                 Description is required.
               </div>
@@ -34,4 +34,3 @@
     </div>
   </div>
 </div>
-

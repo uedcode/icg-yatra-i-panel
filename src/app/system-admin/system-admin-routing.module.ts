@@ -2,38 +2,36 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { ChangePasswordComponent } from './pages/change-password/change-password.component';
+import { ChangePasswordComponent } from './pages/support/change-password/change-password.component';
 import { AuthGuard } from '../auth.guard';
 
 import { SystemAdminComponent } from './system-admin.component';
 import { ManageSystemAdminComponent } from './pages/manage-user/manage-system-admin/manage-system-admin.component';
 import { ManageUnitAdminComponent } from './pages/manage-user/manage-unit-admin/manage-unit-admin.component';
-import { MappingUnitComponent } from './pages/manage-user/mapping-of-unit/mapping-unit/mapping-unit.component';
-import { AddMappingUnitComponent } from './pages/manage-user/mapping-of-unit/add-mapping-unit/add-mapping-unit.component';
 import { AddDocumentsModalComponent } from './pages/manage-masters/manage-document/add-documents-modal/add-documents-modal.component';
 import { DocumentsComponent } from './pages/manage-masters/manage-document/documents/documents.component';
 import { AddFaqModalComponent } from './pages/manage-masters/manage-faq/add-faq-modal/add-faq-modal.component';
 import { VersionHistoryComponent } from './pages/manage-masters/manage-version-history/version-history/version-history.component';
-import { FaqComponent } from './pages/manage-masters/manage-faq/faq/faq.component';
-import { ProfileSettingComponent } from './pages/profile-setting/profile-setting.component';
-import { ManageApproverComponent } from './pages/manage-user/manage-approver/manage-approver.component';
-import { WebDetailComponent } from './pages/web-detail/web-detail.component';
+import { FaqComponent as ManageFaqComponent } from './pages/manage-masters/manage-faq/faq/faq.component';
+import { FaqComponent as SupportFaqComponent } from './pages/support/faq/faq.component';
+import { ProfileSettingComponent } from './pages/support/profile-setting/profile-setting.component';
+import { WebDetailComponent } from './pages/support/web-detail/web-detail.component';
 import { PortComponent } from './pages/manage-masters/manage-port/port/port.component';
 import { AddPortModalComponent } from './pages/manage-masters/manage-port/add-port-modal/add-port-modal.component';
 import { ShipComponent } from './pages/manage-masters/manage-ship/ship/ship.component';
 import { AddShipModalComponent } from './pages/manage-masters/manage-ship/add-ship-modal/add-ship-modal.component';
-import { InboxComponent } from './pages/audit-import-export/inbox/inbox.component';
-import { ExportedComponent } from './pages/audit-import-export/exported/exported.component';
-import { ArchivedComponent } from './pages/audit-import-export/archived/archived.component';
-import { ImportComponent } from './pages/audit-import-export/import/import.component';
-import { ImportedComponent } from './pages/audit-import-export/imported/imported.component';
-import { ArchivedImportComponent } from './pages/audit-import-export/archived-import/archived-import.component';
-import { BackupImportComponent } from './pages/audit-import-export/backup-import/backup-import.component';
-import { BackupExportComponent } from './pages/audit-import-export/backup-export/backup-export.component';
-import { DiaryImportComponent } from './pages/audit-import-export/diary-import/diary-import.component';
-import { DiaryImportedComponent } from './pages/audit-import-export/diary-imported/diary-imported.component';
-import { DiaryImportedBackupComponent } from './pages/audit-import-export/diary-imported-backup/diary-imported-backup.component';
-import { SysAdminExcelImportComponent } from './pages/audit-import-export/excel-import/excel-import.component';
+import { InboxComponent } from './pages/import-export/normal/inbox/inbox.component';
+import { ExportedComponent } from './pages/import-export/normal/exported/exported.component';
+import { ArchivedComponent } from './pages/import-export/normal/archived/archived.component';
+import { ImportComponent } from './pages/import-export/normal/import/import.component';
+import { ImportedComponent } from './pages/import-export/normal/imported/imported.component';
+import { ArchivedImportComponent } from './pages/import-export/normal/archived-import/archived-import.component';
+import { BackupImportComponent } from './pages/import-export/normal/backup-import/backup-import.component';
+import { BackupExportComponent } from './pages/import-export/normal/backup-export/backup-export.component';
+import { DiaryImportComponent } from './pages/import-export/diary/import/diary-import.component';
+import { DiaryImportedComponent } from './pages/import-export/diary/imported/diary-imported.component';
+import { DiaryImportedBackupComponent } from './pages/import-export/diary/imported-backup/diary-imported-backup.component';
+import { SysAdminExcelImportComponent } from './pages/import-export/excel/import/excel-import.component';
 import { PortRateComponent } from './pages/manage-masters/manage-port-rate/port-rate/port-rate.component';
 import { ManageRoleComponent } from './pages/manage-role/manage-role.component';
 import { ReasonComponent } from './pages/manage-masters/manage-reason/reason/reason.component';
@@ -44,6 +42,7 @@ import { TyDutyPurposeComponent } from './pages/manage-masters/manage-ty-duty-pu
 import { EsignReportComponent } from './pages/reports/esign-report/esign-report.component';
 import { StatisticsComponent } from './pages/reports/statistics/statistics.component';
 import { PreviewReportComponent } from './pages/reports/preview-report/preview-report.component';
+import { SettingsLauncherComponent } from './pages/settings/launcher/settings-launcher.component';
 
 const SYSTEM_ADMIN_ROLES = ['SY'];
 
@@ -77,6 +76,12 @@ const routes: Routes = [
   },
 
   {
+    path: 'settings',
+    component: SettingsLauncherComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Settings', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
     path: 'system-admin',
     component: ManageSystemAdminComponent,
     canActivate: [AuthGuard],
@@ -94,25 +99,18 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { title: 'Manage Roles', roles: SYSTEM_ADMIN_ROLES },
   },
-  {
-    path: 'mapping-unit',
-    component: MappingUnitComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Manage Unit Mappings', roles: SYSTEM_ADMIN_ROLES },
-  },
-  {
-    path: 'add-mapping-unit',
-    component: AddMappingUnitComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Add Unit Mapping', roles: SYSTEM_ADMIN_ROLES },
-  },
-
   // manage master
   {
     path: 'documents',
     component: DocumentsComponent,
     canActivate: [AuthGuard],
     data: { title: 'Manage Documents', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
+    path: 'manage-doc',
+    component: DocumentsComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Document update', roles: SYSTEM_ADMIN_ROLES },
   },
   {
     path: 'ports',
@@ -127,6 +125,12 @@ const routes: Routes = [
     data: { title: 'Manage Port Rates', roles: SYSTEM_ADMIN_ROLES },
   },
   {
+    path: 'manage-port-rate',
+    component: PortRateComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Port Rate update', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
     path: 'ships',
     component: ShipComponent,
     canActivate: [AuthGuard],
@@ -137,6 +141,12 @@ const routes: Routes = [
     component: VersionHistoryComponent,
     canActivate: [AuthGuard],
     data: { title: 'Version History', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
+    path: 'manage-version',
+    component: VersionHistoryComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Version history update', roles: SYSTEM_ADMIN_ROLES },
   },
   {
     path: 'add-documents-modal',
@@ -158,12 +168,24 @@ const routes: Routes = [
   },
   {
     path: 'faq',
-    component: FaqComponent,
+    component: SupportFaqComponent,
     canActivate: [AuthGuard],
-    data: { title: 'Manage FAQs', roles: SYSTEM_ADMIN_ROLES },
+    data: { title: 'FAQ', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
+    path: 'manage-faq',
+    component: ManageFaqComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'FAQ update', roles: SYSTEM_ADMIN_ROLES },
   },
   {
     path: 'reason',
+    component: ReasonComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Reason', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
+    path: 'manage-reason',
     component: ReasonComponent,
     canActivate: [AuthGuard],
     data: { title: 'Reason', roles: SYSTEM_ADMIN_ROLES },
@@ -175,10 +197,22 @@ const routes: Routes = [
     data: { title: 'Business Rule', roles: SYSTEM_ADMIN_ROLES },
   },
   {
+    path: 'manage-business-rule',
+    component: BusinessRuleComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Business Rule', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
     path: 'message',
     component: MessageComponent,
     canActivate: [AuthGuard],
     data: { title: 'Message Master', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
+    path: 'manage-message',
+    component: MessageComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Initial Message', roles: SYSTEM_ADMIN_ROLES },
   },
   {
     path: 'pay-level',
@@ -187,7 +221,19 @@ const routes: Routes = [
     data: { title: 'Pay Level', roles: SYSTEM_ADMIN_ROLES },
   },
   {
+    path: 'manage-pay-level',
+    component: PayLevelComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Pay level entitlements', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
     path: 'ty-duty-purpose',
+    component: TyDutyPurposeComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'TY Duty Purpose', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
+    path: 'manage-ty-duty-purpose',
     component: TyDutyPurposeComponent,
     canActivate: [AuthGuard],
     data: { title: 'TY Duty Purpose', roles: SYSTEM_ADMIN_ROLES },
@@ -200,12 +246,6 @@ const routes: Routes = [
     data: { title: 'Profile Setting', roles: SYSTEM_ADMIN_ROLES },
   },
 
-  {
-    path: 'manage-approver',
-    component: ManageApproverComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Manage Approver', roles: SYSTEM_ADMIN_ROLES },
-  },
   {
     path: 'web-detail',
     component: WebDetailComponent,

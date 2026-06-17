@@ -19,106 +19,6 @@
           <div class="card-body">
             <div class="row">
               <div class="col-lg-3 col-md-4 col-sm-6">
-                <a [routerLink]="['../mapping-unit']">
-                  <div class="custom_card">
-                    <div class="custom_card_body">
-                      <i class="fa fa-map-marker icon_bg_map" aria-hidden="true"></i>
-                      <p>Manage Unit Mappings</p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div class="col-lg-3 col-md-4 col-sm-6">
-                <a [routerLink]="['../system-admin']">
-                  <div class="custom_card">
-                    <div class="custom_card_body">
-                      <i class="fa fa-users icon_bg_user" aria-hidden="true"></i>
-                      <p>Manage System Admins</p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div class="col-lg-3 col-md-4 col-sm-6">
-                <a [routerLink]="['../unit-admin']">
-                  <div class="custom_card">
-                    <div class="custom_card_body">
-                      <i class="fa fa-user-secret icon_bg_user" aria-hidden="true"></i>
-                      <p>Manage Unit Admins</p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div class="col-lg-3 col-md-4 col-sm-6">
-                <a [routerLink]="['../manage-role']">
-                  <div class="custom_card">
-                    <div class="custom_card_body">
-                      <i class="fa fa-arrows icon_bg_user" aria-hidden="true"></i>
-                      <p>Manage Roles</p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <!--<div class="col-lg-3 col-md-4 col-sm-6">
-                <a [routerLink]="['../manage-approver']">
-                  <div class="custom_card">
-                    <div class="custom_card_body">
-                      <i class="fa fa-check-circle icon_bg_user" aria-hidden="true"></i>
-                      <p>Manage approver</p>
-                    </div>
-                  </div>
-                </a>
-              </div>-->
-              <div class="col-lg-3 col-md-4 col-sm-6">
-                <a [routerLink]="['../documents']">
-                  <div class="custom_card">
-                    <div class="custom_card_body">
-                      <i class="fa fa-file icon_bg_user" aria-hidden="true"></i>
-                      <p>Manage Masters</p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div class="col-lg-3 col-md-4 col-sm-6">
-                <a [routerLink]="['../faq']">
-                  <div class="custom_card">
-                    <div class="custom_card_body">
-                      <i class="fa fa-question-circle icon_bg_user" aria-hidden="true"></i>
-                      <p>Manage FAQs</p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div class="col-lg-3 col-md-4 col-sm-6">
-                <a [routerLink]="['../version-history']">
-                  <div class="custom_card">
-                    <div class="custom_card_body">
-                      <i class="fa fa-history icon_bg_user" aria-hidden="true"></i>
-                      <p>Version History</p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div class="col-lg-3 col-md-4 col-sm-6">
-                <a [routerLink]="['../inbox']">
-                  <div class="custom_card">
-                    <div class="custom_card_body">
-                      <i class="fa fa-upload icon_bg_user" aria-hidden="true"></i>
-                      <p>Audit Export Queue</p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div class="col-lg-3 col-md-4 col-sm-6">
-                <a [routerLink]="['../import']">
-                  <div class="custom_card">
-                    <div class="custom_card_body">
-                      <i class="fa fa-download icon_bg_user" aria-hidden="true"></i>
-                      <p>Audit Import Queue</p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div class="col-lg-3 col-md-4 col-sm-6">
                 <a [routerLink]="['../statistics']">
                   <div class="custom_card">
                     <div class="custom_card_body">
@@ -138,26 +38,76 @@
                   </div>
                 </a>
               </div>
-              <!--<div class="col-lg-3 col-md-4 col-sm-6">
-                <a [routerLink]="['../hrcdf-import']">
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../import']">
                   <div class="custom_card">
                     <div class="custom_card_body">
-                      <i class="fa fa-database icon_bg_user" aria-hidden="true"></i>
-                      <p>HRCDF Data</p>
+                      <i class="fa fa-download icon_bg_user" aria-hidden="true"></i>
+                      <p>Import</p>
                     </div>
                   </div>
                 </a>
-              </div>-->
-              <!-- <div class="col-lg-3 col-md-4 col-sm-6">
-                <a [routerLink]="['../web-detail']">
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../inbox']">
                   <div class="custom_card">
                     <div class="custom_card_body">
-                      <i class="fa fa-life-ring icon_bg_user" aria-hidden="true"></i>
-                      <p>Support</p>
+                      <i class="fa fa-upload icon_bg_user" aria-hidden="true"></i>
+                      <p>Export</p>
                     </div>
                   </div>
                 </a>
-              </div> -->
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../backup-Import']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-archive icon_bg_user" aria-hidden="true"></i>
+                      <p>Archived</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../diary-import']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-book icon_bg_user" aria-hidden="true"></i>
+                      <p>Diary Claim</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../unit-admin']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-user-secret icon_bg_user" aria-hidden="true"></i>
+                      <p>Manage Unit Admin</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../settings']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-cog icon_bg_user" aria-hidden="true"></i>
+                      <p>Settings</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6">
+                <a [routerLink]="['../excel-import']">
+                  <div class="custom_card">
+                    <div class="custom_card_body">
+                      <i class="fa fa-file-excel-o icon_bg_user" aria-hidden="true"></i>
+                      <p>Excel Import</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
         </div>

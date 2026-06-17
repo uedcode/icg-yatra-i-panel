@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { MasterPortService } from 'src/app/service/master/master-port.service';
 import { MasterPortRateService } from 'src/app/service/master/master-port-rate.service';
 declare var $: any;
 
@@ -16,7 +14,6 @@ export class PortRateComponent implements OnInit {
 
   constructor(
       private $common: CommonService,
-      private $port: MasterPortService,
       private $portRate: MasterPortRateService,
       public $auth: AuthService
     ) {}
@@ -29,7 +26,6 @@ export class PortRateComponent implements OnInit {
     p = 1;
     searchObj;
     userIdDetails;
-    fileUrl = environment.fileUrl;
   
     ngOnInit() {
       this.userIdDetails = this.$auth.getUserDetails();
@@ -52,8 +48,7 @@ export class PortRateComponent implements OnInit {
           (response: any) => {
             this.$common.hideLoader();
             if (response.status === true) {
-              let list = response.object;
-              this.dataList = list;
+              this.dataList = Array.isArray(response.object) ? response.object : [];
             }
           },
           (err) => {
@@ -89,9 +84,7 @@ export class PortRateComponent implements OnInit {
             this.$common.hideLoader();
             if (response.status === true) {
               this.$common.showMessage(response.message);
-              this.dataList = this.dataList.filter(
-                (elem) => elem.id != id
-              );
+              this.dataList = this.dataList.filter((elem) => elem.yatPortRateId != id);
               $('#delete_modal').modal('hide');
             }
           },
@@ -109,7 +102,7 @@ export class PortRateComponent implements OnInit {
   
    
     // data shorting start
-    key: string = 'createdOn';
+    key: string = 'yatPortRateId';
     reverse: boolean = false;
     sort(key) {
       this.key = key;

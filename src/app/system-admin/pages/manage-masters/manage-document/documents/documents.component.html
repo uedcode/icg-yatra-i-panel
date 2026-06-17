@@ -1,26 +1,18 @@
 <!--Page header-->
         <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
-            <h4 class="page-title">Documents</h4>
+            <h4 class="page-title">Document updation</h4>
             <ol class="breadcrumb pl-0">
               <li class="breadcrumb-item">
-                <a [routerLink]="['../dashboard']">Dashboard</a>
+                <a>Yatra</a>
               </li>
               <li class="breadcrumb-item active" aria-current="page">
-                Documents
+                Document updation
               </li>
             </ol>
           </div>
           <div style="display: flex">
             <div>
-              <button
-                type="button"
-                [routerLink]="['../dashboard']"
-                class="btn btn-dark request_view_back"
-                title="Back to Page"
-              >
-                <i class="fa fa-chevron-left" style="display: inline-block"></i>
-              </button>
             </div>
             <button
               type="button"
@@ -49,10 +41,9 @@
                       (ngModelChange)="p = 1"
                     >
                       <option value="10">10</option>
-                      <option value="20">20</option>
+                      <option value="25">25</option>
                       <option value="50">50</option>
                       <option value="100">100</option>
-                      <option value="100000">All</option>
                     </select>
                     <label>entries</label>
                   </div>
@@ -80,44 +71,22 @@
                 >
                   <thead>
                     <tr>
-                      <th class="wd-5p">SL</th>
-                      <th class="wd-20p">
-                        Form <i class="fa fa-sort" (click)="sort('descr')"></i>
-                      </th>
+                      <th class="wd-5p">S.No.</th>
                       <th class="wd-20p">
                         Document Name
                         <i class="fa fa-sort" (click)="sort('docName')"></i>
                       </th>
                       <th class="wd-20p">
-                        SAP Document Type
-                        <i class="fa fa-sort" (click)="sort('sapDocumentType')"></i>
+                        LTC Claim <i class="fa fa-sort" (click)="sort('ltcClaim')"></i>
                       </th>
                       <th class="wd-20p">
-                        SAP Document Name
-                        <i class="fa fa-sort" (click)="sort('sapDocumentName')"></i>
+                        Permanent duty claim <i class="fa fa-sort" (click)="sort('pmtClaim')"></i>
                       </th>
                       <th class="wd-20p">
-                        Required ?
-                        <i class="fa fa-sort" (click)="sort('isRequired')"></i>
+                        Temporary duty claim <i class="fa fa-sort" (click)="sort('tyClaim')"></i>
                       </th>
-                      <th class="wd-20p">
-                        Esign Required ?
-                        <i class="fa fa-sort" (click)="sort('isEsignRequired')"></i>
-                      </th>
-                      <th class="wd-20p">
-                        Visibility Indicator ?
-                        <i
-                          class="fa fa-sort"
-                          (click)="sort('visibilityIndicator')"
-                        ></i>
-                      </th>
-                      <th class="wd-20p">
-                        Created On<i
-                          class="fa fa-sort"
-                          (click)="sort('createdOn')"
-                        ></i>
-                      </th>
-                      <th class="actionBtnWidth">Action</th>
+                      <th>Edit</th>
+                      <th>Delete</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -132,19 +101,10 @@
                       "
                     >
                       <td>{{ i + 1 + (p - 1) * noOfPage }}</td>
-                      <td>{{ dataObj?.codeSubFormDTO?.descr | showHypen }}</td>
                       <td>{{ dataObj?.docName | showHypen }}</td>
-                      <td>{{ dataObj?.sapDocumentType | showHypen }}</td>
-                      <td>{{ dataObj?.sapDocumentName | showHypen }}</td>
-                      <td>{{ dataObj?.isRequired | showHypen }}</td>
-                      <td>{{ dataObj?.isEsignRequired | showHypen }}</td>
-                      <td>
-                        {{
-                          getVisibilityDescription(dataObj?.visibilityIndicator)
-                        }}
-                      </td>
-
-                      <td>{{ dataObj?.createdOn | showDate : "medium" }}</td>
+                      <td>{{ dataObj?.ltcClaim | yesNo }}</td>
+                      <td>{{ dataObj?.pmtClaim | yesNo }}</td>
+                      <td>{{ dataObj?.tyClaim | yesNo }}</td>
                       <td>
                         <button
                           class="btn btn-primary"
@@ -153,6 +113,8 @@
                         >
                           <i class="fa fa-edit"></i>
                         </button>
+                      </td>
+                      <td>
                         <button
                           class="btn btn-danger"
                           title="Delete"
@@ -165,7 +127,7 @@
                       </td>
                     </tr>
                     <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                      <td colspan="20">No Records Available</td>
+                      <td colspan="20">No Records</td>
                     </tr>
                     <tr class="noExl pagination_area" *ngIf="dataList?.length">
                       <td colspan="20">

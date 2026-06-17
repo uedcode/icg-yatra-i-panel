@@ -4,7 +4,6 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
-import { MappingService } from 'src/app/service/admin/mapping.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/service/admin/user.service';
 
@@ -23,7 +22,6 @@ export class ManageUnitAdminComponent implements OnInit {
     public $auth: AuthService,
     private $common: CommonService,
     private $systemAdmin: SystemAdminService,
-    private $mapping: MappingService,
     private route: ActivatedRoute,
     private $user: UserService
   ) { }
@@ -200,7 +198,7 @@ export class ManageUnitAdminComponent implements OnInit {
       let config = {
         headers: {},
       };
-      this.$mapping.getUnit(config).subscribe(
+      this.$systemAdmin.getCodeUnits(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
