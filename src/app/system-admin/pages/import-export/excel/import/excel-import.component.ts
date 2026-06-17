@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { CommonService } from 'src/app/service/core/common.service';
 import { ExcelImportService } from 'src/app/service/admin/excel-import.service';
+import { finalize } from 'rxjs';
+
+declare var $: any;
 
 @Component({
   selector: 'app-sys-admin-excel-import',
@@ -27,6 +30,11 @@ export class SysAdminExcelImportComponent {
   fileError = '';
 
   constructor(private $common: CommonService, private $excelImport: ExcelImportService) {}
+
+  openExcelModal() {
+    this.resetFileSelection();
+    $('#sysAdminExcelImportModal').modal('show');
+  }
 
   onFileChange(event: any) {
     const input = event?.target as HTMLInputElement;
@@ -69,21 +77,29 @@ export class SysAdminExcelImportComponent {
         const rows: any[] = XLSX.utils.sheet_to_json(sheet);
         const payload = rows.map(row => this.mapExcelRow(row));
 
-        this.$excelImport.importExcel(payload).subscribe((response: any) => {
+        this.$excelImport.importExcel(payload).pipe(
+          finalize(() => {
+            this.submitBtn = false;
+            this.$common.hideLoader();
+          })
+        ).subscribe((response: any) => {
           if (response.status === true) {
             this.excelList = response.object || [];
+            this.resetFileSelection();
+            $('#sysAdminExcelImportModal').modal('hide');
           }
-          this.submitBtn = false;
-          this.$common.hideLoader();
-        }, () => {
-          this.submitBtn = false;
-          this.$common.hideLoader();
         });
       } catch (error) {
         console.error(error);
         this.submitBtn = false;
         this.$common.hideLoader();
+        this.$common.showMessage('Unable to read Excel file.', 'danger');
       }
+    };
+    reader.onerror = () => {
+      this.submitBtn = false;
+      this.$common.hideLoader();
+      this.$common.showMessage('Unable to read Excel file.', 'danger');
     };
     reader.readAsArrayBuffer(this.excelFile);
   }
@@ -111,5 +127,14 @@ export class SysAdminExcelImportComponent {
       emailId: row[this.excelObj.emailId],
       kycId: row[this.excelObj.kycId],
     };
+  }
+
+  private resetFileSelection() {
+    this.excelFile = null;
+    this.fileError = '';
+    const input = document.getElementById('sysAdminExcelFile') as HTMLInputElement | null;
+    if (input) {
+      input.value = '';
+    }
   }
 }

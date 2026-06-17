@@ -23,7 +23,6 @@ import { ChangePasswordComponent } from './pages/support/change-password/change-
 import { SidebarComponent } from './common/sidebar/sidebar.component';
 import { SystemAdminComponent } from './system-admin.component';
 
-import { ManageSystemAdminComponent } from './pages/manage-user/manage-system-admin/manage-system-admin.component';
 import { ManageUnitAdminComponent } from './pages/manage-user/manage-unit-admin/manage-unit-admin.component';
 import { VersionHistoryComponent } from './pages/manage-masters/manage-version-history/version-history/version-history.component';
 import { AddVersionHistoryModalComponent } from './pages/manage-masters/manage-version-history/add-version-history-modal/add-version-history-modal.component';
@@ -40,10 +39,8 @@ import { ShipComponent } from './pages/manage-masters/manage-ship/ship/ship.comp
 import { AddShipModalComponent } from './pages/manage-masters/manage-ship/add-ship-modal/add-ship-modal.component';
 import { InboxComponent } from './pages/import-export/normal/inbox/inbox.component';
 import { ExportedComponent } from './pages/import-export/normal/exported/exported.component';
-import { ArchivedComponent } from './pages/import-export/normal/archived/archived.component';
 import { ImportComponent } from './pages/import-export/normal/import/import.component';
 import { ImportedComponent } from './pages/import-export/normal/imported/imported.component';
-import { ArchivedImportComponent } from './pages/import-export/normal/archived-import/archived-import.component';
 import { BackupImportComponent } from './pages/import-export/normal/backup-import/backup-import.component';
 import { BackupExportComponent } from './pages/import-export/normal/backup-export/backup-export.component';
 import { DiaryImportComponent } from './pages/import-export/diary/import/diary-import.component';
@@ -80,7 +77,6 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         SystemAdminComponent,
         DashboardComponent,
         ChangePasswordComponent,
-        ManageSystemAdminComponent,
         ManageUnitAdminComponent,
         // manage master
         VersionHistoryComponent,
@@ -113,10 +109,8 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         ProfileSettingComponent,
         InboxComponent,
         ExportedComponent,
-        ArchivedComponent,
         ImportComponent,
         ImportedComponent,
-        ArchivedImportComponent,
         BackupImportComponent,
         BackupExportComponent,
         DiaryImportComponent,

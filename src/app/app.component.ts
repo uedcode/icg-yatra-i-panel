@@ -65,20 +65,7 @@ export class AppComponent {
 
 	storedTheme;
 	setDefaultTheme() {
-		var userDetails = this.$auth.getUserDetails();
-		this.storedTheme = "theme_green";
-		// if (userDetails) {
-		// 	let groupList = this.$auth.codeGroupType();
-		// 	if (userDetails.roleTypeId == groupList.admin) {
-		// 		this.storedTheme = "theme_green";
-		// 	} else if (userDetails.roleTypeId == groupList.depo) {
-		// 		this.storedTheme = "theme_yellow";
-		// 	} else if (userDetails.roleTypeId == groupList.subDepo) {
-		// 		this.storedTheme = "theme_red";
-		// 	} else {
-		// 		this.storedTheme = "";
-		// 	}
-		// }
+		this.storedTheme = "theme_government";
 	}
 
 }

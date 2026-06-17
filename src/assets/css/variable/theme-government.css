@@ -1,0 +1,67 @@
+/* YATRA government theme.
+   This replaces the copied multi-theme skins (green/red/yellow) with one
+   official visual direction for all panels. */
+
+/* sidebar start */
+.theme_government a:hover,
+.theme_government .breadcrumb-item a {
+  color: #104e8d !important;
+}
+
+.theme_government .side-menu__item.active,
+.theme_government .side-menu__item.active .side-menu__icon,
+.theme_government .side-menu__item:hover .side-menu__label,
+.theme_government .side-menu__item:hover .side-menu__icon,
+.theme_government .side-menu__item:hover .angle {
+  color: #ffffff !important;
+}
+
+.theme_government .slide.is-expanded .slide-menu li a:hover,
+.theme_government .slide-menu a.active,
+.theme_government .slide-menu a.current,
+.theme_government .slide-menu a:hover span,
+.theme_government .slide-menu a.active span,
+.theme_government .slide-menu a.current span,
+.theme_government .slide-menu a:hover .counts,
+.theme_government .slide-menu a.active .counts,
+.theme_government .slide-menu a.current .counts {
+  color: #ffffff !important;
+}
+/* sidebar end */
+
+/* header start */
+.theme_government .ledger_logo {
+  width: auto;
+  background: #fff;
+  text-align: center;
+  margin-right: 15px;
+  border-radius: 2px;
+  margin-left: 10px;
+}
+
+.theme_government span.admin_text_span,
+.theme_government .wallet_back,
+.theme_government .icon i,
+.theme_government .top-header a {
+  color: #fff !important;
+}
+
+.theme_government .nav-link.icon {
+  border: 1px solid #fff;
+}
+
+.theme_government .top-header .dropdown.show a {
+  color: #031938 !important;
+}
+
+.theme_government .header.top-header {
+  background: #104e8d !important;
+}
+/* header end */
+
+/* table start */
+.theme_government table thead tr,
+.theme_government .pagination_area .ngx-pagination .current {
+  background: #104e8d !important;
+}
+/* table end */

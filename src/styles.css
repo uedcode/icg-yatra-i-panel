@@ -1282,47 +1282,235 @@ table.table tbody tr:hover {
   font-weight: 600;
 }
 
+/* Global Sidebar Contract
+   All role panels use the same dark sidebar markup. Keep menu/submenu
+   hover, active, icons, arrows, labels, and count badges readable here
+   instead of adding per-panel sidebar color patches. */
+.app-sidebar .side-menu .side-menu__item,
 .side-menu .side-menu__item {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
   margin: 3px 10px;
-  border-radius: 6px;
-  padding: 8px 12px;
-  color: #d6dfeb !important;
+  padding: 8px 12px !important;
   border: 1px solid transparent;
-  transition: all 0.2s var(--gov-ease);
+  border-radius: 6px;
+  color: #dce8f7 !important;
+  background: transparent !important;
+  text-decoration: none !important;
+  transition: background 0.18s var(--gov-ease), border-color 0.18s var(--gov-ease), color 0.18s var(--gov-ease);
 }
 
-.side-menu .side-menu__item:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
-  text-decoration: none;
+.app-sidebar .side-menu .side-menu__item .side-menu__icon,
+.app-sidebar .side-menu .side-menu__item .side-menu__label,
+.app-sidebar .side-menu .side-menu__item .angle,
+.app-sidebar .side-menu .side-menu__item span,
+.side-menu .side-menu__item .side-menu__icon,
+.side-menu .side-menu__item .side-menu__label,
+.side-menu .side-menu__item .angle,
+.side-menu .side-menu__item span {
+  color: inherit !important;
 }
 
+.app-sidebar .side-menu .side-menu__item .side-menu__label,
+.side-menu .side-menu__item .side-menu__label {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 6px;
+}
+
+.app-sidebar .side-menu .side-menu__item .side-menu__icon,
+.side-menu .side-menu__item .side-menu__icon {
+  flex: 0 0 18px;
+  width: 18px;
+  text-align: center;
+}
+
+.app-sidebar .side-menu .side-menu__item .angle,
+.side-menu .side-menu__item .angle {
+  margin-left: auto;
+  transition: transform 0.18s var(--gov-ease);
+}
+
+.app-sidebar .side-menu .side-menu__item:hover,
+.app-sidebar .side-menu .side-menu__item:focus,
+.side-menu .side-menu__item:hover,
+.side-menu .side-menu__item:focus {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.09) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  text-decoration: none !important;
+}
+
+.app-sidebar .side-menu .side-menu__item.active,
+.app-sidebar .side-menu .side-menu__item.current,
+.app-sidebar .side-menu li.is-expanded > .side-menu__item,
+.app-sidebar .side-menu .slide.is-expanded > .side-menu__item,
 .side-menu .side-menu__item.active,
 .side-menu .side-menu__item.current,
-.side-menu li.is-expanded > .side-menu__item {
+.side-menu li.is-expanded > .side-menu__item,
+.side-menu .slide.is-expanded > .side-menu__item {
   color: #ffffff !important;
-  background: linear-gradient(
-    90deg,
-    rgba(21, 76, 122, 0.78),
-    rgba(31, 93, 74, 0.74)
-  );
-  border-color: rgba(192, 220, 247, 0.32);
+  background: linear-gradient(90deg, rgba(21, 76, 122, 0.88), rgba(31, 93, 74, 0.82)) !important;
+  border-color: rgba(192, 220, 247, 0.34) !important;
+  box-shadow: inset 3px 0 0 #44a5eb;
 }
 
-.slide-menu .slide-item {
-  color: #c8d7e6 !important;
-  border-radius: 5px;
-  margin: 2px 10px 2px 26px;
-  padding: 7px 12px;
-  display: block;
+.app-sidebar .side-menu li.is-expanded > .side-menu__item .angle,
+.app-sidebar .side-menu .slide.is-expanded > .side-menu__item .angle,
+.side-menu li.is-expanded > .side-menu__item .angle,
+.side-menu .slide.is-expanded > .side-menu__item .angle {
+  transform: rotate(90deg);
 }
 
-.slide-menu .slide-item:hover,
-.slide-menu .slide-item.active,
-.slide-menu .slide-item.current {
+.app-sidebar .side-menu .slide-menu,
+.side-menu .slide-menu {
+  margin: 0 !important;
+  padding: 4px 0 6px 0 !important;
+  background: transparent !important;
+}
+
+.app-sidebar .side-menu .slide-menu li,
+.side-menu .slide-menu li {
+  list-style: none !important;
+}
+
+.app-sidebar .side-menu .slide-menu .slide-item,
+.side-menu .slide-menu .slide-item {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  min-height: 36px;
+  width: calc(100% - 20px);
+  margin: 2px 10px 2px 22px;
+  padding: 8px 40px 8px 20px !important;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #cfe0f3 !important;
+  background: transparent !important;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none !important;
+  transition: background 0.18s var(--gov-ease), border-color 0.18s var(--gov-ease), color 0.18s var(--gov-ease);
+}
+
+.app-sidebar .side-menu .slide-menu .slide-item *,
+.side-menu .slide-menu .slide-item * {
+  color: inherit !important;
+}
+
+.app-sidebar .side-menu .slide-menu .slide-item::before,
+.side-menu .slide-menu .slide-item::before {
+  content: '\00BB';
+  position: absolute;
+  left: 7px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(207, 224, 243, 0.72);
+}
+
+.app-sidebar .side-menu .slide-menu .slide-item:hover,
+.app-sidebar .side-menu .slide-menu .slide-item:focus,
+.side-menu .slide-menu .slide-item:hover,
+.side-menu .slide-menu .slide-item:focus {
   color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.09);
-  text-decoration: none;
+  background: rgba(255, 255, 255, 0.09) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  text-decoration: none !important;
+}
+
+.app-sidebar .side-menu .slide-menu a.slide-item:hover,
+.app-sidebar .side-menu .slide-menu a.slide-item:focus,
+.app-sidebar .side-menu .slide-menu a.slide-item:hover span,
+.app-sidebar .side-menu .slide-menu a.slide-item:focus span,
+.app-sidebar .side-menu .slide-menu a.slide-item:hover .counts,
+.app-sidebar .side-menu .slide-menu a.slide-item:focus .counts,
+.side-menu .slide-menu a.slide-item:hover,
+.side-menu .slide-menu a.slide-item:focus,
+.side-menu .slide-menu a.slide-item:hover span,
+.side-menu .slide-menu a.slide-item:focus span,
+.side-menu .slide-menu a.slide-item:hover .counts,
+.side-menu .slide-menu a.slide-item:focus .counts {
+  color: #ffffff !important;
+}
+
+/* Theme skins set submenu hover/active links to blue with !important.
+   Keep the final sidebar contract stronger so submenu text remains readable. */
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:link,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:visited {
+  color: #cfe0f3 !important;
+}
+
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:hover,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:focus,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:active,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item.active,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item.current,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:hover span,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:focus span,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:active span,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item.active span,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item.current span,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:hover .counts,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:focus .counts,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:active .counts,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item.active .counts,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item.current .counts {
+  color: #ffffff !important;
+}
+
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:hover::before,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:focus::before,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item:active::before,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item.active::before,
+body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu li > a.slide-item.current::before {
+  color: #ffffff !important;
+}
+
+.app-sidebar .side-menu .slide-menu .slide-item:hover::before,
+.app-sidebar .side-menu .slide-menu .slide-item:focus::before,
+.side-menu .slide-menu .slide-item:hover::before,
+.side-menu .slide-menu .slide-item:focus::before {
+  color: #ffffff !important;
+}
+
+.app-sidebar .side-menu .slide-menu .slide-item.active,
+.app-sidebar .side-menu .slide-menu .slide-item.current,
+.side-menu .slide-menu .slide-item.active,
+.side-menu .slide-menu .slide-item.current {
+  color: #ffffff !important;
+  background: rgba(68, 165, 235, 0.18) !important;
+  border-color: rgba(68, 165, 235, 0.28) !important;
+  box-shadow: inset 3px 0 0 #44a5eb;
+}
+
+.app-sidebar .side-menu .slide-menu .slide-item.active::before,
+.app-sidebar .side-menu .slide-menu .slide-item.current::before,
+.side-menu .slide-menu .slide-item.active::before,
+.side-menu .slide-menu .slide-item.current::before {
+  color: #44a5eb !important;
+}
+
+.app-sidebar .side-menu .counts,
+.side-menu .counts {
+  flex: 0 0 auto;
+  color: #ffffff !important;
+  background: #ef476f !important;
+  box-shadow: 0 4px 10px rgba(239, 71, 111, 0.25);
+}
+
+.app-sidebar .side-menu .slide-menu .slide-item .counts,
+.side-menu .slide-menu .slide-item .counts {
+  position: absolute !important;
+  right: 10px;
+  top: 50%;
+  margin-left: 0 !important;
+  transform: translateY(-50%);
 }
 
 .modal-content {

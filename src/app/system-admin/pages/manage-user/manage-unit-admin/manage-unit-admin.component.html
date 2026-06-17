@@ -1,181 +1,215 @@
-﻿<!--Page header-->
-        <div class="page-header gov-page-toolbar">
-          <div class="page-leftheader">
-            <h4 class="page-title">Manage Unit Admins</h4>
-            <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Manage Unit Admins
-              </li>
-            </ol>
-          </div>
-          <div>
-            <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
-                class="fa fa-chevron-left" style="display: inline-block;"></i></button>
-          </div>
-        </div>
-        <!--End Page header-->
+<div class="page-header gov-page-toolbar">
+  <div class="page-leftheader">
+    <h4 class="page-title">Manage Unit Admin</h4>
+    <ol class="breadcrumb pl-0">
+      <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Yatra</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Manage Unit Admin</li>
+    </ol>
+  </div>
+  <div>
+    <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()">
+      <i class="fa fa-chevron-left" style="display: inline-block;"></i>
+    </button>
+  </div>
+</div>
 
-        <div class="row">
-          <div class="col-md-12 col-lg-12">
-            <div class="card">
-              <div class="card-body">
-
-                <form class="page_form" autocomplete="off" (ngSubmit)="saveRecord();" #requiredForm="ngForm" novalidate>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Unit<sup class="required-msg">*</sup></label>
-                        <ngx-select [items]="unitList" optionTextField="descr" optionValueField="unit"
-                          name="codeHrUnitId" #codeHrUnitId="ngModel" [(ngModel)]="formObj.codeHrUnitId"
-                          [allowClear]="true" required placeholder="Select Unit">
-                        </ngx-select>
-                        <div *ngIf="codeHrUnitId.touched || (requiredForm.submitted && codeHrUnitId.invalid)">
-                          <div *ngIf="codeHrUnitId.errors?.required" class="invalid-msg">
-                            Unit is required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">P.No. (Ex: 12334-R)<sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="PNO" maxlength="50"
-                          [(ngModel)]="formObj.pno" #pno="ngModel" name="pno"  required appPersonalNumberValidation>
-                        <div *ngIf="pno.touched || (requiredForm.submitted && pno.invalid)">
-                          <div *ngIf="pno.errors?.required" class="invalid-msg">
-                            P.No. is required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3" style="margin-top: 30px;">
-                      <div class="form-label">
-                        <button type="button" title="Search" class="btn btn-dark"
-                          (click)="doSearch()">Search
-                          <i class="fa fa-search" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" (click)="pnoReset()"
-                          class="btn btn-secondary" title="Refresh">
-                          <i class="fa fa-refresh" aria-hidden="true"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Name </label>
-                        <input type="text" class="form-control" placeholder="Name" maxlength="50"
-                          [(ngModel)]="advSearchObj.nameShort" disabled name="nameShort"
-                          appNotSpecialCharecter>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Rank</label>
-                        <input type="text" class="form-control" placeholder="Rank" maxlength="50"
-                          [(ngModel)]="advSearchObj.rankDescr" disabled name="rankDescr">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <label class="form-label">Mobile Number </label>
-                      <input type="text" class="form-control" placeholder="Mobile Number" disabled maxlength="10"
-                        minlength="10" [(ngModel)]="advSearchObj.mobileNo" name="mobileNo">
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-3">
-                      <button  type="submit" title="Submit" title="Submit" class="btn btn-space btn-primary"
-                        [disabled]="disableBtn">Submit</button>
-                      <button class="btn btn-space btn-warning" title="Reset" type="button"
-                        (click)="reset()"  title="Reset">Reset</button>
-                    </div>
-                  </div>
-                </form>
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <form class="page_form" (ngSubmit)="saveRecord()" autocomplete="off" #requiredForm="ngForm" novalidate>
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="form-label">Unit <sup class="required-msg">*</sup></label>
+                <ngx-select
+                  [items]="unitList"
+                  optionTextField="descr"
+                  optionValueField="unit"
+                  name="unit"
+                  [(ngModel)]="formObj.unit"
+                  (ngModelChange)="onUnitChange()"
+                  [allowClear]="true"
+                  required
+                  placeholder="Select Unit">
+                </ngx-select>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-12 col-lg-12">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-sm-12 col-md-6">
-                        <div class="dataTables_length">
-                          <label>Show</label>
-                          <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
-                            (ngModelChange)="p=1">
-                            <option value="10">10</option>
-                            <!-- <option value="25">25</option> -->
-                            <!-- <option value="50">50</option> -->
-                            <option value="100">100</option>
-                            <option value="100000">All</option>
-                          </select>
-                          <label>entries</label>
-                        </div>
-                      </div>
 
-                      <div class="col-sm-12 col-md-3 offset-3">
-                        <div class="dataTables_filter"  title="Search">
-                          <i class="fa fa-search"></i>
-                          <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
-                            [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
-                      <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
-                        <thead>
-                          <tr>
-                            <th class="wd-5p">SL</th>
-                            <th class="wd-20p">Unit <i class="fa fa-sort" (click)="sort('unit')"></i></th>
-                            <th class="wd-20p">PNO <i class="fa fa-sort" (click)="sort('pno')"></i></th>
-                            <th class="wd-20p">Name<i class="fa fa-sort" (click)="sort('name')"></i></th>
-                            <th class="wd-20p">Rank <i class="fa fa-sort" (click)="sort('rank')"></i></th>
-                            <!--<th class="wd-20p">Mobile Number <i class="fa fa-sort" (click)="sort('mobileNo')"></i></th>-->
-                            <th class="actionBtnWidth">Action </th>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="form-label">Select Cadre <sup class="required-msg">*</sup></label>
+                <select class="form-control" name="cadre" [(ngModel)]="formObj.cadre" (ngModelChange)="onCadreChange()" required>
+                  <option value="">Select</option>
+                  <option *ngFor="let cadre of cadreList" [value]="cadre.id">{{ cadre.descr }}</option>
+                </select>
+              </div>
+            </div>
 
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
-                            <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
-                            <td>{{dataObj?.codeUnitDTO?.descr | showHypen}}</td>
-                            <td>{{dataObj?.pno| showHypen}}</td>
-                            <td>{{dataObj?.name | showHypen}}</td>
-                            <td>{{dataObj?.rank | showHypen}}</td>
-                            <!--<td>{{dataObj?.codeHrDataDTO?.mobileNo| showHypen}}</td>-->
-                            <td>
-                              <img src="assets/images/switch-on.png" alt=""
-                                *ngIf="dataObj.aclCodeStatusDTO?.statusId==codeStatusList.activate"
-                                (click)="openChangeStatusModal(dataObj,codeStatusList.deactivate)" data-toggle="modal"
-                                data-target="#change_status_modal" title="Enable" style="width: 45px; cursor: pointer;">
-                              <img src="assets/images/switch-off.png" alt=""
-                                *ngIf="dataObj.aclCodeStatusDTO?.statusId==codeStatusList.deactivate"
-                                (click)="openChangeStatusModal(dataObj,codeStatusList.activate)" data-toggle="modal"
-                                data-target="#change_status_modal" title="Disable"
-                                style="width: 45px; cursor: pointer;">
-                            </td>
-                          </tr>
-                          <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                            <td colspan="20">No Records Available</td>
-                          </tr>
-                          <tr class="noExl pagination_area" *ngIf="dataList?.length">
-                            <td colspan="20">
-                              <pagination-controls (pageChange)="p = $event"></pagination-controls>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div><app-change-status-modal [changeData]="tempObj" (changeStatusConfirmed)="changeStatus($event)">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="form-label">Name <sup class="required-msg">*</sup></label>
+                <ngx-select
+                  [items]="userList"
+                  optionTextField="selectLabel"
+                  optionValueField="selectId"
+                  [placeholder]="formObj.unit && formObj.cadre ? 'Select Name' : 'Select Unit and Cadre first'"
+                  name="userId"
+                  [(ngModel)]="formObj.userId"
+                  (ngModelChange)="onUserChange($event)"
+                  [disabled]="!formObj.unit || !formObj.cadre"
+                  required>
+                </ngx-select>
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="form-label">PNO</label>
+                <input type="text" class="form-control" placeholder="PNO" [value]="getUserPno(userObj)" disabled>
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="form-label">Phone</label>
+                <input type="text" class="form-control" placeholder="Phone" [value]="getUserPhone(userObj)" disabled>
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="form-label">Rank</label>
+                <input type="text" class="form-control" placeholder="Rank" [value]="getUserRank(userObj)" disabled>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="form-label">Authorization No <sup class="required-msg">*</sup></label>
+                <input type="text" class="form-control" placeholder="Enter Authorization No" maxlength="100" [(ngModel)]="formObj.authNo" name="authNo" required>
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <label class="form-label">Authorization Date <sup class="required-msg">*</sup></label>
+                <input type="date" class="form-control" [(ngModel)]="formObj.authDate" name="authDate" required>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Scanned copy of Authorization <sup class="required-msg">*</sup></label>
+                <input #authDocInput type="file" class="form-control" accept="application/pdf" (change)="onAuthDocSelected($event)" required>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">From Date and Time <sup class="required-msg">*</sup></label>
+                <input type="datetime-local" class="form-control" [(ngModel)]="formObj.fromDateTime" name="fromDateTime" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3">
+              <button type="submit" title="Submit" class="btn btn-space btn-primary" [disabled]="disableBtn">Submit</button>
+              <button class="btn btn-space btn-warning" type="button" (click)="reset()" title="Reset">Reset</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="row mt-3">
+          <div class="col-sm-12 col-md-6">
+            <div class="dataTables_length">
+              <label>Show</label>
+              <select class="form-control" name="noOfPage" [(ngModel)]="noOfPage" (ngModelChange)="p=1">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              <label>entries</label>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-3 offset-3">
+            <div class="dataTables_filter" title="Search">
+              <i class="fa fa-search"></i>
+              <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1" [(ngModel)]="searchObj" name="searchObj">
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+          <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
+            <thead>
+              <tr>
+                <th>S.No.</th>
+                <th>Unit</th>
+                <th>Name</th>
+                <th>PNO</th>
+                <th>Phone</th>
+                <th>Rank</th>
+                <th>Authorization No</th>
+                <th>Authorization Date</th>
+                <th>Scanned copy of Authorization</th>
+                <th>From Date and Time</th>
+                <th class="actionBtnWidth">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let dataObj of dataList | filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i=index">
+                <td>{{ (i + 1) + (p - 1) * noOfPage }}.</td>
+                <td>{{ dataObj?.codeUnitDTO?.descr | showHypen }}</td>
+                <td>{{ getUserName(dataObj) | showHypen }}</td>
+                <td>{{ getUserPno(dataObj) | showHypen }}</td>
+                <td>{{ getUserPhone(dataObj) | showHypen }}</td>
+                <td>{{ getUserRank(dataObj) | showHypen }}</td>
+                <td>{{ dataObj?.authNo | showHypen }}</td>
+                <td>{{ dataObj?.authDate | showDate:'short' }}</td>
+                <td>
+                  <button type="button" class="btn btn-info btn-sm" *ngIf="dataObj?.authDocUrl" (click)="viewAuthDoc(dataObj)">
+                    <i class="fa fa-eye"></i>
+                  </button>
+                  <span *ngIf="!dataObj?.authDocUrl">-</span>
+                </td>
+                <td>{{ dataObj?.fromDateTime | showDate:'medium' }}</td>
+                <td>
+                  <img src="assets/images/switch-on.png" alt=""
+                    *ngIf="dataObj.aclCodeStatusDTO?.statusId==codeStatusList.activate"
+                    (click)="openChangeStatusModal(dataObj,codeStatusList.deactivate)"
+                    data-toggle="modal" data-target="#change_status_modal" title="Deactivate"
+                    style="width: 45px; cursor: pointer;">
+                  <img src="assets/images/switch-off.png" alt=""
+                    *ngIf="dataObj.aclCodeStatusDTO?.statusId==codeStatusList.deactivate"
+                    (click)="openChangeStatusModal(dataObj,codeStatusList.activate)"
+                    data-toggle="modal" data-target="#change_status_modal" title="Activate"
+                    style="width: 45px; cursor: pointer;">
+                </td>
+              </tr>
+              <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
+                <td colspan="20">No Records</td>
+              </tr>
+              <tr class="noExl pagination_area" *ngIf="dataList?.length">
+                <td colspan="20">
+                  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-change-status-modal
+  [changeData]="tempObj"
+  (changeStatusConfirmed)="changeStatus($event)">
 </app-change-status-modal>
-</div>
-</div>
-</div>
-</div>
-
