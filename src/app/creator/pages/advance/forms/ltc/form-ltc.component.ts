@@ -10,6 +10,10 @@ import { DropdownManageService } from 'src/app/service/form/dropdown-manage.serv
 import { FormManageService } from 'src/app/service/form/form-manage.service';
 import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
 import { take } from 'rxjs/operators';
+import {
+  clearLegacyInvalidFromEvent,
+  validateLegacyRequiredSection,
+} from '../shared/helpers/legacy-form-validation.helper';
 
 type YesNoNA = 'Yes' | 'No' | 'NA' | '';
 
@@ -135,12 +139,13 @@ export class FormLtcAdvanceComponent implements OnInit {
   disableBtn = false;
   fullFormDisabled = false;
   isPreviewDisabled = false;
+  showErrors = false;
   gxFormUploading = false;
 
   // Sign types (match your old constants concept)
   codeSignType = {
-    inkSign: 'INK_SIGN',
-    eSign: 'E_SIGN',
+    inkSign: 'IS',
+    eSign: 'ES',
   };
 
   // LTC subtype
@@ -249,7 +254,7 @@ export class FormLtcAdvanceComponent implements OnInit {
 
   private initFromRoute(): void {
     const qp = this.route.snapshot.queryParamMap;
-    this.claimIdParam = qp.get('claimId') || qp.get('resubId');
+    this.claimIdParam = qp.get('claimId') || qp.get('id') || qp.get('resubId');
     this.resubClaimId = qp.get('resubId');
     this.supplementaryId = qp.get('supId');
   }
@@ -369,6 +374,14 @@ export class FormLtcAdvanceComponent implements OnInit {
     return s.length ? s : '-';
   }
 
+  private isNullOrEmpty(value: unknown): boolean {
+    return (
+      value === null ||
+      value === undefined ||
+      (typeof value === 'string' && value.trim() === '')
+    );
+  }
+
   private toNumber(v: any): number {
     const n = Number(String(v ?? '').replace(/[^\d.]/g, ''));
     return Number.isFinite(n) ? n : 0;
@@ -457,6 +470,7 @@ export class FormLtcAdvanceComponent implements OnInit {
 
   addOrUpdateLtcTravelDetails(): void {
     // Hard validation (don’t depend only on required attr)
+    this.validateLtcTravel(this.tempLtcTravelDetails, 'modeOfTravel');
     const t = this.tempLtcTravelDetails;
 
     if (!t.source || !t.destination || !t.modeOfTravel || !t.isDts) {
@@ -522,6 +536,8 @@ export class FormLtcAdvanceComponent implements OnInit {
     };
 
     this.otherMode = row.modeOfTravel === 'Others';
+    this.boolIsDts = row.modeOfTravel === 'Air' || row.modeOfTravel === 'Train';
+    this.isDtsDisabled = !!row.modeOfTravel && !this.boolIsDts;
     this.reasonDisable = !(row.isDts === 'No');
     this.setTab('ship2');
   }
@@ -534,6 +550,8 @@ export class FormLtcAdvanceComponent implements OnInit {
   resetTempLtcTravelDetails(): void {
     this.tempLtcTravelDetails = this.defaultTempTravel();
     this.otherMode = false;
+    this.boolIsDts = true;
+    this.isDtsDisabled = false;
     this.reasonDisable = true;
     this.editIndex = -1;
     this.isEdit = false;
@@ -854,11 +872,18 @@ export class FormLtcAdvanceComponent implements OnInit {
 
     this.router.navigate([`../${this.getPreviewRoute()}`], {
       relativeTo: this.route,
-      queryParams: {
-        claimId,
-        subFormId: this.activeSubFormId,
-        ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
-      },
+      queryParams:
+        this.activeFormKind === 'claim'
+          ? {
+              claimId,
+              subFormId: this.activeSubFormId,
+              ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+            }
+          : {
+              id: claimId,
+              subFormId: this.activeSubFormId,
+              ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+            },
     });
   }
 
@@ -908,7 +933,8 @@ export class FormLtcAdvanceComponent implements OnInit {
       return;
     }
 
-    if (this.showGxFileBrowse && !this.gxFile) {
+    if (!this.claims?.gxFormFileUrl) {
+      this.showErrors = true;
       this.$common.showMessage('Please upload GX Form PDF.', 'danger');
       this.setTab('ship');
       return;
@@ -950,34 +976,11 @@ export class FormLtcAdvanceComponent implements OnInit {
     const section = document.getElementById(sectionId);
     if (!section) return true;
 
-    let isValid = true;
+    return validateLegacyRequiredSection(section);
+  }
 
-    const elements = section.querySelectorAll<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >('input, select, textarea');
-
-    elements.forEach((el) => {
-      const required = el.hasAttribute('required');
-      let value: string | boolean = '';
-
-      if (
-        el instanceof HTMLInputElement &&
-        (el.type === 'checkbox' || el.type === 'radio')
-      ) {
-        value = el.checked;
-      } else {
-        value = (el.value || '').trim();
-      }
-
-      (el as HTMLElement).style.borderColor = '';
-
-      if (required && (!value || value === '')) {
-        isValid = false;
-        (el as HTMLElement).style.borderColor = 'red';
-      }
-    });
-
-    return isValid;
+  clearLegacyInvalid(event: Event): void {
+    clearLegacyInvalidFromEvent(event);
   }
 
   goBack(): void {
@@ -1058,6 +1061,38 @@ export class FormLtcAdvanceComponent implements OnInit {
       }
     }
 
+    const adv = this.claims?.yatLtcAdvDTOs?.[0];
+    if (!adv) {
+      this.setTab('ship');
+      this.$common.showMessage('LTC details are required.', 'danger');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.gxUnit)) {
+      this.setTab('ship');
+      this.$common.showMessage('Please select Gx Unit.', 'danger');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.gxNumber)) {
+      this.setTab('ship');
+      this.$common.showMessage('Please fill Gx Number.', 'danger');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.gxDate)) {
+      this.setTab('ship');
+      this.$common.showMessage('Please select Gx Date.', 'danger');
+      return false;
+    }
+
+    if (!this.claims?.gxFormFileUrl) {
+      this.showErrors = true;
+      this.setTab('ship');
+      this.$common.showMessage('Please upload GX Form PDF.', 'danger');
+      return false;
+    }
+
     if (!this.claims?.yatDtsDetailDTOs?.length) {
       this.setTab('ship2');
       this.$common.showMessage(
@@ -1067,7 +1102,6 @@ export class FormLtcAdvanceComponent implements OnInit {
       return false;
     }
 
-    const adv = this.claims?.yatLtcAdvDTOs?.[0];
     if ((adv?.isDts || '').trim() === 'No' && !(adv?.reasonForNoDts || '').trim()) {
       this.setTab('ship');
       this.$common.showMessage(
@@ -1224,6 +1258,34 @@ export class FormLtcAdvanceComponent implements OnInit {
   validateLtcTravel(row: any, field: string) {
     if (!row) return;
 
+    if (field === 'modeOfTravel') {
+      const mode = (row.modeOfTravel || '').trim();
+      this.otherMode = mode === 'Others';
+      this.boolIsDts = mode === 'Air' || mode === 'Train';
+      this.isDtsDisabled = !!mode && !this.boolIsDts;
+
+      if (!this.otherMode) {
+        row.otherModeOfTravel = '';
+      }
+
+      if (this.isDtsDisabled) {
+        row.isDts = 'NA';
+        row.reasonForNoDts = '';
+        row._reasonForNoDtsError = false;
+        this.reasonDisable = true;
+      } else if (row.isDts === 'NA') {
+        row.isDts = '';
+      }
+    }
+
+    if (field === 'isDts') {
+      this.reasonDisable = row.isDts !== 'No';
+      if (this.reasonDisable) {
+        row.reasonForNoDts = '';
+        row._reasonForNoDtsError = false;
+      }
+    }
+
     // only validate reason when DTS is No
     if (field === 'reasonForNoDts') {
       row._reasonForNoDtsError =
@@ -1246,7 +1308,7 @@ export class FormLtcAdvanceComponent implements OnInit {
   }
 
   private getCurrentFormRoute(): string {
-    return this.activeFormKind === 'claim' ? 'form-ltc-claim' : 'form-ltc';
+    return this.activeFormKind === 'claim' ? 'form-ltc-claim' : 'form-ltc-advance';
   }
 
   private getPreviewRoute(): string {

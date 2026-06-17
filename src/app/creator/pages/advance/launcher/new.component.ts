@@ -104,10 +104,10 @@ export class NewComponent implements OnInit {
 
   private getCreatorClaimRoute(subFormId: string | null): string | null {
     const id = (subFormId || '').toUpperCase();
-    if (id === 'P') return 'form-pmt';
-    if (id === 'T') return 'form-tyduty';
-    if (id === 'F') return 'form-fte';
-    if (id === 'L') return 'form-ltc';
+    if (id === 'P') return 'form-pmt-duty';
+    if (id === 'T') return 'form-ty-duty';
+    if (id === 'F') return 'form-fte-advance';
+    if (id === 'L') return 'form-ltc-advance';
     if (id === 'M') return 'form-manual-adv';
     return null;
   }

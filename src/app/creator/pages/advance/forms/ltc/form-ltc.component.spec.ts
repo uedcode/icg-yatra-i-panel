@@ -337,7 +337,7 @@ describe('FormLtcAdvanceComponent', () => {
       {
         relativeTo: undefined,
         queryParams: {
-          claimId: 222,
+          id: 222,
           subFormId: 'L',
           supId: 'SUP-LTC-1'
         }
@@ -360,7 +360,7 @@ describe('FormLtcAdvanceComponent', () => {
   it('should derive LTC current and preview routes from form kind', () => {
     const component = createComponent();
     component.activeFormKind = 'advance';
-    expect((component as any).getCurrentFormRoute()).toBe('form-ltc');
+    expect((component as any).getCurrentFormRoute()).toBe('form-ltc-advance');
     expect((component as any).getPreviewRoute()).toBe('preview-ltc-advance');
 
     component.activeFormKind = 'claim';

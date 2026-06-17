@@ -14,6 +14,10 @@ import { CommonService } from 'src/app/service/core/common.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
 import { ClaimUtilService } from 'src/app/service/claim/claim-util.service';
+import {
+  clearLegacyInvalidFromEvent,
+  validateLegacyRequiredSection,
+} from '../shared/helpers/legacy-form-validation.helper';
 
 declare var $: any;
 
@@ -118,6 +122,8 @@ interface ClaimsFteAdv {
 export class FormFteComponent implements OnInit {
   fteEditTravelIndex: number | null = null;
   fteOtherMode = false;
+  fteBoolIsDts = false;
+  fteIsDtsDisabled = false;
   fteTravelBtnName = 'Add';
   fteTravelDetailsBtn = false;
   private fteEditIndex: number | null = null;
@@ -140,12 +146,24 @@ export class FormFteComponent implements OnInit {
   documentDtos: any[] = [];
 
   onFteModeChange() {
-    this.fteOtherMode = this.tempFteTravel.modeOfTravel === 'Others';
+    const mode = (this.tempFteTravel.modeOfTravel || '').trim();
+    this.fteOtherMode = mode === 'Others';
+    this.fteBoolIsDts = mode === 'Air' || mode === 'Train';
+    this.fteIsDtsDisabled = !!mode && !this.fteBoolIsDts;
+
     if (!this.fteOtherMode) this.tempFteTravel.otherModeOfTravel = null;
+
+    if (this.fteIsDtsDisabled) {
+      this.tempFteTravel.isDts = 'NA';
+      this.tempFteTravel.reasonForNoDts = null;
+      this.tempFteTravel._reasonError = false;
+    } else if (this.tempFteTravel.isDts === 'NA') {
+      this.tempFteTravel.isDts = null;
+    }
   }
 
   onFteIsDtsChange() {
-    if (this.tempFteTravel.isDts === 'Yes') {
+    if (this.tempFteTravel.isDts === 'Yes' || this.tempFteTravel.isDts === 'NA') {
       this.tempFteTravel.reasonForNoDts = null;
       this.tempFteTravel._reasonError = false;
     } else {
@@ -166,20 +184,28 @@ export class FormFteComponent implements OnInit {
   }
 
   private validateTempFteTravel(): boolean {
+    this.onFteModeChange();
     const t = this.tempFteTravel;
 
-    if (!t.source || !t.destination || !t.modeOfTravel || !t.isDts || !t.amount)
+    if (!t.source || !t.destination || !t.modeOfTravel || !t.isDts || !t.amount) {
+      this.$common.showMessage('Please fill all mandatory travel details.', 'danger');
       return false;
+    }
 
     if (
       t.modeOfTravel === 'Others' &&
       (!t.otherModeOfTravel || ('' + t.otherModeOfTravel).trim() === '')
-    )
+    ) {
+      this.$common.showMessage('Please fill Other Mode of Travel when mode is Others.', 'danger');
       return false;
+    }
 
     if (t.isDts === 'No') {
       this.validateFteReason();
-      if (t._reasonError) return false;
+      if (t._reasonError) {
+        this.$common.showMessage('Reason for not using DTS is required when DTS is No.', 'danger');
+        return false;
+      }
     }
     return true;
   }
@@ -255,7 +281,7 @@ export class FormFteComponent implements OnInit {
       _reasonError: false,
     };
 
-    this.fteOtherMode = this.tempFteTravel.modeOfTravel === 'Others';
+    this.onFteModeChange();
   }
 
   deleteFteTravelDetails(i: number): void {
@@ -282,6 +308,8 @@ export class FormFteComponent implements OnInit {
       _reasonError: false,
     };
     this.fteOtherMode = false;
+    this.fteBoolIsDts = false;
+    this.fteIsDtsDisabled = false;
   }
 
   activatedRoute: ActivatedRoute;
@@ -347,12 +375,20 @@ export class FormFteComponent implements OnInit {
   }
 
   navigatePreview(route: string, id: any): void {
+    const previewId = id || this.claims?.claimId || this.claimIdParam;
     this.router.navigate([`../${this.getPreviewRoute()}`], {
-      queryParams: {
-        claimId: id || this.claims?.claimId || this.claimIdParam,
-        subFormId: this.activeSubFormId,
-        ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
-      },
+      queryParams:
+        this.activeFormKind === 'claim'
+          ? {
+              claimId: previewId,
+              subFormId: this.activeSubFormId,
+              ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+            }
+          : {
+              id: previewId,
+              subFormId: this.activeSubFormId,
+              ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+            },
     });
   }
 
@@ -390,11 +426,11 @@ export class FormFteComponent implements OnInit {
   }
 
   private getCurrentFormRoute(): string {
-    return this.activeFormKind === 'claim' ? 'form-fte-claim' : 'form-fte';
+    return this.activeFormKind === 'claim' ? 'form-fte-claim' : 'form-fte-advance';
   }
 
   private getPreviewRoute(): string {
-    return this.activeFormKind === 'claim' ? 'preview-fte-claim' : 'form-fte-detail';
+    return this.activeFormKind === 'claim' ? 'preview-fte-claim' : 'preview-fte-advance';
   }
 
   checkValidSignType(
@@ -531,7 +567,7 @@ export class FormFteComponent implements OnInit {
     this.activeFormKind = this.resolveFormKind(this.route.snapshot.data?.['formKind']);
     this.activeSubFormId = this.activeFormKind === 'claim' ? this.codeClaim.fteClm : this.codeClaim.fteAdv;
     this.claims.codeSubFormDTO = { subFormId: this.activeSubFormId };
-    this.claimIdParam = qp.get('claimId') || qp.get('resubId');
+    this.claimIdParam = qp.get('claimId') || qp.get('id') || qp.get('resubId');
     this.resubClaimId = qp.get('resubId');
     this.supplementaryId = qp.get('supId');
   }
@@ -780,7 +816,8 @@ export class FormFteComponent implements OnInit {
 
             this.documentDtos = this.claims.yatDocsDTOs || [];
             this.$codeDocInfo.setDocument(this.documentDtos as []);
-            this.claims.signWith = this.codeSignType.eSign;
+            this.claims.signWith =
+              obj.signWith || this.claims.signWith || this.codeSignType.eSign;
           } else if (obj.userBasicDetailDTO) {
             const user = obj.userBasicDetailDTO;
             adv.pno = user.pno ?? user.persNo ?? null;
@@ -940,34 +977,11 @@ export class FormFteComponent implements OnInit {
     const section = document.getElementById(sectionId);
     if (!section) return true;
 
-    let isValid = true;
+    return validateLegacyRequiredSection(section);
+  }
 
-    const elements = section.querySelectorAll<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >('input, select, textarea');
-
-    elements.forEach((el) => {
-      const required = el.hasAttribute('required');
-      let value: string | boolean = '';
-
-      if (
-        el instanceof HTMLInputElement &&
-        (el.type === 'checkbox' || el.type === 'radio')
-      ) {
-        value = el.checked;
-      } else {
-        value = (el.value || '').trim();
-      }
-
-      (el as HTMLElement).style.borderColor = '';
-
-      if (required && (!value || value === '')) {
-        isValid = false;
-        (el as HTMLElement).style.borderColor = 'red';
-      }
-    });
-
-    return isValid;
+  clearLegacyInvalid(event: Event): void {
+    clearLegacyInvalidFromEvent(event);
   }
 
   private activateTab(sectionId: string): void {
@@ -1143,6 +1157,38 @@ export class FormFteComponent implements OnInit {
         'Please complete all mandatory fields before submitting.',
         'danger'
       );
+      return false;
+    }
+
+    const adv = this.claims?.yatForeignDutyAdvDTOs?.[0];
+    if (!adv) {
+      this.activateTab('ship');
+      this.$common.showMessage('FTE details are required.', 'danger');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.gxUnit)) {
+      this.activateTab('ship');
+      this.$common.showMessage('Please select Gx Unit.', 'danger');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.gxNumber)) {
+      this.activateTab('ship');
+      this.$common.showMessage('Please fill Gx Number.', 'danger');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.gxDate)) {
+      this.activateTab('ship');
+      this.$common.showMessage('Please select Gx Date.', 'danger');
+      return false;
+    }
+
+    if (!this.claims?.gxFormFileUrl) {
+      this.showErrors = true;
+      this.activateTab('ship');
+      this.$common.showMessage('Please upload Gx Form (PDF).', 'danger');
       return false;
     }
 

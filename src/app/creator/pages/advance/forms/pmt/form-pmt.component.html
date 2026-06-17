@@ -41,7 +41,7 @@
           <!-- MAIN CONTENT -->
           <div class="content-wrap">
             <div class="panel_card">
-              <div id="validateForm">
+              <div id="validateForm" (input)="clearLegacyInvalid($event)" (change)="clearLegacyInvalid($event)">
                 <div class="row">
                   <div class="col-md-12">
                     <div class="panel panel-white">
@@ -569,6 +569,7 @@
                                           <th>From<sup>*</sup></th>
                                           <th>To<sup>*</sup></th>
                                           <th>Mode of Travel<sup>*</sup></th>
+                                          <th *ngIf="otherMode">Other Mode of Travel<sup>*</sup></th>
                                           <th>DTS<sup>*</sup></th>
                                           <th>Total Amount (In Rs.)<sup>*</sup></th>
                                           <th>Reason for not using DTS</th>
@@ -587,7 +588,8 @@
                                           </td>
                                           <td>
                                             <select class="form-control" [(ngModel)]="tempTravel.modeOfTravel"
-                                              name="tdModeOfTravel">
+                                              name="tdModeOfTravel"
+                                              (ngModelChange)="validateTravel(tempTravel, 'modeOfTravel')">
                                               <option value="" disabled selected>Select</option>
                                               <option value="Air">Air</option>
                                               <option value="Road">Road</option>
@@ -600,13 +602,19 @@
                                               <option value="Others">Others</option>
                                             </select>
                                           </td>
+                                          <td *ngIf="otherMode">
+                                            <input type="text" class="form-control" maxlength="20"
+                                              placeholder="Other mode of travel"
+                                              [(ngModel)]="tempTravel.otherModeOfTravel" name="tdOtherModeOfTravel" />
+                                          </td>
                                           <td>
                                             <select class="form-control" [(ngModel)]="tempTravel.isDts" name="tdIsDts"
+                                              [disabled]="isDtsDisabled"
                                               (ngModelChange)="onIsDtsChange(tempTravel)">
                                               <option value="" disabled>Select</option>
-                                              <option value="Yes">Yes</option>
-                                              <option value="No">No</option>
-                                              <option value="NA">NA</option>
+                                              <option value="Yes" *ngIf="boolIsDts">Yes</option>
+                                              <option value="No" *ngIf="boolIsDts">No</option>
+                                              <option value="NA" *ngIf="!boolIsDts">NA</option>
                                             </select>
                                           </td>
                                           <td>
@@ -615,7 +623,7 @@
                                           </td>
                                           <td>
                                             <input type="text" class="form-control" maxlength="100"
-                                              [disabled]="tempTravel.isDts === 'Yes'"
+                                              [disabled]="tempTravel.isDts === 'Yes' || tempTravel.isDts === 'NA'"
                                               [(ngModel)]="tempTravel.reasonForNoDts" name="tdReasonForNoDts"
                                               (ngModelChange)="validateTravel(tempTravel, 'reasonForNoDts')"
                                               [ngClass]="{'is-invalid': tempTravel._reasonForNoDtsError}" />
@@ -668,7 +676,10 @@
                                             <tr *ngFor="let t of claims?.yatDtsDetailDTOs; let i = index">
                                               <td>{{ t.source }}</td>
                                               <td>{{ t.destination }}</td>
-                                              <td>{{ t.modeOfTravel }}</td>
+                                              <td>
+                                                {{ t.modeOfTravel }}
+                                                <span *ngIf="t.otherModeOfTravel">({{ t.otherModeOfTravel }})</span>
+                                              </td>
                                               <td>{{ t.isDts }}</td>
                                               <td>
                                                 <input class="form-control" numbers-only [(ngModel)]="t.tempAmount"

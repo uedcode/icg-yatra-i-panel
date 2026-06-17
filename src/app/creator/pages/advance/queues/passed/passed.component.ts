@@ -120,10 +120,10 @@ filterDataObj;
     if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
     if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
-    if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
-    if (id === 'T') return detail ? 'preview-ty-duty' : 'form-tyduty';
-    if (id === 'F') return detail ? 'form-fte-detail' : 'form-fte';
-    if (id === 'L') return detail ? 'form-ltc-detail' : 'form-ltc';
+    if (id === 'P') return detail ? 'preview-pmt-duty' : 'form-pmt-duty';
+    if (id === 'T') return detail ? 'preview-ty-duty' : 'form-ty-duty';
+    if (id === 'F') return detail ? 'preview-fte-advance' : 'form-fte-advance';
+    if (id === 'L') return detail ? 'preview-ltc-advance' : 'form-ltc-advance';
     if (id === 'M') return detail ? 'form-manual-adv-detail' : 'form-manual-adv';
     return null;
   }

@@ -151,6 +151,12 @@ const routes: Routes = [
         data: { title: 'TY Duty Advance Preview', roles: CREATOR_ROLES },
       },
       {
+        path: 'preview-fte-advance',
+        component: FormFteDetailComponent,
+        canActivate: [AuthGuard],
+        data: { title: 'FTE Advance Preview', roles: CREATOR_ROLES },
+      },
+      {
         path: 'form-fte-detail',
         component: FormFteDetailComponent,
         canActivate: [AuthGuard],
@@ -383,22 +389,45 @@ const routes: Routes = [
       { path: 'archive-claim', redirectTo: 'claim/archive', pathMatch: 'full' },
       { path: 'claim-archive', redirectTo: 'claim/archive', pathMatch: 'full' },
       {
-        path: 'form-tyduty',
+        path: 'form-ty-duty',
         component: FormTydutyComponent,
         canActivate: [AuthGuard],
-        data: { title: 'TY Duty Advance', roles: CREATOR_ROLES },
+        data: { title: 'TY Duty Advance', roles: CREATOR_ROLES, subFormId: 'T', formKind: 'advance' },
+      },
+      {
+        path: 'form-tyduty',
+        redirectTo: 'form-ty-duty',
+        pathMatch: 'full',
+      },
+      {
+        path: 'form-fte-advance',
+        component: FormFteComponent,
+        canActivate: [AuthGuard],
+        data: { title: 'FTE Advance', roles: CREATOR_ROLES, subFormId: 'F', formKind: 'advance' },
       },
       {
         path: 'form-fte',
         component: FormFteComponent,
         canActivate: [AuthGuard],
-        data: { title: 'FTE Advance', roles: CREATOR_ROLES },
+        data: { title: 'FTE Advance', roles: CREATOR_ROLES, subFormId: 'F', formKind: 'advance' },
+      },
+      {
+        path: 'form-pmt-duty',
+        component: FormPmtDutyComponent,
+        canActivate: [AuthGuard],
+        data: { title: 'PMT Advance', roles: CREATOR_ROLES, subFormId: 'P', formKind: 'advance' },
       },
       {
         path: 'form-pmt',
         component: FormPmtDutyComponent,
         canActivate: [AuthGuard],
         data: { title: 'PMT Advance', roles: CREATOR_ROLES, subFormId: 'P', formKind: 'advance' },
+      },
+      {
+        path: 'form-ltc-advance',
+        component: FormLtcAdvanceComponent,
+        canActivate: [AuthGuard],
+        data: { title: 'LTC Advance', roles: CREATOR_ROLES, subFormId: 'L', formKind: 'advance' },
       },
       {
         path: 'form-ltc',

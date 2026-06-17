@@ -148,8 +148,8 @@ describe('FormFteComponent', () => {
     component.claims.claimId = 777;
     component.supplementaryId = 'SUP-77';
     component.navigatePreview('F', 777);
-    expect(component.router.navigate).toHaveBeenCalledWith(['../form-fte-detail'], {
-      queryParams: { claimId: 777, subFormId: 'F', supId: 'SUP-77' }
+    expect(component.router.navigate).toHaveBeenCalledWith(['../preview-fte-advance'], {
+      queryParams: { id: 777, subFormId: 'F', supId: 'SUP-77' }
     });
   });
 

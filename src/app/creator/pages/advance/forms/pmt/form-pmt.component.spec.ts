@@ -620,10 +620,10 @@ describe('FormPmtDutyComponent', () => {
     component.navigatePreview('P', '321');
 
     expect(router.navigate).toHaveBeenCalledWith(
-      ['../form-pmt-detail'],
+      ['../preview-pmt-duty'],
       {
         queryParams: {
-          claimId: 321,
+          id: '321',
           subFormId: 'P',
           supId: 'SUP-7'
         }
@@ -641,7 +641,7 @@ describe('FormPmtDutyComponent', () => {
     component.saveDraft();
 
     expect(router.navigate).toHaveBeenCalledWith(
-      ['/creator/form-pmt'],
+      ['/creator/form-pmt-duty'],
       {
         queryParams: {
           claimId: 909,
@@ -663,8 +663,8 @@ describe('FormPmtDutyComponent', () => {
 
   it('should derive PMT routes from active form kind', () => {
     component.activeFormKind = 'advance';
-    expect((component as any).getCurrentFormRoute()).toBe('form-pmt');
-    expect((component as any).getPreviewRoute()).toBe('form-pmt-detail');
+    expect((component as any).getCurrentFormRoute()).toBe('form-pmt-duty');
+    expect((component as any).getPreviewRoute()).toBe('preview-pmt-duty');
 
     component.activeFormKind = 'claim';
     expect((component as any).getCurrentFormRoute()).toBe('form-pmt-duty-claim');

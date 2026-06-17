@@ -43,7 +43,7 @@
           <!-- MAIN CONTENT -->
           <div class="content-wrap">
             <div class="panel_card">
-              <div id="validateForm">
+              <div id="validateForm" (input)="clearLegacyInvalid($event)" (change)="clearLegacyInvalid($event)">
                 <div class="row">
                   <div class="col-md-12">
                     <div class="panel panel-white">
@@ -518,10 +518,12 @@
 
                                           <td>
                                             <select class="form-control" [(ngModel)]="tempFteTravel.isDts"
-                                              name="fte_tdIsDts" (ngModelChange)="onFteIsDtsChange()">
+                                              name="fte_tdIsDts" [disabled]="fteIsDtsDisabled"
+                                              (ngModelChange)="onFteIsDtsChange()">
                                               <option value="" disabled>Select</option>
-                                              <option value="Yes">Yes</option>
-                                              <option value="No">No</option>
+                                              <option value="Yes" *ngIf="fteBoolIsDts">Yes</option>
+                                              <option value="No" *ngIf="fteBoolIsDts">No</option>
+                                              <option value="NA" *ngIf="!fteBoolIsDts">NA</option>
                                             </select>
                                           </td>
 
@@ -533,7 +535,7 @@
 
                                           <td>
                                             <input type="text" class="form-control" maxlength="100"
-                                              [disabled]="tempFteTravel.isDts === 'Yes'"
+                                              [disabled]="tempFteTravel.isDts === 'Yes' || tempFteTravel.isDts === 'NA'"
                                               [(ngModel)]="tempFteTravel.reasonForNoDts" name="fte_tdReasonForNoDts"
                                               (ngModelChange)="validateFteReason()"
                                               [ngClass]="{'is-invalid': tempFteTravel._reasonError}" />

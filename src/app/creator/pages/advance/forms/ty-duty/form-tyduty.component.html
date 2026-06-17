@@ -43,7 +43,7 @@
             <!-- panel_card -->
             <div class="panel_card">
               <!-- NOTE: using div, not <form>, to avoid Angular Template-Driven Form name conflicts -->
-              <div id="validateForm">
+              <div id="validateForm" (input)="clearLegacyInvalid($event)" (change)="clearLegacyInvalid($event)">
                 <div class="row">
                   <div class="col-md-12">
                     <div class="panel panel-white">
@@ -702,11 +702,12 @@
 
                                           <td>
                                             <select class="form-control" [(ngModel)]="tempLtcTravelDetails.isDts"
-                                              name="tdIsDts" (ngModelChange)="onIsDtsChange(tempLtcTravelDetails)">
+                                              name="tdIsDts" [disabled]="isDtsDisabled"
+                                              (ngModelChange)="onIsDtsChange(tempLtcTravelDetails)">
                                               <option value="" disabled>Select</option>
-                                              <option value="Yes">Yes</option>
-                                              <option value="No">No</option>
-                                              <!-- if you really need NA/DTS add them here -->
+                                              <option value="Yes" *ngIf="boolIsDts">Yes</option>
+                                              <option value="No" *ngIf="boolIsDts">No</option>
+                                              <option value="NA" *ngIf="!boolIsDts">NA</option>
                                             </select>
                                           </td>
 
@@ -788,7 +789,7 @@
                                               <td>
                                                 <input class="form-control" numbers-only
                                                   [(ngModel)]="ltcAdvance.tempAmount" name="tdExistingAmount{{ i }}"
-                                                  (ngModelChange)="calculateAmount(codeClaim?.tyAdv)" />
+                                                  (ngModelChange)="onDtsTempAmountChange(ltcAdvance)" />
                                               </td>
                                               <td>{{ ltcAdvance.reasonForNoDts }}</td>
                                               <td>{{ ltcAdvance.remarks }}</td>
@@ -947,7 +948,7 @@
                                     (keypress)="allowOnlyNumbers($event)" (paste)="blockPasteIfNotNumber($event)"
                                     [disabled]="isNullOrEmpty(claims.yatTempDutyAdvDTOs[0].duration)"
                                     [(ngModel)]="claims.yatTempDutyAdvDTOs[0].hotelAccDays" name="hotelAccDays"
-                                    (ngModelChange)="onHotelRequiredChange($event)" />
+                                    (ngModelChange)="calculateAmount(codeClaim?.tyAdv)" />
                                 </div>
 
                                 <div class="col-md-1 padd_5">

@@ -11,6 +11,10 @@ import { CommonService } from 'src/app/service/core/common.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { ClaimUtilService } from 'src/app/service/claim/claim-util.service';
 import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
+import {
+  clearLegacyInvalidFromEvent,
+  validateLegacyRequiredSection,
+} from '../shared/helpers/legacy-form-validation.helper';
 
 /* ========= BASIC DTOs YOU ALREADY STARTED ========= */
 
@@ -165,7 +169,7 @@ export class FormTydutyComponent implements OnInit {
   /* ==== CONSTANTS ==== */
   isIfscNull: false;
   codeClaim = {
-    tyAdv: 'TYA', // match backend code
+    tyAdv: 'T', // legacy TY Duty Advance sub-form id
   } as const;
 
   codeClaimState = {
@@ -305,8 +309,8 @@ export class FormTydutyComponent implements OnInit {
 
   ngOnInit(): void {
     this.initFromRoute();
-    this.getUnits();
     this.userIdDetails = this.$auth.getUserDetails();
+    this.getUnits();
     this.today = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
     this.codeStatus = this.$auth?.codeStatus();
 
@@ -327,136 +331,20 @@ export class FormTydutyComponent implements OnInit {
     });
   }
 
-  private loadTyPersonalFromForm(): void {
-    const adv = this.claims.yatTempDutyAdvDTOs[0];
-    if (!adv) {
-      return;
-    }
-
-    // EXACTLY SAME CONFIG AS YOUR /single REQUEST (you already see this in Network tab)
-    const config = {
-      headers: {
-        subFormId: 'T', // TY Duty Advance subform
-        isPreview: 'false',
-        byUser: 'true',
-      },
-    };
-
-    try {
-      this.$common.showLoader();
-
-      // Use the same service you are already using for "single" in Pilotage
-      this.$form.getSingleForm(config).subscribe(
-        (response: any) => {
-          this.$common.hideLoader();
-
-          if (!response || response.status !== true) {
-            this.$common.showMessage(
-              response?.message || 'Unable to load parent TY Duty data.',
-              'danger'
-            );
-            return;
-          }
-
-          // RESPONSE IS ARRAY -> TAKE FIRST OBJECT
-          const parent: any = (response.object && response.object[0]) || {};
-
-          // Personal header from parent.yatTempDutyAdvDTOs[0] if present
-          const srcAdv: any =
-            (parent.yatTempDutyAdvDTOs && parent.yatTempDutyAdvDTOs[0]) ||
-            parent;
-
-          // ---- BASIC PERSONAL FIELDS ----
-          adv.pno = srcAdv.pno || parent.pno || adv.pno || null;
-
-          adv.name =
-            (srcAdv.name || parent.name || '').trim() || adv.name || null;
-
-          adv.rank = srcAdv.rank || parent.rank || adv.rank || null;
-
-          // UNIT / PRESENT UNIT
-          const presentUnit =
-            srcAdv.presentUnit ||
-            parent.presentUnit ||
-            parent.codeUnitDTO?.descr ||
-            parent.unitName ||
-            parent.unit ||
-            null;
-
-          adv.presentUnit = presentUnit;
-          adv.videPresentUnit = presentUnit;
-
-          this.preSelectedUnit = presentUnit;
-
-          // PAY LEVEL + BASIC PAY
-          const payLevel =
-            srcAdv.payLevel ||
-            srcAdv.payLevel ||
-            parent.payLevel ||
-            parent.payLevel ||
-            null;
-
-          adv.payLevel = payLevel;
-          adv.payLevel = payLevel;
-
-          const basicPayRaw =
-            srcAdv.basicPay ||
-            srcAdv.basPay ||
-            parent.basicPay ||
-            parent.basPay ||
-            null;
-
-          adv.basicPay = basicPayRaw != null ? Number(basicPayRaw) : null;
-
-          // ---- BANK DETAILS FROM PARENT ----
-          const bank: any = parent.yatClaimBankDetailDTO || {};
-          this.claims.yatClaimBankDetailDTO = {
-            ...this.claims.yatClaimBankDetailDTO,
-            bankName:
-              bank.bankName || this.claims.yatClaimBankDetailDTO.bankName,
-            branch: bank.branch || this.claims.yatClaimBankDetailDTO.branch,
-            ifscCode:
-              bank.ifscCode || this.claims.yatClaimBankDetailDTO.ifscCode,
-            accountNo:
-              bank.bankAccNo ||
-              bank.accountNo ||
-              this.claims.yatClaimBankDetailDTO.accountNo,
-            micrCode:
-              bank.micrCode || this.claims.yatClaimBankDetailDTO.micrCode,
-            bankAccNo:
-              bank.bankAccNo || this.claims.yatClaimBankDetailDTO.bankAccNo,
-          };
-
-          // OPTIONAL: set claim-level pno/name if you need it later
-          this.claims.claimId = parent.claimId || this.claims.claimId;
-
-          // Now UI can show, provided your HTML uses:
-          // [(ngModel)]="claims.yatTempDutyAdvDTOs[0].pno" etc.
-        },
-        (err) => {
-          this.$common.hideLoader();
-          console.error('Error loading TY Duty parent form details', err);
-          this.$common.showMessage(
-            'Error while loading TY Duty parent form details.',
-            'danger'
-          );
-        }
-      );
-    } catch (e) {
-      this.$common.hideLoader();
-      console.error('Exception loading TY Duty parent form details', e);
-    }
-  }
-
   // ====== rest of your methods (createEmptyClaims, calculateAmount, getFormDetails, etc.) ======
 
   bankObj;
   private initFromRoute(): void {
     const qp = this.route.snapshot.queryParamMap;
     this.activeFormKind = this.resolveFormKind(this.route.snapshot.data?.['formKind']);
-    this.activeSubFormId = this.activeFormKind === 'claim' ? 'TYD' : this.codeClaim.tyAdv;
+    const routeSubFormId = this.route.snapshot.data?.['subFormId'];
+    const querySubFormId = qp.get('subFormId');
+    this.activeSubFormId =
+      this.activeFormKind === 'claim'
+        ? querySubFormId || routeSubFormId || 'TYD'
+        : querySubFormId || routeSubFormId || this.codeClaim.tyAdv;
     this.claims.codeSubFormDTO = { subFormId: this.activeSubFormId };
-    this.claimIdParam = qp.get('claimId') || qp.get('resubId');
+    this.claimIdParam = qp.get('claimId') || qp.get('id') || qp.get('resubId');
     this.resubClaimId = qp.get('resubId');
     this.extnClaimId = qp.get('extnClaimId') || qp.get('extnId');
     this.supplementryId = qp.get('supId');
@@ -814,6 +702,25 @@ export class FormTydutyComponent implements OnInit {
    * ========================================================== */
 
   validateLtcTravel(detail: any, field: string): void {
+    if (field === 'modeOfTravel') {
+      const mode = (detail.modeOfTravel || '').trim();
+      this.otherMode = mode === 'Others';
+      this.boolIsDts = mode === 'Air' || mode === 'Train';
+      this.isDtsDisabled = !!mode && !this.boolIsDts;
+
+      if (!this.otherMode) {
+        detail.otherModeOfTravel = '';
+      }
+
+      if (this.isDtsDisabled) {
+        detail.isDts = 'NA';
+        detail.reasonForNoDts = '';
+        detail._reasonForNoDtsError = false;
+      } else if (detail.isDts === 'NA') {
+        detail.isDts = '';
+      }
+    }
+
     if (field === 'isDts') {
       if (detail.isDts === 'No') {
         detail._reasonForNoDtsError =
@@ -836,6 +743,23 @@ export class FormTydutyComponent implements OnInit {
       return;
     }
 
+    this.validateLtcTravel(detail, 'modeOfTravel');
+
+    if (this.isNullOrEmpty(detail.source)) {
+      this.$common.showMessage('Please fill travel From.', 'danger');
+      return;
+    }
+
+    if (this.isNullOrEmpty(detail.destination)) {
+      this.$common.showMessage('Please fill travel To.', 'danger');
+      return;
+    }
+
+    if (this.isNullOrEmpty(detail.modeOfTravel)) {
+      this.$common.showMessage('Please select Mode of Travel.', 'danger');
+      return;
+    }
+
     if ((detail.modeOfTravel || '').trim() === 'Others') {
       const otherMode = detail.otherModeOfTravel
         ? detail.otherModeOfTravel.trim()
@@ -847,6 +771,16 @@ export class FormTydutyComponent implements OnInit {
         );
         return;
       }
+    }
+
+    if (this.isNullOrEmpty(detail.isDts)) {
+      this.$common.showMessage('Please select DTS.', 'danger');
+      return;
+    }
+
+    if (this.isNullOrEmpty(detail.amount)) {
+      this.$common.showMessage('Please fill Total Amount.', 'danger');
+      return;
     }
 
     if (detail.isDts === 'No') {
@@ -887,7 +821,105 @@ export class FormTydutyComponent implements OnInit {
     this.tempLtcTravelDetails = {
       ...this.claims.yatDtsDetailDTOs[index],
     };
+    this.validateLtcTravel(this.tempLtcTravelDetails, 'modeOfTravel');
     this.travelBtnName = 'Update';
+  }
+
+  private firstObject(value: any): any {
+    if (Array.isArray(value)) {
+      return value[0] || {};
+    }
+    return value || {};
+  }
+
+  private hasObjectValue(value: any): boolean {
+    return !!value && (typeof value !== 'object' || Object.keys(value).length > 0);
+  }
+
+  private pickFirstValue(...values: any[]): any {
+    return values.find(
+      (value) => value !== null && value !== undefined && value !== ''
+    );
+  }
+
+  private mapTyPersonalDetails(adv: YatTempDutyAdvDTO, source: any, root: any): void {
+    const user = root?.userBasicDetailDTO || root?.aclUserDTO || {};
+    const presentUnit = this.pickFirstValue(
+      source?.videPresentUnit,
+      source?.presentUnit,
+      root?.videPresentUnit,
+      root?.presentUnit,
+      user?.unitName,
+      user?.unit,
+      root?.codeUnitDTO?.descr
+    );
+    const payLevel = this.pickFirstValue(
+      source?.payLevel,
+      source?.paylevel,
+      root?.payLevel,
+      root?.paylevel,
+      user?.payLevel,
+      user?.paylevel,
+      adv.payLevel
+    );
+    const basicPayRaw = this.pickFirstValue(
+      source?.basicPay,
+      source?.basPay,
+      root?.basicPay,
+      root?.basPay,
+      user?.basicPay,
+      user?.basPay,
+      adv.basicPay
+    );
+
+    adv.pno = this.pickFirstValue(source?.pno, source?.persNo, root?.pno, root?.persNo, user?.pno, user?.persNo, adv.pno, null);
+    adv.name =
+      String(this.pickFirstValue(source?.name, source?.userName, root?.name, root?.userName, user?.name, user?.userName, adv.name, '')).trim() ||
+      null;
+    adv.rank = this.pickFirstValue(source?.rank, source?.rankName, root?.rank, root?.rankName, user?.rank, user?.rankName, adv.rank, null);
+    adv.presentUnit = presentUnit ?? adv.presentUnit ?? null;
+    adv.videPresentUnit = presentUnit ?? adv.videPresentUnit ?? null;
+    adv.payLevel = payLevel ?? null;
+    adv.basicPay = basicPayRaw !== null && basicPayRaw !== undefined && basicPayRaw !== ''
+      ? Number(basicPayRaw)
+      : null;
+    adv.availedCategory = this.pickFirstValue(
+      source?.availedCategory,
+      root?.availedCategory,
+      user?.availedCategory,
+      adv.availedCategory,
+      null
+    );
+  }
+
+  private mapTyBankDetails(root: any): void {
+    const bank = root?.yatClaimBankDetailDTO || root?.bankDetailDTO || {};
+    this.claims.yatClaimBankDetailDTO = {
+      ...this.claims.yatClaimBankDetailDTO,
+      bankName: this.pickFirstValue(bank.bankName, this.claims.yatClaimBankDetailDTO.bankName),
+      branch: this.pickFirstValue(bank.branch, this.claims.yatClaimBankDetailDTO.branch),
+      ifscCode: this.pickFirstValue(bank.ifscCode, this.claims.yatClaimBankDetailDTO.ifscCode),
+      accountNo: this.pickFirstValue(
+        bank.accountNo,
+        bank.bankAccNo,
+        this.claims.yatClaimBankDetailDTO.accountNo
+      ),
+      micrCode: this.pickFirstValue(bank.micrCode, this.claims.yatClaimBankDetailDTO.micrCode),
+      bankAccNo: this.pickFirstValue(bank.bankAccNo, this.claims.yatClaimBankDetailDTO.bankAccNo),
+    };
+  }
+
+  private hasTyPersonalDetails(): boolean {
+    const adv = this.claims?.yatTempDutyAdvDTOs?.[0];
+    return !!(
+      adv?.name ||
+      adv?.pno ||
+      adv?.rank ||
+      adv?.payLevel ||
+      adv?.basicPay ||
+      adv?.videPresentUnit ||
+      adv?.presentUnit
+    );
   }
 
   openTravelDeleteModel(index: number, type: string): void {
@@ -917,10 +949,32 @@ export class FormTydutyComponent implements OnInit {
     this.validateLtcTravel(detail, 'isDts');
   }
 
+  onDtsTempAmountChange(row: YatDtsDetailDTO): void {
+    const amount = this.toNumber(row.amount);
+    const tempAmount = this.toNumber(row.tempAmount);
+
+    if (!this.isNullOrEmpty(row.amount) && tempAmount > amount) {
+      row.tempAmount = amount;
+    }
+
+    this.calculateAmount(this.codeClaim.tyAdv);
+  }
+
   resetTempLtcTravelDetails(): void {
     this.tempLtcTravelDetails = {} as YatDtsDetailDTO;
     this.selectedTravelIndex = null;
+    this.otherMode = false;
+    this.boolIsDts = false;
+    this.isDtsDisabled = false;
     this.travelBtnName = 'Add';
+  }
+
+  private normalizeDtsTempAmounts(): void {
+    (this.claims.yatDtsDetailDTOs || []).forEach((row: any) => {
+      if (this.isNullOrEmpty(row.tempAmount) && !this.isNullOrEmpty(row.amount)) {
+        row.tempAmount = row.amount;
+      }
+    });
   }
 
   /* ==========================================================
@@ -998,34 +1052,11 @@ export class FormTydutyComponent implements OnInit {
       return true;
     }
 
-    let isValid = true;
+    return validateLegacyRequiredSection(section);
+  }
 
-    const elements = section.querySelectorAll<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >('input, select, textarea');
-
-    elements.forEach((el) => {
-      const required = el.hasAttribute('required');
-      let value: string | boolean = '';
-
-      if (
-        el instanceof HTMLInputElement &&
-        (el.type === 'checkbox' || el.type === 'radio')
-      ) {
-        value = el.checked;
-      } else {
-        value = (el.value || '').trim();
-      }
-
-      (el as HTMLElement).style.borderColor = '';
-
-      if (required && (!value || value === '')) {
-        isValid = false;
-        (el as HTMLElement).style.borderColor = 'red';
-      }
-    });
-
-    return isValid;
+  clearLegacyInvalid(event: Event): void {
+    clearLegacyInvalidFromEvent(event);
   }
 
   private activateTab(sectionId: string): void {
@@ -1067,19 +1098,22 @@ export class FormTydutyComponent implements OnInit {
           this.$common.hideLoader();
 
           if (!response || response.status !== true) {
-            this.$common.showMessage(
-              response?.message || 'Unable to load TY Duty Advance details.',
-              'danger'
-            );
+            this.checkForPreviewBtn();
+            if (this.claimIdParam) {
+              this.$common.showMessage(
+                response?.message || 'Unable to load TY Duty Advance details.',
+                'danger'
+              );
+            }
             return;
           }
 
-          let obj: any = response.object;
-          if (Array.isArray(obj)) {
-            obj = obj[0] || null;
-          }
-          if (!obj) {
-            this.$common.showMessage('No data returned from server.', 'danger');
+          let obj: any = this.firstObject(response.object);
+          if (!this.hasObjectValue(obj)) {
+            this.checkForPreviewBtn();
+            if (this.claimIdParam) {
+              this.$common.showMessage('No data returned from server.', 'danger');
+            }
             return;
           }
 
@@ -1103,44 +1137,7 @@ export class FormTydutyComponent implements OnInit {
                 ? false
                 : v;
 
-            // ---------- PERSONAL DETAILS ----------
-            adv.pno = dto.pno ?? obj.pno ?? adv.pno ?? null;
-            adv.name =
-              (dto.name ?? obj.name ?? adv.name ?? '').toString().trim() ||
-              null;
-            adv.rank = dto.rank ?? obj.rank ?? adv.rank ?? null;
-
-            const presentUnit =
-              dto.appliedTo ??
-              dto.videPresentUnit ??
-              obj.codeUnitDTO?.descr ??
-              adv.presentUnit ??
-              null;
-
-            adv.presentUnit = presentUnit;
-            adv.videPresentUnit = dto.videPresentUnit ?? presentUnit;
-
-            // ---------- PAY LEVEL / BASIC PAY ----------
-            const payLevel =
-              dto.payLevel ??
-              dto.payLevel ??
-              obj.payLevel ??
-              obj.payLevel ??
-              adv.payLevel ??
-              null;
-
-            adv.payLevel = payLevel;
-            adv.payLevel = payLevel;
-
-            const basicPayRaw =
-              dto.basicPay ??
-              dto.basPay ??
-              obj.basicPay ??
-              obj.basPay ??
-              adv.basicPay ??
-              null;
-
-            adv.basicPay = basicPayRaw != null ? Number(basicPayRaw) : null;
+            this.mapTyPersonalDetails(adv, dto, obj);
 
             // ---------- AVAILED CATEGORY ----------
             adv.availedCategory =
@@ -1172,28 +1169,11 @@ export class FormTydutyComponent implements OnInit {
             }
 
             adv.appliedTo =
-              (dto.appliedTo ?? presentUnit ?? adv.appliedTo ?? '')
+              (dto.appliedTo ?? adv.videPresentUnit ?? adv.presentUnit ?? adv.appliedTo ?? '')
                 .toString()
                 .trim() || null;
 
-            // ---------- BANK DETAILS ----------
-            const bank = obj.yatClaimBankDetailDTO || {};
-            this.claims.yatClaimBankDetailDTO = {
-              ...this.claims.yatClaimBankDetailDTO,
-              bankName:
-                bank.bankName ?? this.claims.yatClaimBankDetailDTO.bankName,
-              branch: bank.branch ?? this.claims.yatClaimBankDetailDTO.branch,
-              ifscCode:
-                bank.ifscCode ?? this.claims.yatClaimBankDetailDTO.ifscCode,
-              accountNo:
-                bank.bankAccNo ??
-                bank.accountNo ??
-                this.claims.yatClaimBankDetailDTO.accountNo,
-              micrCode:
-                bank.micrCode ?? this.claims.yatClaimBankDetailDTO.micrCode,
-              bankAccNo:
-                bank.bankAccNo ?? this.claims.yatClaimBankDetailDTO.bankAccNo,
-            };
+            this.mapTyBankDetails(obj);
 
             // ---------- FINAL CLAIM OBJECT ----------
             this.claims = {
@@ -1203,23 +1183,18 @@ export class FormTydutyComponent implements OnInit {
               yatDtsDetailDTOs: obj.yatDtsDetailDTOs || [],
               yatDocsDTOs: obj.yatDocsDTOs || [],
             };
+            this.normalizeDtsTempAmounts();
 
-            this.claims.signWith = this.codeSignType.eSign;
+            this.claims.signWith =
+              obj.signWith || this.claims.signWith || this.codeSignType.eSign;
             this.documentDtos = this.claims.yatDocsDTOs || [];
             this.$codeDocInfo.setDocument(this.documentDtos as []);
           } else if (obj.userBasicDetailDTO) {
-            const user = obj.userBasicDetailDTO;
-
-            adv.pno = user.pno ?? user.persNo ?? null;
-            adv.name = user.name ?? user.userName ?? null;
-            adv.rank = user.rank ?? user.rankName ?? null;
-            adv.videPresentUnit = user.unitName ?? user.unit ?? null;
-            adv.presentUnit = adv.videPresentUnit;
-
-            adv.payLevel = user.payLevel ?? user.payLevel ?? null;
-            adv.payLevel = adv.payLevel;
-            adv.basicPay = user.basicPay ?? user.basPay ?? null;
-            adv.availedCategory = user.availedCategory ?? null;
+            this.mapTyPersonalDetails(adv, obj.userBasicDetailDTO, obj);
+            this.mapTyBankDetails(obj);
+          } else {
+            this.mapTyPersonalDetails(adv, obj, obj);
+            this.mapTyBankDetails(obj);
           }
 
           this.checkForPreviewBtn();
@@ -1724,7 +1699,7 @@ export class FormTydutyComponent implements OnInit {
   }
 
   private getCurrentFormRoute(): string {
-    return this.activeFormKind === 'claim' ? 'form-ty-duty-claim' : 'form-tyduty';
+    return this.activeFormKind === 'claim' ? 'form-ty-duty-claim' : 'form-ty-duty';
   }
 
   private getPreviewRoute(): string {
@@ -2155,6 +2130,63 @@ export class FormTydutyComponent implements OnInit {
     }
 
     const adv = this.claims?.yatTempDutyAdvDTOs?.[0];
+    if (!adv) {
+      this.$common.showMessage('Temporary duty details are required.', 'danger');
+      return false;
+    }
+
+    const authorityLabel = this.extnClaimId || this.claims?.extendedAdvId ? 'Authority' : 'Gx';
+
+    if (this.isNullOrEmpty(adv.gxUnit)) {
+      this.$common.showMessage(`Please select ${authorityLabel} Unit.`, 'danger');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.gxNumber)) {
+      this.$common.showMessage(`Please fill ${authorityLabel} Number.`, 'danger');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.gxDate)) {
+      this.$common.showMessage(`Please select ${authorityLabel} Date.`, 'danger');
+      return false;
+    }
+
+    if (!this.claims?.gxFormFileUrl) {
+      this.showErrors = true;
+      this.$common.showMessage(`Please upload ${authorityLabel} Form (PDF).`, 'danger');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.purposeType)) {
+      this.$common.showMessage('Please select Purpose Type.', 'danger');
+      return false;
+    }
+
+    if (adv.purposeType === this.purposeType.other && this.isNullOrEmpty(adv.purpose)) {
+      this.$common.showMessage('Please fill Purpose of Ty Duty.', 'danger');
+      return false;
+    }
+
+    if (adv.purposeType === this.purposeType.investive) {
+      if (this.isNullOrEmpty(adv.personName)) {
+        this.$common.showMessage('Please fill Guest Name.', 'danger');
+        return false;
+      }
+      if (this.isNullOrEmpty(adv.relation)) {
+        this.$common.showMessage('Please fill Guest Relation.', 'danger');
+        return false;
+      }
+      if (this.isNullOrEmpty(adv.age)) {
+        this.$common.showMessage('Please fill Guest Age.', 'danger');
+        return false;
+      }
+      if (this.isNullOrEmpty(adv.gender)) {
+        this.$common.showMessage('Please select Guest Gender.', 'danger');
+        return false;
+      }
+    }
+
     const station = adv?.stationProceedingTo;
 
     if (!station) {

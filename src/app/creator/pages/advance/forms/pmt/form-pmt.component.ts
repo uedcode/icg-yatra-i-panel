@@ -10,6 +10,10 @@ import { FormManageService } from 'src/app/service/form/form-manage.service';
 import { map, take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
+import {
+  clearLegacyInvalidFromEvent,
+  validateLegacyRequiredSection,
+} from '../shared/helpers/legacy-form-validation.helper';
 
 declare var $: any;
 
@@ -224,6 +228,9 @@ export class FormPmtDutyComponent implements OnInit {
   tempTravel: YatDtsDetailDTO = {};
   selectedTravelIndex: number | null = null;
   travelBtnName = 'Add';
+  boolIsDts = false;
+  otherMode = false;
+  isDtsDisabled = false;
 
   gxFormModel: any;
   gxFormUploading = false;
@@ -260,7 +267,7 @@ export class FormPmtDutyComponent implements OnInit {
     };
 
     const qp = this.route.snapshot.queryParamMap;
-    this.claimIdParam = qp.get('claimId') || qp.get('resubId');
+    this.claimIdParam = qp.get('claimId') || qp.get('id') || qp.get('resubId');
     this.resubClaimId = qp.get('resubId');
     this.supplementaryId = qp.get('supId');
 
@@ -461,7 +468,8 @@ export class FormPmtDutyComponent implements OnInit {
 
           this.ensureDefaultPmtValues();
 
-          this.claims.signWith = this.codeSignType.eSign;
+          this.claims.signWith =
+            obj.signWith || this.claims.signWith || this.codeSignType.eSign;
 
           const adv = this.claims.yatPermDutyAdvDTOs[0];
           adv.unitList = adv.unitList || [];
@@ -967,6 +975,25 @@ export class FormPmtDutyComponent implements OnInit {
   validateTravel(detail: any, field: string): void {
     if (!detail) return;
 
+    if (field === 'modeOfTravel') {
+      const mode = (detail.modeOfTravel || '').trim();
+      this.otherMode = mode === 'Others';
+      this.boolIsDts = mode === 'Air' || mode === 'Train';
+      this.isDtsDisabled = !!mode && !this.boolIsDts;
+
+      if (!this.otherMode) {
+        detail.otherModeOfTravel = '';
+      }
+
+      if (this.isDtsDisabled) {
+        detail.isDts = 'NA';
+        detail.reasonForNoDts = '';
+        detail._reasonForNoDtsError = false;
+      } else if (detail.isDts === 'NA') {
+        detail.isDts = '';
+      }
+    }
+
     if (field === 'isDts') {
       if (detail.isDts === 'No') {
         detail._reasonForNoDtsError =
@@ -995,6 +1022,38 @@ export class FormPmtDutyComponent implements OnInit {
 
   addTravelDetails(detail: YatDtsDetailDTO): void {
     if (!detail) return;
+
+    this.validateTravel(detail, 'modeOfTravel');
+
+    if (this.isNullOrEmpty(detail.source)) {
+      this.$common.showMessage('Please fill travel From.', 'danger');
+      return;
+    }
+
+    if (this.isNullOrEmpty(detail.destination)) {
+      this.$common.showMessage('Please fill travel To.', 'danger');
+      return;
+    }
+
+    if (this.isNullOrEmpty(detail.modeOfTravel)) {
+      this.$common.showMessage('Please select Mode of Travel.', 'danger');
+      return;
+    }
+
+    if ((detail.modeOfTravel || '').trim() === 'Others' && this.isNullOrEmpty(detail.otherModeOfTravel)) {
+      this.$common.showMessage('Please fill Other Mode of Travel when mode is Others.', 'danger');
+      return;
+    }
+
+    if (this.isNullOrEmpty(detail.isDts)) {
+      this.$common.showMessage('Please select DTS.', 'danger');
+      return;
+    }
+
+    if (this.isNullOrEmpty(detail.tempAmount)) {
+      this.$common.showMessage('Please fill Total Amount.', 'danger');
+      return;
+    }
 
     if (detail.isDts === 'No') {
       const reason = detail.reasonForNoDts ? detail.reasonForNoDts.trim() : '';
@@ -1028,6 +1087,7 @@ export class FormPmtDutyComponent implements OnInit {
   editTravelDetails(index: number): void {
     this.selectedTravelIndex = index;
     this.tempTravel = { ...this.claims.yatDtsDetailDTOs[index] };
+    this.validateTravel(this.tempTravel, 'modeOfTravel');
     this.travelBtnName = 'Update';
   }
 
@@ -1041,6 +1101,9 @@ export class FormPmtDutyComponent implements OnInit {
   resetTempTravel(): void {
     this.tempTravel = {} as YatDtsDetailDTO;
     this.selectedTravelIndex = null;
+    this.otherMode = false;
+    this.boolIsDts = false;
+    this.isDtsDisabled = false;
     this.travelBtnName = 'Add';
   }
 
@@ -1265,56 +1328,11 @@ export class FormPmtDutyComponent implements OnInit {
     const section = document.getElementById(sectionId);
     if (!section) return true;
 
-    let isValid = true;
+    return validateLegacyRequiredSection(section);
+  }
 
-    section
-      .querySelectorAll<HTMLInputElement>('input[type="radio"]')
-      .forEach((r) => {
-        r.style.outline = '';
-      });
-
-    const elements = section.querySelectorAll<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >('input, select, textarea');
-
-    const radioHandled = new Set<string>();
-
-    elements.forEach((el) => {
-      const required = el.hasAttribute('required');
-
-      if (el instanceof HTMLInputElement && el.type === 'radio') {
-        const name = el.name;
-        if (!required || !name || radioHandled.has(name)) return;
-
-        radioHandled.add(name);
-        const group = section.querySelectorAll<HTMLInputElement>(
-          `input[type="radio"][name="${name}"]`
-        );
-        const anyChecked = Array.from(group).some((r) => r.checked);
-
-        if (!anyChecked) {
-          isValid = false;
-          group.forEach((r) => (r.style.outline = '2px solid red'));
-        }
-        return;
-      }
-
-      let value: string | boolean = '';
-      if (el instanceof HTMLInputElement && el.type === 'checkbox') {
-        value = el.checked;
-      } else {
-        value = (el.value || '').trim();
-      }
-
-      (el as HTMLElement).style.borderColor = '';
-
-      if (required && (!value || value === '')) {
-        isValid = false;
-        (el as HTMLElement).style.borderColor = 'red';
-      }
-    });
-
-    return isValid;
+  clearLegacyInvalid(event: Event): void {
+    clearLegacyInvalidFromEvent(event);
   }
 
   private activateTab(sectionId: string): void {
@@ -1375,6 +1393,31 @@ export class FormPmtDutyComponent implements OnInit {
 
     if (!this.claims?.codeUnitDTO?.unit) {
       this.$common.showMessage('Please select the applied to unit.', 'danger');
+      this.activateTab('ship');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.gxUnit)) {
+      this.$common.showMessage('Please select Gx Unit.', 'danger');
+      this.activateTab('ship');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.gxNumber)) {
+      this.$common.showMessage('Please fill Gx Number.', 'danger');
+      this.activateTab('ship');
+      return false;
+    }
+
+    if (this.isNullOrEmpty(adv.gxDate)) {
+      this.$common.showMessage('Please select Gx Date.', 'danger');
+      this.activateTab('ship');
+      return false;
+    }
+
+    if (!this.claims?.gxFormFileUrl) {
+      this.showErrors = true;
+      this.$common.showMessage('Please upload Gx Form (PDF).', 'danger');
       this.activateTab('ship');
       return false;
     }
@@ -1480,12 +1523,20 @@ export class FormPmtDutyComponent implements OnInit {
   }
 
   navigatePreview(type: string, id: string): void {
+    const previewId = id || this.claims.claimId || this.claimIdParam;
     this.router.navigate([`../${this.getPreviewRoute()}`], {
-      queryParams: {
-        claimId: this.claims.claimId || this.claimIdParam,
-        subFormId: this.activeSubFormId,
-        ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
-      },
+      queryParams:
+        this.activeFormKind === 'claim'
+          ? {
+              claimId: previewId,
+              subFormId: this.activeSubFormId,
+              ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+            }
+          : {
+              id: previewId,
+              subFormId: this.activeSubFormId,
+              ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+            },
     });
   }
 
@@ -1751,14 +1802,14 @@ export class FormPmtDutyComponent implements OnInit {
   private getCurrentFormRoute(): string {
     if (this.isResettlementMode()) return 'form-resettlement-claim';
     if (this.activeFormKind === 'claim') return 'form-pmt-duty-claim';
-    return 'form-pmt';
+    return 'form-pmt-duty';
   }
 
   private getPreviewRoute(): string {
     if (this.isResettlementMode()) {
       return this.activeFormKind === 'claim' ? 'preview-resettlement-claim' : 'preview-resettlement';
     }
-    return this.activeFormKind === 'claim' ? 'preview-pmt-duty-claim' : 'form-pmt-detail';
+    return this.activeFormKind === 'claim' ? 'preview-pmt-duty-claim' : 'preview-pmt-duty';
   }
 
   private getFormDisplayName(): string {

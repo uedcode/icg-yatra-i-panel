@@ -40,7 +40,8 @@
           <div class="content-wrap">
             <div class="panel_card">
               <!-- Use DIV instead of FORM if you face ngForm name conflict. Otherwise keep form. -->
-              <form #ltcForm="ngForm" novalidate (ngSubmit)="submit(ltcForm)">
+              <form #ltcForm="ngForm" novalidate (ngSubmit)="submit(ltcForm)"
+                (input)="clearLegacyInvalid($event)" (change)="clearLegacyInvalid($event)">
 
                 <div class="row">
                   <div class="col-md-12">
@@ -256,17 +257,11 @@
                                     <!-- Browse -->
                                     <div class="col-md-8 padd_5 text-left" *ngIf="showGxFileBrowse">
                                       <input type="file" class="form-control ltc-file-input" accept="application/pdf"
-                                        (change)="onGxFileSelected($event)" [required]="showGxFileBrowse" />
+                                        (change)="uploadGxForm($event)" [required]="showGxFileBrowse"
+                                        [ngClass]="{ 'is-invalid': showErrors && !claims?.gxFormFileUrl }" />
 
-                                      <div *ngIf="gxFileName" style="margin-top:6px;">
-                                        <button type="button" class="btn btn-warning btn-sm"
-                                          (click)="openSelectedGxFile()">
-                                          <i class="fa fa-eye"></i> View
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm" style="margin-left:8px;"
-                                          (click)="deleteSelectedGxFile()">
-                                          <i class="fa fa-times"></i> Delete
-                                        </button>
+                                      <div *ngIf="showErrors && !claims?.gxFormFileUrl">
+                                        <small class="text-danger">GX Form is required.</small>
                                       </div>
                                     </div>
 
@@ -559,11 +554,12 @@
 
                                         <td>
                                           <select class="form-control" [(ngModel)]="tempLtcTravelDetails.isDts"
-                                            name="tempIsDts"
+                                            name="tempIsDts" [disabled]="isDtsDisabled"
                                             (ngModelChange)="validateLtcTravel(tempLtcTravelDetails, 'isDts')">
                                             <option value="" disabled>Select</option>
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Yes" *ngIf="boolIsDts">Yes</option>
+                                            <option value="No" *ngIf="boolIsDts">No</option>
+                                            <option value="NA" *ngIf="!boolIsDts">NA</option>
                                           </select>
                                         </td>
 

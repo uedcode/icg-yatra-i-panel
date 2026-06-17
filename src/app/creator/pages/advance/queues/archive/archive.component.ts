@@ -66,10 +66,10 @@ this.getState();
     if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return 'preview-fte-claim';
     if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return 'preview-ltc-claim';
     if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return 'preview-resettlement-claim';
-    if (id === 'P') return 'form-pmt-detail';
+    if (id === 'P') return 'preview-pmt-duty';
     if (id === 'T') return 'preview-ty-duty';
-    if (id === 'F') return 'form-fte-detail';
-    if (id === 'L') return 'form-ltc-detail';
+    if (id === 'F') return 'preview-fte-advance';
+    if (id === 'L') return 'preview-ltc-advance';
     if (id === 'M') return 'form-manual-adv-detail';
     return null;
   }

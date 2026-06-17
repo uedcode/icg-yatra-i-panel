@@ -4,7 +4,7 @@ import { FormTydutyComponent } from './form-tyduty.component';
 describe('FormTydutyComponent', () => {
   const createComponent = () => {
     const component = Object.create(FormTydutyComponent.prototype) as any;
-    component.codeClaim = { tyAdv: 'TYA' };
+    component.codeClaim = { tyAdv: 'T' };
     component.codeClaimState = { draft: 'DR', outbox: 'OB' };
     component.codeSignType = { inkSign: 'IS', eSign: 'ES' };
     component.claimIdParam = null;
@@ -41,13 +41,15 @@ describe('FormTydutyComponent', () => {
       }],
       yatClaimBankDetailDTO: { ifscCode: '' }
     };
-    component.$common = jasmine.createSpyObj('CommonService', ['showMessage', 'parseResponse', 'checkForValidFile']);
+    component.$common = jasmine.createSpyObj('CommonService', ['showMessage', 'parseResponse', 'checkForValidFile', 'showLoader', 'hideLoader']);
     component.$common.parseResponse.and.callFake((r: any) => r);
     component.$common.checkForValidFile.and.returnValue(true);
-    component.$claim = jasmine.createSpyObj('ClaimService', ['checkEsignAvailability', 'createOrUpdateIfsc', 'createOrUpdateClaim']);
+    component.$claim = jasmine.createSpyObj('ClaimService', ['checkEsignAvailability', 'createOrUpdateIfsc', 'createOrUpdateClaim', 'getSingleClaim']);
     component.$claim.checkEsignAvailability.and.returnValue(of({ status: true }));
     component.$claim.createOrUpdateIfsc.and.returnValue(of({ status: true, object: [{ ifscCode: 'SBIN0099' }] }));
     component.$claim.createOrUpdateClaim.and.returnValue(of({ object: [{ claimId: 321 }] }));
+    component.$claim.getSingleClaim.and.returnValue(of({ status: false }));
+    component.$codeDocInfo = jasmine.createSpyObj('CodeDocInfoService', ['setDocument']);
     component.$formManage = jasmine.createSpyObj('FormManageService', ['uploadImg', 'deleteByUrl']);
     component.$formManage.docFileUrl = new Subject<string>();
     component.$formManage.docFileUrlDeleted = new Subject<boolean>();
@@ -72,7 +74,7 @@ describe('FormTydutyComponent', () => {
     adv.hotelChargePerc = 10;
     component.claims.yatDtsDetailDTOs = [{ isDts: 'Yes', tempAmount: 50 }, { isDts: 'No', tempAmount: 25 }];
 
-    component.calculateAmount('TYA');
+    component.calculateAmount('T');
 
     expect(adv.totalAmt).toBeGreaterThan(0);
     expect(adv.dtsAmount).toBe(50);
@@ -182,7 +184,70 @@ describe('FormTydutyComponent', () => {
     component.claims.yatDtsDetailDTOs = [{ isDts: 'Yes', tempAmount: 100, modeOfTravel: 'Train' }];
     const saveSpy = spyOn(component, 'saveClaim');
     component.submitTy();
-    expect(saveSpy).toHaveBeenCalledWith('TYA', 'OB', true);
+    expect(saveSpy).toHaveBeenCalledWith('T', 'OB', true);
+  });
+
+  it('loads TY details with legacy claim/single headers', () => {
+    const component = createComponent();
+    component.getFormDetails();
+
+    expect(component.$claim.getSingleClaim).toHaveBeenCalledWith({
+      headers: jasmine.objectContaining({
+        claimId: '',
+        userId: 42,
+        isFetch: 'true',
+        subFormId: 'T',
+        isPreview: 'false',
+        gxUnitId: '2',
+      }),
+    });
+  });
+
+  it('maps new TY form personal and bank details from claim/single response', () => {
+    const component = createComponent();
+    component.$claim.getSingleClaim.and.returnValue(of({
+      status: true,
+      object: [{
+        yatTempDutyAdvDTOs: [{
+          pno: '01361-T',
+          name: 'M KalaiMurthy',
+          rank: 'P/ADH(P)',
+          payLevel: 'L08',
+          basicPay: 64100,
+          videPresentUnit: 'ICGS Delhi',
+        }],
+        yatClaimBankDetailDTO: {
+          bankName: 'HDFC BANK LTD',
+          ifscCode: 'HDFC0000013',
+          bankAccNo: '00131150000656',
+          micrCode: 'MICR1',
+        },
+      }],
+    }));
+
+    component.getFormDetails();
+
+    const adv = component.claims.yatTempDutyAdvDTOs[0];
+    expect(adv.name).toBe('M KalaiMurthy');
+    expect(adv.rank).toBe('P/ADH(P)');
+    expect(adv.pno).toBe('01361-T');
+    expect(adv.payLevel).toBe('L08');
+    expect(adv.basicPay).toBe(64100);
+    expect(adv.videPresentUnit).toBe('ICGS Delhi');
+    expect(component.claims.yatClaimBankDetailDTO.ifscCode).toBe('HDFC0000013');
+    expect(component.claims.yatClaimBankDetailDTO.bankAccNo).toBe('00131150000656');
+    expect(component.claims.claimId).toBeNull();
+    expect(component.isPreviewDisabled).toBeTrue();
+  });
+
+  it('does not set fake claim id when new TY response is false', () => {
+    const component = createComponent();
+    component.$claim.getSingleClaim.and.returnValue(of({ status: false, message: 'No Record' }));
+
+    component.getFormDetails();
+
+    expect(component.claims.claimId).toBeNull();
+    expect(component.isPreviewDisabled).toBeTrue();
   });
 });
 

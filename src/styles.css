@@ -2118,3 +2118,26 @@ sup.required-msg {
   }
 }
 
+/* Legacy form validation contract: JSP forms highlighted invalid required fields
+   with a simple red border after Form Validate. Keep this global so Creator
+   Advance forms do not drift into different validation visuals. */
+.legacy-invalid-field,
+input.legacy-invalid-field,
+select.legacy-invalid-field,
+textarea.legacy-invalid-field {
+  border-color: red !important;
+}
+
+ngx-select.legacy-invalid-field .ngx-select__toggle,
+ngx-select-ex.legacy-invalid-field .ngx-select__toggle,
+.legacy-invalid-field .ngx-select__toggle,
+.legacy-invalid-field .form-control {
+  border-color: red !important;
+}
+
+[data-radio-wrapper].legacy-invalid-field {
+  border: 1px solid red !important;
+  border-radius: 4px;
+  padding: 6px 10px;
+}
+
