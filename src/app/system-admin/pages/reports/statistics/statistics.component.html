@@ -1,115 +1,176 @@
 <div class="page-header gov-page-toolbar">
-          <div class="page-leftheader">
-            <h4 class="page-title">Statistics</h4>
-            <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item">
-                <a [routerLink]="['../dashboard']">Dashboard</a>
-              </li>
-              <li class="breadcrumb-item active" aria-current="page">Statistics</li>
-            </ol>
-          </div>
+  <div class="page-leftheader">
+    <h4 class="page-title">Statistics</h4>
+    <ol class="breadcrumb pl-0">
+      <li class="breadcrumb-item">
+        <a [routerLink]="['../dashboard']">Yatra</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">Statistics</li>
+    </ol>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="row align-items-end">
+      <div class="col-md-2">
+        <label class="form-label">Type<sup class="required-msg">*</sup></label>
+        <select class="form-control" [(ngModel)]="selectedOpt" (ngModelChange)="customFromDate=''; customToDate=''">
+          <option value="">Select</option>
+          <option value="week">Last 7 days</option>
+          <option value="month">Last Month</option>
+          <option value="quarter">Last 3 Months</option>
+          <option value="version">Since version 2 launch (16th Nov)</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div class="col-md-2" *ngIf="selectedOpt === 'custom'">
+        <label class="form-label">From Date<sup class="required-msg">*</sup></label>
+        <input class="form-control" type="date" [(ngModel)]="customFromDate" (ngModelChange)="customToDate=''" />
+      </div>
+      <div class="col-md-2" *ngIf="selectedOpt === 'custom'">
+        <label class="form-label">To Date<sup class="required-msg">*</sup></label>
+        <input class="form-control" type="date" [(ngModel)]="customToDate" [min]="customFromDate" />
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-info" type="button" (click)="applyFilter()">Filter</button>
+      </div>
+      <div class="col-md-2 ml-auto text-right">
+        <button class="btn btn-primary" type="button" (click)="openPreviewReport()">View Report</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card statistics-chart-card total-chart-card">
+  <div class="card-body">
+    <h3 class="statistics-chart-title">Total Claims</h3>
+    <div class="statistics-chart-frame">
+    <ngx-charts-pie-chart
+      [view]="totalChartView"
+      [scheme]="totalColorScheme"
+      [results]="totalChartData"
+      [legend]="true"
+      [legendTitle]="'Legend'"
+      [legendPosition]="legendPosition"
+      [labels]="true"
+      [trimLabels]="trimLabels"
+      [maxLabelLength]="maxLabelLength"
+      [explodeSlices]="explodeSlices"
+      [margins]="totalChartMargins"
+      [doughnut]="false"
+      (select)="onTotalSelect($event)">
+    </ngx-charts-pie-chart>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card statistics-chart-card">
+      <div class="card-body">
+        <h3 class="statistics-chart-title">Advance</h3>
+        <div class="statistics-chart-frame">
+        <ngx-charts-pie-chart
+          [view]="halfChartView"
+          [scheme]="advanceColorScheme"
+          [results]="advanceChartData"
+          [legend]="true"
+          [legendTitle]="'Legend'"
+          [legendPosition]="legendPosition"
+          [labels]="true"
+          [trimLabels]="trimLabels"
+          [maxLabelLength]="maxLabelLength"
+          [explodeSlices]="explodeSlices"
+          [margins]="halfChartMargins"
+          [doughnut]="false"
+          (select)="onAdvanceSelect($event)">
+        </ngx-charts-pie-chart>
         </div>
-
-        <div class="card">
-          <div class="card-body">
-            <div class="row align-items-end">
-              <div class="col-md-3">
-                <label>Type</label>
-                <select class="form-control" [(ngModel)]="selectedOpt" (ngModelChange)="customFromDate=''; customToDate=''">
-                  <option value="week">Last 7 days</option>
-                  <option value="month">Last Month</option>
-                  <option value="quarter">Last 3 Months</option>
-                  <option value="version">Since version 2 launch</option>
-                  <option value="custom">Custom</option>
-                </select>
-              </div>
-              <div class="col-md-3" *ngIf="selectedOpt==='custom'">
-                <label>From Date (millis)</label>
-                <input class="form-control" type="number" [(ngModel)]="customFromDate" />
-              </div>
-              <div class="col-md-3" *ngIf="selectedOpt==='custom'">
-                <label>To Date (millis)</label>
-                <input class="form-control" type="number" [(ngModel)]="customToDate" />
-              </div>
-              <div class="col-md-3 text-right">
-                <button class="btn btn-info mr-2" type="button" (click)="applyFilter()">Filter</button>
-                <button class="btn btn-primary" type="button" (click)="getViewReport('download')">View Report</button>
-              </div>
-            </div>
-          </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card statistics-chart-card">
+      <div class="card-body">
+        <h3 class="statistics-chart-title">Claims</h3>
+        <div class="statistics-chart-frame">
+        <ngx-charts-pie-chart
+          [view]="halfChartView"
+          [scheme]="claimColorScheme"
+          [results]="claimChartData"
+          [legend]="true"
+          [legendTitle]="'Legend'"
+          [legendPosition]="legendPosition"
+          [labels]="true"
+          [trimLabels]="trimLabels"
+          [maxLabelLength]="maxLabelLength"
+          [explodeSlices]="explodeSlices"
+          [margins]="halfChartMargins"
+          [doughnut]="false"
+          (select)="onClaimSelect($event)">
+        </ngx-charts-pie-chart>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        <div class="row">
-          <div class="col-md-6">
-            <div class="card metric-card">
-              <div class="card-body">
-                <h6 class="metric-label">Total Advance</h6>
-                <h2 class="metric-value">{{ totalAdvance }}</h2>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="card metric-card">
-              <div class="card-body">
-                <h6 class="metric-label">Total Claims</h6>
-                <h2 class="metric-value">{{ totalClaims }}</h2>
-              </div>
-            </div>
-          </div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <p *ngIf="advList.length" class="mb-2"><strong>{{ advHead }}</strong></p>
+        <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+          <table class="table table-bordered gov-table-sticky-first table-sticky-first">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>No. of Claims</th>
+                <th>Amount <span>&#8377;</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let obj of advList">
+                <td>{{ obj?.title | showHypen }}</td>
+                <td>{{ obj?.slNo | showHypen }}</td>
+                <td>{{ obj?.payment | showHypen }}</td>
+              </tr>
+              <tr *ngIf="!advList?.length">
+                <td colspan="3" class="text-center table-empty-state gov-table-empty-state">No Records</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
-        <div class="row">
-          <div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="mb-3">Advance Breakdown</h5>
-                <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
-                  <table class="table table-bordered gov-table-sticky-first table-sticky-first">
-                    <thead>
-                      <tr>
-                        <th>Type</th>
-                        <th>No. of Claims</th>
-                        <th>Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let obj of advList">
-                        <td>{{ obj?.title | showHypen }}</td>
-                        <td>{{ obj?.slNo | showHypen }}</td>
-                        <td>{{ obj?.payment | showHypen }}</td>
-                      </tr>
-                      <tr *ngIf="!advList?.length">
-                        <td colspan="3" class="text-center table-empty-state gov-table-empty-state">No Records Available</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="mb-3">Claim Breakdown</h5>
-                <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
-                  <table class="table table-bordered gov-table-sticky-first table-sticky-first">
-                    <thead>
-                      <tr>
-                        <th>Type</th>
-                        <th>No. of Claims</th>
-                        <th>Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let obj of claimList">
-                        <td>{{ obj?.title | showHypen }}</td>
-                        <td>{{ obj?.slNo | showHypen }}</td>
-                        <td>{{ obj?.payment | showHypen }}</td>
-                      </tr>
-                      <tr *ngIf="!claimList?.length">
-                        <td colspan="3" class="text-center table-empty-state gov-table-empty-state">No Records Available</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <p *ngIf="claimList.length" class="mb-2"><strong>{{ clmHead }}</strong></p>
+        <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+          <table class="table table-bordered gov-table-sticky-first table-sticky-first">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>No. of Claims</th>
+                <th>Amount <span>&#8377;</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let obj of claimList">
+                <td>{{ obj?.title | showHypen }}</td>
+                <td>{{ obj?.slNo | showHypen }}</td>
+                <td>{{ obj?.payment | showHypen }}</td>
+              </tr>
+              <tr *ngIf="!claimList?.length">
+                <td colspan="3" class="text-center table-empty-state gov-table-empty-state">No Records</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

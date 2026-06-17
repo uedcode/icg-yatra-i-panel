@@ -13,3 +13,85 @@
   font-weight: 700;
 }
 
+.statistics-chart-card {
+  overflow: hidden;
+
+  .card-body {
+    padding: 14px 18px 16px;
+  }
+}
+
+.statistics-chart-title {
+  color: #111;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.statistics-chart-frame {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 285px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+}
+
+.total-chart-card .statistics-chart-frame {
+  min-height: 290px;
+}
+
+:host ::ng-deep .statistics-chart-frame ngx-charts-pie-chart {
+  display: block;
+  max-width: 100%;
+}
+
+:host ::ng-deep .statistics-chart-frame .chart-legend {
+  color: #1f2937;
+  min-width: 132px;
+}
+
+:host ::ng-deep .statistics-chart-frame .chart-legend .legend-labels {
+  background: rgba(0, 0, 0, 0.035);
+  max-width: none;
+  padding: 6px 8px;
+}
+
+:host ::ng-deep .statistics-chart-frame .chart-legend .legend-label {
+  color: #1f2937;
+  overflow: visible;
+  width: auto;
+}
+
+:host ::ng-deep .statistics-chart-frame .chart-legend .legend-label-text {
+  color: #1f2937 !important;
+  font-size: 12px;
+  font-weight: 600;
+  max-width: 150px;
+  opacity: 1;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .statistics-chart-frame .pie-label {
+  fill: #111827;
+  font-size: 13px;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: rgba(255, 255, 255, 0.75);
+  stroke-width: 2px;
+}
+
+@media (max-width: 991.98px) {
+  .statistics-chart-title {
+    font-size: 21px;
+  }
+
+  .statistics-chart-frame {
+    justify-content: flex-start;
+  }
+}

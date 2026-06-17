@@ -14,6 +14,7 @@ import { CommonService } from 'src/app/service/core/common.service';
 export class HeaderInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private readonly legacyBaseApiPrefixes = ['codeMisc/', 'utilPno/'];
 
   constructor(private $common: CommonService, public AuthTokenService: AuthTokenService, public $auth: AuthService) { }
 
@@ -27,13 +28,18 @@ export class HeaderInterceptor implements HttpInterceptor {
       let isServiceAPI = false;
       let isWebAPI = false;
       let is3rdPartyAPI = false;
+      let isLegacyBaseAPI = false;
+      const relativeUrl = this.normalizeRelativeUrl(req.url);
+      const isAbsoluteURL = this.isAbsoluteUrl(req.url);
 
-      if (req.url.includes('oauth') || req.url.includes('portal') || req.url.includes('sso')) {
+      if (relativeUrl.includes('oauth') || relativeUrl.includes('portal') || relativeUrl.includes('sso')) {
         isAuthAPI = true;
-      } else if (req.url.includes('service')) {
+      } else if (relativeUrl.includes('service')) {
         isServiceAPI = true;
-      } else if (req.url.includes('whatismyip')) {
+      } else if (relativeUrl.includes('whatismyip')) {
         is3rdPartyAPI = true;
+      } else if (this.isLegacyBaseApi(relativeUrl)) {
+        isLegacyBaseAPI = true;
       } else {
         isWebAPI = true;
       }
@@ -45,6 +51,9 @@ export class HeaderInterceptor implements HttpInterceptor {
         commonEndpoint = environment.baseApi;
       } else if (isServiceAPI) {
         commonEndpoint = environment.baseApi;
+      } else if (isLegacyBaseAPI) {
+        commonEndpoint = environment.baseApi;
+        userIdDetails = this.$auth.getUserDetails();
       } else if (isWebAPI) {
         commonEndpoint = environment.api;
         userIdDetails = this.$auth.getUserDetails();
@@ -56,7 +65,7 @@ export class HeaderInterceptor implements HttpInterceptor {
           return throwError(() => new Error('Missing auth client configuration'));
         }
         dummyrequest = req.clone({
-          url: commonEndpoint + req.url,
+          url: this.buildRequestUrl(commonEndpoint, relativeUrl, isAbsoluteURL, req.url),
           headers: req.headers
             .set('Authorization', basicClientAuth)
             .set(
@@ -64,11 +73,11 @@ export class HeaderInterceptor implements HttpInterceptor {
               `application/x-www-form-urlencoded;charset=utf-8`
             ),
         });
-      } else if (isWebAPI) {
+      } else if (isWebAPI || isLegacyBaseAPI) {
         const userToken = this.$auth.getAccessToken();
         const fingerPrint = this.$auth.getDeviceFingerprint();
         dummyrequest = req.clone({
-          url: commonEndpoint + req.url,
+          url: this.buildRequestUrl(commonEndpoint, relativeUrl, isAbsoluteURL, req.url),
           headers: req.headers
             .set('Authorization', `Bearer ${userToken}`)
             .set('logUserId', `${userIdDetails?.userId}`)
@@ -76,7 +85,7 @@ export class HeaderInterceptor implements HttpInterceptor {
         });
       } else {
         dummyrequest = req.clone({
-          url: commonEndpoint + req.url,
+          url: this.buildRequestUrl(commonEndpoint, relativeUrl, isAbsoluteURL, req.url),
         });
       }
       return next.handle(dummyrequest).pipe(
@@ -107,6 +116,35 @@ export class HeaderInterceptor implements HttpInterceptor {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  private normalizeRelativeUrl(url: string): string {
+    if (this.isAbsoluteUrl(url)) {
+      try {
+        const parsedUrl = new URL(url);
+        return `${parsedUrl.pathname.replace(/^\/+/, '')}${parsedUrl.search}`;
+      } catch (error) {
+        return url.replace(/^\/+/, '');
+      }
+    }
+
+    return url.replace(/^\/+/, '');
+  }
+
+  private isAbsoluteUrl(url: string): boolean {
+    return /^https?:\/\//i.test(url);
+  }
+
+  private isLegacyBaseApi(url: string): boolean {
+    return this.legacyBaseApiPrefixes.some(prefix => url.startsWith(prefix));
+  }
+
+  private buildRequestUrl(endpoint: string, relativeUrl: string, isAbsoluteURL: boolean, originalUrl: string): string {
+    if (isAbsoluteURL) {
+      return originalUrl;
+    }
+
+    return `${endpoint}${relativeUrl}`;
   }
 
   private addToken(request: HttpRequest<any>, token: string) {

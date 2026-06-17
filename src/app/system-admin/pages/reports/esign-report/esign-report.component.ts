@@ -11,7 +11,7 @@ import { ReportAnalyticsService } from 'src/app/service/master/report-analytics.
 export class EsignReportComponent implements OnInit {
   list: any[] = [];
   units: any[] = [];
-  selectedGxUnitId = '';
+  selectedGxUnitId = '000226';
   searchObj: any;
   noOfPage: any = 10;
   p = 1;
@@ -25,24 +25,28 @@ export class EsignReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUnits();
-    this.getReportData();
+    this.getReportData('000226');
   }
 
-  loadUnits() {
-    const config = { headers: {} };
-    this.$report.getCodeUnits(config).subscribe(
+  loadUnits(): void {
+    this.$report.getGxUnits().subscribe(
       (response: any) => {
         if (response?.status) {
-          this.units = Array.isArray(response.object) ? response.object : [];
+          this.units = this.normalizeUnits(response.object || []);
+          const defaultUnit = this.units.find((unit) => unit.unit === this.selectedGxUnitId);
+          if (!defaultUnit && this.units.length) {
+            this.selectedGxUnitId = this.units[0].unit;
+          }
         }
       },
       (err) => console.log(err)
     );
   }
 
-  getReportData() {
+  getReportData(unitId = this.selectedGxUnitId): void {
     try {
       this.$common.showLoader();
+      this.selectedGxUnitId = unitId || '';
       const config = {
         headers: {
           gxUnitId: this.selectedGxUnitId || '',
@@ -66,9 +70,16 @@ export class EsignReportComponent implements OnInit {
     }
   }
 
-  sort(key: string) {
+  sort(key: string): void {
     this.key = key;
     this.reverse = !this.reverse;
   }
-}
 
+  private normalizeUnits(units: any[]): any[] {
+    return units.map((unit) => ({
+      ...unit,
+      unit: unit?.unit || unit?.gxUnitId || unit?.unitId || '',
+      descr: unit?.descr || unit?.unitName || unit?.gxUnitName || '-'
+    }));
+  }
+}

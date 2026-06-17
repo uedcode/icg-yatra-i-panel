@@ -37,6 +37,7 @@ import { PayLevelComponent } from './pages/manage-masters/manage-pay-level/pay-l
 import { TyDutyPurposeComponent } from './pages/manage-masters/manage-ty-duty-purpose/ty-duty-purpose/ty-duty-purpose.component';
 import { EsignReportComponent } from './pages/reports/esign-report/esign-report.component';
 import { StatisticsComponent } from './pages/reports/statistics/statistics.component';
+import { PreviewReportComponent } from './pages/reports/preview-report/preview-report.component';
 
 const SYSTEM_ADMIN_ROLES = ['SY'];
 
@@ -299,6 +300,12 @@ const routes: Routes = [
     component: StatisticsComponent,
     canActivate: [AuthGuard],
     data: { title: 'Statistics', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
+    path: 'preview-report',
+    component: PreviewReportComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Report Preview', roles: SYSTEM_ADMIN_ROLES },
   },
   {
     path: '**',

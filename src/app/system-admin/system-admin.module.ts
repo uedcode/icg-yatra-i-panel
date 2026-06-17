@@ -7,6 +7,7 @@ import { PipeModule } from '../app-pipe.module';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { INgxSelectOptions, NgxSelectModule } from 'ngx-select-ex';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
@@ -60,6 +61,7 @@ import { TyDutyPurposeComponent } from './pages/manage-masters/manage-ty-duty-pu
 import { AddTyDutyPurposeModalComponent } from './pages/manage-masters/manage-ty-duty-purpose/add-ty-duty-purpose-modal/add-ty-duty-purpose-modal.component';
 import { EsignReportComponent } from './pages/reports/esign-report/esign-report.component';
 import { StatisticsComponent } from './pages/reports/statistics/statistics.component';
+import { PreviewReportComponent } from './pages/reports/preview-report/preview-report.component';
 
 
 const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more options
@@ -102,6 +104,7 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         AddTyDutyPurposeModalComponent,
         EsignReportComponent,
         StatisticsComponent,
+        PreviewReportComponent,
         ProfileSettingComponent,
         ManageApproverComponent,
         InboxComponent,
@@ -116,6 +119,7 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         AdminRoutingModule,
         FormsModule,
         NgxPaginationModule,
+        NgxChartsModule,
         NgxSpinnerModule,
         NgxSelectModule.forRoot(CustomSelectOptions),
         NgMultiSelectDropDownModule.forRoot(),
