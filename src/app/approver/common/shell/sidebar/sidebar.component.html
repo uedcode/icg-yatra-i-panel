@@ -33,29 +33,29 @@
         <i class="side-menu__icon fa fa-times-circle"></i><span class="side-menu__label">Not Approved <span *ngIf="countObj?.rejected > 0" class="counts">{{ countObj?.rejected }}</span></span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.approver">
+    <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['passed']">
         <i class="side-menu__icon fa fa-check"></i><span class="side-menu__label">Passed <span *ngIf="countObj?.passed > 0" class="counts">{{ countObj?.passed }}</span></span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.approver">
+    <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['not-passed']">
         <i class="side-menu__icon fa fa-times"></i><span class="side-menu__label">Not Passed <span *ngIf="countObj?.notPassed > 0" class="counts">{{ countObj?.notPassed }}</span></span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
+    <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['archive']">
         <i class="side-menu__icon fa fa-archive"></i><span class="side-menu__label">Archive</span>
       </a>
     </li>
 
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.verifier2">
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['settings']">
         <i class="side-menu__icon fa fa-cog"></i><span class="side-menu__label">Settings</span>
       </a>
     </li>
 
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier || userIdDetails?.roleTypeId == codeRoleList?.verifier2" routerLinkActive="is-expanded" class="slide">
+    <li routerLinkActive="is-expanded" class="slide">
       <a class="side-menu__item" data-toggle="slide">
         <i class="side-menu__icon fa fa-money"></i>
         <span class="side-menu__label">Update Pay Details</span>
@@ -69,16 +69,6 @@
       </ul>
     </li>
 
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['manual-draft']">
-        <i class="side-menu__icon fa fa-file"></i><span class="side-menu__label">Manual Draft</span>
-      </a>
-    </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['budget-allocation']">
-        <i class="side-menu__icon fa fa-money"></i><span class="side-menu__label">Budget Allocation</span>
-      </a>
-    </li>
   </ul>
 
   <ul *ngIf="$auth.isRuntimeClm()" class="side-menu sidebar_page_scroll">
@@ -102,19 +92,24 @@
         <i class="side-menu__icon fa fa-times-circle"></i><span class="side-menu__label">Not Approved <span *ngIf="countObj?.notApprovedClaim > 0" class="counts">{{ countObj?.notApprovedClaim }}</span></span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
+    <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['claim/passed']">
         <i class="side-menu__icon fa fa-check"></i><span class="side-menu__label">Passed <span *ngIf="countObj?.passedClaim > 0" class="counts">{{ countObj?.passedClaim }}</span></span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
+    <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['claim/not-passed']">
         <i class="side-menu__icon fa fa-times"></i><span class="side-menu__label">Not Passed <span *ngIf="countObj?.notPassedClaim > 0" class="counts">{{ countObj?.notPassedClaim }}</span></span>
       </a>
     </li>
-    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier">
+    <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['claim/archive']">
         <i class="side-menu__icon fa fa-archive"></i><span class="side-menu__label">Archive <span *ngIf="countObj?.archiveClaim > 0" class="counts">{{ countObj?.archiveClaim }}</span></span>
+      </a>
+    </li>
+    <li *ngIf="userIdDetails?.roleTypeId == codeRoleList?.verifier2">
+      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['settings']">
+        <i class="side-menu__icon fa fa-cog"></i><span class="side-menu__label">Settings</span>
       </a>
     </li>
   </ul>

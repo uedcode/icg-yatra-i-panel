@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { of, Subject, throwError } from 'rxjs';
 
 import { SidebarComponent } from './sidebar.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -36,12 +37,14 @@ describe('SidebarComponent', () => {
     formId: 'FORM-VE'
   };
 
-  const renderForRole = (roleTypeId: string) => {
+  const renderForRole = (roleTypeId: string, runtimeModule: 'ADV' | 'CLM' = 'ADV') => {
     authService.getUserDetails.and.returnValue({
       ...verifierUser,
       roleTypeId,
       userId: `${roleTypeId}-USER`
     });
+    authService.isRuntimeAdv.and.returnValue(runtimeModule === 'ADV');
+    authService.isRuntimeClm.and.returnValue(runtimeModule === 'CLM');
     fixture = TestBed.createComponent(SidebarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -52,16 +55,21 @@ describe('SidebarComponent', () => {
     authService = jasmine.createSpyObj<AuthService>('AuthService', [
       'closeSidebar',
       'codeRoleType',
-      'getUserDetails'
+      'getUserDetails',
+      'isRuntimeAdv',
+      'isRuntimeClm'
     ]);
     commonService = jasmine.createSpyObj<CommonService>('CommonService', [
       'hideLoader',
       'showLoader'
     ]);
     claimService = jasmine.createSpyObj<ClaimService>('ClaimService', ['getStatusCount']);
+    (claimService as any).statusCountRefresh$ = new Subject<void>();
 
     authService.codeRoleType.and.returnValue(codeRoleList);
     authService.getUserDetails.and.returnValue(verifierUser);
+    authService.isRuntimeAdv.and.returnValue(true);
+    authService.isRuntimeClm.and.returnValue(false);
     claimService.getStatusCount.and.returnValue(
       of({
         status: true,
@@ -71,13 +79,22 @@ describe('SidebarComponent', () => {
           approvedCount: 13,
           notApprovedCount: 14,
           passedCount: 15,
-          notPassedCount: 16
+          notPassedCount: 16,
+          archiveCount: 17,
+          inboxClaimCount: 21,
+          outboxClaimCount: 22,
+          approvedClaimCount: 23,
+          notApprovedClaimCount: 24,
+          passedClaimCount: 25,
+          notPassedClaimCount: 26,
+          archiveClaimCount: 27
         }
       }) as any
     );
 
     await TestBed.configureTestingModule({
       declarations: [SidebarComponent],
+      imports: [RouterTestingModule],
       providers: [
         { provide: AuthService, useValue: authService },
         { provide: CommonService, useValue: commonService },
@@ -115,16 +132,16 @@ describe('SidebarComponent', () => {
       rejected: 14,
       passed: 15,
       notPassed: 16,
-      archive: 0,
+      archive: 17,
       newClaim: 0,
-      inboxClaim: 0,
-      outboxClaim: 0,
+      inboxClaim: 21,
+      outboxClaim: 22,
       draftClaim: 0,
-      approvedClaim: 0,
-      notApprovedClaim: 0,
-      passedClaim: 0,
-      notPassedClaim: 0,
-      archiveClaim: 0
+      approvedClaim: 23,
+      notApprovedClaim: 24,
+      passedClaim: 25,
+      notPassedClaim: 26,
+      archiveClaim: 27
     });
     expect(commonService.hideLoader).toHaveBeenCalled();
   });
@@ -200,43 +217,74 @@ describe('SidebarComponent', () => {
     expect(console.log).toHaveBeenCalled();
   });
 
-  it('shows verifier-only claim and admin workflow menus for verifier role', () => {
-    const text = renderForRole('VE1');
+  it('shows ADV legacy queue and special menus for verifier1 role', () => {
+    const text = renderForRole('VE1', 'ADV');
 
     expect(text).toContain('Inbox 11');
     expect(text).toContain('Outbox 12');
     expect(text).toContain('Approved 13');
-    expect(text).toContain('Rejected 14');
+    expect(text).toContain('Not Approved 14');
     expect(text).toContain('Passed 15');
     expect(text).toContain('Not Passed 16');
-    expect(text).toContain('Claim Archive');
-    expect(text).toContain('Pay Inbox');
-    expect(text).toContain('Manual Draft');
-    expect(text).toContain('Budget Allocation');
-  });
-
-  it('shows pay menus but hides verifier-only claim menus for verifier2 role', () => {
-    const text = renderForRole('VE2');
-
-    expect(text).toContain('Pay Inbox');
-    expect(text).toContain('Pay Outbox');
-    expect(text).toContain('Pay Approved');
-    expect(text).toContain('Pay Not Approved');
-    expect(text).not.toContain('Passed 15');
-    expect(text).not.toContain('Not Passed 16');
-    expect(text).not.toContain('Claim Archive');
+    expect(text).toContain('Archive');
+    expect(text).toContain('Settings');
+    expect(text).toContain('Update Pay Details');
     expect(text).not.toContain('Manual Draft');
     expect(text).not.toContain('Budget Allocation');
   });
 
-  it('hides verifier and pay menus for approver role', () => {
-    const text = renderForRole('AP');
+  it('shows ADV main queues and pay menus but hides settings for verifier2 role', () => {
+    const text = renderForRole('VE2', 'ADV');
 
-    expect(text).toContain('Dashboard');
     expect(text).toContain('Inbox 11');
-    expect(text).toContain('Rejected 14');
-    expect(text).not.toContain('Passed 15');
-    expect(text).not.toContain('Pay Inbox');
+    expect(text).toContain('Passed 15');
+    expect(text).toContain('Not Passed 16');
+    expect(text).toContain('Archive');
+    expect(text).toContain('Update Pay Details');
+    expect(text).not.toContain('Settings');
+    expect(text).not.toContain('Manual Draft');
+    expect(text).not.toContain('Budget Allocation');
+  });
+
+  it('shows ADV main queues and pay menus but hides verifier-only special menus for approver role', () => {
+    const text = renderForRole('AP', 'ADV');
+
+    expect(text).toContain('Inbox 11');
+    expect(text).toContain('Not Approved 14');
+    expect(text).toContain('Passed 15');
+    expect(text).toContain('Not Passed 16');
+    expect(text).toContain('Archive');
+    expect(text).toContain('Update Pay Details');
+    expect(text).not.toContain('Settings');
+    expect(text).not.toContain('Manual Draft');
+    expect(text).not.toContain('Budget Allocation');
+  });
+
+  it('shows CLM queues and settings for verifier2 role', () => {
+    const text = renderForRole('VE2', 'CLM');
+
+    expect(text).toContain('Inbox 21');
+    expect(text).toContain('Outbox 22');
+    expect(text).toContain('Approved 23');
+    expect(text).toContain('Not Approved 24');
+    expect(text).toContain('Passed 25');
+    expect(text).toContain('Not Passed 26');
+    expect(text).toContain('Archive 27');
+    expect(text).toContain('Settings');
+    expect(text).not.toContain('Update Pay Details');
+  });
+
+  it('shows CLM queues but hides settings for approver role', () => {
+    const text = renderForRole('AP', 'CLM');
+
+    expect(text).toContain('Inbox 21');
+    expect(text).toContain('Outbox 22');
+    expect(text).toContain('Approved 23');
+    expect(text).toContain('Not Approved 24');
+    expect(text).toContain('Passed 25');
+    expect(text).toContain('Not Passed 26');
+    expect(text).toContain('Archive 27');
+    expect(text).not.toContain('Settings');
     expect(text).not.toContain('Manual Draft');
     expect(text).not.toContain('Budget Allocation');
   });

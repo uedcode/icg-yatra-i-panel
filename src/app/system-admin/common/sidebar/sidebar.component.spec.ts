@@ -49,13 +49,16 @@ describe('SidebarComponent', () => {
   it('should render key system admin menu entries', () => {
     const text = fixture.nativeElement.textContent.replace(/\s+/g, ' ');
 
-    expect(text).toContain('Manage System Admins');
-    expect(text).toContain('Manage Unit Admins');
-    expect(text).toContain('Manage Masters');
-    expect(text).toContain('Audit Export');
-    expect(text).toContain('Audit Import');
+    expect(text).toContain('Dashboard');
     expect(text).toContain('Statistics');
-    expect(text).toContain('User Manual');
+    expect(text).toContain('Esign Report');
+    expect(text).toContain('Import');
+    expect(text).toContain('Export');
+    expect(text).toContain('Archived');
+    expect(text).toContain('Diary Claim');
+    expect(text).toContain('Manage Unit Admin');
+    expect(text).toContain('Settings');
+    expect(text).toContain('Excel Import');
   });
 
   it('should open user manual modal', () => {

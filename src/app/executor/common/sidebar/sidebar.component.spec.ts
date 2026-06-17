@@ -12,18 +12,16 @@ describe('SidebarComponent', () => {
   beforeEach(async () => {
     authService = jasmine.createSpyObj<AuthService>('AuthService', [
       'closeSidebar',
-      'getUserDetails',
-      'codeRoleType'
+      'getUserDetails'
     ]);
     authService.getUserDetails.and.returnValue({
-      formId: 'UNIT-ADMIN',
+      formId: 'EXECUTOR',
       unitName: 'HQ Unit',
-      roleTypeId: 'UN'
+      roleTypeId: 'EX'
     } as any);
-    authService.codeRoleType.and.returnValue({ unitAdmin: 'UN' } as any);
 
     await TestBed.configureTestingModule({
-      declarations: [ SidebarComponent ],
+      declarations: [SidebarComponent],
       imports: [RouterTestingModule],
       providers: [{ provide: AuthService, useValue: authService }]
     })
@@ -33,22 +31,19 @@ describe('SidebarComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SidebarComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('renders unit admin legacy sidebar items and hides commented paylevel menu', () => {
-    fixture.detectChanges();
-
+  it('renders executor legacy sidebar items', () => {
     const text = fixture.nativeElement.textContent.replace(/\s+/g, ' ');
 
-    expect(text).toContain('Manage Unit Admin');
-    expect(text).toContain('Manage Role');
-    expect(text).toContain('Archive');
-    expect(text).toContain('Report TY Duty');
-    expect(text).toContain('Update PMT Unit');
-    expect(text).not.toContain('Manage Paylevel');
+    expect(text).toContain('Dashboard');
+    expect(text).toContain('Statistics');
+    expect(text).toContain('Esign Report');
+    expect(text).toContain('Master search');
   });
 });
