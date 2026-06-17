@@ -46,6 +46,12 @@ import { ArchivedComponent } from './pages/audit-import-export/archived/archived
 import { ImportComponent } from './pages/audit-import-export/import/import.component';
 import { ImportedComponent } from './pages/audit-import-export/imported/imported.component';
 import { ArchivedImportComponent } from './pages/audit-import-export/archived-import/archived-import.component';
+import { BackupImportComponent } from './pages/audit-import-export/backup-import/backup-import.component';
+import { BackupExportComponent } from './pages/audit-import-export/backup-export/backup-export.component';
+import { DiaryImportComponent } from './pages/audit-import-export/diary-import/diary-import.component';
+import { DiaryImportedComponent } from './pages/audit-import-export/diary-imported/diary-imported.component';
+import { DiaryImportedBackupComponent } from './pages/audit-import-export/diary-imported-backup/diary-imported-backup.component';
+import { SysAdminExcelImportComponent } from './pages/audit-import-export/excel-import/excel-import.component';
 import { PortRateComponent } from './pages/manage-masters/manage-port-rate/port-rate/port-rate.component';
 import { AddPortRateModalComponent } from './pages/manage-masters/manage-port-rate/add-port-rate-modal/add-port-rate-modal.component';
 import { ManageRoleComponent } from './pages/manage-role/manage-role.component';
@@ -113,6 +119,12 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         ImportComponent,
         ImportedComponent,
         ArchivedImportComponent,
+        BackupImportComponent,
+        BackupExportComponent,
+        DiaryImportComponent,
+        DiaryImportedComponent,
+        DiaryImportedBackupComponent,
+        SysAdminExcelImportComponent,
     ManageRoleComponent,    WebDetailComponent,
     ], imports: [RouterModule,
         CommonModule,

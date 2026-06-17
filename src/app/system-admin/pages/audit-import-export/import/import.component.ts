@@ -1,13 +1,10 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { FormService } from 'src/app/service/form/form.service';
-import { ImportExportAuditService } from 'src/app/service/admin/importExportAudit.service';
-import { environment } from 'src/environments/environment';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ImportExportBatchService } from 'src/app/service/admin/import-export-batch.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
 declare var $: any;
 
 @Component({
@@ -25,52 +22,48 @@ export class ImportComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    public $importExport: ImportExportAuditService,
-    private route: ActivatedRoute,
+    public $importExportBatch: ImportExportBatchService,
+    private $claim: ClaimService,
   ) { }
 
-  @Input() dataList: Array<any> = [];
-  @ViewChild('requiredForm', { static: true }) requiredForm: NgForm;
-
   id: any;
-  pageType: any;
   config: any;
-  formObj: any = {};
   
   searchObj1: any;
   searchObj2: any;
-  noOfPage1: any = 10;
-  noOfPage2: any = 10;
+  noOfPage1: any = 5;
+  noOfPage2: any = 5;
   p1: any = 1;
   p2: any = 1;
 
-  allAdminForm: any = [];
   batchList: any = [];
   batchChildList: any = [];
-  newBatchList: any = [];
-  fileUrl = environment.fileUrl;
-  private batchType: 'IM' | 'DI' = 'IM';
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
-    this.batchType = this.route.snapshot.routeConfig?.path?.includes('diary') ? 'DI' : 'IM';
     this.loadBatchList();
   }
+
+  private buildNormalImportHeaders(isStaging: string) {
+    return {
+      type: this.codeStatus.imported,
+      isArchived: '0',
+      isStaging,
+    };
+  }
+
   loadBatchList() {
     try {
       this.$common.showLoader();
-      let config = {
-        headers: {
-          'type': this.batchType,
-          'isArchived': "0",
-          'isStaging': "1"
-        }
-      }
-      this.$importExport.getCustomBatch(config).subscribe(
+      const config = {
+        headers: this.buildNormalImportHeaders('1')
+      };
+      this.$importExportBatch.getBatchList(config).subscribe(
         (response: any) => {
           if (response.status == true) {
             this.batchList = response.object;
           }
+          this.$common.hideLoader();
         }, err => {
           this.$common.hideLoader();
         })
@@ -88,7 +81,7 @@ export class ImportComponent implements OnInit {
       this.$common.showLoader();
       this.batchNo = importExportObject.batchNo;
       this.viewingImportExportId = importExportObject.importExportId;
-      this.$importExport.getBatchChildren(importExportObject, this.codeStatus, this.batchType).subscribe(
+      this.$importExportBatch.getBatchChildren(importExportObject, this.codeStatus).subscribe(
         (response: any) => {
           if (response.status) {
             this.showBatchChilds = true;
@@ -134,12 +127,11 @@ export class ImportComponent implements OnInit {
       var config = {
         headers: {
           "importExportId": this.importExportId,
-          "type": this.batchType
         }
       }
-      this.$importExport.importBatch({}, config).subscribe((response: any) => {
+      this.$importExportBatch.importBatch({}, config).subscribe((response: any) => {
         if (response.status == true) {
-          // this.getStateCount();
+          this.$claim.notifyStatusCountRefresh();
           this.batchList.splice(this.index, 1);
           if (this.viewingImportExportId == this.importExportId) {
             this.showBatchChilds = false;
@@ -164,19 +156,17 @@ export class ImportComponent implements OnInit {
       var config = {
         headers: {
           'ids': this.importExportId,
-          'type': this.batchType
         }
       };
-      this.$importExport.delete(config).subscribe((response: any) => {
+      this.$importExportBatch.delete(config).subscribe((response: any) => {
         if (response.status == true) {
           this.batchList.splice(this.index, 1);
           if (this.viewingImportExportId == this.importExportId) {
             this.showBatchChilds = false;
           }
 
-          // this.getStateCount();
+          this.$claim.notifyStatusCountRefresh();
           $("#stagingDeleteModal").modal('hide');
-          this.$common.hideLoader();
         }
         this.$common.hideLoader();
       }, err => {
@@ -188,7 +178,10 @@ export class ImportComponent implements OnInit {
     }
   }
   updateData(Object) {
-    this.batchList.push(Object[0]);
+    if (Object?.length) {
+      this.batchList.splice(0, 0, Object[0]);
+      this.$claim.notifyStatusCountRefresh();
+    }
   }
 
 

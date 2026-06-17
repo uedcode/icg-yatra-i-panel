@@ -1,7 +1,7 @@
 <!-- Change Status Modal Starts -->
 <div
   class="modal fade delete_modal_"
-  id="excelImportModal"
+  id="batchImportModal"
   tabindex="-1"
   role="dialog"
   aria-labelledby="addAgent"
@@ -11,7 +11,7 @@
     <div class="modal-content">
       <div class="modal-body">
         <div class="modal-header">
-          <h3 class="modal-title">Import Excel</h3>
+          <h3 class="modal-title">Import</h3>
           <button
             type="button"
             class="close"
@@ -24,10 +24,6 @@
         </div>
 
         <div class="modal-body">
-          <h5 style="color: rgb(245, 52, 18)">
-            Download the sample file (Import-Batch-01.xlsx). Ensure that each
-            new upload uses an incremented number, e.g., Import-Batch-02.xlsx.
-          </h5>
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
@@ -37,13 +33,12 @@
                 <input
                   type="file"
                   class="form-control"
-                  name="excelFile"
-                  id="uploadExcel"
-                  [(ngModel)]="formObj.excelFile"
-                  #excelFile="ngModel"
-                  accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
-                  required
+                  name="batchZipFile"
+                  id="batchZipFile"
+                  accept="application/zip,.zip"
+                  (change)="onBatchFileChange($event)"
                 />
+                <div class="invalid-msg" *ngIf="fileError">{{ fileError }}</div>
               </div>
             </div>
           </div>
@@ -51,12 +46,6 @@
 
         <div class="modal-footer modal_footer_download">
           <div class="float_right">
-            <a
-              href="assets/samples/Import-Batch-01.xlsx"
-              class="btn btn-primary no-hover-color"
-            >
-              Download Sample</a
-            >
             <button
               type="button"
               class="btn btn-secondary"
@@ -67,9 +56,9 @@
             </button>
             <button
               type="button"
-              [disabled]="disableBtn"
+              [disabled]="disableBtn || !!fileError"
               class="btn btn-primary"
-              (click)="uploadExcelFile()"
+              (click)="uploadBatchZip()"
             >
               Submit
             </button>

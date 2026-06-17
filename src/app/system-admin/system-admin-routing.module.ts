@@ -28,6 +28,12 @@ import { ArchivedComponent } from './pages/audit-import-export/archived/archived
 import { ImportComponent } from './pages/audit-import-export/import/import.component';
 import { ImportedComponent } from './pages/audit-import-export/imported/imported.component';
 import { ArchivedImportComponent } from './pages/audit-import-export/archived-import/archived-import.component';
+import { BackupImportComponent } from './pages/audit-import-export/backup-import/backup-import.component';
+import { BackupExportComponent } from './pages/audit-import-export/backup-export/backup-export.component';
+import { DiaryImportComponent } from './pages/audit-import-export/diary-import/diary-import.component';
+import { DiaryImportedComponent } from './pages/audit-import-export/diary-imported/diary-imported.component';
+import { DiaryImportedBackupComponent } from './pages/audit-import-export/diary-imported-backup/diary-imported-backup.component';
+import { SysAdminExcelImportComponent } from './pages/audit-import-export/excel-import/excel-import.component';
 import { PortRateComponent } from './pages/manage-masters/manage-port-rate/port-rate/port-rate.component';
 import { ManageRoleComponent } from './pages/manage-role/manage-role.component';
 import { ReasonComponent } from './pages/manage-masters/manage-reason/reason/reason.component';
@@ -226,7 +232,7 @@ const routes: Routes = [
   },
   {
     path: 'backup-Export',
-    component: ExportedComponent,
+    component: BackupExportComponent,
     canActivate: [AuthGuard],
     data: { title: 'Backup Export', roles: SYSTEM_ADMIN_ROLES },
   },
@@ -249,19 +255,19 @@ const routes: Routes = [
   },
   {
     path: 'backup-Import',
-    component: ImportComponent,
+    component: BackupImportComponent,
     canActivate: [AuthGuard],
     data: { title: 'Backup Import', roles: SYSTEM_ADMIN_ROLES },
   },
   {
     path: 'excel-import',
-    component: ImportComponent,
+    component: SysAdminExcelImportComponent,
     canActivate: [AuthGuard],
     data: { title: 'Excel Import', roles: SYSTEM_ADMIN_ROLES },
   },
   {
     path: 'diary-import',
-    component: ImportComponent,
+    component: DiaryImportComponent,
     canActivate: [AuthGuard],
     data: { title: 'Diary Import', roles: SYSTEM_ADMIN_ROLES },
   },
@@ -273,7 +279,7 @@ const routes: Routes = [
   },
   {
     path: 'diary-imported',
-    component: ImportedComponent,
+    component: DiaryImportedComponent,
     canActivate: [AuthGuard],
     data: { title: 'Diary Imported', roles: SYSTEM_ADMIN_ROLES },
   },
@@ -285,7 +291,7 @@ const routes: Routes = [
   },
   {
     path: 'diary-imported-backup',
-    component: ArchivedImportComponent,
+    component: DiaryImportedBackupComponent,
     canActivate: [AuthGuard],
     data: { title: 'Diary Imported Backup', roles: SYSTEM_ADMIN_ROLES },
   },

@@ -4,9 +4,9 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FormService } from 'src/app/service/form/form.service';
-import { ImportExportAuditService } from 'src/app/service/admin/importExportAudit.service';
+import { ImportExportBatchService } from 'src/app/service/admin/import-export-batch.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
 declare var $: any;
 
 @Component({
@@ -24,8 +24,8 @@ export class InboxComponent implements OnInit {
     public $auth: AuthService,
     private $common: CommonService,
     private $form: FormService,
-    private router: Router,
-    public $importExport: ImportExportAuditService,
+    public $importExportBatch: ImportExportBatchService,
+    private $claim: ClaimService,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -54,10 +54,11 @@ export class InboxComponent implements OnInit {
     return (this.allAdminForm || []).filter(x => {
       const vals = [
         x?.codeProcessDTO?.process,
-        x?.formNo,
-        x?.formName,
-        x?.formUnitDTO?.descr,
-        x?.sysAdminFormDate
+        x?.formId,
+        x?.codeSubFormDTO?.descr,
+        x?.codeUnitDTO?.descr,
+        x?.fullName,
+        x?.occDate
       ].map(v => (v ?? '').toString().toLowerCase());
 
       return vals.some(v => v.includes(q));
@@ -70,7 +71,7 @@ export class InboxComponent implements OnInit {
       this.config = {
         headers: {},
       };
-      this.$importExport.getAdminForms(this.config).subscribe(
+      this.$importExportBatch.getAdminForms(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status == true) {
@@ -105,7 +106,7 @@ export class InboxComponent implements OnInit {
       let procIds = [];
       this.allAdminForm.map(element => {
         if (element.checked) {
-          procIds.push(element.procID)
+              procIds.push(element.claimId)
         }
       });
       if (procIds.length == 0) {
@@ -126,19 +127,19 @@ export class InboxComponent implements OnInit {
       
       var config = {
         headers: {
-          "procIds": procIds,
-          "codeProcessId": "PC",
-          "type": "EX"
+          "ids": procIds,
         }
       }
       // if (codeProcessId) {
       //   config.headers.codeProcessId = codeProcessId;
       // }
-      this.$importExport.createExport(config).subscribe((response: any) => {
+      this.$importExportBatch.createExport(config).subscribe((response: any) => {
         if (response.status === true) {
           this.handleExportCreation(response.object, procIds);
+        } else {
+          this.$common.hideLoader();
         }
-      })
+      }, () => this.$common.hideLoader())
     } catch (err) {
       this.$common.hideLoader();
       console.log(err.message);
@@ -161,17 +162,17 @@ export class InboxComponent implements OnInit {
       let config = {
         headers: {
           "importExportId": importExportId,
-          "type": "EX"
+          ...(firstTimeIndicator ? { firstTimeIndicator } : {}),
         }
       }
-      this.$importExport.downloadExportBatch(config).subscribe(
+      this.$importExportBatch.downloadExportBatch(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           
           if (response.status == true) {
             let object = response.object;
             if (firstTimeIndicator == 1) {
-              // this.getStateCount();
+              this.$claim.notifyStatusCountRefresh();
             }
             if (this.exportType) {
               $('#exportChangeStatusModal').modal('hide');
@@ -188,9 +189,7 @@ export class InboxComponent implements OnInit {
               }
             }
             var responseObject = object[0];
-            this.$importExport.downloadBatchFromResponse(responseObject);
-
-            this.$common.hideLoader();
+            this.$importExportBatch.downloadBatchFromResponse(responseObject);
           }
         }, err => {
           this.$common.hideLoader();
@@ -209,17 +208,11 @@ export class InboxComponent implements OnInit {
         return this.$common.showMessage("No Form to Export.", 'danger');
       }
       this.$common.showLoader();
-      var config = {
-        headers: {
-          "type": "EX"
-        }
-      }
-      // if (!$rootScope.isNullOrEmpty(this.codeProcessId)) {
-      //   config.headers.codeProcessId = this.codeProcessId;
-      // }
-      this.$importExport.createExportAll(config).subscribe((response: any) => {
+      this.$importExportBatch.createExportAll().subscribe((response: any) => {
         if (response.status == true) {
           this.handleExportCreation(response.object);
+        } else {
+          this.$common.hideLoader();
         }
       }, err => {
         this.$common.hideLoader();
@@ -229,6 +222,22 @@ export class InboxComponent implements OnInit {
       this.$common.hideLoader();
       console.log(error);
     }
+  }
+
+  deleteClaim() {
+    const claimIds = this.allAdminForm.filter(element => element.checked).map(element => element.claimId);
+    if (claimIds.length === 0) {
+      return this.$common.showMessage('Please Select Claim to be Deleted.', 'danger');
+    }
+    this.$common.showLoader();
+    const config = { headers: { ids: claimIds } };
+    this.$claim.deleteClaim(config).subscribe((response: any) => {
+      if (response.status === true) {
+        this.allAdminForm = this.allAdminForm.filter(element => claimIds.indexOf(element.claimId) === -1);
+        this.$claim.notifyStatusCountRefresh();
+      }
+      this.$common.hideLoader();
+    }, () => this.$common.hideLoader());
   }
 
 

@@ -1214,8 +1214,7 @@ table.table tbody tr:hover {
   padding: 0.32rem 0.5rem;
 }
 
-.badge,
-.counts {
+.badge {
   font-weight: 700;
   font-size: 0.68rem;
   border-radius: 999px;
@@ -1223,9 +1222,24 @@ table.table tbody tr:hover {
 }
 
 .counts {
-  background: #e7f1fb;
-  color: var(--gov-primary);
-  border: 1px solid #c3d6ea;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  margin-left: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: #ff4d6d;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(255, 77, 109, 0.22);
 }
 
 .badge-success,

@@ -1,0 +1,130 @@
+<div class="page-header gov-page-toolbar">
+  <div class="page-leftheader">
+    <h4 class="page-title">EXCEL IMPORT</h4>
+    <ol class="breadcrumb pl-0">
+      <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Yatra</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Excel Import</li>
+    </ol>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <form class="page_form" #excelImportForm="ngForm" (ngSubmit)="uploadExcelFile()">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Name<sup class="required-msg">*</sup></label>
+                <input class="form-control" name="name" [(ngModel)]="excelObj.name" maxlength="200" required />
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">User Name<sup class="required-msg">*</sup></label>
+                <input class="form-control" name="userName" [(ngModel)]="excelObj.userName" maxlength="200" required />
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Employee ID<sup class="required-msg">*</sup></label>
+                <input class="form-control" name="employeeId" [(ngModel)]="excelObj.employeeId" maxlength="200" required />
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">E-Sign ID<sup class="required-msg">*</sup></label>
+                <input class="form-control" name="esignId" [(ngModel)]="excelObj.esignId" maxlength="200" required />
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Mobile Number<sup class="required-msg">*</sup></label>
+                <input class="form-control" name="mobileNo" [(ngModel)]="excelObj.mobileNo" maxlength="200" required />
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Email ID<sup class="required-msg">*</sup></label>
+                <input class="form-control" name="emailId" [(ngModel)]="excelObj.emailId" maxlength="200" required />
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">KYC ID<sup class="required-msg">*</sup></label>
+                <input class="form-control" name="kycId" [(ngModel)]="excelObj.kycId" maxlength="200" required />
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Choose File<sup class="required-msg">*</sup></label>
+                <input class="form-control" type="file" name="excelFile" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" (change)="onFileChange($event)" required />
+                <div class="invalid-msg" *ngIf="fileError">{{ fileError }}</div>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-info" [disabled]="submitBtn || excelImportForm.invalid || !!fileError">Submit</button>
+        </form>
+
+        <div class="row mt-3">
+          <div class="col-sm-12 col-md-6">
+            <div class="dataTables_length">
+              <label>Show</label>
+              <select class="form-control" name="noOfPage" [(ngModel)]="noOfPage" (ngModelChange)="p = 1">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              <label>entries</label>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 offset-3">
+            <div class="dataTables_filter" title="Search">
+              <i class="fa fa-search"></i>
+              <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p = 1" [(ngModel)]="searchObj" name="searchObj" />
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+          <table class="table table-bordered gov-table-sticky-first table-sticky-first" style="width: 100%">
+            <thead>
+              <tr>
+                <th>S.No.</th>
+                <th>User Name</th>
+                <th>Name</th>
+                <th>Employee ID</th>
+                <th>E-Sign ID</th>
+                <th>Mobile Number</th>
+                <th>Email ID</th>
+                <th>KYC ID</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let obj of excelList | filterComplex : searchObj | paginate : { id: 'excelPagination', itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                <td>{{ (p - 1) * noOfPage + i + 1 }}.</td>
+                <td>{{ obj?.userName || "-" }}</td>
+                <td>{{ obj?.name || "-" }}</td>
+                <td>{{ obj?.employeeId || "-" }}</td>
+                <td>{{ obj?.esignId || "-" }}</td>
+                <td>{{ obj?.mobileNo || "-" }}</td>
+                <td>{{ obj?.emailId || "-" }}</td>
+                <td>{{ obj?.kycId || "-" }}</td>
+                <td>{{ obj?.status || obj?.message || "-" }}</td>
+              </tr>
+              <tr *ngIf="!excelList.length" class="text-center table-empty-state gov-table-empty-state">
+                <td colspan="20">No Records</td>
+              </tr>
+              <tr class="noExl pagination_area" *ngIf="excelList?.length">
+                <td colspan="20"><pagination-controls id="excelPagination" (pageChange)="p = $event" [responsive]="true"></pagination-controls></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

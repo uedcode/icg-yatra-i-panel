@@ -1,0 +1,133 @@
+<div class="page-header gov-page-toolbar">
+  <div class="page-leftheader">
+    <h4 class="page-title">IMPORT</h4>
+    <ol class="breadcrumb pl-0">
+      <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Yatra</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Import</li>
+    </ol>
+  </div>
+  <div>
+    <button type="button" class="btn btn-info request_view_back" data-toggle="modal" data-target="#batchImportModal">Import</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <div class="dataTables_length">
+              <label>Show</label>
+              <select class="form-control" name="noOfPage1" [(ngModel)]="noOfPage1" (ngModelChange)="p1 = 1">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              <label>entries</label>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 offset-3">
+            <div class="dataTables_filter" title="Search">
+              <i class="fa fa-search"></i>
+              <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p1 = 1" [(ngModel)]="searchObj1" name="searchObj1" />
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+          <table class="table table-bordered gov-table-sticky-first table-sticky-first" style="width: 100%">
+            <thead>
+              <tr>
+                <th>S.No.</th>
+                <th>Batch-ID</th>
+                <th>Imported Date</th>
+                <th>Total Records</th>
+                <th>Import</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let batchObj of batchList | filterComplex : searchObj1 | orderBy : key : reverse | paginate : { id: 'pagination1', itemsPerPage: noOfPage1, currentPage: p1 }; let i = index">
+                <td>{{ (p1 - 1) * noOfPage1 + i + 1 }}.</td>
+                <td><a href="#" (click)="getAllBatchChilds(batchObj); $event.preventDefault()" style="color: blue">{{ batchObj?.batchNo }}</a></td>
+                <td>{{ batchObj?.updatedOn | showDate : "medium" }}</td>
+                <td>{{ batchObj?.noOfRecords }}</td>
+                <td>
+                  <button type="button" class="btn btn-info" (click)="changeStagingStatus(batchObj.importExportId, i)">Import</button>
+                  <button type="button" class="btn btn-danger" (click)="deleteBatchStaging(batchObj.importExportId, i)">Delete</button>
+                </td>
+              </tr>
+              <tr *ngIf="!batchList.length" class="text-center table-empty-state gov-table-empty-state">
+                <td colspan="20">No Records</td>
+              </tr>
+              <tr class="noExl pagination_area" *ngIf="batchList?.length">
+                <td colspan="20"><pagination-controls id="pagination1" (pageChange)="p1 = $event" [responsive]="true"></pagination-controls></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="showBatchChilds">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="dataTables_length">
+                <label>Show</label>
+                <select class="form-control" name="noOfPage2" [(ngModel)]="noOfPage2" (ngModelChange)="p2 = 1">
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                <label>entries</label>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-3 offset-3">
+              <div class="dataTables_filter" title="Search">
+                <i class="fa fa-search"></i>
+                <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p2 = 1" [(ngModel)]="searchObj2" name="searchObj2" />
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+            <table class="table table-striped table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>S.No.</th>
+                  <th>Batch ID</th>
+                  <th>Form ID</th>
+                  <th>Unit</th>
+                  <th>PNO/Name/Rank</th>
+                  <th>Occurrence/ Submission Date</th>
+                  <th>Form Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let batchChildObject of batchChildList | filterComplex : searchObj2 | paginate : { id: 'pagination2', itemsPerPage: noOfPage2, currentPage: p2 }; let i = index">
+                  <td>{{ (p2 - 1) * noOfPage2 + i + 1 }}.</td>
+                  <td>{{ batchNo }}</td>
+                  <td>{{ batchChildObject?.formId || "-" }}</td>
+                  <td>{{ batchChildObject?.codeUnitDTO?.descr || "-" }}</td>
+                  <td>{{ batchChildObject?.fullName || "-" }}</td>
+                  <td>{{ batchChildObject?.occDate | showDate : "medium" }}</td>
+                  <td>{{ batchChildObject?.codeSubFormDTO?.descr || "-" }}</td>
+                </tr>
+                <tr *ngIf="!batchChildList.length" class="text-center table-empty-state gov-table-empty-state">
+                  <td colspan="20">No Records</td>
+                </tr>
+                <tr class="noExl pagination_area" *ngIf="batchChildList?.length">
+                  <td colspan="20"><pagination-controls id="pagination2" (pageChange)="p2 = $event" [responsive]="true"></pagination-controls></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <app-batch-import-modal (batchImported)="updateData($event)"></app-batch-import-modal>
+        <app-change-status-staging-modal (changeStatusConfirmed)="changeStagingStatusFinally()"></app-change-status-staging-modal>
+        <app-delete-staging-modal (changeStatusConfirmed)="deleteRow()"></app-delete-staging-modal>
+      </div>
+    </div>
+  </div>
+</div>

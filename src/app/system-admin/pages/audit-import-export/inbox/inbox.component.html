@@ -1,11 +1,11 @@
 ﻿<!--Page header-->
         <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
-            <h4 class="page-title">Export Queue</h4>
+            <h4 class="page-title">INBOX</h4>
             <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
+              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Yatra</a></li>
               <li class="breadcrumb-item active" aria-current="page">
-                Export Queue
+                Inbox
               </li>
             </ol>
           </div>
@@ -13,7 +13,8 @@
             <div>
               <!-- <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
                   class="fa fa-chevron-left" style="display: inline-block;"></i></button> -->
-              <button type="button" class="btn btn-info request_view_back" title="Back to Page" (click)="exportAudit('Selected')">Export Selected</button>
+              <button type="button" class="btn btn-danger request_view_back" title="Delete Selected" (click)="deleteClaim()">Delete Selected</button>
+              <button type="button" class="btn btn-info request_view_back" title="Export Selected" (click)="exportAudit('Selected')">Export Selected</button>
               <button type="button" class="btn btn-info request_view_back" title="Back to Page" (click)="exportAudit('All')">Export All</button>
             </div>
             <!-- <div class="breadcrumb_right">
@@ -34,7 +35,6 @@
                               [(ngModel)]="noOfPage" (ngModelChange)="p = 1">
                         <option [ngValue]="10">10</option>
                         <option [ngValue]="100">100</option>
-                        <option [ngValue]="100000">All</option>
                       </select>
                       <label>entries</label>
                     </div>
@@ -53,12 +53,12 @@
                     <thead>
                      <tr>
 														<th>S.No.</th>
-														<th width="25%">Process Name</th>
-														<th>Form No</th>
-														<th>Form Date</th>
-														<th width="25%">Claim Type</th>
+														<th>Form ID</th>
 														<th>Unit</th>
-														<th>Export</th>
+														<th>PNO/Name/Rank</th>
+														<th>Occurrence/ Submission Date</th>
+														<th>Form Name</th>
+														<th></th>
 													</tr>
                     </thead>
                     <tbody>
@@ -66,16 +66,16 @@
                     <tr *ngFor="let obj of filteredAdminForm | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
                       <!-- global serial number -->
                       <td>{{ ((p - 1) * noOfPage) + i + 1 }}</td>
-                      <td>{{ obj?.codeProcessDTO.process | showHypen }}</td>
-                      <td>{{ obj?.formNo | showHypen }}</td>
-                      <td>{{ obj?.sysAdminFormDate | showDate:'medium' }}</td>
-                      <td>{{ obj?.formName | showHypen }}</td>
-                      <td>{{ obj?.formUnitDTO.descr | showHypen }}</td>
+                      <td>{{ obj?.formId | showHypen }}</td>
+                      <td>{{ obj?.codeUnitDTO?.descr | showHypen }}</td>
+                      <td>{{ obj?.fullName | showHypen }}</td>
+                      <td>{{ obj?.occDate | showDate:'medium' }}</td>
+                      <td>{{ obj?.codeSubFormDTO?.descr | showHypen }}</td>
                       <td><input type="checkbox" [(ngModel)]="obj.checked"></td>
                     </tr>
 
                     <tr *ngIf="!(filteredAdminForm?.length)" class="text-center table-empty-state gov-table-empty-state">
-                      <td colspan="20">No Records Available</td>
+                      <td colspan="20">No Records</td>
                     </tr>
 
                     <tr class="noExl pagination_area" *ngIf="filteredAdminForm?.length">

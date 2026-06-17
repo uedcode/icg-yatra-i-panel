@@ -49,7 +49,7 @@ import { CommonViewFileComponent } from './components/common-view-file/common-vi
 
 import { ExportFormModalComponent } from './modals/export-form-modal/export-form-modal.component';
 import { ChangeBatchStatusComponent } from './modals/change-batch-status/change-batch-status.component';
-import { ExcelImportModalComponent } from './modals/excel-import-modal/excel-import-modal.component';
+import { BatchImportModalComponent } from './modals/batch-import-modal/batch-import-modal.component';
 import { ChangeStatusStagingModalComponent } from './modals/change-status-staging-modal/change-status-staging-modal.component';
 import { DeleteStagingModalComponent } from './modals/delete-staging-modal/delete-staging-modal.component';
 import { CommonViewFormHistoryModalComponent } from './modals/common-view-form-history-modal/common-view-form-history-modal.component';
@@ -120,7 +120,7 @@ const CustomSelectOptions: INgxSelectOptions = {
 
     ExportFormModalComponent,
     ChangeBatchStatusComponent,
-    ExcelImportModalComponent,
+    BatchImportModalComponent,
     ChangeStatusStagingModalComponent,
     DeleteStagingModalComponent,
 
@@ -166,7 +166,7 @@ const CustomSelectOptions: INgxSelectOptions = {
 
     ExportFormModalComponent,
     ChangeBatchStatusComponent,
-    ExcelImportModalComponent,
+    BatchImportModalComponent,
     ChangeStatusStagingModalComponent,
     DeleteStagingModalComponent,
 

@@ -1,19 +1,19 @@
 ﻿<!--Page header-->
         <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
-            <h4 class="page-title">Import Queue</h4>
+            <h4 class="page-title">IMPORT</h4>
             <ol class="breadcrumb pl-0">
               <li class="breadcrumb-item">
-                <a [routerLink]="['../dashboard']">Dashboard</a>
+                <a [routerLink]="['../dashboard']">Yatra</a>
               </li>
-              <li class="breadcrumb-item active" aria-current="page">Import Queue</li>
+              <li class="breadcrumb-item active" aria-current="page">Import</li>
             </ol>
           </div>
           <div>
             <div>
               <button type="button" class="btn btn-info request_view_back" title="Back to Page" data-toggle="modal"
-                data-target="#excelImportModal">
-                Upload Batch
+                data-target="#batchImportModal">
+                Import
               </button>
             </div>
           </div>
@@ -28,11 +28,11 @@
                       <label>Show</label>
                       <select class="form-control" name="noOfPage1" aria-controls="example" [(ngModel)]="noOfPage1"
                         (ngModelChange)="p1 = 1">
+                        <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="25">25</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="100000">All</option>
                       </select>
                       <label>entries</label>
                     </div>
@@ -51,10 +51,10 @@
                     <thead>
                       <tr>
                         <th>S.No.</th>
-                        <th>Batch ID</th>
-                        <th>Uploaded On</th>
+                        <th>Batch-ID</th>
+                        <th>Imported Date</th>
                         <th>Total Records</th>
-                        <th>Actions</th>
+                        <th>Import</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -72,7 +72,7 @@
                         <td>
                           <button type="button" class="btn btn-info"
                             (click)="changeStagingStatus(batchObj.importExportId, i)">
-                            Process Batch
+                            Import
                           </button>
                           <button type="button" class="btn btn-danger"
                             (click)="deleteBatchStaging(batchObj.importExportId, i)">
@@ -82,7 +82,7 @@
                       </tr>
 
                       <tr *ngIf="!batchList.length" class="text-center table-empty-state gov-table-empty-state">
-                        <td colspan="20">No Records Available</td>
+                        <td colspan="20">No Records</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="batchList?.length">
                         <td colspan="20">
@@ -100,11 +100,11 @@
                         <label>Show</label>
                         <select class="form-control" name="noOfPage2" aria-controls="example" [(ngModel)]="noOfPage2"
                           (ngModelChange)="p2 = 1">
+                          <option value="5">5</option>
                           <option value="10">10</option>
                           <option value="25">25</option>
                           <option value="50">50</option>
                           <option value="100">100</option>
-                          <option value="100000">All</option>
                         </select>
                         <label>entries</label>
                       </div>
@@ -124,11 +124,11 @@
                         <tr>
                           <th>S.No.</th>
                           <th>Batch ID</th>
-                          <th>Process Name</th>
-                          <th>Form No</th>
-                          <th>Form Date</th>
-                          <th>Claim Type</th>
+                          <th>Form ID</th>
                           <th>Unit</th>
+                          <th>PNO/Name/Rank</th>
+                          <th>Occurrence/ Submission Date</th>
+                          <th>Form Name</th>
                         </tr>
                       </thead>
                       <tbody></tbody>
@@ -138,19 +138,19 @@
                           <td>{{ (p2 - 1) * noOfPage2 + i + 1 }}.</td>
                           <td>{{ batchNo }}</td>
                           <td>
-                            {{batchChildObject.codeProcessDTO?.process || "-"}}
+                            {{ batchChildObject?.formId || "-" }}
                           </td>
-                          <td>{{ batchChildObject.formNo || "-" }}</td>
                           <td>
-                            {{batchChildObject.sysAdminFormDate | date : "medium"}}
+                            {{ batchChildObject?.codeUnitDTO?.descr || "-" }}
                           </td>
-                          <td>{{ batchChildObject.formName || "-" }}</td>
+                          <td>{{ batchChildObject?.fullName || "-" }}</td>
                           <td>
-                            {{ batchChildObject.formUnitDTO?.descr || "-" }}
+                            {{ batchChildObject?.occDate | showDate : "medium" }}
                           </td>
+                          <td>{{ batchChildObject?.codeSubFormDTO?.descr || "-" }}</td>
                         </tr>
                         <tr *ngIf="!batchChildList.length" class="text-center table-empty-state gov-table-empty-state">
-                          <td colspan="20">No Records Available</td>
+                          <td colspan="20">No Records</td>
                         </tr>
                         <tr class="noExl pagination_area" *ngIf="batchChildList?.length">
                           <td colspan="20">
@@ -161,7 +161,7 @@
                       </tbody>
                     </table>
                   </div>
-                </div><app-excel-import-modal (changeStatusConfirmed)="updateData($event)"></app-excel-import-modal>
+                </div><app-batch-import-modal (batchImported)="updateData($event)"></app-batch-import-modal>
 <app-change-status-staging-modal
   (changeStatusConfirmed)="changeStagingStatusFinally()"></app-change-status-staging-modal>
 <app-delete-staging-modal (changeStatusConfirmed)="deleteRow()"></app-delete-staging-modal>

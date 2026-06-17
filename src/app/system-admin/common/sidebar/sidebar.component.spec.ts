@@ -1,13 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { of, Subject } from 'rxjs';
 
 import { SidebarComponent } from './sidebar.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
+import { ClaimService } from 'src/app/service/claim/claim.service';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
   let authService: jasmine.SpyObj<AuthService>;
+  let claimService: jasmine.SpyObj<ClaimService>;
+  let statusCountRefresh$: Subject<void>;
 
   beforeEach(async () => {
     authService = jasmine.createSpyObj<AuthService>('AuthService', [
@@ -15,8 +19,16 @@ describe('SidebarComponent', () => {
       'getUserDetails',
       'codeRoleType'
     ]);
+    claimService = jasmine.createSpyObj<ClaimService>('ClaimService', ['getStatusCount']);
+    statusCountRefresh$ = new Subject<void>();
+    (claimService as any).statusCountRefresh$ = statusCountRefresh$;
+    claimService.getStatusCount.and.returnValue(of({
+      status: true,
+      object: [{ inbox: 3, exported: 2 }]
+    }) as any);
     authService.getUserDetails.and.returnValue({
       formId: 'SYS-1',
+      userId: 'SYS-1',
       unitName: 'HQ Unit',
       roleTypeId: 'SY'
     } as any);
@@ -24,7 +36,10 @@ describe('SidebarComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [SidebarComponent],
-      providers: [{ provide: AuthService, useValue: authService }],
+      providers: [
+        { provide: AuthService, useValue: authService },
+        { provide: ClaimService, useValue: claimService }
+      ],
       schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
@@ -44,6 +59,23 @@ describe('SidebarComponent', () => {
     expect(authService.getUserDetails).toHaveBeenCalled();
     expect(authService.codeRoleType).toHaveBeenCalled();
     expect(component.userIdDetails.formId).toBe('SYS-1');
+  });
+
+  it('should refresh state counts when the shared count refresh event emits', () => {
+    expect(claimService.getStatusCount).toHaveBeenCalledTimes(1);
+
+    statusCountRefresh$.next();
+
+    expect(claimService.getStatusCount).toHaveBeenCalledTimes(2);
+    expect(component.stateCount).toEqual(jasmine.objectContaining({ inbox: 3, exported: 2 }));
+  });
+
+  it('should stop listening for count refresh events after destroy', () => {
+    component.ngOnDestroy();
+
+    statusCountRefresh$.next();
+
+    expect(claimService.getStatusCount).toHaveBeenCalledTimes(1);
   });
 
   it('should render key system admin menu entries', () => {

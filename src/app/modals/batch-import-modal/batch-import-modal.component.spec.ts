@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
-import { ExcelImportModalComponent } from './excel-import-modal.component';
+import { BatchImportModalComponent } from './batch-import-modal.component';
 
-describe('ExcelImportModalComponent', () => {
-  let component: ExcelImportModalComponent;
-  let fixture: ComponentFixture<ExcelImportModalComponent>;
+describe('BatchImportModalComponent', () => {
+  let component: BatchImportModalComponent;
+  let fixture: ComponentFixture<BatchImportModalComponent>;
 
   beforeEach(() => {
     return TestBed.configureTestingModule({
-      declarations: [ExcelImportModalComponent],
+      declarations: [BatchImportModalComponent],
       schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ExcelImportModalComponent);
+    fixture = TestBed.createComponent(BatchImportModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

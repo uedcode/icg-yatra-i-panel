@@ -31,33 +31,33 @@
     <li routerLinkActive="is-expanded" class="slide">
       <a class="side-menu__item" data-toggle="slide"><i class="side-menu__icon fa fa-download"></i><span class="side-menu__label">Import</span><i class="angle fa fa-angle-right"></i></a>
       <ul class="slide-menu">
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['import']">Import</a></li>
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['imported']">Imported</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['import']">Import <span class="counts" *ngIf="stateCount?.importCount > 0">{{ stateCount.importCount }}</span></a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['imported']">Imported <span class="counts" *ngIf="stateCount?.importedCount > 0">{{ stateCount.importedCount }}</span></a></li>
       </ul>
     </li>
 
     <li routerLinkActive="is-expanded" class="slide">
       <a class="side-menu__item" data-toggle="slide"><i class="side-menu__icon fa fa-upload"></i><span class="side-menu__label">Export</span><i class="angle fa fa-angle-right"></i></a>
       <ul class="slide-menu">
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['inbox']">Inbox</a></li>
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['exported']">Exported</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['inbox']">Inbox <span class="counts" *ngIf="stateCount?.inboxCount > 0">{{ stateCount.inboxCount }}</span></a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['exported']">Exported <span class="counts" *ngIf="stateCount?.exportedCount > 0">{{ stateCount.exportedCount }}</span></a></li>
       </ul>
     </li>
 
     <li routerLinkActive="is-expanded" class="slide">
       <a class="side-menu__item" data-toggle="slide"><i class="side-menu__icon fa fa-archive"></i><span class="side-menu__label">Archived</span><i class="angle fa fa-angle-right"></i></a>
       <ul class="slide-menu">
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['backup-Import']">Imported</a></li>
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['backup-Export']">Exported</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['backup-Import']">Imported <span class="counts" *ngIf="stateCount?.archivedImportedCount > 0">{{ stateCount.archivedImportedCount }}</span></a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['backup-Export']">Exported <span class="counts" *ngIf="stateCount?.archivedExportedCount > 0">{{ stateCount.archivedExportedCount }}</span></a></li>
       </ul>
     </li>
 
     <li routerLinkActive="is-expanded" class="slide">
       <a class="side-menu__item" data-toggle="slide"><i class="side-menu__icon fa fa-download"></i><span class="side-menu__label">Diary Claim</span><i class="angle fa fa-angle-right"></i></a>
       <ul class="slide-menu">
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['diary-import']">Import</a></li>
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['diary-imported']">Imported</a></li>
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['diary-imported-backup']">Archived</a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['diary-import']">Import <span class="counts" *ngIf="stateCount?.diaryImportCount > 0">{{ stateCount.diaryImportCount }}</span></a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['diary-imported']">Imported <span class="counts" *ngIf="stateCount?.diaryImportedCount > 0">{{ stateCount.diaryImportedCount }}</span></a></li>
+        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['diary-imported-backup']">Archived <span class="counts" *ngIf="stateCount?.diaryImportedArchivedCount > 0">{{ stateCount.diaryImportedArchivedCount }}</span></a></li>
       </ul>
     </li>
 

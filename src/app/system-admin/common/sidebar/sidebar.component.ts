@@ -1,5 +1,7 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { ClaimService } from 'src/app/service/claim/claim.service';
+import { Subscription } from 'rxjs';
 
 declare var $: any;
 
@@ -10,13 +12,18 @@ declare var $: any;
     standalone: false
 })
 export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
+  private statusCountRefreshSub?: Subscription;
 
-  constructor(public $auth: AuthService) { }
+  constructor(public $auth: AuthService, private $claim: ClaimService) { }
 
   ngOnInit(): void {
     
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeRoleList = this.$auth.codeRoleType();
+    this.statusCountRefreshSub = this.$claim.statusCountRefresh$.subscribe(() => {
+      this.getStateCount();
+    });
+    this.getStateCount();
   }
   ngAfterViewInit(): void {
     this.sidebarDropdown();
@@ -24,10 +31,32 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     $(document).off('click.systemAdminSidebar', "[data-toggle='slide']");
+    this.statusCountRefreshSub?.unsubscribe();
   }
 
   userIdDetails;
   codeRoleList;
+  stateCount: any = {};
+
+  getStateCount() {
+    const config = {
+      headers: {
+        Accept: 'application/json;odata=verbose',
+        userId: this.userIdDetails?.userId,
+        roleTypeId: this.userIdDetails?.roleTypeId,
+      }
+    };
+    this.$claim.getStatusCount(config).subscribe(
+      (response: any) => {
+        if (response.status) {
+          this.stateCount = response.object?.[0] || {};
+        }
+      },
+      () => {
+        this.stateCount = this.stateCount || {};
+      }
+    );
+  }
 
   sidebarDropdown() {
     $(document).off('click.systemAdminSidebar', "[data-toggle='slide']");

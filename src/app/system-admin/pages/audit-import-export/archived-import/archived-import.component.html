@@ -1,13 +1,13 @@
 <!--Page header-->
         <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
-            <h4 class="page-title">Archived Imports</h4>
+            <h4 class="page-title">ARCHIVED</h4>
             <ol class="breadcrumb pl-0">
               <li class="breadcrumb-item">
-                <a [routerLink]="['../dashboard']">Dashboard</a>
+                <a [routerLink]="['../dashboard']">Yatra</a>
               </li>
               <li class="breadcrumb-item active" aria-current="page">
-                Archived Imports
+                Archived
               </li>
             </ol>
           </div>
@@ -27,11 +27,11 @@
                       <label>Show</label>
                       <select class="form-control" name="noOfPage1" aria-controls="example" [(ngModel)]="noOfPage1"
                         (ngModelChange)="p1 = 1">
+                        <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="25">25</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="100000">All</option>
                       </select>
                       <label>entries</label>
                     </div>
@@ -50,10 +50,9 @@
                     <thead>
                       <tr>
                         <th>S.No.</th>
-                        <th>Batch ID</th>
-                        <th>Processed On</th>
+                        <th>Batch-ID</th>
+                        <th>Imported Date</th>
                         <th>Total Records</th>
-                        <th>Download</th>
                         <th>Restore</th>
                       </tr>
                     </thead>
@@ -68,18 +67,13 @@
                         <td>{{ batchObj.updatedOn | showDate : "medium" }}</td>
                         <td>{{ batchObj.noOfRecords }}</td>
                         <td>
-                          <button type="button" class="btn btn-info" (click)="downloadExportBatch(batchObj.importExportId, 0, 0)">
-                            Download
-                          </button>
-                        </td>
-                        <td>
-                          <button type="button" class="btn btn-info" (click)="changeBatchStatus('1', batchObj.importExportId, i)">
+                          <button type="button" class="btn btn-info" (click)="changeBatchStatus('0', batchObj.importExportId, i)">
                             Restore
                           </button>
                         </td>
                       </tr>
                       <tr *ngIf="!batchList.length" class="text-center table-empty-state gov-table-empty-state">
-                        <td colspan="20">No Records Available</td>
+                        <td colspan="20">No Records</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="batchList?.length">
                         <td colspan="20">
@@ -101,11 +95,11 @@
                 <label>Show</label>
                 <select class="form-control" name="noOfPage2" aria-controls="example" [(ngModel)]="noOfPage2"
                   (ngModelChange)="p2 = 1">
+                  <option value="5">5</option>
                   <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
                   <option value="100">100</option>
-                  <option value="100000">All</option>
                 </select>
                 <label>entries</label>
               </div>
@@ -126,11 +120,12 @@
                 <tr>
                   <th>S.No.</th>
                   <th>Batch ID</th>
-                  <th>Process Name</th>
-                  <th>Form No</th>
-                  <th>Form Date</th>
-                  <th>Claim Type</th>
+                  <th>Form ID</th>
                   <th>Unit</th>
+                  <th>Unit Form ID</th>
+                  <th>PNO/Name/Rank</th>
+                  <th>Occurrence/ Submission Date</th>
+                  <th>Form Name</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -138,16 +133,15 @@
                 <tr *ngFor="let batchChildObject of batchChildList | filterComplex : searchObj2 | paginate : { id: 'pagination2', itemsPerPage: noOfPage2, currentPage: p2 }; let i = index">
                   <td>{{ (p2 - 1) * noOfPage2 + i + 1 }}.</td>
                   <td>{{ batchNo }}</td>
-                  <td>{{ batchChildObject.codeProcessDTO?.process || "-" }}</td>
-                  <td>{{ batchChildObject.formNo || "-" }}</td>
-                  <td>
-                    {{ batchChildObject.sysAdminFormDate | date : "medium" }}
-                  </td>
-                  <td>{{ batchChildObject.formName || "-" }}</td>
-                  <td>{{ batchChildObject.formUnitDTO?.descr || "-" }}</td>
+                  <td>{{ batchChildObject?.formId || "-" }}</td>
+                  <td>{{ batchChildObject?.codeUnitDTO?.descr || "-" }}</td>
+                  <td>{{ batchChildObject?.unitFormId || "-" }}</td>
+                  <td>{{ batchChildObject?.fullName || "-" }}</td>
+                  <td>{{ batchChildObject?.occDate | showDate : "medium" }}</td>
+                  <td>{{ batchChildObject?.codeSubFormDTO?.descr || "-" }}</td>
                 </tr>
                 <tr *ngIf="!batchChildList.length" class="text-center table-empty-state gov-table-empty-state">
-                  <td colspan="20">No Records Available</td>
+                  <td colspan="20">No Records</td>
                 </tr>
                 <tr class="noExl pagination_area" *ngIf="batchChildList?.length">
                   <td colspan="20">
