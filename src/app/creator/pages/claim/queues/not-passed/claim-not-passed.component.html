@@ -63,7 +63,7 @@
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.claimId) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId) | showHypen }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.subDate || dataObj?.yatClaimDTO?.submissionDate || dataObj?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.claimAmt || dataObj?.claimAmt) | showHypen }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.claimRemark || dataObj?.claimRemark || dataObj?.remarks || dataObj?.yatClaimDTO?.remark) | showHypen }}</td>

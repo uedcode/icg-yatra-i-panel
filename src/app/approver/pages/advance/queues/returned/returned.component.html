@@ -66,7 +66,7 @@
                         <td>{{(dataObj?.fullName || dataObj?.fullDescr) | showHypen}}</td>
                         <td>{{dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-'}}</td>
                         <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen}}</td>
-                        <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.formId || dataObj?.claimId) | showHypen}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.formId) | showHypen}}</td>
                         <td>{{(dataObj?.yatClaimDTO?.remark || dataObj?.remarks) | showHypen}}</td>
                         <td>
                           <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>

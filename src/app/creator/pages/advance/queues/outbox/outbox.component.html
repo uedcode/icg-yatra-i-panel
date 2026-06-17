@@ -130,7 +130,7 @@
                         <td>{{ (i + 1) + (p - 1) * noOfPage}}.</td>
                         <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen}}</td>
                         <td>{{dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-'}}</td>
-                        <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.claimId) | showHypen}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.formId) | showHypen}}</td>
                         <td>{{(dataObj?.onWork || dataObj?.yatClaimDTO?.status || dataObj?.claimState || dataObj?.formState) | showHypen}}</td>
                         <td>
                           <button type="button" class="btn btn-info" (click)="downloadRequisition(dataObj)">Download</button>

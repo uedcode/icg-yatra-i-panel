@@ -64,7 +64,7 @@
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.subDate || dataObj?.yatClaimDTO?.submissionDate || dataObj?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.claimId) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId) | showHypen }}</td>
                         <td>{{ (dataObj?.remarks || dataObj?.yatClaimDTO?.remark) | showHypen }}</td>
                         <td>
                           <button *ngIf="canMoveToDraft(dataObj)" class="btn btn-warning" title="Move To Draft" (click)="moveToDraft(dataObj)">Move To Draft</button>

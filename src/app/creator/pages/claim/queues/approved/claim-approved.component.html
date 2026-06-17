@@ -61,7 +61,7 @@
                         <td>{{ (i + 1) + (p - 1) * noOfPage}}.</td>
                         <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen}}</td>
                         <td>{{(dataObj?.yatClaimDTO?.subDate || dataObj?.yatClaimDTO?.submissionDate || dataObj?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:"mediumDate"}}</td>
-                        <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.formId || dataObj?.claimId) | showHypen}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.formId) | showHypen}}</td>
                         <td>{{(dataObj?.yatClaimDTO?.remark || dataObj?.remarks) | showHypen}}</td>
                         <td>{{(dataObj?.yatClaimDTO?.status || dataObj?.claimState || dataObj?.formState) | showHypen}}</td>
                         <td>

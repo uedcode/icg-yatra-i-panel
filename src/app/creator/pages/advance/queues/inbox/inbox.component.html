@@ -103,7 +103,7 @@
                         <td>{{ (i + 1) + (p - 1) * noOfPage}}.</td>
                         <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen}}</td>
                         <td>{{dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-'}}</td>
-                        <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.formId || dataObj?.claimId) | showHypen}}</td>
+                        <td>{{(dataObj?.yatClaimDTO?.formId || dataObj?.formId) | showHypen}}</td>
                         <td>{{(dataObj?.yatClaimDTO?.remark || dataObj?.remarks) | showHypen}}</td>
                         <td>
                           <button *ngIf="canPerformEsign(dataObj)" class="btn btn-info" title="Perform E-Sign" (click)="performEsign(dataObj)">Perform E-Sign</button>

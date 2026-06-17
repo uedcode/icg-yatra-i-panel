@@ -114,7 +114,7 @@
                         ">
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId || dataObj?.yatClaimDTO?.claimId || dataObj?.claimId) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId) | showHypen }}</td>
                         <td>{{ dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-' }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.claimAmt || dataObj?.claimAmt) | showHypen }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.claimPassAmt || dataObj?.yatClaimDTO?.passedAmt || dataObj?.passedAmt || dataObj?.recommendedAmount) | showHypen }}</td>

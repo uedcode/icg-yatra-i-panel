@@ -69,7 +69,7 @@
                         <td>{{ (dataObj?.fullName || dataObj?.fullDescr) | showHypen }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId) | showHypen }}</td>
+                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId) | showHypen }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.claimAmt || dataObj?.claimAmt) | showHypen }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.passedAmt || dataObj?.passedAmt || dataObj?.recommendedAmount) | showHypen }}</td>
                         <td>{{ (dataObj?.remarks || dataObj?.yatClaimDTO?.remark) | showHypen }}</td>
