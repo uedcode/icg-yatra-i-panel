@@ -16,6 +16,8 @@ import {
   validateLegacyRequiredSection,
 } from '../shared/helpers/legacy-form-validation.helper';
 
+declare var $: any;
+
 /* ========= BASIC DTOs YOU ALREADY STARTED ========= */
 
 interface TyDutyHeaderDTO {
@@ -37,6 +39,7 @@ interface TyDutyClaimDTO {
 
 interface YatDtsDetailDTO {
   _reasonForNoDtsError?: boolean;
+  ltcTravelPrimaryKey?: string;
   source?: string;
   destination?: string;
   modeOfTravel?: string;
@@ -126,7 +129,7 @@ interface YatTempDutyAdvDTO {
   accHToDutyPerDay?: number | null;
   accHToDutyKms?: number | null;
   totalAccHToDuty?: number | null;
-  availedCategory?: number | null; // 0/1/2...
+  availedCategory?: number | string | null; // legacy may return 0/1/2 as number or string
 
   // Financial totals
   arrFare?: number | null;
@@ -196,6 +199,7 @@ export class FormTydutyComponent implements OnInit {
   p: any;
   res: any;
   allUnits: any = [];
+  allStations: any = [];
   /* ==== STATE ==== */
   preSelectedUnit;
   claims: Claims = this.createEmptyClaims();
@@ -212,6 +216,8 @@ export class FormTydutyComponent implements OnInit {
   boolIsDts = false;
   otherMode = false;
   isDtsDisabled = false;
+  private tyBusinessInvalidSection: string | null = null;
+  eSignTempFormObj: any = null;
 
   ltcTravelDetailsBtn = false;
   travelBtnName = 'Add';
@@ -278,6 +284,33 @@ export class FormTydutyComponent implements OnInit {
     }
   }
 
+  allowDecimalNumber(e: KeyboardEvent): void {
+    const allowed = [
+      'Backspace',
+      'Tab',
+      'ArrowLeft',
+      'ArrowRight',
+      'Delete',
+      'Home',
+      'End',
+    ];
+    if (allowed.includes(e.key) || e.ctrlKey || e.metaKey) return;
+
+    const input = e.target as HTMLInputElement;
+    if (e.key === '.' && !input.value.includes('.')) return;
+
+    if (!/^\d$/.test(e.key)) {
+      e.preventDefault();
+    }
+  }
+
+  blockPasteIfNotDecimal(e: ClipboardEvent): void {
+    const text = e.clipboardData?.getData('text') ?? '';
+    if (text && !/^\d+(\.\d+)?$/.test(text)) {
+      e.preventDefault();
+    }
+  }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -311,6 +344,7 @@ export class FormTydutyComponent implements OnInit {
     this.initFromRoute();
     this.userIdDetails = this.$auth.getUserDetails();
     this.getUnits();
+    this.getStations();
     this.today = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
     this.codeStatus = this.$auth?.codeStatus();
 
@@ -321,11 +355,9 @@ export class FormTydutyComponent implements OnInit {
     this.$codeDocInfo.documentDtos.subscribe((docs: any) => {
       this.documentDtos = Array.isArray(docs) ? docs : [];
     });
-    this.route.queryParams.subscribe((params) => {
-      this.formId = params?.id;
-      this.subFormId = params?.subFormId;
-      this.supplementryId = params?.supId;
-      if (this.supplementryId) this.supplementryClaim = 'Supplementary ';
+    this.route.queryParamMap.subscribe((params) => {
+      this.syncRouteStateFromQuery(params);
+      this.supplementryClaim = this.supplementryId ? 'Supplementary ' : '';
 
       this.getFormDetails();
     });
@@ -337,6 +369,10 @@ export class FormTydutyComponent implements OnInit {
   private initFromRoute(): void {
     const qp = this.route.snapshot.queryParamMap;
     this.activeFormKind = this.resolveFormKind(this.route.snapshot.data?.['formKind']);
+    this.syncRouteStateFromQuery(qp);
+  }
+
+  private syncRouteStateFromQuery(qp: { get: (key: string) => string | null }): void {
     const routeSubFormId = this.route.snapshot.data?.['subFormId'];
     const querySubFormId = qp.get('subFormId');
     this.activeSubFormId =
@@ -344,6 +380,8 @@ export class FormTydutyComponent implements OnInit {
         ? querySubFormId || routeSubFormId || 'TYD'
         : querySubFormId || routeSubFormId || this.codeClaim.tyAdv;
     this.claims.codeSubFormDTO = { subFormId: this.activeSubFormId };
+    this.formId = qp.get('id');
+    this.subFormId = querySubFormId;
     this.claimIdParam = qp.get('claimId') || qp.get('id') || qp.get('resubId');
     this.resubClaimId = qp.get('resubId');
     this.extnClaimId = qp.get('extnClaimId') || qp.get('extnId');
@@ -361,8 +399,10 @@ export class FormTydutyComponent implements OnInit {
         claimBankId: null,
         bankName: null,
         branch: null,
+        ifscCode: null,
         accountNo: null,
         micrCode: null,
+        bankAccNo: null,
       },
       internalRemarks: null,
       claimAmt: null,
@@ -451,6 +491,18 @@ export class FormTydutyComponent implements OnInit {
     return arr.reduce((sum, item) => sum + this.toNumber(item?.[key]), 0);
   }
 
+  isAvailedCategoryOneOrTwo(category: unknown): boolean {
+    return String(category ?? '') === '1' || String(category ?? '') === '2';
+  }
+
+  isAvailedCategoryZero(category: unknown): boolean {
+    return String(category ?? '') === '0';
+  }
+
+  isAvailedCategoryTwo(category: unknown): boolean {
+    return String(category ?? '') === '2';
+  }
+
   /* ==========================================================
    *  CORE: AMOUNT CALCULATION (TY ADVANCE)
    * ========================================================== */
@@ -465,6 +517,7 @@ export class FormTydutyComponent implements OnInit {
       return;
     }
 
+    this.normalizeFinancialInputs(adv);
     let calTyAmt = 0;
 
     // ARR fare
@@ -553,7 +606,7 @@ export class FormTydutyComponent implements OnInit {
         !this.isNullOrEmpty(adv.accHToDutyPerDay) &&
         !this.isNullOrEmpty(adv.accHToDutyDays)
       ) {
-        if (adv.availedCategory === 1 || adv.availedCategory === 2) {
+        if (this.isAvailedCategoryOneOrTwo(adv.availedCategory)) {
           if (!this.isNullOrEmpty(adv.accHToDutyKms)) {
             adv.totalAccHToDuty =
               this.toNumber(adv.accHToDutyPerDay) *
@@ -625,6 +678,23 @@ export class FormTydutyComponent implements OnInit {
     } else {
       this.isGSTAvailed = false;
     }
+  }
+
+  private normalizeFinancialInputs(adv: YatTempDutyAdvDTO): void {
+    const duration = this.toNumber(adv.duration);
+    ['foodChargeDays', 'hotelAccDays', 'accHToDutyDays'].forEach((key) => {
+      const current = this.toNumber((adv as any)[key]);
+      if (duration > 0 && current > duration) {
+        (adv as any)[key] = duration;
+      }
+    });
+
+    ['foodChargePerc', 'hotelChargePerc'].forEach((key) => {
+      const current = this.toNumber((adv as any)[key]);
+      if (current > 100) {
+        (adv as any)[key] = 100;
+      }
+    });
   }
 
   calculateNintyAmount(type: string): void {
@@ -743,20 +813,24 @@ export class FormTydutyComponent implements OnInit {
       return;
     }
 
+    this.ltcTravelDetailsBtn = true;
     this.validateLtcTravel(detail, 'modeOfTravel');
 
     if (this.isNullOrEmpty(detail.source)) {
-      this.$common.showMessage('Please fill travel From.', 'danger');
+      this.ltcTravelDetailsBtn = false;
+      this.$common.showMessage('From Field is required', 'danger');
       return;
     }
 
     if (this.isNullOrEmpty(detail.destination)) {
-      this.$common.showMessage('Please fill travel To.', 'danger');
+      this.ltcTravelDetailsBtn = false;
+      this.$common.showMessage('To Field is required', 'danger');
       return;
     }
 
     if (this.isNullOrEmpty(detail.modeOfTravel)) {
-      this.$common.showMessage('Please select Mode of Travel.', 'danger');
+      this.ltcTravelDetailsBtn = false;
+      this.$common.showMessage('Mode of Travel Field is required', 'danger');
       return;
     }
 
@@ -765,32 +839,36 @@ export class FormTydutyComponent implements OnInit {
         ? detail.otherModeOfTravel.trim()
         : '';
       if (!otherMode) {
+        this.ltcTravelDetailsBtn = false;
         this.$common.showMessage(
-          'Please fill Other Mode of Travel when mode is Others.',
+          'Other Mode of Travel Field is required',
           'danger'
         );
         return;
       }
     }
 
-    if (this.isNullOrEmpty(detail.isDts)) {
-      this.$common.showMessage('Please select DTS.', 'danger');
-      return;
-    }
-
     if (this.isNullOrEmpty(detail.amount)) {
-      this.$common.showMessage('Please fill Total Amount.', 'danger');
+      this.ltcTravelDetailsBtn = false;
+      this.$common.showMessage('Amount Field is required', 'danger');
       return;
     }
 
-    if (detail.isDts === 'No') {
+    if (this.isNullOrEmpty(detail.isDts)) {
+      this.ltcTravelDetailsBtn = false;
+      this.$common.showMessage('Dts Field is required', 'danger');
+      return;
+    }
+
+    if (!this.isReasonForNoDtsDisabled(detail)) {
       const reason = detail.reasonForNoDts ? detail.reasonForNoDts.trim() : '';
 
       if (!reason) {
+        this.ltcTravelDetailsBtn = false;
         detail._reasonForNoDtsError = true;
         this.$common.showMessage(
-          'Reason for not using DTS is required when DTS is No.',
-          'error'
+          'Reason for not Booking Field is required',
+          'danger'
         );
         return;
       }
@@ -803,10 +881,29 @@ export class FormTydutyComponent implements OnInit {
       detail.tempAmount = this.toNumber(detail.amount);
     }
 
-    if (this.selectedTravelIndex !== null) {
-      this.claims.yatDtsDetailDTOs[this.selectedTravelIndex] = { ...detail };
+    const row = {
+      ...detail,
+      ltcTravelPrimaryKey:
+        (detail as any).ltcTravelPrimaryKey ||
+        Math.random().toString(36).substring(7),
+    } as YatDtsDetailDTO;
+
+    const updateIndex = row.ltcTravelPrimaryKey
+      ? this.claims.yatDtsDetailDTOs.findIndex(
+          (elem: any) => elem.ltcTravelPrimaryKey === row.ltcTravelPrimaryKey
+        )
+      : -1;
+
+    if (updateIndex >= 0) {
+      this.claims.yatDtsDetailDTOs[updateIndex] = row;
+    } else if (
+      this.selectedTravelIndex !== null &&
+      this.selectedTravelIndex >= 0 &&
+      this.selectedTravelIndex < this.claims.yatDtsDetailDTOs.length
+    ) {
+      this.claims.yatDtsDetailDTOs[this.selectedTravelIndex] = row;
     } else {
-      this.claims.yatDtsDetailDTOs.push({ ...detail });
+      this.claims.yatDtsDetailDTOs.push(row);
     }
 
     this.resetTempLtcTravelDetails();
@@ -821,8 +918,44 @@ export class FormTydutyComponent implements OnInit {
     this.tempLtcTravelDetails = {
       ...this.claims.yatDtsDetailDTOs[index],
     };
+    if (
+      this.tempLtcTravelDetails.modeOfTravel &&
+      !this.isKnownTravelMode(this.tempLtcTravelDetails.modeOfTravel)
+    ) {
+      this.tempLtcTravelDetails.otherModeOfTravel =
+        this.tempLtcTravelDetails.otherModeOfTravel ||
+        this.tempLtcTravelDetails.modeOfTravel;
+      this.tempLtcTravelDetails.modeOfTravel = 'Others';
+    }
+    if (!this.isNullOrEmpty(this.tempLtcTravelDetails.tempAmount)) {
+      this.tempLtcTravelDetails.amount = this.toNumber(
+        this.tempLtcTravelDetails.tempAmount
+      );
+    }
     this.validateLtcTravel(this.tempLtcTravelDetails, 'modeOfTravel');
     this.travelBtnName = 'Update';
+  }
+
+  private isKnownTravelMode(mode: string): boolean {
+    return [
+      'Air',
+      'Road',
+      'Train',
+      'Ship',
+      'Bus',
+      'Taxi',
+      'Ferry',
+      'Service Vehicle',
+      'Others',
+    ].includes(mode);
+  }
+
+  isReasonForNoDtsDisabled(detail: YatDtsDetailDTO): boolean {
+    return (
+      detail?.isDts === 'Yes' ||
+      detail?.isDts === 'DTS' ||
+      detail?.isDts === 'NA'
+    );
   }
 
   private firstObject(value: any): any {
@@ -905,8 +1038,47 @@ export class FormTydutyComponent implements OnInit {
         this.claims.yatClaimBankDetailDTO.accountNo
       ),
       micrCode: this.pickFirstValue(bank.micrCode, this.claims.yatClaimBankDetailDTO.micrCode),
-      bankAccNo: this.pickFirstValue(bank.bankAccNo, this.claims.yatClaimBankDetailDTO.bankAccNo),
+      bankAccNo: this.pickFirstValue(
+        bank.bankAccNo,
+        bank.accountNo,
+        this.claims.yatClaimBankDetailDTO.bankAccNo,
+        this.claims.yatClaimBankDetailDTO.accountNo
+      ),
     };
+  }
+
+  private mergeSavedTyResponse(savedClaim: any): void {
+    if (!savedClaim || typeof savedClaim !== 'object') {
+      return;
+    }
+
+    const currentAdv = this.claims.yatTempDutyAdvDTOs?.[0] || {};
+    const savedAdv = this.firstObject(savedClaim.yatTempDutyAdvDTOs);
+    this.claims = {
+      ...this.claims,
+      ...savedClaim,
+      yatTempDutyAdvDTOs: [
+        {
+          ...currentAdv,
+          ...savedAdv,
+        },
+      ],
+      yatDtsDetailDTOs: Array.isArray(savedClaim.yatDtsDetailDTOs)
+        ? savedClaim.yatDtsDetailDTOs.map((row: any) => ({
+            ...row,
+            tempAmount: this.pickFirstValue(row.tempAmount, row.amount, null),
+          }))
+        : this.claims.yatDtsDetailDTOs,
+      yatClaimBankDetailDTO: {
+        ...this.claims.yatClaimBankDetailDTO,
+        ...(savedClaim.yatClaimBankDetailDTO || {}),
+      },
+    } as Claims;
+
+    this.mapTyBankDetails(savedClaim);
+    delete (this.claims as any).deleteGxFileUrl;
+    this.syncGxFileBrowseState();
+    this.checkForPreviewBtn();
   }
 
   private hasTyPersonalDetails(): boolean {
@@ -961,11 +1133,20 @@ export class FormTydutyComponent implements OnInit {
   }
 
   resetTempLtcTravelDetails(): void {
-    this.tempLtcTravelDetails = {} as YatDtsDetailDTO;
+    this.tempLtcTravelDetails = {
+      source: '',
+      destination: '',
+      modeOfTravel: '',
+      amount: null,
+      isDts: '',
+      reasonForNoDts: '',
+      remarks: '',
+    } as YatDtsDetailDTO;
     this.selectedTravelIndex = null;
     this.otherMode = false;
-    this.boolIsDts = false;
+    this.boolIsDts = true;
     this.isDtsDisabled = false;
+    this.ltcTravelDetailsBtn = false;
     this.travelBtnName = 'Add';
   }
 
@@ -1003,12 +1184,7 @@ export class FormTydutyComponent implements OnInit {
   }
 
   navigate_preview(route: string): void {
-    this.router.navigate([route], {
-      queryParams: {
-        claimId: this.claims.claimId,
-        ...(this.supplementryId ? { supId: this.supplementryId } : {}),
-      },
-    });
+    this.navigatePreview(route, this.claims.claimId);
   }
 
   // FORM VALIDATE (TY ADVANCE)
@@ -1017,33 +1193,7 @@ export class FormTydutyComponent implements OnInit {
       return;
     }
 
-    try {
-      const sectionIds = ['ship', 'ship2', 'ship3', 'ship4'];
-      let firstInvalidSection: string | null = null;
-      let allValid = true;
-
-      for (const sectionId of sectionIds) {
-        const sectionValid = this.validateSection(sectionId);
-        if (!sectionValid) {
-          allValid = false;
-          if (!firstInvalidSection) {
-            firstInvalidSection = sectionId;
-          }
-        }
-      }
-
-      if (!allValid) {
-        if (firstInvalidSection) {
-          this.activateTab(firstInvalidSection);
-        }
-        this.$common.showMessage('Please fill required fields.', 'danger');
-        return;
-      }
-
-      this.saveClaim(this.codeClaim.tyAdv, this.codeClaimState.outbox, true);
-    } catch (err) {
-      console.error('Error during form validation', err);
-    }
+    this.validateTy(type);
   }
 
   private validateSection(sectionId: string): boolean {
@@ -1197,6 +1347,9 @@ export class FormTydutyComponent implements OnInit {
             this.mapTyBankDetails(obj);
           }
 
+          const mappedAdv = this.claims.yatTempDutyAdvDTOs?.[0];
+          this.changeTransType(mappedAdv?.tempTransferToType || null, this.codeClaim.tyAdv);
+          this.syncGxFileBrowseState();
           this.checkForPreviewBtn();
         },
         (error) => {
@@ -1233,7 +1386,6 @@ export class FormTydutyComponent implements OnInit {
           this.$common.hideLoader();
           if (response.status === true) {
             let list = response.object;
-            debugger;
             this.allUnits = list;
           }
         },
@@ -1248,6 +1400,28 @@ export class FormTydutyComponent implements OnInit {
     }
   }
 
+  getStations() {
+    try {
+      this.config = {
+        headers: {},
+      };
+      this.$claim.getStations(this.config).subscribe(
+        (response: any) => {
+          if (response.status === true) {
+            this.allStations = Array.isArray(response.object)
+              ? response.object
+              : [];
+          }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   changeTransType(tempTransferToType: string | null, type: string): void {
     if (type !== this.codeClaim.tyAdv) {
       return;
@@ -1255,21 +1429,29 @@ export class FormTydutyComponent implements OnInit {
 
     const adv = this.claims.yatTempDutyAdvDTOs[0];
 
-    if (tempTransferToType === 'SameUnit') {
+    if (tempTransferToType === 'Others') {
+      this.hideStationOrUnit = true;
+      this.hideStationAndUnit = true;
+      this.hideShowOtherUnit = false;
+      adv.tempTransTo = null;
+      adv.stationProceedingTo = null;
+    } else if (
+      tempTransferToType === 'CG Unit' ||
+      tempTransferToType === 'Army Unit' ||
+      tempTransferToType === 'Naval Unit' ||
+      tempTransferToType === 'Air Force Unit'
+    ) {
       this.hideStationOrUnit = false;
       this.hideStationAndUnit = true;
       this.hideShowOtherUnit = false;
-      adv.otherUnit = null;
-    } else if (tempTransferToType === 'OtherUnit') {
-      this.hideStationOrUnit = false;
-      this.hideStationAndUnit = false;
-      this.hideShowOtherUnit = false;
-    } else if (tempTransferToType === 'Other') {
-      this.hideShowOtherUnit = true;
+      adv.dutyStation = null;
     } else {
       this.hideStationOrUnit = false;
       this.hideStationAndUnit = false;
       this.hideShowOtherUnit = false;
+      adv.dutyStation = null;
+      adv.tempTransTo = null;
+      adv.stationProceedingTo = null;
     }
   }
 
@@ -1279,6 +1461,10 @@ export class FormTydutyComponent implements OnInit {
   navigatePreview(type, id) {
     const route = type || this.getPreviewRoute();
     const previewId = id || this.claims.claimId || this.claimIdParam;
+    if (!route || !previewId) {
+      return;
+    }
+
     const isClaimPreview = this.activeFormKind === 'claim' || route.includes('claim');
     const queryParams = isClaimPreview
       ? {
@@ -1291,9 +1477,16 @@ export class FormTydutyComponent implements OnInit {
           ...(this.supplementryId ? { supId: this.supplementryId } : {}),
         };
 
-    this.router.navigate([`../${route}`], {
-      queryParams,
-    });
+    const queryString = Object.entries(queryParams)
+      .filter(([, value]) => value !== undefined && value !== null && value !== '')
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+      )
+      .join('&');
+    const moduleUrl = this.getModuleUrl();
+    const previewUrl = `${moduleUrl}/${route}${queryString ? `?${queryString}` : ''}`;
+    window.open(previewUrl, '_blank');
   }
 
   private navigateAfterSave(
@@ -1319,6 +1512,96 @@ export class FormTydutyComponent implements OnInit {
     }
 
     this.router.navigateByUrl(moduleUrl + `/draft`);
+  }
+
+  private getModuleUrl(): string {
+    const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
+    return String(moduleUrl || '').replace(/\/$/, '');
+  }
+
+  private buildClaimRemarkPayload(
+    status: string,
+    claimId: string,
+    remark: string = ''
+  ): any {
+    return {
+      claimId,
+      roleTypeId: this.userIdDetails?.roleTypeId,
+      userId: this.userIdDetails?.userId,
+      status,
+      remark,
+      financialYear: this.userIdDetails?.financialYear,
+      moduleId:
+        this.userIdDetails?.moduleId ||
+        (this.$auth.getRuntimeModuleId ? this.$auth.getRuntimeModuleId() : undefined),
+    };
+  }
+
+  private completeLegacyStatusTransition(status: string, claimId: string): void {
+    if (!claimId) {
+      this.$common.showMessage('Unable to update claim status.', 'danger');
+      this.$common.hideLoader();
+      this.disableBtn = false;
+      return;
+    }
+
+    const payload = this.buildClaimRemarkPayload(status, claimId);
+    const isESignSubmit =
+      status === this.codeClaimState.outbox &&
+      this.claims?.signWith === this.codeSignType.eSign;
+    const statusRequest = isESignSubmit
+      ? this.$claim.prepareForESign(payload)
+      : this.$claim.changeClaimStatusById(payload);
+
+    statusRequest.subscribe(
+      (res: any) => {
+        if (res?.status === false) {
+          this.$common.showMessage(
+            res?.message || 'Unable to update claim status.',
+            'danger'
+          );
+          this.$common.hideLoader();
+          this.disableBtn = false;
+          return;
+        }
+
+        this.$claim.notifyStatusCountRefresh();
+        if (isESignSubmit) {
+          this.eSignTempFormObj = {
+            id: claimId,
+            claimId,
+            roleTypeId: this.userIdDetails?.roleTypeId,
+            userId: this.userIdDetails?.userId,
+            status,
+            remark: '',
+            financialYear: this.userIdDetails?.financialYear,
+            moduleId:
+              this.userIdDetails?.moduleId ||
+              (this.$auth.getRuntimeModuleId ? this.$auth.getRuntimeModuleId() : undefined),
+          };
+          if (typeof $ !== 'undefined') {
+            $('#esign_modal').modal('show');
+          }
+        } else if (status === this.codeClaimState.outbox) {
+          const moduleUrl = this.getModuleUrl();
+          if (moduleUrl) {
+            this.router.navigateByUrl(moduleUrl + '/new');
+          }
+        }
+
+        this.$common.hideLoader();
+        this.disableBtn = false;
+      },
+      (err: any) => {
+        console.error('Error while updating TY Duty claim status', err);
+        this.$common.showMessage(
+          'Error while updating TY Duty claim status.',
+          'danger'
+        );
+        this.$common.hideLoader();
+        this.disableBtn = false;
+      }
+    );
   }
   checkEsignAvailability(): void {
     if (this.claims?.signWith !== this.codeSignType.eSign) {
@@ -1351,6 +1634,10 @@ export class FormTydutyComponent implements OnInit {
 
   openGxFormModel(type): void {
     // GX form modal logic
+  }
+
+  private syncGxFileBrowseState(): void {
+    this.showGxFileBrowse = !this.claims?.gxFormFileUrl;
   }
 
   clearChangeData(): void {
@@ -1452,70 +1739,6 @@ export class FormTydutyComponent implements OnInit {
     }
   }
 
-  // --- BANK: UPDATE IFSC CODE ---
-  // updateIfscCode(): void {
-  //   try {
-  //     const bankObj: any = { ...(this.claims?.yatClaimBankDetailDTO || {}) };
-  //     if (!bankObj) return;
-
-  //     if (!bankObj.userId) {
-  //       if ((this.claims as any)?.aclUserDTO?.userId) {
-  //         bankObj.userId = (this.claims as any).aclUserDTO.userId;
-  //       } else if (this.userIdDetails?.userId) {
-  //         bankObj.userId = this.userIdDetails.userId;
-  //       }
-  //     }
-
-  //     const headers: any = {};
-  //     if (this.claims?.claimId) {
-  //       headers.claimId = this.claims.claimId;
-  //     }
-  //     const config = { headers };
-
-  //     this.$common.showLoader();
-
-  //     this.$claim.createOrUpdateIfsc(bankObj, config).subscribe(
-  //       (res: any) => {
-  //         this.$common.hideLoader();
-
-  //         if (!res) {
-  //           this.$common.showMessage(
-  //             'Unable to update IFSC Code (empty response).',
-  //             'danger'
-  //           );
-  //           return;
-  //         }
-
-  //         if (res.status === true) {
-  //           if (Array.isArray(res.object) && res.object[0]?.ifscCode) {
-  //             this.claims.yatClaimBankDetailDTO.ifscCode =
-  //               res.object[0].ifscCode;
-  //           }
-  //           this.$common.showMessage(
-  //             res.message || 'IFSC Code updated successfully.',
-  //             'success'
-  //           );
-  //         } else {
-  //           this.$common.showMessage(
-  //             res.message || 'Unable to update IFSC Code.',
-  //             'danger'
-  //           );
-  //         }
-  //       },
-  //       (err) => {
-  //         this.$common.hideLoader();
-  //         console.error('Error while updating IFSC code', err);
-  //         this.$common.showMessage('Error while updating IFSC Code.', 'danger');
-  //       }
-  //     );
-  //   } catch (e) {
-  //     this.$common.hideLoader();
-  //     console.error('Exception in updateIfscCode()', e);
-  //   }
-  // }
-
-  // keep other methods below or above, but still inside this class
-
   getTransBasicPay(): void {
     // Basic pay / pay level logic
   }
@@ -1545,6 +1768,7 @@ export class FormTydutyComponent implements OnInit {
 
     try {
       const tempClaim: any = JSON.parse(JSON.stringify(this.claims));
+      tempClaim.claimAmt = tempClaim.yatTempDutyAdvDTOs?.[0]?.advAmt ?? 0;
 
       if (tempClaim.yatTempDutyAdvDTOs) {
         if (!Array.isArray(tempClaim.yatTempDutyAdvDTOs)) {
@@ -1563,6 +1787,7 @@ export class FormTydutyComponent implements OnInit {
             elem.amount = Number(elem.tempAmount);
           }
           delete elem.tempAmount;
+          delete elem._reasonForNoDtsError;
         });
       }
 
@@ -1627,9 +1852,13 @@ export class FormTydutyComponent implements OnInit {
       const formData = new FormData();
       formData.append('yatClaimDTO', JSON.stringify(tempClaim));
 
-      this.$claim.createOrUpdateClaim(formData, null).subscribe(
+      this.$claim.createOrUpdateAdvance(formData, null).subscribe(
         (res: any) => {
-          if (!res) {
+          if (!res || res?.status === false) {
+            this.$common.showMessage(
+              res?.message || 'Unable to save TY Duty claim.',
+              'danger'
+            );
             this.$common.hideLoader();
             this.disableBtn = false;
             return;
@@ -1639,13 +1868,11 @@ export class FormTydutyComponent implements OnInit {
             ? res.object[0]
             : res?.object || res?.obj || res;
           const respStatus = status;
-          const moduleUrl = this.$auth.getModuleName
-            ? this.$auth.getModuleName()
-            : '';
 
           if (obj.id || obj.claimId) {
             this.claims.claimId = obj.claimId || obj.id;
           }
+          this.mergeSavedTyResponse(obj);
           if (this.resubClaimId) {
             (this.claims as any).refAdvanceId = this.resubClaimId;
           }
@@ -1664,13 +1891,10 @@ export class FormTydutyComponent implements OnInit {
               'success'
             );
           }
-          this.navigateAfterSave(
+          this.completeLegacyStatusTransition(
             respStatus,
             obj.claimId || obj.id || this.claims.claimId || this.claimIdParam
           );
-
-          this.$common.hideLoader();
-          this.disableBtn = false;
         },
         (err: any) => {
           console.error('Error while saving TY Duty claim', err);
@@ -1797,6 +2021,7 @@ export class FormTydutyComponent implements OnInit {
     const isValidExtension = this.$common.checkForValidFile(event);
     if (!isValidExtension) {
       this.claims.gxFormFileUrl = null;
+      this.showGxFileBrowse = true;
       input.value = '';
       return;
     }
@@ -1806,6 +2031,7 @@ export class FormTydutyComponent implements OnInit {
     if (file.size > maxSizeBytes) {
       this.$common.showMessage('File size must be 512 KB or less.', 'danger');
       this.claims.gxFormFileUrl = null;
+      this.showGxFileBrowse = true;
       input.value = ''; // reset file input
       return;
     }
@@ -1819,9 +2045,11 @@ export class FormTydutyComponent implements OnInit {
 
       if (res) {
         this.claims.gxFormFileUrl = res as string;
+        this.showGxFileBrowse = false;
       } else {
         this.$common.showMessage('Unable to upload GX Form.', 'danger');
         this.claims.gxFormFileUrl = null;
+        this.showGxFileBrowse = true;
         input.value = '';
       }
     });
@@ -1838,13 +2066,10 @@ export class FormTydutyComponent implements OnInit {
       return;
     }
 
-    // call same delete API as in Pilotage
-    this.$formManage?.deleteByUrl(this.claims.gxFormFileUrl);
-
-    this.$formManage?.docFileUrlDeleted.subscribe((res) => {
-      // if server deletion succeeds, clear local value
-      this.claims.gxFormFileUrl = null;
-    });
+    (this.claims as any).deleteGxFileUrl = this.claims.gxFormFileUrl;
+    this.claims.gxFormFileUrl = null;
+    this.gxFormModel = null;
+    this.showGxFileBrowse = true;
   }
 
   getPurposeTypes(): void {
@@ -1933,75 +2158,6 @@ export class FormTydutyComponent implements OnInit {
     targetLink.click();
   }
 
-  updateIfscCodeResettlement(bankObj: any): void {
-    try {
-      // ----- 1. Prepare config & headers -----
-      const config: any = { headers: {} };
-
-      // userId same logic as AngularJS
-      if (!bankObj.userId) {
-        if (this.claims?.aclUserDTO?.userId) {
-          bankObj.userId = this.claims.aclUserDTO.userId;
-        }
-      }
-
-      // claimId header
-      if (this.claims?.claimId) {
-        config.headers.claimId = this.claims.claimId;
-      }
-
-      this.$common.showLoader();
-
-      this.$claim.createOrUpdateIfsc(bankObj, config).subscribe(
-        (response: any) => {
-          this.$common.hideLoader();
-
-          // mimic $rootScope.parseResponse(response.data)
-          const data = this.$common.parseResponse
-            ? this.$common.parseResponse(response)
-            : response.obj || response.object || response;
-
-          // close modal
-          ($('#ifscCodeModal') as any).modal('hide');
-
-          // success branch
-          if (data && data.status === true) {
-            if (
-              this.claims?.yatClaimBankDetailDTO &&
-              data.object?.[0]?.ifscCode
-            ) {
-              this.claims.yatClaimBankDetailDTO.ifscCode =
-                data.object[0].ifscCode;
-            }
-
-            const msg = data.message || 'IFSC Code updated successfully.';
-            this.$common.showMessage(msg, 'success');
-          } else {
-            const msg = (data && data.message) || 'Unable to update IFSC Code.';
-            this.$common.showMessage(msg, 'danger');
-          }
-        },
-        (err) => {
-          this.$common.hideLoader();
-          ($('#ifscCodeModal') as any).modal('hide');
-
-          const msg = `${err.status} : ${
-            err.statusText || 'Error updating IFSC Code'
-          }`;
-          this.$common.showMessage(msg, 'danger');
-        }
-      );
-    } catch (e) {
-      console.error('updateIfscCodeResettlement error', e);
-      this.$common.hideLoader();
-      ($('#ifscCodeModal') as any).modal('hide');
-      this.$common.showMessage(
-        'Unexpected error while updating IFSC Code.',
-        'danger'
-      );
-    }
-  }
-
   openIfscModal() {
     this.newIfscCode = this.claims?.yatClaimBankDetailDTO?.ifscCode || '';
     this.showIfscModal = true;
@@ -2012,35 +2168,42 @@ export class FormTydutyComponent implements OnInit {
   }
 
   submitIFSCUpdate(): void {
-    if (this.isNullOrEmpty(this.newIfscCode)) {
+    const ifscCode = (this.newIfscCode || '').trim().toUpperCase();
+    if (this.isNullOrEmpty(ifscCode)) {
       this.$common.showMessage('Please enter IFSC code.', 'danger');
       return;
     }
 
+    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode)) {
+      this.$common.showMessage('Please enter valid IFSC code.', 'danger');
+      return;
+    }
+
     const bankObj: any = {
-      ifscCode: this.newIfscCode.trim(),
+      ifscCode,
       userId:
         this.claims?.aclUserDTO?.userId || this.userIdDetails?.userId || null,
     };
 
     const config: any = { headers: {} };
 
-    if (this.claimId) {
-      config.headers.claimId = this.claimId;
+    if (this.claims?.claimId) {
+      config.headers.claimId = this.claims.claimId;
     }
 
+    this.$common.showLoader();
     this.$claim.createOrUpdateIfsc(bankObj, config).subscribe({
       next: (response: any) => {
         const data: any = this.$common.parseResponse(response);
+        this.$common.hideLoader();
 
         if (data && data.status === true) {
-          // update local IFSC in the claim
           if (this.claims?.yatClaimBankDetailDTO) {
             this.claims.yatClaimBankDetailDTO.ifscCode =
-              data.object?.[0]?.ifscCode || this.newIfscCode;
+              data.object?.[0]?.ifscCode || ifscCode;
           }
 
-          const msg = data.message || 'IFSC updated successfully';
+          const msg = data.message || 'IFSC Code updated successfully.';
           this.$common.showMessage(msg, 'success');
           this.closeIfscModal();
         } else {
@@ -2051,6 +2214,7 @@ export class FormTydutyComponent implements OnInit {
         }
       },
       error: (err: any) => {
+        this.$common.hideLoader();
         console.error('Error while updating IFSC:', err);
         this.$common.showMessage('Error while updating IFSC code.', 'danger');
       },
@@ -2067,7 +2231,7 @@ export class FormTydutyComponent implements OnInit {
   }
 
   private runTyClientValidationOnly(): boolean {
-    const sectionIds = ['ship', 'ship2', 'ship3', 'ship4']; // keep if these are correct for TY
+    const sectionIds = ['ship', 'ship2', 'ship3', 'ship4', 'ship5'];
     let firstInvalidSection: string | null = null;
     let allValid = true;
 
@@ -2097,7 +2261,7 @@ export class FormTydutyComponent implements OnInit {
 
       const okBusiness = this.validateTyBusinessFields();
       if (!okBusiness) {
-        this.activateTab('ship'); // change to the tab id where Station proceeding to exists
+        this.activateTab(this.tyBusinessInvalidSection || 'ship');
         return;
       }
 
@@ -2116,7 +2280,7 @@ export class FormTydutyComponent implements OnInit {
 
     const okBusiness = this.validateTyBusinessFields();
     if (!okBusiness) {
-      this.activateTab('ship'); // change to correct tab id
+      this.activateTab(this.tyBusinessInvalidSection || 'ship');
       return;
     }
 
@@ -2124,6 +2288,8 @@ export class FormTydutyComponent implements OnInit {
   }
 
   private validateTyBusinessFields(): boolean {
+    this.tyBusinessInvalidSection = 'ship';
+
     if (!this.claims?.codeUnitDTO?.unit) {
       this.$common.showMessage('Please select the applied to unit.', 'danger');
       return false;
@@ -2187,12 +2353,25 @@ export class FormTydutyComponent implements OnInit {
       }
     }
 
-    const station = adv?.stationProceedingTo;
-
-    if (!station) {
-      this.$common.showMessage('Please select Field proceeding to.', 'danger');
-      return false;
+    if (!this.hideStationOrUnit && this.hideStationAndUnit) {
+      if (this.isNullOrEmpty(adv?.tempTransTo)) {
+        this.$common.showMessage('Please select Name of Unit.', 'danger');
+        return false;
+      }
+      if (this.isNullOrEmpty(adv?.stationProceedingTo)) {
+        this.$common.showMessage('Please select Station proceeding to.', 'danger');
+        return false;
+      }
     }
+
+    if (this.hideStationOrUnit && this.hideStationAndUnit) {
+      if (this.isNullOrEmpty(adv?.dutyStation)) {
+        this.$common.showMessage('Please fill Duty Station to.', 'danger');
+        return false;
+      }
+    }
+
+    this.tyBusinessInvalidSection = 'ship3';
 
     if (adv?.isAvailFoodCharge) {
       if (
@@ -2245,7 +2424,7 @@ export class FormTydutyComponent implements OnInit {
         return false;
       }
       if (
-        (adv.availedCategory === 1 || adv.availedCategory === 2) &&
+        this.isAvailedCategoryOneOrTwo(adv.availedCategory) &&
         this.isNullOrEmpty(adv.accHToDutyKms)
       ) {
         this.$common.showMessage(
@@ -2255,6 +2434,8 @@ export class FormTydutyComponent implements OnInit {
         return false;
       }
     }
+
+    this.tyBusinessInvalidSection = 'ship2';
 
     if (!Array.isArray(this.claims.yatDtsDetailDTOs) || this.claims.yatDtsDetailDTOs.length === 0) {
       this.$common.showMessage('Please add at least one travel detail row.', 'danger');
@@ -2278,6 +2459,7 @@ export class FormTydutyComponent implements OnInit {
       return false;
     }
 
+    this.tyBusinessInvalidSection = null;
     return true;
   }
 

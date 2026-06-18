@@ -27,10 +27,10 @@ describe('FormFteComponent', () => {
     component.$common = jasmine.createSpyObj('CommonService', ['showMessage', 'parseResponse', 'checkForValidFile']);
     component.$common.parseResponse.and.callFake((r: any) => r);
     component.$common.checkForValidFile.and.returnValue(true);
-    component.$claim = jasmine.createSpyObj('ClaimService', ['checkEsignAvailability', 'createOrUpdateIfsc', 'createOrUpdateClaim']);
+    component.$claim = jasmine.createSpyObj('ClaimService', ['checkEsignAvailability', 'createOrUpdateIfsc', 'createOrUpdateAdvance']);
     component.$claim.checkEsignAvailability.and.returnValue(of({ status: true }));
     component.$claim.createOrUpdateIfsc.and.returnValue(of({ status: true, object: [{ ifscCode: 'SBIN0001' }] }));
-    component.$claim.createOrUpdateClaim.and.returnValue(of({ object: [{ claimId: 9001 }] }));
+    component.$claim.createOrUpdateAdvance.and.returnValue(of({ object: [{ claimId: 9001 }] }));
     component.$formManage = jasmine.createSpyObj('FormManageService', ['uploadImg', 'deleteByUrl']);
     component.$formManage.docFileUrl = new Subject<string>();
     component.$formManage.docFileUrlDeleted = new Subject<boolean>();

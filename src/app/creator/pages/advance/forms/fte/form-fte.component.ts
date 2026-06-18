@@ -64,6 +64,9 @@ interface YatForeignDutyAdvDTO {
   reasonDts?: string | null; // required when isDts = 'No'
 
   arrFare?: number | string | null;
+  foodChargeDays?: number | string | null;
+  hotelAccDays?: number | string | null;
+  accHToDutyDays?: number | string | null;
 
   totalAmt?: number | string | null;
   advAmt?: number | string | null;
@@ -102,6 +105,7 @@ interface ClaimsFteAdv {
   claimState?: string | null;
 
   gxFormFileUrl?: string | null;
+  deleteGxFileUrl?: string | null;
   yatDocsDTOs?: any[];
   internalRemarks?: string | null;
   claimAmt: string | null;
@@ -500,6 +504,7 @@ export class FormFteComponent implements OnInit {
 
   disableBtn = false;
   isPreviewDisabled = true;
+  showGxFileBrowse = true;
 
   showErrors = false;
 
@@ -818,6 +823,7 @@ export class FormFteComponent implements OnInit {
             this.$codeDocInfo.setDocument(this.documentDtos as []);
             this.claims.signWith =
               obj.signWith || this.claims.signWith || this.codeSignType.eSign;
+            this.showGxFileBrowse = !this.claims?.gxFormFileUrl;
           } else if (obj.userBasicDetailDTO) {
             const user = obj.userBasicDetailDTO;
             adv.pno = user.pno ?? user.persNo ?? null;
@@ -1067,7 +1073,7 @@ export class FormFteComponent implements OnInit {
       const formData = new FormData();
       formData.append('yatClaimDTO', JSON.stringify(tempClaim));
 
-      this.$claim.createOrUpdateClaim(formData, null).subscribe(
+      this.$claim.createOrUpdateAdvance(formData, null).subscribe(
         (res: any) => {
           const obj = Array.isArray(res?.object)
             ? res.object[0]
@@ -1139,7 +1145,7 @@ export class FormFteComponent implements OnInit {
     const okDts = this.validateDtsFields();
     if (!okDts) return false;
 
-    const sectionIds = ['ship', 'ship2', 'ship3', 'ship4'];
+    const sectionIds = ['ship', 'ship2', 'ship3', 'ship4', 'ship5'];
     let firstInvalidSection: string | null = null;
     let allValid = true;
 
@@ -1154,7 +1160,7 @@ export class FormFteComponent implements OnInit {
     if (!allValid) {
       if (firstInvalidSection) this.activateTab(firstInvalidSection);
       this.$common.showMessage(
-        'Please complete all mandatory fields before submitting.',
+        'Please fill required fields.',
         'danger'
       );
       return false;
@@ -1393,6 +1399,7 @@ export class FormFteComponent implements OnInit {
     const isValidExtension = this.$common.checkForValidFile(event);
     if (!isValidExtension) {
       this.claims.gxFormFileUrl = null;
+      this.showGxFileBrowse = true;
       input.value = '';
       return;
     }
@@ -1402,6 +1409,7 @@ export class FormFteComponent implements OnInit {
     if (file.size > maxSizeBytes) {
       this.$common.showMessage('File size must be 512 KB or less.', 'danger');
       this.claims.gxFormFileUrl = null;
+      this.showGxFileBrowse = true;
       input.value = ''; // reset file input
       return;
     }
@@ -1415,9 +1423,11 @@ export class FormFteComponent implements OnInit {
 
       if (res) {
         this.claims.gxFormFileUrl = res as string;
+        this.showGxFileBrowse = false;
       } else {
         this.$common.showMessage('Unable to upload GX Form.', 'danger');
         this.claims.gxFormFileUrl = null;
+        this.showGxFileBrowse = true;
         input.value = '';
       }
     });
@@ -1434,13 +1444,10 @@ export class FormFteComponent implements OnInit {
       return;
     }
 
-    // call same delete API as in Pilotage
-    this.$formManage?.deleteByUrl(this.claims.gxFormFileUrl);
-
-    this.$formManage?.docFileUrlDeleted.subscribe((res) => {
-      // if server deletion succeeds, clear local value
-      this.claims.gxFormFileUrl = null;
-    });
+    this.claims.deleteGxFileUrl = this.claims.gxFormFileUrl;
+    this.claims.gxFormFileUrl = null;
+    this.gxFormModel = null;
+    this.showGxFileBrowse = true;
   }
 
   validateAge(): void {
@@ -1494,6 +1501,9 @@ export class FormFteComponent implements OnInit {
     let num = Number(val);
     if (!num || num < 1) {
       adv.duration = null;
+      adv.foodChargeDays = null;
+      adv.hotelAccDays = null;
+      adv.accHToDutyDays = null;
       return;
     }
 
@@ -1502,6 +1512,10 @@ export class FormFteComponent implements OnInit {
     }
 
     adv.duration = num;
+    adv.foodChargeDays = num;
+    adv.hotelAccDays = num;
+    adv.accHToDutyDays = num;
+    this.calculateAmount(this.codeClaim.fteAdv);
   }
 
   allowOnlyAlphabets(event: any): void {

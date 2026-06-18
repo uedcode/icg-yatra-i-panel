@@ -211,7 +211,7 @@
                                     <div class="col-md-4 padd_5"><label class="control-label">Gx
                                         Unit<sup>*</sup></label></div>
                                     <div class="col-md-8 padd_5">
-                                      <ngx-select [items]="allUnits" optionTextField="descr" optionValueField="unit"
+                                      <ngx-select [items]="allUnits" optionTextField="descr" optionValueField="descr"
                                         name="fte_gxUnit" [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].gxUnit"
                                         [allowClear]="true" required placeholder="Select GX Unit">
                                       </ngx-select>
@@ -259,7 +259,7 @@
                                       </label>
                                     </div>
 
-                                    <div class="col-md-8 padd_5" *ngIf="!claims?.gxFormFileUrl">
+                                    <div class="col-md-8 padd_5" *ngIf="showGxFileBrowse || !claims?.gxFormFileUrl">
                                       <input type="file" class="form-control" accept=".pdf" required
                                         [(ngModel)]="gxFormModel" name="fte_gxFormModel" (change)="uploadGxForm($event)"
                                         [ngClass]="{ 'is-invalid': showErrors && !claims?.gxFormFileUrl }" />
@@ -268,7 +268,7 @@
                                       </div>
                                     </div>
 
-                                    <div class="col-md-8 padd_5" *ngIf="claims?.gxFormFileUrl">
+                                    <div class="col-md-8 padd_5" *ngIf="!showGxFileBrowse && claims?.gxFormFileUrl">
                                       <button type="button" class="btn btn-warning btn-sm py-2"
                                         (click)="$auth.viewFile(claims?.gxFormFileUrl)">
                                         <i class="fa fa-eye"></i> View

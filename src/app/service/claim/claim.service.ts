@@ -33,10 +33,27 @@ export class ClaimService {
 
   /**
    * Create or update a claim (all claim types – LTC, Yatra, TY, FTE, etc.).
-   * Old JS: $http.post(url + "/createOrUpdateClaim", $scope.claim)
+   * Legacy claim.js posts FormData(yatClaimDTO) to claim/createOrUpdate.
    * url = ApiUrl + "claim"
    */
-  // claim.service.ts
+  // Advance only: Claim-module saves must use createOrUpdateClaim().
+  createOrUpdateAdvance(formData: FormData, config?: { headers?: any }) {
+    const options: any =
+      config && config.headers ? { headers: config.headers } : {};
+
+    return this.http.post<any>('claim/createOrUpdate', formData, options).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
+  /**
+   * True Claim-module save.
+   * Legacy all-claims controllers post claim payloads to claim/createOrUpdateClaim.
+   * Creator Advance forms must use createOrUpdateAdvance().
+   */
   createOrUpdateClaim(object: any, config?: { headers?: any }) {
     const options: any =
       config && config.headers ? { headers: config.headers } : {};
@@ -218,13 +235,12 @@ export class ClaimService {
     );
   }
 
+  /**
+   * Backward-compatible wrapper for older Advance form callers.
+   * Prefer createOrUpdateAdvance() in new code.
+   */
   createOrUpdateClaimFormData(formData: FormData) {
-    return this.http.post<any>('claim/createOrUpdateClaim', formData).pipe(
-      map((response: any) => {
-        this.$common.parseResponse(response);
-        return response;
-      })
-    );
+    return this.createOrUpdateAdvance(formData);
   }
 
   changeClaimStatusById(payload: any) {
@@ -304,6 +320,19 @@ export class ClaimService {
    */
   getUnits(config?: any) {
     return this.http.get<any>(`codeUnit/all`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  /**
+   * Station master.
+   * Old JS: codeStationUrl = ApiUrl + "codeStation"; /all
+   */
+  getStations(config?: any) {
+    return this.http.get<any>(`codeStation/all`, config).pipe(
       map((res) => {
         this.$common.parseResponse(res);
         return res;

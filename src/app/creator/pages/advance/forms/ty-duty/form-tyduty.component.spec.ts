@@ -44,17 +44,28 @@ describe('FormTydutyComponent', () => {
     component.$common = jasmine.createSpyObj('CommonService', ['showMessage', 'parseResponse', 'checkForValidFile', 'showLoader', 'hideLoader']);
     component.$common.parseResponse.and.callFake((r: any) => r);
     component.$common.checkForValidFile.and.returnValue(true);
-    component.$claim = jasmine.createSpyObj('ClaimService', ['checkEsignAvailability', 'createOrUpdateIfsc', 'createOrUpdateClaim', 'getSingleClaim']);
+    component.$claim = jasmine.createSpyObj('ClaimService', [
+      'checkEsignAvailability',
+      'createOrUpdateIfsc',
+      'createOrUpdateAdvance',
+      'getSingleClaim',
+      'changeClaimStatusById',
+      'prepareForESign',
+      'notifyStatusCountRefresh',
+    ]);
     component.$claim.checkEsignAvailability.and.returnValue(of({ status: true }));
     component.$claim.createOrUpdateIfsc.and.returnValue(of({ status: true, object: [{ ifscCode: 'SBIN0099' }] }));
-    component.$claim.createOrUpdateClaim.and.returnValue(of({ object: [{ claimId: 321 }] }));
+    component.$claim.createOrUpdateAdvance.and.returnValue(of({ object: [{ claimId: 321 }] }));
     component.$claim.getSingleClaim.and.returnValue(of({ status: false }));
+    component.$claim.changeClaimStatusById.and.returnValue(of({ status: true }));
+    component.$claim.prepareForESign.and.returnValue(of({ status: true }));
     component.$codeDocInfo = jasmine.createSpyObj('CodeDocInfoService', ['setDocument']);
     component.$formManage = jasmine.createSpyObj('FormManageService', ['uploadImg', 'deleteByUrl']);
     component.$formManage.docFileUrl = new Subject<string>();
     component.$formManage.docFileUrlDeleted = new Subject<boolean>();
     component.$auth = jasmine.createSpyObj('AuthService', ['getModuleName']);
-    component.$auth.getModuleName.and.returnValue('/creator');
+    component.$auth.getModuleName.and.returnValue('/adv/creator');
+    component.UtilService = { toMillis: (value: any) => value };
     component.router = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
     component.activateTab = jasmine.createSpy('activateTab');
     component.validateSection = jasmine.createSpy('validateSection').and.returnValue(true);
@@ -93,12 +104,14 @@ describe('FormTydutyComponent', () => {
 
   it('navigates TY preview with supplementary id', () => {
     const component = createComponent();
+    spyOn(window, 'open');
     component.claims.claimId = 555;
     component.supplementryId = 'SUP-TY-1';
     component.navigatePreview('', 555);
-    expect(component.router.navigate).toHaveBeenCalledWith(['../preview-ty-duty'], {
-      queryParams: { id: 555, supId: 'SUP-TY-1' }
-    });
+    expect(window.open).toHaveBeenCalledWith(
+      '/adv/creator/preview-ty-duty?id=555&supId=SUP-TY-1',
+      '_blank'
+    );
   });
 
   it('uses legacy TY claim title and preview route in claim mode', () => {
@@ -110,10 +123,13 @@ describe('FormTydutyComponent', () => {
 
     expect(component.pageTitle).toBe('Supplementary TY Duty Claim');
 
+    component.$auth.getModuleName.and.returnValue('/claim/creator');
+    spyOn(window, 'open');
     component.navigatePreview('', 556);
-    expect(component.router.navigate).toHaveBeenCalledWith(['../preview-ty-duty-claim'], {
-      queryParams: { claimId: 556, subFormId: 'TYD', supId: 'SUP-TY-2' }
-    });
+    expect(window.open).toHaveBeenCalledWith(
+      '/claim/creator/preview-ty-duty-claim?claimId=556&subFormId=TYD&supId=SUP-TY-2',
+      '_blank'
+    );
   });
 
   it('falls back to ink sign when eSign is unavailable', () => {
@@ -158,16 +174,17 @@ describe('FormTydutyComponent', () => {
     component.claims.gxFormFileUrl = 'gx-ty.pdf';
     spyOn(window, 'confirm').and.returnValue(true);
     component.deleteGxForm();
-    component.$formManage.docFileUrlDeleted.next(true);
-    expect(component.$formManage.deleteByUrl).toHaveBeenCalledWith('gx-ty.pdf');
+    expect(component.$formManage.deleteByUrl).not.toHaveBeenCalled();
+    expect((component.claims as any).deleteGxFileUrl).toBe('gx-ty.pdf');
     expect(component.claims.gxFormFileUrl).toBeNull();
+    expect(component.showGxFileBrowse).toBeTrue();
   });
 
   it('rejects submit when section validation fails', () => {
     const component = createComponent();
     component.validateSection.and.returnValues(true, false, true, true);
     component.submitTy();
-    expect(component.$claim.createOrUpdateClaim).not.toHaveBeenCalled();
+    expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please fill required fields.', 'danger');
   });
 
@@ -175,8 +192,18 @@ describe('FormTydutyComponent', () => {
     const component = createComponent();
     component.claims.codeUnitDTO = { unit: '', descr: '' };
     component.submitTy();
-    expect(component.$claim.createOrUpdateClaim).not.toHaveBeenCalled();
+    expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please select the applied to unit.', 'danger');
+  });
+
+  it('keeps legacy Form Validate as validation-only and does not save', () => {
+    const component = createComponent();
+    const saveSpy = spyOn(component, 'saveClaim');
+
+    component.validate('T', 'OB');
+
+    expect(saveSpy).not.toHaveBeenCalled();
+    expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
   });
 
   it('submits TY claim when section and business validations pass', () => {
@@ -185,6 +212,83 @@ describe('FormTydutyComponent', () => {
     const saveSpy = spyOn(component, 'saveClaim');
     component.submitTy();
     expect(saveSpy).toHaveBeenCalledWith('T', 'OB', true);
+  });
+
+  it('updates an edited TY travel row by legacy primary key', () => {
+    const component = createComponent();
+    component.claims.yatDtsDetailDTOs = [
+      { ltcTravelPrimaryKey: 'row-a', source: 'A', destination: 'B', modeOfTravel: 'Train', amount: 100, tempAmount: 100, isDts: 'Yes' },
+      { ltcTravelPrimaryKey: 'row-b', source: 'C', destination: 'D', modeOfTravel: 'Air', amount: 200, tempAmount: 200, isDts: 'Yes' },
+    ];
+    component.selectedTravelIndex = 0;
+
+    component.addLtcTravelDetails({
+      ltcTravelPrimaryKey: 'row-b',
+      source: 'C',
+      destination: 'E',
+      modeOfTravel: 'Air',
+      amount: 250,
+      tempAmount: 250,
+      isDts: 'Yes',
+    } as any, 'T');
+
+    expect(component.claims.yatDtsDetailDTOs.length).toBe(2);
+    expect(component.claims.yatDtsDetailDTOs[0].destination).toBe('B');
+    expect(component.claims.yatDtsDetailDTOs[1].destination).toBe('E');
+    expect(component.claims.yatDtsDetailDTOs[1].amount).toBe(250);
+  });
+
+  it('cleans TY travel UI-only fields from save payload', () => {
+    const component = createComponent();
+    component.claims.yatDtsDetailDTOs = [{
+      ltcTravelPrimaryKey: 'row-a',
+      source: 'A',
+      destination: 'B',
+      modeOfTravel: 'Train',
+      amount: 100,
+      tempAmount: 75,
+      isDts: 'Yes',
+      _reasonForNoDtsError: true,
+    }];
+
+    component.saveClaim('T', 'DR', false);
+
+    const formData = component.$claim.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
+    const payload = JSON.parse(formData.get('yatClaimDTO') as string);
+    expect(payload.yatDtsDetailDTOs[0].amount).toBe(75);
+    expect(payload.yatDtsDetailDTOs[0].tempAmount).toBeUndefined();
+    expect(payload.yatDtsDetailDTOs[0]._reasonForNoDtsError).toBeUndefined();
+  });
+
+  it('starts common eSign modal flow after eSign submit save', () => {
+    const component = createComponent();
+    component.claims.signWith = 'ES';
+
+    component.saveClaim('T', 'OB', true);
+
+    expect(component.$claim.prepareForESign).toHaveBeenCalled();
+    expect(component.eSignTempFormObj).toEqual(jasmine.objectContaining({
+      id: 321,
+      claimId: 321,
+      status: 'OB',
+      userId: 42,
+    }));
+    expect(component.router.navigateByUrl).not.toHaveBeenCalledWith('/adv/creator/new');
+  });
+
+  it('clears deferred GX delete marker after saved response merge', () => {
+    const component = createComponent();
+    component.claims.gxFormFileUrl = 'new-gx.pdf';
+    (component.claims as any).deleteGxFileUrl = 'old-gx.pdf';
+
+    component['mergeSavedTyResponse']({
+      claimId: 321,
+      gxFormFileUrl: 'new-gx.pdf',
+      yatTempDutyAdvDTOs: [{}],
+    });
+
+    expect((component.claims as any).deleteGxFileUrl).toBeUndefined();
+    expect(component.claims.gxFormFileUrl).toBe('new-gx.pdf');
   });
 
   it('loads TY details with legacy claim/single headers', () => {
@@ -201,6 +305,34 @@ describe('FormTydutyComponent', () => {
         gxUnitId: '2',
       }),
     });
+  });
+
+  it('syncs TY route state from current query params', () => {
+    const component = createComponent();
+    component.route = {
+      snapshot: {
+        data: { subFormId: 'T', formKind: 'advance' },
+        routeConfig: { path: 'form-ty-duty' },
+      },
+    };
+    const values: Record<string, string> = {
+      claimId: 'C_ID_1',
+      subFormId: 'T',
+      gxUnitId: '226',
+      supId: 'SUP_1',
+      extnId: 'EXT_1',
+    };
+
+    component['syncRouteStateFromQuery']({
+      get: (key: string) => values[key] || null,
+    });
+
+    expect(component.activeSubFormId).toBe('T');
+    expect(component.claimIdParam).toBe('C_ID_1');
+    expect(component.gxUnitId).toBe(226);
+    expect(component.supplementryId).toBe('SUP_1');
+    expect(component.extnClaimId).toBe('EXT_1');
+    expect(component.claims.codeSubFormDTO.subFormId).toBe('T');
   });
 
   it('maps new TY form personal and bank details from claim/single response', () => {

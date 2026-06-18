@@ -1193,7 +1193,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       const formData = new FormData();
       formData.append('yatClaimDTO', JSON.stringify(tempClaim));
 
-      this.$claim.createOrUpdateClaim(formData, null).subscribe(
+      this.$claim.createOrUpdateAdvance(formData, null).subscribe(
         (res: any) => {
           const obj = Array.isArray(res?.object)
             ? res.object[0]

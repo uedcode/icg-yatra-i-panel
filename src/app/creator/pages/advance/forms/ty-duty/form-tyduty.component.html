@@ -93,7 +93,7 @@
 
                             <div class="row">
                               <!-- Name -->
-                              <div class="col-md-4">
+                              <div class="col-md-4" *ngIf="!hideStationOrUnit && hideStationAndUnit">
                                 <div class="form-group">
                                   <div class="row">
                                     <div class="col-md-4 padd_5">
@@ -223,11 +223,30 @@
                                       </label>
                                     </div>
                                     <div class="col-md-8 padd_5">
-                                      <ngx-select [items]="allUnits" optionTextField="descr" optionValueField="unit"
+                                      <ngx-select [items]="allUnits" optionTextField="descr" optionValueField="descr"
                                         name="tempTransTo" #tempTransToModel="ngModel"
                                         [(ngModel)]="claims.yatTempDutyAdvDTOs[0].tempTransTo" [allowClear]="true"
                                         required placeholder="Select Unit">
                                       </ngx-select>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <!-- Other Unit -->
+                              <div class="col-md-4"
+                                *ngIf="claims?.yatTempDutyAdvDTOs[0]?.otherUnit || hideShowOtherUnit">
+                                <div class="form-group">
+                                  <div class="row">
+                                    <div class="col-md-4 padd_5">
+                                      <label class="control-label">
+                                        Other Unit<sup>*</sup>
+                                      </label>
+                                    </div>
+                                    <div class="col-md-8 padd_5">
+                                      <input type="text" class="form-control" placeholder="Unit Name"
+                                        [required]="hideShowOtherUnit"
+                                        [(ngModel)]="claims.yatTempDutyAdvDTOs[0].otherUnit" name="otherUnit" />
                                     </div>
                                   </div>
                                 </div>
@@ -262,7 +281,7 @@
 
                             <!-- Gx Unit -->
                             <div class="row">
-                              <div class="col-md-4">
+                              <div class="col-md-4" *ngIf="!hideStationOrUnit && hideStationAndUnit">
                                 <div class="form-group">
                                   <div class="row">
                                     <div class="col-md-4 padd_5">
@@ -340,18 +359,15 @@
                                     </div>
 
                                     <!-- Show file chooser when there is NO file -->
-                                    <div class="col-md-8 padd_5" *ngIf="!claims?.gxFormFileUrl">
+                                    <div class="col-md-8 padd_5" *ngIf="showGxFileBrowse || !claims?.gxFormFileUrl">
                                       <input id="gxForm" type="file" class="form-control" accept=".pdf" required
                                         #gxFormRef="ngModel" [(ngModel)]="gxFormModel" name="gxFormModel"
                                         (change)="uploadGxForm($event)"
                                         [ngClass]="{ 'is-invalid': showErrors && !claims?.gxFormFileUrl }" />
-                                      <div *ngIf="showErrors && !claims?.gxFormFileUrl">
-                                        <small class="text-danger">Gx Form is required.</small>
-                                      </div>
                                     </div>
 
                                     <!-- Show View/Delete when file exists -->
-                                    <div class="col-md-8 padd_5" *ngIf="claims?.gxFormFileUrl">
+                                    <div class="col-md-8 padd_5" *ngIf="!showGxFileBrowse && claims?.gxFormFileUrl">
                                       <button type="button" title="View" class="btn btn-warning btn-sm py-2"
                                         (click)="$auth.viewFile(claims?.gxFormFileUrl)">
                                         <i class="fa fa-eye"></i> View
@@ -549,7 +565,7 @@
                               </div>
 
                               <!-- Station proceeding to (autocomplete) -->
-                              <div class="col-md-4">
+                              <div class="col-md-4" *ngIf="!hideStationOrUnit && hideStationAndUnit">
                                 <div class="form-group">
                                   <div class="row">
                                     <div class="col-md-4 padd_5">
@@ -558,10 +574,10 @@
                                       </label>
                                     </div>
                                     <div class="col-md-8 padd_5">
-                                      <ngx-select [items]="allUnits" optionTextField="descr" optionValueField="unit"
+                                      <ngx-select [items]="allStations" optionTextField="descr" optionValueField="descr"
                                         name="stationProceedingTo" #stationProceedingToModel="ngModel"
                                         [(ngModel)]="claims.yatTempDutyAdvDTOs[0].stationProceedingTo"
-                                        [allowClear]="true" required placeholder="Select Station Unit">
+                                        [allowClear]="true" [required]="!hideStationOrUnit && hideStationAndUnit" placeholder="Select Station">
                                       </ngx-select>
                                     </div>
                                   </div>
@@ -720,15 +736,10 @@
 
                                           <td>
                                             <input id="reasonForNoDts" type="text" class="form-control" maxlength="100"
-                                              [disabled]="tempLtcTravelDetails.isDts === 'Yes'"
+                                              [disabled]="isReasonForNoDtsDisabled(tempLtcTravelDetails)"
                                               [(ngModel)]="tempLtcTravelDetails.reasonForNoDts" name="tdReasonForNoDts"
                                               (ngModelChange)="validateLtcTravel(tempLtcTravelDetails, 'reasonForNoDts')"
                                               [ngClass]="{'is-invalid': tempLtcTravelDetails._reasonForNoDtsError}" />
-
-                                            <div *ngIf="tempLtcTravelDetails._reasonForNoDtsError" class="text-danger"
-                                              style="font-size: 11px;">
-                                              Reason for not using DTS is required when DTS is No.
-                                            </div>
                                           </td>
 
                                           <td>
@@ -789,6 +800,7 @@
                                               <td>
                                                 <input class="form-control" numbers-only
                                                   [(ngModel)]="ltcAdvance.tempAmount" name="tdExistingAmount{{ i }}"
+                                                  [attr.max]="ltcAdvance.amount"
                                                   (ngModelChange)="onDtsTempAmountChange(ltcAdvance)" />
                                               </td>
                                               <td>{{ ltcAdvance.reasonForNoDts }}</td>
@@ -900,7 +912,7 @@
 
                                 <div class="col-md-1 padd_5" style="position: relative;">
                                   <input type="text" class="form-control" maxlength="5"
-                                    (keypress)="allowOnlyNumbers($event)" (paste)="blockPasteIfNotNumber($event)"
+                                    (keypress)="allowDecimalNumber($event)" (paste)="blockPasteIfNotDecimal($event)"
                                     [(ngModel)]="claims.yatTempDutyAdvDTOs[0].foodChargePerc" name="foodChargePerc"
                                     (ngModelChange)="calculateAmount(codeClaim?.tyAdv)" />
                                   <span style="
@@ -934,7 +946,6 @@
                                 <div class="col-md-2 padd_5" style="width: 11.6%;">
                                   <input type="checkbox" [(ngModel)]="claims.yatTempDutyAdvDTOs[0].isAvailHotelAcc"
                                     name="isAvailHotelAcc" (ngModelChange)="onHotelRequiredChange($event)" />
-                                  Required
                                   Required
                                 </div>
 
@@ -972,7 +983,7 @@
 
                                 <div class="col-md-1 padd_5">
                                   <input type="text" class="form-control" maxlength="5"
-                                    (keypress)="allowOnlyNumbers($event)" (paste)="blockPasteIfNotNumber($event)"
+                                    (keypress)="allowDecimalNumber($event)" (paste)="blockPasteIfNotDecimal($event)"
                                     valid-number limit-to="100"
                                     [(ngModel)]="claims.yatTempDutyAdvDTOs[0].hotelChargePerc" name="hotelChargePerc"
                                     (ngModelChange)="calculateAmount(codeClaim?.tyAdv)" />
@@ -1055,7 +1066,7 @@
 
                                 <!-- L12 and above -->
                                 <div class="col-md-1 padd_5"
-                                  *ngIf="claims.yatTempDutyAdvDTOs[0].availedCategory == 1 || claims.yatTempDutyAdvDTOs[0].availedCategory == 2">
+                                  *ngIf="isAvailedCategoryOneOrTwo(claims.yatTempDutyAdvDTOs[0].availedCategory)">
                                   <input type="text" class="form-control" maxlength="10"
                                     (keypress)="allowOnlyNumbers($event)" (paste)="blockPasteIfNotNumber($event)"
                                     [(ngModel)]="claims.yatTempDutyAdvDTOs[0].accHToDutyKms" name="accHToDutyKms"
@@ -1063,25 +1074,25 @@
                                 </div>
 
                                 <div class="col-md-1 padd_5"
-                                  *ngIf="claims.yatTempDutyAdvDTOs[0].availedCategory == 1 || claims.yatTempDutyAdvDTOs[0].availedCategory == 2">
+                                  *ngIf="isAvailedCategoryOneOrTwo(claims.yatTempDutyAdvDTOs[0].availedCategory)">
                                   <label class="control-label">per day(kms)</label>
                                 </div>
 
                                 <div class="col-md-1 padd_5"
-                                  *ngIf="claims.yatTempDutyAdvDTOs[0].availedCategory == 1 || claims.yatTempDutyAdvDTOs[0].availedCategory == 2">
+                                  *ngIf="isAvailedCategoryOneOrTwo(claims.yatTempDutyAdvDTOs[0].availedCategory)">
                                   <input type="text" class="form-control" maxlength="10" numbers-only
                                     [(ngModel)]="claims.yatTempDutyAdvDTOs[0].accHToDutyPerDay"
                                     name="accHToDutyPerDayKms" (ngModelChange)="calculateAmount(codeClaim?.tyAdv)" />
                                 </div>
 
                                 <div class="col-md-1 padd_5"
-                                  *ngIf="claims.yatTempDutyAdvDTOs[0].availedCategory == 1 || claims.yatTempDutyAdvDTOs[0].availedCategory == 2">
+                                  *ngIf="isAvailedCategoryOneOrTwo(claims.yatTempDutyAdvDTOs[0].availedCategory)">
                                   <label class="control-label">per km</label>
                                 </div>
 
                                 <!-- Below Level 12 -->
                                 <div class="col-md-1 padd_5"
-                                  *ngIf="claims?.yatTempDutyAdvDTOs[0]?.availedCategory === '0'">
+                                  *ngIf="isAvailedCategoryZero(claims?.yatTempDutyAdvDTOs[0]?.availedCategory)">
                                   <input type="text" class="form-control" maxlength="10"
                                     (keypress)="allowOnlyNumbers($event)" (paste)="blockPasteIfNotNumber($event)"
                                     [(ngModel)]="claims.yatTempDutyAdvDTOs[0].accHToDutyPerDay" name="accHToDutyPerDay"
@@ -1089,7 +1100,7 @@
                                 </div>
 
                                 <div class="col-md-1 padd_5"
-                                  *ngIf="claims?.yatTempDutyAdvDTOs[0]?.availedCategory === '0'">
+                                  *ngIf="isAvailedCategoryZero(claims?.yatTempDutyAdvDTOs[0]?.availedCategory)">
                                   <label class="control-label">per day</label>
                                 </div>
 
@@ -1097,7 +1108,7 @@
                                 <div class="col-md-1 padd_5">
                                   <input type="text" class="form-control" (keypress)="allowOnlyNumbers($event)"
                                     (paste)="blockPasteIfNotNumber($event)"
-                                    [disabled]="claims.yatTempDutyAdvDTOs[0].availedCategory != 2"
+                                    [disabled]="!isAvailedCategoryTwo(claims.yatTempDutyAdvDTOs[0].availedCategory)"
                                     [(ngModel)]="claims.yatTempDutyAdvDTOs[0].totalAccHToDuty" name="totalAccHToDuty"
                                     (ngModelChange)="calculateAmount(codeClaim?.tyAdv, true)" />
                                 </div>
@@ -1291,7 +1302,8 @@
 
                           <!-- ================= TAB 5: REMARKS ================= -->
                           <div id="ship5" class="tab-pane fade">
-                            <app-common-document [documentDtos]="documentDtos"></app-common-document>
+                            <app-common-document *ngIf="activeFormKind === 'claim'"
+                              [documentDtos]="documentDtos"></app-common-document>
                             <div class="form-group">
                               <div class="row">
                                 <div class="col-md-12">
@@ -1302,7 +1314,7 @@
                                 <div class="col-md-12">
                                   <textarea id="internalRemarks" rows="6" cols="225" class="form-control"
                                     [(ngModel)]="claims.internalRemarks" name="internalRemarks"
-                                    (ngModelChange)="removeEmoji()"></textarea>
+                                    maxlength="500" (ngModelChange)="removeEmoji()"></textarea>
                                 </div>
                               </div>
                             </div>
@@ -1334,3 +1346,4 @@
           </div> <!-- /.content-wrap -->
         </div> <!-- /.main-container -->
 
+        <app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>

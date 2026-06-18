@@ -407,9 +407,8 @@ const routes: Routes = [
       },
       {
         path: 'form-fte',
-        component: FormFteComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'FTE Advance', roles: CREATOR_ROLES, subFormId: 'F', formKind: 'advance' },
+        redirectTo: 'form-fte-advance',
+        pathMatch: 'full',
       },
       {
         path: 'form-pmt-duty',

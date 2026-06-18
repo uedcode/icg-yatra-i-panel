@@ -28,6 +28,27 @@ describe('ClaimService', () => {
     httpMock.verify();
   });
 
+  it('posts advance FormData to the legacy advance create or update endpoint', () => {
+    const formData = new FormData();
+    formData.append('yatClaimDTO', new Blob(['{}'], { type: 'application/json' }));
+    const response = { success: true, claimId: 101 };
+    let actual: unknown;
+
+    service
+      .createOrUpdateAdvance(formData, { headers: { formId: 'FORM-101', userId: 'U101' } })
+      .subscribe((value) => (actual = value));
+
+    const req = httpMock.expectOne('claim/createOrUpdate');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toBe(formData);
+    expect(req.request.headers.get('formId')).toBe('FORM-101');
+    expect(req.request.headers.get('userId')).toBe('U101');
+    req.flush(response);
+
+    expect(commonService.parseResponse).toHaveBeenCalledWith(response);
+    expect(actual).toEqual(response);
+  });
+
   it('posts claim create or update payload with workflow headers', () => {
     const payload = { claimId: 101, amount: 4500 };
     const response = { success: true, claimId: 101 };
@@ -37,7 +58,7 @@ describe('ClaimService', () => {
       .createOrUpdateClaim(payload, { headers: { formId: 'FORM-101', userId: 'U101' } })
       .subscribe((value) => (actual = value));
 
-    const req = httpMock.expectOne('claim/createOrUpdate');
+    const req = httpMock.expectOne('claim/createOrUpdateClaim');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     expect(req.request.headers.get('formId')).toBe('FORM-101');
@@ -53,7 +74,7 @@ describe('ClaimService', () => {
 
     service.createOrUpdateClaim(payload).subscribe();
 
-    const req = httpMock.expectOne('claim/createOrUpdate');
+    const req = httpMock.expectOne('claim/createOrUpdateClaim');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     req.flush({});
@@ -103,9 +124,9 @@ describe('ClaimService', () => {
     singleReq.flush({});
   });
 
-  it('uploads claim form data to the claim create or update endpoint', () => {
+  it('keeps legacy FormData wrapper on the advance create or update endpoint', () => {
     const formData = new FormData();
-    formData.append('claim', new Blob(['{}'], { type: 'application/json' }));
+    formData.append('yatClaimDTO', new Blob(['{}'], { type: 'application/json' }));
 
     service.createOrUpdateClaimFormData(formData).subscribe();
 

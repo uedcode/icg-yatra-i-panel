@@ -84,7 +84,7 @@ describe('FormPmtDutyComponent', () => {
       'getSingleClaim',
       'getUnits',
       'getPayLevels',
-      'createOrUpdateClaim',
+      'createOrUpdateAdvance',
       'checkEsignAvailability',
       'createOrUpdateIfsc'
     ]);
@@ -126,7 +126,7 @@ describe('FormPmtDutyComponent', () => {
     }) as any);
     claimService.getUnits.and.returnValue(of({ status: true, object: [{ unit: 'U1' }] }) as any);
     claimService.getPayLevels.and.returnValue(of({ status: true, object: [{ payLevel: '10' }] }) as any);
-    claimService.createOrUpdateClaim.and.returnValue(of({
+    claimService.createOrUpdateAdvance.and.returnValue(of({
       status: true,
       object: [{ claimId: 202 }]
     }) as any);
@@ -337,8 +337,8 @@ describe('FormPmtDutyComponent', () => {
 
     component.saveDraft();
 
-    expect(claimService.createOrUpdateClaim).toHaveBeenCalled();
-    const formData = claimService.createOrUpdateClaim.calls.mostRecent().args[0] as FormData;
+    expect(claimService.createOrUpdateAdvance).toHaveBeenCalled();
+    const formData = claimService.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.claimState).toBe('DR');
     expect(payload.roleTypeId).toBe('CR');
@@ -360,7 +360,7 @@ describe('FormPmtDutyComponent', () => {
 
     component.submitPmt();
 
-    expect(claimService.createOrUpdateClaim).not.toHaveBeenCalled();
+    expect(claimService.createOrUpdateAdvance).not.toHaveBeenCalled();
     expect(commonService.showMessage).toHaveBeenCalledWith('Please upload Gx Form (PDF).', 'danger');
   });
 
@@ -373,7 +373,7 @@ describe('FormPmtDutyComponent', () => {
 
     expect(sectionSpy).toHaveBeenCalled();
     expect(businessSpy).not.toHaveBeenCalled();
-    expect(claimService.createOrUpdateClaim).not.toHaveBeenCalled();
+    expect(claimService.createOrUpdateAdvance).not.toHaveBeenCalled();
   });
 
   it('should stop submit when business validation fails', () => {
@@ -384,7 +384,7 @@ describe('FormPmtDutyComponent', () => {
     component.submitPmt();
 
     expect(businessSpy).toHaveBeenCalled();
-    expect(claimService.createOrUpdateClaim).not.toHaveBeenCalled();
+    expect(claimService.createOrUpdateAdvance).not.toHaveBeenCalled();
   });
 
   it('should submit a valid PMT claim to outbox and navigate to submitted list', () => {
@@ -394,7 +394,7 @@ describe('FormPmtDutyComponent', () => {
 
     component.submitPmt();
 
-    const formData = claimService.createOrUpdateClaim.calls.mostRecent().args[0] as FormData;
+    const formData = claimService.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.claimState).toBe('OB');
     expect(router.navigateByUrl).toHaveBeenCalledWith('/creator/submitted');
@@ -574,7 +574,7 @@ describe('FormPmtDutyComponent', () => {
 
   it('should recover UI state when save claim API fails', () => {
     seedValidClaim();
-    claimService.createOrUpdateClaim.and.returnValue(
+    claimService.createOrUpdateAdvance.and.returnValue(
       throwError(() => ({ status: 500 })) as any
     );
 
@@ -634,7 +634,7 @@ describe('FormPmtDutyComponent', () => {
   it('should preserve supplementary context in draft navigation after save', () => {
     seedValidClaim();
     component.supplementaryId = 'SUP-1';
-    claimService.createOrUpdateClaim.and.returnValue(
+    claimService.createOrUpdateAdvance.and.returnValue(
       of({ status: true, object: [{ claimId: 909 }] }) as any
     );
 

@@ -1219,7 +1219,7 @@ export class FormPmtDutyComponent implements OnInit {
       const formData = new FormData();
       formData.append('yatClaimDTO', JSON.stringify(tempClaim));
 
-      this.$claim.createOrUpdateClaim(formData, null).subscribe(
+      this.$claim.createOrUpdateAdvance(formData, null).subscribe(
         (res: any) => {
           this.$common.hideLoader();
           this.disableBtn = false;

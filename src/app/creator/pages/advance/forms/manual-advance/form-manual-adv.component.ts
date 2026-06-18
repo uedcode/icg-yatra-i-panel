@@ -143,7 +143,7 @@ export class FormManualAdvComponent implements OnInit {
     if (this.manualFormFile) formData.append('manualForm', this.manualFormFile);
     if (this.gxFormFile) formData.append('gxForm', this.gxFormFile);
 
-    this.$claim.createOrUpdateClaimFormData(formData).subscribe(
+    this.$claim.createOrUpdateAdvance(formData).subscribe(
       (res: any) => {
         this.$common.hideLoader();
         this.disableBtn = false;

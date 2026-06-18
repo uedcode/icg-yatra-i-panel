@@ -51,9 +51,9 @@ describe('FormLtcAdvanceComponent', () => {
     ]);
     component.$common.checkForValidFile.and.returnValue(true);
     component.$claim = jasmine.createSpyObj('ClaimService', [
-      'createOrUpdateClaim', 'checkEsignAvailability'
+      'createOrUpdateAdvance', 'checkEsignAvailability'
     ]);
-    component.$claim.createOrUpdateClaim.and.returnValue(of({ object: [{ claimId: 2002 }] }));
+    component.$claim.createOrUpdateAdvance.and.returnValue(of({ object: [{ claimId: 2002 }] }));
     component.$claim.checkEsignAvailability.and.returnValue(of({ status: true }));
     component.$formManage = jasmine.createSpyObj('FormManageService', ['uploadImg', 'deleteByUrl']);
     component.$formManage.docFileUrl = new Subject<string>();
@@ -118,7 +118,7 @@ describe('FormLtcAdvanceComponent', () => {
     const component = createComponent();
     component.submit({ invalid: true } as any);
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please fill all required fields.', 'danger');
-    expect(component.$claim.createOrUpdateClaim).not.toHaveBeenCalled();
+    expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
   });
 
   it('should block submit when gx upload missing', () => {
@@ -128,7 +128,7 @@ describe('FormLtcAdvanceComponent', () => {
     component.gxFile = null;
     component.submit({ invalid: false } as any);
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please upload GX Form PDF.', 'danger');
-    expect(component.$claim.createOrUpdateClaim).not.toHaveBeenCalled();
+    expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
   });
 
   it('should submit valid form to outbox', () => {
@@ -137,7 +137,7 @@ describe('FormLtcAdvanceComponent', () => {
     component.showGxFileBrowse = false;
     component.claims.yatDtsDetailDTOs = [{ isDts: 'Yes', tempAmount: '1000', amount: '1000' }];
     component.submit({ invalid: false } as any);
-    const formData = component.$claim.createOrUpdateClaim.calls.mostRecent().args[0] as FormData;
+    const formData = component.$claim.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.claimState).toBe('OB');
     expect(component.router.navigateByUrl).toHaveBeenCalledWith('/creator/submitted');
@@ -148,7 +148,7 @@ describe('FormLtcAdvanceComponent', () => {
     component.claims.codeUnitDTO = { unit: 'U1', descr: 'Unit One' };
     component.documentDtos = [{ codeDocInfoDTO: { id: 8, docName: 'GX Form' }, otherDocName: 'GX Other' }];
     component.saveDraft();
-    const formData = component.$claim.createOrUpdateClaim.calls.mostRecent().args[0] as FormData;
+    const formData = component.$claim.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.claimState).toBe('DR');
     expect(payload.roleTypeId).toBe('CR');
@@ -197,7 +197,7 @@ describe('FormLtcAdvanceComponent', () => {
 
     component.submit({ invalid: false } as any);
 
-    expect(component.$claim.createOrUpdateClaim).not.toHaveBeenCalled();
+    expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
   });
 
   it('runLtcClientValidationOnly should fail when required section validation fails', () => {
