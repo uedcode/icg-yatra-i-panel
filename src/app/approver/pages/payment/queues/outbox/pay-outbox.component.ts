@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -21,8 +20,7 @@ export class PayOutboxComponent implements OnInit {
   constructor(
     private $auth: AuthService,
     private $claim: ClaimService,
-    private $common: CommonService,
-    private router: Router
+    private $common: CommonService
   ) {}
 
   ngOnInit(): void {
@@ -48,14 +46,6 @@ export class PayOutboxComponent implements OnInit {
     this.$claim.getPayStates(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
-  }
-
-  viewForm(row: any): void {
-    const payId = row?.yatPayDetailsDTO?.id || row?.id;
-    if (!payId) return;
-    this.router.navigateByUrl(
-      `${this.$auth.getModuleName()}/form-pay-details?id=${payId}&mode=view`
-    );
   }
 
   downloadDocument(row: any): void {

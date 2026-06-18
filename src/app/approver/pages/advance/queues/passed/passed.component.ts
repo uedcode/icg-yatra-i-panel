@@ -42,14 +42,11 @@ export class PassedComponent implements OnInit {
   formObj: any = {};
   noOfPage: any = 10;
   p: any = 1;
-  queueModule: 'ADV' | 'CLM' = 'ADV';
   archiveLoadingMap: { [key: string]: boolean } = {};
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
-    const routeData = this.route.snapshot?.data || {};
-    this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
     this.getState();
   }
 
@@ -60,7 +57,7 @@ export class PassedComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.codeStatus?.passed,
-        formId: this.resolveQueueFormId(),
+        formId: 'ADV',
       }, codeRoleList),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
@@ -69,10 +66,7 @@ export class PassedComponent implements OnInit {
   }
 
   viewForm(data) {
-    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
-      data,
-      data?.claimState || this.codeStatus?.passed
-    );
+    const routeUrl = this.buildAdvanceViewUrl(data);
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
     }
@@ -105,12 +99,8 @@ export class PassedComponent implements OnInit {
   }
 
   archiveClaim(data: any): void {
-    const claimStateId =
-      data?.claimStateId ||
-      data?.yatClaimStateDTO?.claimStateId ||
-      data?.yatClaimStateDTO?.id ||
-      data?.id;
-    const listKey = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || claimStateId;
+    const claimStateId = data?.claimStateId;
+    const listKey = String(claimStateId);
     if (!claimStateId || this.archiveLoadingMap[listKey]) {
       return;
     }
@@ -132,11 +122,7 @@ export class PassedComponent implements OnInit {
         }
 
         this.dataList = this.dataList.filter(
-          (item: any) =>
-            (item?.claimStateId ||
-              item?.yatClaimStateDTO?.claimStateId ||
-              item?.yatClaimStateDTO?.id ||
-              item?.id) != claimStateId
+          (item: any) => item?.claimStateId != claimStateId
         );
         this.$common.showMessage(res?.message || 'Claim archived successfully.', 'success');
         this.$claim.notifyStatusCountRefresh();
@@ -148,8 +134,14 @@ export class PassedComponent implements OnInit {
     });
   }
 
-  private resolveQueueFormId(): string {
-    return this.queueModule === 'CLM' ? 'CLM' : 'ADV';
+  private buildAdvanceViewUrl(data: any): string {
+    const claim = data?.yatClaimDTO;
+    const viewUrl = claim?.codeSubFormDTO?.viewUrl;
+    const claimId = claim?.claimId;
+    if (!viewUrl || !claimId) {
+      return '';
+    }
+    return `${this.$auth.getModuleName()}/${String(viewUrl).replace(/^\/+/, '')}?id=${encodeURIComponent(claimId)}`;
   }
 
 }

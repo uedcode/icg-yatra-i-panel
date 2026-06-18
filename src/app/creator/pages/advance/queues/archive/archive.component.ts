@@ -59,68 +59,20 @@ this.getState();
     });
   }
 
-  private getCreatorClaimRoute(subFormId: string | null): string | null {
-    const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return 'preview-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return 'preview-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return 'preview-fte-claim';
-    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return 'preview-ltc-claim';
-    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return 'preview-resettlement-claim';
-    if (id === 'P') return 'preview-pmt-duty';
-    if (id === 'T') return 'preview-ty-duty';
-    if (id === 'F') return 'preview-fte-advance';
-    if (id === 'L') return 'preview-ltc-advance';
-    if (id === 'M') return 'form-manual-adv-detail';
-    return null;
-  }
-
   viewForm(data: any) {
-    const payId = data?.yatPayDetailsDTO?.id || data?.id;
-    if (
-      payId &&
-      (data?.yatPayDetailsDTO ||
-        data?.viewUrl === 'form-pay-details' ||
-        data?.formUrl === 'form-pay-details')
-    ) {
-      this.router.navigateByUrl(this.$auth.getModuleName() + `/form-pay-details?id=${payId}`);
-      return;
-    }
-
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-    const subFormId =
-      claim?.codeSubFormDTO?.subFormId || data?.subFormId || data?.codeSubFormDTO?.subFormId;
-    const route = this.getCreatorClaimRoute(subFormId);
-
-    if (claimId && route) {
-      const queryString = route === 'preview-ty-duty'
-        ? `id=${claimId}`
-        : `claimId=${claimId}&subFormId=${subFormId}`;
+    const claim = data?.yatClaimDTO;
+    const legacyViewUrl = claim?.codeSubFormDTO?.viewUrl;
+    const claimId = claim?.claimId;
+    if (legacyViewUrl && claimId) {
       this.router.navigateByUrl(
-        this.$auth.getModuleName() + `/${route}?${queryString}`
-      );
-      return;
-    }
-
-    const legacyViewUrl =
-      claim?.codeSubFormDTO?.viewUrl ||
-      data?.codeSubFormDTO?.viewUrl ||
-      data?.viewUrl;
-    const legacyViewId = claimId || claim?.formId || data?.formId || data?.id;
-    if (legacyViewUrl && legacyViewId) {
-      this.router.navigateByUrl(
-        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${legacyViewId}`
+        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${claimId}`
       );
     }
   }
 
   restoreClaim(data: any): void {
-    const claimStateId =
-      data?.claimStateId ||
-      data?.yatClaimStateDTO?.claimStateId ||
-      data?.yatClaimStateDTO?.id ||
-      data?.id;
-    const listKey = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || claimStateId;
+    const claimStateId = data?.claimStateId;
+    const listKey = data?.yatClaimDTO?.claimId;
     if (!claimStateId || this.restoreLoadingMap[listKey]) {
       return;
     }
@@ -142,11 +94,7 @@ this.getState();
         }
 
         this.dataList = this.dataList.filter(
-          (item: any) =>
-            (item?.claimStateId ||
-              item?.yatClaimStateDTO?.claimStateId ||
-              item?.yatClaimStateDTO?.id ||
-              item?.id) != claimStateId
+          (item: any) => item?.claimStateId != claimStateId
         );
         this.$common.showMessage(res?.message || 'Claim restored successfully.', 'success');
       },

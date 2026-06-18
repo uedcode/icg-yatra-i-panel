@@ -30,7 +30,7 @@ export class PreviewVoucherComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
-      this.claimId = params.get('claimId') || '';
+      this.claimId = params.get('id') || params.get('claimId') || '';
       this.subFormId = this.normalizeSubFormId(params.get('subFormId') || '');
       if (!this.claimId) return;
       this.loadVoucher();
@@ -111,7 +111,7 @@ export class PreviewVoucherComponent implements OnInit {
     }
     this.router.navigate([`${this.$auth.getModuleName()}/${route}`], {
       queryParams: {
-        claimId: this.claimId,
+        id: this.claimId,
         ...(this.subFormId ? { subFormId: this.subFormId } : {}),
       },
     });

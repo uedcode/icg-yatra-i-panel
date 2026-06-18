@@ -49,10 +49,10 @@
           <tr *ngFor="let row of dataList | filterComplex : searchObj | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
             <td>{{ (i + 1) + (p - 1) * noOfPage }}.</td>
             <td>
-              {{ row?.yatPayDetailsDTO?.pno || '-' }}/{{ row?.yatPayDetailsDTO?.name || '-' }}/{{ row?.yatPayDetailsDTO?.rank || '-' }}
+              {{ row?.yatPayDetailsDTO?.pno }}/{{ row?.yatPayDetailsDTO?.name }}/{{ row?.yatPayDetailsDTO?.rank }}
             </td>
             <td>
-              {{ row?.yatPayDetailsDTO?.docName || '-' }}:
+              {{ row?.yatPayDetailsDTO?.docName }}:
               <button
                 *ngIf="row?.yatPayDetailsDTO?.docUrl"
                 type="button"
@@ -63,8 +63,8 @@
               </button>
               <span *ngIf="!row?.yatPayDetailsDTO?.docUrl" class="ml-2">-</span>
             </td>
-            <td>{{ row?.yatPayDetailsDTO?.verifier1Remark || '-' }}</td>
-            <td>{{ row?.yatPayDetailsDTO?.approverRemark || '-' }}</td>
+            <td>{{ row?.yatPayDetailsDTO?.verifier1Remark }}</td>
+            <td>{{ row?.yatPayDetailsDTO?.approverRemark }}</td>
             <td><button class="btn btn-info btn-sm" (click)="viewForm(row)">View</button></td>
           </tr>
           <tr *ngIf="!dataList?.length">

@@ -51,15 +51,12 @@ export class OutboxComponent implements OnInit {
   toggleFilter:boolean=false;
   filterObj:any={};
   formList;
-  queueModule: 'ADV' | 'CLM' = 'ADV';
   uploadTarget: any = null;
   uploadLoadingMap: { [key: string]: boolean } = {};
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
-    const routeData = this.route.snapshot?.data || {};
-    this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
     this.getState();
     this.getForm();
   }
@@ -76,7 +73,7 @@ export class OutboxComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.codeStatus?.outbox,
-        formId: this.resolveQueueFormId(),
+        formId: 'ADV',
       }, codeRoleList),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
@@ -90,7 +87,7 @@ export class OutboxComponent implements OnInit {
       this.$common.showLoader();
       this.config = {
         headers: {
-          formId: this.resolveQueueFormId(),
+          formId: 'ADV',
         },
       };
       this.$codeSubForm.get(this.config).subscribe(
@@ -112,21 +109,14 @@ export class OutboxComponent implements OnInit {
   }
 
   viewForm(data) {
-    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
-      data,
-      data?.claimState || this.codeStatus?.outbox
-    );
+    const routeUrl = this.buildAdvanceViewUrl(data);
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
     }
   }
 
   downloadRequisition(data: any): void {
-    const url =
-      data?.yatClaimDTO?.inkSignedFileUrl ||
-      data?.yatClaimDTO?.signedFileUrl ||
-      data?.inkSignedFileUrl ||
-      data?.signedFileUrl;
+    const url = data?.yatClaimDTO?.inkSignedFileUrl;
     if (!url) {
       this.$common.showMessage('Download document is not available.', 'warning');
       return;
@@ -135,12 +125,12 @@ export class OutboxComponent implements OnInit {
   }
 
   canDownloadInkSigned(data: any): boolean {
-    const ready = data?.yatClaimDTO?.isReady || data?.isReady;
+    const ready = data?.yatClaimDTO?.isReady;
     return this.isVerifier2Role() && (ready === 'RFA' || ready === 'DWA');
   }
 
   canUploadInkSigned(data: any): boolean {
-    const ready = data?.yatClaimDTO?.isReady || data?.isReady;
+    const ready = data?.yatClaimDTO?.isReady;
     return this.isVerifier2Role() && ready === 'DWA';
   }
 
@@ -245,11 +235,11 @@ export class OutboxComponent implements OnInit {
   }
 
   private getClaimId(data: any): any {
-    return data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || data?.id;
+    return data?.yatClaimDTO?.claimId;
   }
 
   private getClaimStateId(data: any): any {
-    return data?.claimStateId || data?.yatClaimStateDTO?.claimStateId || data?.yatClaimStateDTO?.id || data?.id;
+    return data?.claimStateId;
   }
 
   deletePermanently(data: any): void {
@@ -310,7 +300,13 @@ export class OutboxComponent implements OnInit {
     this.reverse = !this.reverse;
   }
 
-  private resolveQueueFormId(): string {
-    return this.queueModule === 'CLM' ? 'CLM' : 'ADV';
+  private buildAdvanceViewUrl(data: any): string {
+    const claim = data?.yatClaimDTO;
+    const viewUrl = claim?.codeSubFormDTO?.viewUrl;
+    const claimId = claim?.claimId;
+    if (!viewUrl || !claimId) {
+      return '';
+    }
+    return `${this.$auth.getModuleName()}/${String(viewUrl).replace(/^\/+/, '')}?id=${encodeURIComponent(claimId)}`;
   }
 }

@@ -145,8 +145,8 @@ export class ClaimOutboxComponent implements OnInit {
   }
 
   private matchesDateFilter(item: any): boolean {
-    const createdOn = item?.yatClaimDTO?.createdOn || item?.createdOn;
-    const createdAt = createdOn ? new Date(createdOn).getTime() : null;
+    const subDate = item?.yatClaimDTO?.subDate;
+    const createdAt = subDate ? new Date(subDate).getTime() : null;
     const fromDate = this.filterObj?.fromDate ? new Date(this.filterObj.fromDate).getTime() : null;
     const toDate = this.filterObj?.toDate
       ? new Date(this.filterObj.toDate).setHours(23, 59, 59, 999)
@@ -167,51 +167,10 @@ export class ClaimOutboxComponent implements OnInit {
     return true;
   }
 
-  private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
-    const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
-    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
-    if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
-    if (id === 'T') return detail ? 'preview-ty-duty' : 'form-tyduty';
-    if (id === 'F') return detail ? 'form-fte-detail' : 'form-fte';
-    if (id === 'L') return detail ? 'form-ltc-detail' : 'form-ltc';
-    if (id === 'M') return detail ? 'form-manual-adv-detail' : 'form-manual-adv';
-    return null;
-  }
-
   viewForm(data) {
-    const payId = data?.yatPayDetailsDTO?.id || data?.id;
-    if (payId && (data?.yatPayDetailsDTO || data?.viewUrl === 'form-pay-details' || data?.formUrl === 'form-pay-details')) {
-      this.router.navigateByUrl(this.$auth.getModuleName() + `/form-pay-details?id=${payId}`);
-      return;
-    }
-
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-    const subFormId =
-      claim?.codeSubFormDTO?.subFormId ||
-      data?.subFormId ||
-      data?.codeSubFormDTO?.subFormId;
-    const route = this.getCreatorClaimRoute(subFormId, true);
-
-    if (claimId && route) {
-      const queryString = route === 'preview-ty-duty'
-        ? `id=${claimId}`
-        : `claimId=${claimId}&subFormId=${subFormId}`;
-      this.router.navigateByUrl(
-        this.$auth.getModuleName() +
-          `/${route}?${queryString}`
-      );
-      return;
-    }
-
-    const legacyViewUrl =
-      claim?.codeSubFormDTO?.viewUrl ||
-      data?.viewUrl ||
-      data?.formUrl;
+    const claim = data?.yatClaimDTO;
+    const claimId = claim?.claimId;
+    const legacyViewUrl = claim?.codeSubFormDTO?.viewUrl;
     if (claimId && legacyViewUrl) {
       this.router.navigateByUrl(
         this.$auth.getModuleName() + `/${legacyViewUrl}?id=${claimId}`
@@ -221,9 +180,7 @@ export class ClaimOutboxComponent implements OnInit {
   }
 
   downloadRequisition(data: any): void {
-    const url =
-      data?.yatClaimDTO?.inkSignedFileUrl ||
-      data?.inkSignedFileUrl;
+    const url = data?.yatClaimDTO?.inkSignedFileUrl;
     if (!url) {
       this.$common.showMessage('Requisition form is not available.', 'warning');
       return;
@@ -232,9 +189,7 @@ export class ClaimOutboxComponent implements OnInit {
   }
 
   downloadSupportingDocument(data: any): void {
-    const url =
-      data?.yatClaimDTO?.signedFileUrl ||
-      data?.signedFileUrl;
+    const url = data?.yatClaimDTO?.signedFileUrl;
     if (!url) {
       this.$common.showMessage('Supporting document is not available.', 'warning');
       return;
@@ -243,7 +198,7 @@ export class ClaimOutboxComponent implements OnInit {
   }
 
   isESignClaim(data: any): boolean {
-    const signWith = String(data?.yatClaimDTO?.signWith || data?.signWith || '').toUpperCase();
+    const signWith = String(data?.yatClaimDTO?.signWith || '').toUpperCase();
     return signWith === this.codeSignType.eSign || signWith === this.codeSignType.eSignAlt;
   }
 
@@ -275,7 +230,7 @@ export class ClaimOutboxComponent implements OnInit {
     }
   }
   // data shorting start
-  key: string = 'createdOn';
+  key: string = 'subDate';
   reverse: boolean = false;
   sort(key) {
     this.key = key;

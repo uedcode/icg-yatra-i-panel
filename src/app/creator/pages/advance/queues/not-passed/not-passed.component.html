@@ -101,10 +101,10 @@
                       <tr
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId) | showHypen }}</td>
+                        <td>{{ dataObj?.yatClaimDTO?.codeSubFormDTO?.descr | showHypen }}</td>
+                        <td>{{ dataObj?.yatClaimDTO?.formId | showHypen }}</td>
                         <td>{{ dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-' }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.claimRemark || dataObj?.remarks || dataObj?.yatClaimDTO?.remark) | showHypen }}</td>
+                        <td>{{ dataObj?.yatClaimDTO?.claimRemark | showHypen }}</td>
                         <td>
                           <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
                         </td>
@@ -116,13 +116,13 @@
                         </td>
                         <td>
                           <button class="btn btn-info" title="Resubmit"
-                            [disabled]="isResubmitted(dataObj) || resubmitLoadingMap[dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId]" (click)="resubmitForm(dataObj)">
+                            [disabled]="isResubmitted(dataObj) || resubmitLoadingMap[dataObj?.yatClaimDTO?.claimId]" (click)="resubmitForm(dataObj)">
                             Resubmit
                           </button>
                         </td>
                         <td>
                           <button class="btn btn-info" title="Archive"
-                            [disabled]="archiveLoadingMap[dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId || dataObj?.claimStateId]"
+                            [disabled]="archiveLoadingMap[dataObj?.yatClaimDTO?.claimId]"
                             (click)="archiveClaim(dataObj)">
                             Archive
                           </button>
@@ -130,7 +130,7 @@
                       </tr>
 
                       <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                        <td colspan="10">No Records Available</td>
+                        <td colspan="10">No Records</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="dataList?.length">
                         <td colspan="10">
@@ -171,7 +171,7 @@
                 <td>{{ observation?.createdOn | showDate:'medium' }}</td>
               </tr>
               <tr *ngIf="!claimObservations.length">
-                <td colspan="3" class="text-center">No Records Available</td>
+                <td colspan="3" class="text-center">No Records</td>
               </tr>
             </tbody>
           </table>

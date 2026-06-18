@@ -108,7 +108,7 @@ export class MovementUpdateClaimComponent implements OnInit {
     this.loadUnits();
 
     this.route.queryParamMap.subscribe((params) => {
-      this.claimId = params.get('claimId') || params.get('id') || '';
+      this.claimId = params.get('id') || params.get('claimId') || '';
       this.routeSubFormId = this.normalizeSubFormId(params.get('subFormId') || '');
       this.resetScreen();
       if (!this.claimId) {
@@ -472,7 +472,7 @@ export class MovementUpdateClaimComponent implements OnInit {
             this.router.navigate([`${this.$auth.getModuleName()}/claim-new`], {
               queryParams: this.claimId
                 ? {
-                    claimId: this.claimId,
+                    id: this.claimId,
                     ...(this.movement.subFormId ? { subFormId: this.movement.subFormId } : {}),
                   }
                 : {},
@@ -490,7 +490,7 @@ export class MovementUpdateClaimComponent implements OnInit {
   openVoucherPreview(): void {
     this.router.navigate([`${this.$auth.getModuleName()}/preview-voucher`], {
       queryParams: {
-        claimId: this.claimId,
+        id: this.claimId,
         ...(this.movement.subFormId ? { subFormId: this.movement.subFormId } : {}),
       },
     });
@@ -505,7 +505,7 @@ export class MovementUpdateClaimComponent implements OnInit {
 
     this.router.navigate([`${this.$auth.getModuleName()}/${route}`], {
       queryParams: {
-        claimId: this.claimId,
+        id: this.claimId,
         subFormId: this.movement.subFormId,
       },
     });

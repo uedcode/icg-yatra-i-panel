@@ -47,11 +47,11 @@
           <tr *ngFor="let row of dataList | filterComplex : searchObj | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
             <td>{{ (i + 1) + (p - 1) * noOfPage }}.</td>
             <td>
-              {{ row?.yatPayDetailsDTO?.pno || '-' }}/{{ row?.yatPayDetailsDTO?.name || '-' }}/{{ row?.yatPayDetailsDTO?.rank || '-' }}
+              {{ row?.yatPayDetailsDTO?.pno }}/{{ row?.yatPayDetailsDTO?.name }}/{{ row?.yatPayDetailsDTO?.rank }}
             </td>
-            <td><span class="btn btn-info btn-sm">{{ (row?.onWork || row?.claimState || row?.state) | codeStatus:'-' }}</span></td>
+            <td><span class="btn btn-info btn-sm">{{ row?.onWork }}</span></td>
             <td>
-              {{ row?.yatPayDetailsDTO?.docName || '-' }}:
+              {{ row?.yatPayDetailsDTO?.docName }}:
               <button
                 *ngIf="row?.yatPayDetailsDTO?.docUrl"
                 type="button"

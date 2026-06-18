@@ -1468,7 +1468,7 @@ export class FormTydutyComponent implements OnInit {
     const isClaimPreview = this.activeFormKind === 'claim' || route.includes('claim');
     const queryParams = isClaimPreview
       ? {
-          claimId: previewId,
+          id: previewId,
           subFormId: this.activeSubFormId,
           ...(this.supplementryId ? { supId: this.supplementryId } : {}),
         }
@@ -1504,7 +1504,9 @@ export class FormTydutyComponent implements OnInit {
     if (this.supplementryId && savedClaimId) {
       this.router.navigate([moduleUrl + `/${this.getCurrentFormRoute()}`], {
         queryParams: {
-          claimId: savedClaimId,
+          ...(this.activeFormKind === 'claim'
+            ? { id: savedClaimId }
+            : { id: savedClaimId }),
           supId: this.supplementryId,
         },
       });

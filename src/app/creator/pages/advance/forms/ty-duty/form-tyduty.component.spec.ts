@@ -127,7 +127,7 @@ describe('FormTydutyComponent', () => {
     spyOn(window, 'open');
     component.navigatePreview('', 556);
     expect(window.open).toHaveBeenCalledWith(
-      '/claim/creator/preview-ty-duty-claim?claimId=556&subFormId=TYD&supId=SUP-TY-2',
+      '/claim/creator/preview-ty-duty-claim?id=556&subFormId=TYD&supId=SUP-TY-2',
       '_blank'
     );
   });

@@ -113,11 +113,11 @@
                           let i = index
                         ">
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId) | showHypen }}</td>
+                        <td>{{ dataObj?.yatClaimDTO?.codeSubFormDTO?.descr | showHypen }}</td>
+                        <td>{{ dataObj?.yatClaimDTO?.formId | showHypen }}</td>
                         <td>{{ dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-' }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.claimAmt || dataObj?.claimAmt) | showHypen }}</td>
-                        <td>{{ (dataObj?.yatClaimDTO?.claimPassAmt || dataObj?.yatClaimDTO?.passedAmt || dataObj?.passedAmt || dataObj?.recommendedAmount) | showHypen }}</td>
+                        <td>{{ dataObj?.yatClaimDTO?.claimAmt | showHypen }}</td>
+                        <td>{{ dataObj?.yatClaimDTO?.claimPassAmt | showHypen }}</td>
                         <td>
                           <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
                         </td>
@@ -137,7 +137,7 @@
                           <button
                             class="btn btn-info"
                             title="Archive"
-                            [disabled]="archiveLoadingMap[dataObj?.yatClaimDTO?.claimId || dataObj?.claimId || dataObj?.formId || dataObj?.claimStateId]"
+                            [disabled]="archiveLoadingMap[dataObj?.yatClaimDTO?.claimId]"
                             (click)="archiveClaim(dataObj)"
                           >
                             Archive
@@ -146,7 +146,7 @@
                       </tr>
 
                       <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                        <td colspan="12">No Records Available</td>
+                        <td colspan="12">No Records</td>
                       </tr>
                       <tr class="noExl pagination_area" *ngIf="dataList?.length">
                         <td colspan="12">
@@ -187,7 +187,7 @@
                 <td>{{ observation?.createdOn | showDate:'medium' }}</td>
               </tr>
               <tr *ngIf="!claimObservations.length">
-                <td colspan="3" class="text-center">No Records Available</td>
+                <td colspan="3" class="text-center">No Records</td>
               </tr>
             </tbody>
           </table>

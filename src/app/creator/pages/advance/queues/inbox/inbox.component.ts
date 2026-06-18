@@ -7,7 +7,6 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormService } from 'src/app/service/form/form.service';
 import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { FormStateService } from 'src/app/service/form/formState.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
@@ -33,7 +32,6 @@ export class InboxComponent implements OnInit {
     private $form: FormService,
     public $formManage: FormManageService,
     private router: Router,
-    public $formState: FormStateService,
     private $claim: ClaimService,
     private route: ActivatedRoute,
   ) { }
@@ -162,7 +160,7 @@ this.handleEsignFeedback();
   }
 
   downloadForInkSign(data: any): void {
-    const url = data?.yatClaimDTO?.inkSignedFileUrl || data?.yatClaimDTO?.signedFileUrl || data?.inkSignedFileUrl;
+    const url = data?.yatClaimDTO?.inkSignedFileUrl;
     if (!url) {
       this.$common.showMessage('Signed form is not available for download.', 'danger');
       return;
@@ -171,25 +169,25 @@ this.handleEsignFeedback();
   }
 
   canPerformEsign(data: any): boolean {
-    return String(data?.yatClaimDTO?.isCreatorEsignAgain || data?.isCreatorEsignAgain || '') === '1';
+    return String(data?.yatClaimDTO?.isCreatorEsignAgain || '') === '1';
   }
 
   canMoveToDraft(data: any): boolean {
-    const ready = (data?.yatClaimDTO?.isReady || data?.isReady || '').toString().trim();
-    return !ready && String(data?.yatClaimDTO?.isCreatorEsignAgain || data?.isCreatorEsignAgain || '0') === '0';
+    const ready = (data?.yatClaimDTO?.isReady || '').toString().trim();
+    return !ready && String(data?.yatClaimDTO?.isCreatorEsignAgain || '0') === '0';
   }
 
   canDownloadInkSigned(data: any): boolean {
-    const ready = data?.yatClaimDTO?.isReady || data?.isReady;
+    const ready = data?.yatClaimDTO?.isReady;
     return ready === this.codeReadyStatus.readyForDownload || ready === this.codeReadyStatus.downloaded;
   }
 
   canUploadInkSigned(data: any): boolean {
-    return (data?.yatClaimDTO?.isReady || data?.isReady) === this.codeReadyStatus.downloaded;
+    return data?.yatClaimDTO?.isReady === this.codeReadyStatus.downloaded;
   }
 
   getInboxStatusLabel(data: any): string {
-    const ready = data?.yatClaimDTO?.isReady || data?.isReady;
+    const ready = data?.yatClaimDTO?.isReady;
     if (ready === this.codeReadyStatus.readyForDownload) {
       return 'Approved.Please download for signature';
     }
@@ -200,7 +198,7 @@ this.handleEsignFeedback();
   }
 
   performEsign(data: any): void {
-    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || data?.id;
+    const claimId = data?.yatClaimDTO?.claimId;
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'warning');
       return;
@@ -233,7 +231,7 @@ this.handleEsignFeedback();
   }
 
   downloadInkSignedForSign(data: any): void {
-    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || data?.id;
+    const claimId = data?.yatClaimDTO?.claimId;
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'warning');
       return;
@@ -243,7 +241,7 @@ this.handleEsignFeedback();
       headers: {
         claimId: String(claimId),
         isInbox: '1',
-        isReady: data?.yatClaimDTO?.isReady || data?.isReady || '',
+        isReady: data?.yatClaimDTO?.isReady || '',
         signType: 'true',
       },
     };
@@ -256,13 +254,15 @@ this.handleEsignFeedback();
         }
 
         const responseObject = Array.isArray(res?.object) ? res.object[0] : res?.object;
-        const fileUrl = responseObject?.inkSignedFileUrl || data?.yatClaimDTO?.inkSignedFileUrl;
+        const fileUrl = responseObject?.inkSignedFileUrl;
         if (fileUrl) {
           this.$common.download(fileUrl);
         }
         if (data?.yatClaimDTO) {
           data.yatClaimDTO.isReady = responseObject?.isReady || 'DW';
-          data.yatClaimDTO.inkSignedFileUrl = fileUrl || data.yatClaimDTO.inkSignedFileUrl;
+          if (fileUrl) {
+            data.yatClaimDTO.inkSignedFileUrl = fileUrl;
+          }
         }
         this.$common.showMessage(res?.message || 'Downloaded successfully.', 'success');
       },
@@ -297,8 +297,8 @@ this.handleEsignFeedback();
       return;
     }
 
-    const claimId = this.uploadTarget?.yatClaimDTO?.claimId || this.uploadTarget?.claimId || this.uploadTarget?.formId || this.uploadTarget?.id;
-    const claimStateId = this.uploadTarget?.claimStateId || this.uploadTarget?.yatClaimStateDTO?.claimStateId || this.uploadTarget?.yatClaimStateDTO?.id || this.uploadTarget?.id;
+    const claimId = this.uploadTarget?.yatClaimDTO?.claimId;
+    const claimStateId = this.uploadTarget?.claimStateId;
     if (!claimId || !claimStateId) {
       this.$common.showMessage('Claim details are not available for upload.', 'warning');
       input.value = '';
@@ -325,7 +325,7 @@ this.handleEsignFeedback();
 
         const uploadedClaim = Array.isArray(res?.object) ? res.object[0] : res?.object;
         this.dataList = this.dataList.filter(
-          (item: any) => (item?.yatClaimDTO?.claimId || item?.claimId || item?.formId || item?.id) != claimId
+          (item: any) => item?.yatClaimDTO?.claimId != claimId
         );
         this.$common.showMessage(res?.message || 'File uploaded successfully.', 'success');
         this.$claim.notifyStatusCountRefresh();
@@ -343,7 +343,7 @@ this.handleEsignFeedback();
   }
 
   deletePermanently(data: any): void {
-    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || data?.id;
+    const claimId = data?.yatClaimDTO?.claimId;
     if (!claimId) {
       this.$common.showMessage('Unable to identify request for delete.', 'danger');
       return;
@@ -353,59 +353,29 @@ this.handleEsignFeedback();
       if (response?.status === true) {
         this.$common.showMessage(`${response.message}`);
         this.dataList = this.dataList.filter(
-          (elem: any) => (elem?.yatClaimDTO?.claimId || elem?.claimId || elem?.formId || elem?.id) !== claimId
+          (elem: any) => elem?.yatClaimDTO?.claimId !== claimId
         );
         this.$claim.notifyStatusCountRefresh();
       }
     });
   }
 
-  private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
-    const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
-    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
-    if (id === 'P') return detail ? 'preview-pmt-duty' : 'form-pmt-duty';
-    if (id === 'T') return detail ? 'preview-ty-duty' : 'form-ty-duty';
-    if (id === 'F') return detail ? 'preview-fte-advance' : 'form-fte-advance';
-    if (id === 'L') return detail ? 'preview-ltc-advance' : 'form-ltc-advance';
-    if (id === 'M') return detail ? 'form-manual-adv-detail' : 'form-manual-adv';
-    return null;
-  }
-
   viewForm(data) {
-    const payId = data?.yatPayDetailsDTO?.id || data?.id;
-    if (payId && (data?.yatPayDetailsDTO || data?.viewUrl === 'form-pay-details' || data?.formUrl === 'form-pay-details')) {
-      this.router.navigateByUrl(this.$auth.getModuleName() + `/form-pay-details?id=${payId}`);
-      return;
-    }
-
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-    const subFormId =
-      claim?.codeSubFormDTO?.subFormId ||
-      data?.subFormId ||
-      data?.codeSubFormDTO?.subFormId;
-    const route = this.getCreatorClaimRoute(subFormId, false);
+    const claim = data?.yatClaimDTO;
+    const claimId = claim?.claimId;
+    const route = claim?.codeSubFormDTO?.formUrl;
 
     if (claimId && route) {
       this.router.navigateByUrl(
-        this.$auth.getModuleName() +
-          `/${route}?claimId=${claimId}&subFormId=${subFormId}`
+        this.$auth.getModuleName() + `/${route}?id=${claimId}`
       );
-      return;
     }
-
-    let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(moduleUrl + `/${data?.viewUrl}?id=${data.formId}`);
   }
 
   moveToDraft(data) {
     try {
-      const claim = data?.yatClaimDTO || {};
-      const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+      const claim = data?.yatClaimDTO;
+      const claimId = claim?.claimId;
       if (claimId) {
         const payload = {
           claimId: String(claimId),
@@ -422,8 +392,7 @@ this.handleEsignFeedback();
             if (response.status === true) {
               this.$common.showMessage(`${response.message}`);
               this.dataList = this.dataList.filter(
-                (elem: any) =>
-                  (elem?.yatClaimDTO?.claimId || elem?.formId || elem?.id) != claimId
+                (elem: any) => elem?.yatClaimDTO?.claimId != claimId
               );
               this.$claim.notifyStatusCountRefresh();
               setTimeout(() => {
@@ -439,28 +408,7 @@ this.handleEsignFeedback();
         return;
       }
 
-      let config = {
-        headers:{
-          "formId": data?.formId,
-        }
-        // "roleTypeId": this.userIdDetails?.roleTypeId,
-        // "status": this.codeStatus?.draft,
-        // "unitId": data?.unitId,
-        
-        // "codeFormId": this.userIdDetails?.formId,
-      }
-      this.$formState.moveToDraft(config).subscribe(response => {
-        if (response.status === true) {
-          this.$common.showMessage(`${response.message}`);
-          this.dataList = this.dataList.filter(elem => elem?.formId != data?.formId);
-          setTimeout(() => {
-            let moduleUrl = this.$auth.getModuleName();
-            this.router.navigateByUrl(moduleUrl + `/draft`);
-          }, 1000);
-        }
-      }, err => {
-        this.$common.hideLoader();
-      })
+      this.$common.showMessage('Unable to identify request for move to draft.', 'danger');
     } catch (error) {
       this.$common.hideLoader();
       console.log(error);

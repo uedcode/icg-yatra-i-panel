@@ -139,21 +139,6 @@ export class ClaimInboxComponent implements OnInit {
     }
   }
 
-  private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
-    const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
-    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
-    if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
-    if (id === 'T') return detail ? 'preview-ty-duty' : 'form-tyduty';
-    if (id === 'F') return detail ? 'form-fte-detail' : 'form-fte';
-    if (id === 'L') return detail ? 'form-ltc-detail' : 'form-ltc';
-    if (id === 'M') return detail ? 'form-manual-adv-detail' : 'form-manual-adv';
-    return null;
-  }
-
   moveToDraft(data: any): void {
     const claimId = this.getClaimId(data);
     if (!claimId) {
@@ -216,11 +201,7 @@ export class ClaimInboxComponent implements OnInit {
   }
 
   downloadRequisition(data: any): void {
-    const url =
-      data?.yatClaimDTO?.inkSignedFileUrl ||
-      data?.yatClaimDTO?.signedFileUrl ||
-      data?.inkSignedFileUrl ||
-      data?.signedFileUrl;
+    const url = data?.yatClaimDTO?.inkSignedFileUrl || data?.yatClaimDTO?.signedFileUrl;
     if (!url) {
       this.$common.showMessage('Download document is not available.', 'warning');
       return;
@@ -229,25 +210,25 @@ export class ClaimInboxComponent implements OnInit {
   }
 
   canDownloadInkSigned(data: any): boolean {
-    const ready = data?.yatClaimDTO?.isReady || data?.isReady;
+    const ready = data?.yatClaimDTO?.isReady;
     return ready === this.codeReadyStatus.readyForDownload || ready === this.codeReadyStatus.downloaded;
   }
 
   canUploadInkSigned(data: any): boolean {
-    return (data?.yatClaimDTO?.isReady || data?.isReady) === this.codeReadyStatus.downloaded;
+    return data?.yatClaimDTO?.isReady === this.codeReadyStatus.downloaded;
   }
 
   canMoveToDraft(data: any): boolean {
-    const ready = (data?.yatClaimDTO?.isReady || data?.isReady || '').toString().trim();
+    const ready = (data?.yatClaimDTO?.isReady || '').toString().trim();
     return !ready;
   }
 
   canEditClaim(data: any): boolean {
-    return (data?.yatClaimDTO?.isDeputation || data?.isDeputation) === '-1';
+    return data?.yatClaimDTO?.isDeputation === '-1';
   }
 
   getInboxStatusLabel(data: any): string {
-    const ready = data?.yatClaimDTO?.isReady || data?.isReady;
+    const ready = data?.yatClaimDTO?.isReady;
     if (ready === this.codeReadyStatus.readyForDownload) {
       return 'Approved.Please download for signature';
     }
@@ -259,7 +240,7 @@ export class ClaimInboxComponent implements OnInit {
 
   downloadInkSignedForSign(data: any): void {
     const claimId = this.getClaimId(data);
-    const isReady = data?.yatClaimDTO?.isReady || data?.isReady || '';
+    const isReady = data?.yatClaimDTO?.isReady || '';
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'warning');
       return;
@@ -371,15 +352,15 @@ export class ClaimInboxComponent implements OnInit {
   }
 
   private getClaimId(data: any): any {
-    return data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || data?.id;
+    return data?.yatClaimDTO?.claimId;
   }
 
   private getClaimStateId(data: any): any {
-    return data?.claimStateId || data?.yatClaimStateDTO?.claimStateId || data?.yatClaimStateDTO?.id || data?.id;
+    return data?.claimStateId;
   }
 
   deletePermanently(data: any): void {
-    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || data?.id;
+    const claimId = data?.yatClaimDTO?.claimId;
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'warning');
       return;
@@ -397,10 +378,7 @@ export class ClaimInboxComponent implements OnInit {
           this.$common.showMessage(res?.message || 'Delete failed.', 'danger');
           return;
         }
-        this.dataList = this.dataList.filter(
-          (item: any) =>
-            (item?.yatClaimDTO?.claimId || item?.claimId || item?.formId || item?.id) != claimId
-        );
+        this.dataList = this.dataList.filter((item: any) => item?.yatClaimDTO?.claimId != claimId);
         this.$common.showMessage(res?.message || 'Claim deleted successfully.', 'success');
         this.$claim.notifyStatusCountRefresh();
       },

@@ -1528,7 +1528,7 @@ export class FormPmtDutyComponent implements OnInit {
       queryParams:
         this.activeFormKind === 'claim'
           ? {
-              claimId: previewId,
+              id: previewId,
               subFormId: this.activeSubFormId,
               ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
             }
@@ -1574,7 +1574,9 @@ export class FormPmtDutyComponent implements OnInit {
     if (this.supplementaryId && savedClaimId) {
       this.router.navigate([moduleUrl + `/${this.getCurrentFormRoute()}`], {
         queryParams: {
-          claimId: savedClaimId,
+          ...(this.activeFormKind === 'claim'
+            ? { id: savedClaimId }
+            : { id: savedClaimId }),
           supId: this.supplementaryId,
         },
       });

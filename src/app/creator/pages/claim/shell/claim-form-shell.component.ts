@@ -22,7 +22,7 @@ export class ClaimFormShellComponent implements OnInit {
   ngOnInit(): void {
     this.routeName = this.route.snapshot.routeConfig?.path || '';
     this.route.queryParamMap.subscribe((params) => {
-      this.claimId = params.get('claimId') || '';
+      this.claimId = params.get('id') || params.get('claimId') || '';
       this.subFormId = params.get('subFormId') || '';
     });
   }
@@ -30,7 +30,7 @@ export class ClaimFormShellComponent implements OnInit {
   openVoucher(): void {
     this.router.navigate([`${this.$auth.getModuleName()}/preview-voucher`], {
       queryParams: {
-        claimId: this.claimId,
+        id: this.claimId,
         ...(this.subFormId ? { subFormId: this.subFormId } : {}),
       },
     });
@@ -39,7 +39,7 @@ export class ClaimFormShellComponent implements OnInit {
   openMovement(): void {
     this.router.navigate([`${this.$auth.getModuleName()}/movement-update-claim`], {
       queryParams: {
-        claimId: this.claimId,
+        id: this.claimId,
         ...(this.subFormId ? { subFormId: this.subFormId } : {}),
       },
     });

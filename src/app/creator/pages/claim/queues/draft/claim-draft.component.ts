@@ -115,10 +115,7 @@ filterDataObj
           this.$common.hideLoader();
           if (response.status === true) {
             this.$common.showMessage(`${response.message}`);
-            this.dataList = this.dataList.filter(
-              (elem: any) =>
-                (elem?.yatClaimDTO?.claimId || elem?.claimId || elem?.formId || elem?.id) != claimId
-            );
+            this.dataList = this.dataList.filter((elem: any) => elem?.yatClaimDTO?.claimId != claimId);
             this.$claim.notifyStatusCountRefresh();
           }
           this.rowId = null;
@@ -151,47 +148,10 @@ filterDataObj
     this.reverse = !this.reverse;
   }
 
-  private getCreatorClaimRoute(subFormId: string | null): string | null {
-    const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return 'form-ltc-claim';
-    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return 'form-resettlement-claim';
-    if (id === 'P') return 'form-pmt';
-    if (id === 'T') return 'form-tyduty';
-    if (id === 'F') return 'form-fte';
-    if (id === 'L') return 'form-ltc';
-    if (id === 'M') return 'form-manual-adv';
-    return null;
-  }
-
   actionPage(data) {
-    const payId = data?.yatPayDetailsDTO?.id || data?.id;
-    if (payId && (data?.yatPayDetailsDTO || data?.viewUrl === 'form-pay-details' || data?.formUrl === 'form-pay-details')) {
-      this.router.navigateByUrl(this.$auth.getModuleName() + `/form-pay-details?id=${payId}`);
-      return;
-    }
-
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-    const subFormId =
-      claim?.codeSubFormDTO?.subFormId ||
-      data?.subFormId ||
-      data?.codeSubFormDTO?.subFormId;
-    const route = this.getCreatorClaimRoute(subFormId);
-
-    if (claimId && route) {
-      this.router.navigateByUrl(
-        this.$auth.getModuleName() + `/${route}?claimId=${claimId}&subFormId=${subFormId}`
-      );
-      return;
-    }
-
-    const legacyFormUrl =
-      claim?.codeSubFormDTO?.formUrl ||
-      data?.formUrl ||
-      data?.viewUrl;
+    const claim = data?.yatClaimDTO;
+    const claimId = claim?.claimId;
+    const legacyFormUrl = claim?.codeSubFormDTO?.formUrl;
     if (claimId && legacyFormUrl) {
       this.router.navigateByUrl(
         this.$auth.getModuleName() + `/${legacyFormUrl}?id=${claimId}`
@@ -201,12 +161,12 @@ filterDataObj
   }
 
   setDeleteTarget(data: any) {
-    this.id = data?.formId || data?.id;
-    this.rowId = data?.yatClaimDTO?.claimId || data?.claimId || null;
+    this.id = data?.yatClaimDTO?.formId;
+    this.rowId = data?.yatClaimDTO?.claimId || null;
   }
 
   canDeleteClaim(data: any): boolean {
-    return (data?.yatClaimDTO?.claimMode || data?.claimMode) !== this.yatTravelMode.yatra;
+    return data?.yatClaimDTO?.claimMode !== this.yatTravelMode.yatra;
   }
 
   viewUnitRemarks(claimId: any): void {

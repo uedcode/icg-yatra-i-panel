@@ -39,7 +39,7 @@ export class PayApprovedComponent implements OnInit {
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: '',
-        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.gxUnitId || '',
         state: this.codeStatus?.approved,
         isArchive: '0',
         formId: '',
@@ -53,7 +53,7 @@ export class PayApprovedComponent implements OnInit {
   }
 
   viewForm(row: any): void {
-    const payId = row?.yatPayDetailsDTO?.id || row?.id;
+    const payId = row?.yatPayDetailsDTO?.id;
     if (!payId) return;
     this.router.navigateByUrl(`${this.$auth.getModuleName()}/form-pay-details?id=${payId}`);
   }

@@ -52,7 +52,7 @@ export class ClaimNewComponent implements OnInit {
     if (!claimId) return;
     this.router.navigate([`${this.$auth.getModuleName()}/movement-update-claim`], {
       queryParams: {
-        claimId,
+        id: claimId,
         ...(subFormId ? { subFormId } : {}),
       },
     });
@@ -107,7 +107,7 @@ export class ClaimNewComponent implements OnInit {
     }
     this.router.navigate([`${this.$auth.getModuleName()}/${route}`], {
       queryParams: {
-        claimId,
+        id: claimId,
         subFormId,
       },
     });

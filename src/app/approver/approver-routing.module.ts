@@ -95,7 +95,7 @@ const routes: Routes = [
       { path: 'claim/approved', component: ClaimApprovedComponent, canActivate: [AuthGuard], data: { title: 'Claim Approved', roles: ['VE1', 'VE2', 'AP'], queueModule: 'CLM', queueState: 'AP' } },
       { path: 'approved-claim', redirectTo: 'claim/approved', pathMatch: 'full' },
       { path: 'rejected', component: ReturnedComponent, canActivate: [AuthGuard], data: { title: 'Rejected', roles: ['VE1', 'VE2', 'AP'], queueModule: 'ADV', queueState: 'RJ' } },
-      { path: 'claim/rejected', component: ReturnedComponent, canActivate: [AuthGuard], data: { title: 'Claim Rejected', roles: ['VE1', 'VE2', 'AP'], queueModule: 'CLM', queueState: 'RJ' } },
+      { path: 'claim/rejected', redirectTo: 'claim/not-approved', pathMatch: 'full' },
       { path: 'not-approved', component: ReturnedComponent, canActivate: [AuthGuard], data: { title: 'Not Approved', roles: ['VE1', 'VE2', 'AP'], queueModule: 'ADV', queueState: 'NA' } },
       { path: 'claim/not-approved', component: ClaimNotApprovedComponent, canActivate: [AuthGuard], data: { title: 'Claim Not Approved', roles: ['VE1', 'VE2', 'AP'], queueModule: 'CLM', queueState: 'NA' } },
       { path: 'not-approved-claim', redirectTo: 'claim/not-approved', pathMatch: 'full' },

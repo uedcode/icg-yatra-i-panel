@@ -95,50 +95,10 @@ this.getState();
     }
   }
 
-  private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
-    const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
-    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
-    if (id === 'P') return detail ? 'form-pmt-detail' : 'form-pmt';
-    if (id === 'T') return detail ? 'preview-ty-duty' : 'form-tyduty';
-    if (id === 'F') return detail ? 'form-fte-detail' : 'form-fte';
-    if (id === 'L') return detail ? 'form-ltc-detail' : 'form-ltc';
-    if (id === 'M') return detail ? 'form-manual-adv-detail' : 'form-manual-adv';
-    return null;
-  }
-
   viewForm(data) {
-    const payId = data?.yatPayDetailsDTO?.id || data?.id;
-    if (payId && (data?.yatPayDetailsDTO || data?.viewUrl === 'form-pay-details' || data?.formUrl === 'form-pay-details')) {
-      this.router.navigateByUrl(this.$auth.getModuleName() + `/form-pay-details?id=${payId}`);
-      return;
-    }
-
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-    const subFormId =
-      claim?.codeSubFormDTO?.subFormId ||
-      data?.subFormId ||
-      data?.codeSubFormDTO?.subFormId;
-    const route = this.getCreatorClaimRoute(subFormId, true);
-
-    if (claimId && route) {
-      const queryString = route === 'preview-ty-duty'
-        ? `id=${claimId}`
-        : `claimId=${claimId}&subFormId=${subFormId}`;
-      this.router.navigateByUrl(
-        this.$auth.getModuleName() + `/${route}?${queryString}`
-      );
-      return;
-    }
-
-    const legacyViewUrl =
-      claim?.codeSubFormDTO?.viewUrl ||
-      data?.viewUrl ||
-      data?.formUrl;
+    const claim = data?.yatClaimDTO;
+    const claimId = claim?.claimId;
+    const legacyViewUrl = claim?.codeSubFormDTO?.viewUrl;
     if (claimId && legacyViewUrl) {
       this.router.navigateByUrl(
         this.$auth.getModuleName() + `/${legacyViewUrl}?id=${claimId}`
@@ -164,12 +124,8 @@ this.getState();
   }
 
   archiveClaim(data: any): void {
-    const claimStateId =
-      data?.claimStateId ||
-      data?.yatClaimStateDTO?.claimStateId ||
-      data?.yatClaimStateDTO?.id ||
-      data?.id;
-    const listKey = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || claimStateId;
+    const claimStateId = data?.claimStateId;
+    const listKey = claimStateId;
 
     if (!claimStateId || this.archiveLoadingMap[listKey]) {
       return;
@@ -191,13 +147,7 @@ this.getState();
           return;
         }
 
-        this.dataList = this.dataList.filter(
-          (item: any) =>
-            (item?.claimStateId ||
-              item?.yatClaimStateDTO?.claimStateId ||
-              item?.yatClaimStateDTO?.id ||
-              item?.id) != claimStateId
-        );
+        this.dataList = this.dataList.filter((item: any) => item?.claimStateId != claimStateId);
         this.$claim.notifyStatusCountRefresh();
         this.$common.showMessage(res?.message || 'Claim archived successfully.', 'success');
       },
@@ -209,24 +159,24 @@ this.getState();
   }
 
   hasInkSignedFile(data: any): boolean {
-    return !!(data?.yatClaimDTO?.inkSignedFileUrl || data?.inkSignedFileUrl);
+    return !!data?.yatClaimDTO?.inkSignedFileUrl;
   }
 
   isDpPayment(data: any): boolean {
-    return (data?.yatClaimDTO?.paymentType || data?.paymentType) === 'DP';
+    return data?.yatClaimDTO?.paymentType === 'DP';
   }
 
   canDownloadCreditDebit(data: any): boolean {
-    const paymentType = data?.yatClaimDTO?.paymentType ?? data?.paymentType ?? null;
+    const paymentType = data?.yatClaimDTO?.paymentType ?? null;
     return paymentType === 'MN' || paymentType === null;
   }
 
   hasSupplementaryClaim(data: any): boolean {
-    return !!(data?.yatClaimDTO?.supClaimId || data?.supClaimId);
+    return !!data?.yatClaimDTO?.supClaimId;
   }
 
   downloadCreditDebit(data: any): void {
-    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    const claimId = data?.yatClaimDTO?.claimId;
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'warning');
       return;
@@ -237,8 +187,7 @@ this.getState();
         const responseObject = Array.isArray(res?.object) ? res.object[0] : res?.object;
         const fileUrl =
           (typeof responseObject === 'string' ? responseObject : responseObject?.debitCreditNoteFileUrl) ||
-          data?.yatClaimDTO?.debitCreditNoteFileUrl ||
-          data?.debitCreditNoteFileUrl;
+          data?.yatClaimDTO?.debitCreditNoteFileUrl;
         if (!res?.status || !fileUrl) {
           this.$common.showMessage(res?.message || 'Credit/Debit document is not available.', 'warning');
           return;
@@ -252,7 +201,7 @@ this.getState();
   }
 
   downloadDailySlip(data: any): void {
-    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    const claimId = data?.yatClaimDTO?.claimId;
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'warning');
       return;
@@ -275,7 +224,7 @@ this.getState();
   }
 
   downloadSignedForm(data: any): void {
-    const url = data?.yatClaimDTO?.inkSignedFileUrl || data?.inkSignedFileUrl;
+    const url = data?.yatClaimDTO?.inkSignedFileUrl;
     if (!url) {
       this.$common.showMessage('Signed form is not available.', 'warning');
       return;
@@ -284,7 +233,7 @@ this.getState();
   }
 
   loadClaimObservations(data: any): void {
-    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    const claimId = data?.yatClaimDTO?.claimId;
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'warning');
       return;
@@ -303,7 +252,7 @@ this.getState();
   }
 
   getRecoveryAdjusted(data: any): void {
-    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    const claimId = data?.yatClaimDTO?.claimId;
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'warning');
       return;
@@ -322,15 +271,15 @@ this.getState();
   }
 
   createSupplementaryClaim(data: any): void {
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId;
-    const subFormId = claim?.codeSubFormDTO?.subFormId || data?.subFormId || data?.codeSubFormDTO?.subFormId;
-    const route = this.getCreatorClaimRoute(subFormId, false);
-    if (!claimId || !route) {
+    const claim = data?.yatClaimDTO;
+    const claimId = claim?.claimId;
+    const subFormId = claim?.codeSubFormDTO?.subFormId;
+    const formUrl = claim?.codeSubFormDTO?.formUrl;
+    if (!claimId || !formUrl) {
       this.$common.showMessage('Supplementary claim route is not available.', 'warning');
       return;
     }
-    this.router.navigate([`${this.$auth.getModuleName()}/${route}`], {
+    this.router.navigate([`${this.$auth.getModuleName()}/${formUrl}`], {
       queryParams: {
         subFormId,
         supId: claimId,

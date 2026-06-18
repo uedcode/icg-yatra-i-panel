@@ -30,8 +30,7 @@ export class ArchiveComponent implements OnInit {
   restoreLoadingMap: { [key: string]: boolean } = {};
   formId: any;
   claimId: any;
-  pageTitle = 'Claim Archive';
-  queueModule: 'ADV' | 'CLM' = 'ADV';
+  pageTitle = 'Archive';
 
   constructor(
     private location: Location,
@@ -44,9 +43,6 @@ export class ArchiveComponent implements OnInit {
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
-    const routeData = this.route.snapshot?.data || {};
-    this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
-    this.pageTitle = this.getPageTitle();
     if (this.userIdDetails?.roleTypeId !== this.$auth.codeRoleType()?.verifier) {
       this.$common.showMessage(`${this.pageTitle} is available for verifier role only.`, 'danger');
       this.router.navigateByUrl(this.$auth.getModuleName() + '/dashboard');
@@ -64,7 +60,7 @@ export class ArchiveComponent implements OnInit {
         ...this.userIdDetails,
         claimState: '',
         isArchive: '1',
-        formId: this.resolveQueueFormId(),
+        formId: 'ADV',
         searchFormId: searchHeaders.formId,
         pno: searchHeaders.pno,
         searchedName: searchHeaders.searchedName,
@@ -113,19 +109,15 @@ export class ArchiveComponent implements OnInit {
   }
 
   viewForm(data: any) {
-    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(data, data?.claimState || '');
+    const routeUrl = this.buildAdvanceViewUrl(data);
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
     }
   }
 
   restoreClaim(data: any): void {
-    const claimStateId =
-      data?.claimStateId ||
-      data?.yatClaimStateDTO?.claimStateId ||
-      data?.yatClaimStateDTO?.id ||
-      data?.id;
-    const listKey = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || claimStateId;
+    const claimStateId = data?.claimStateId;
+    const listKey = String(claimStateId);
     if (!claimStateId || this.restoreLoadingMap[listKey]) {
       return;
     }
@@ -147,11 +139,7 @@ export class ArchiveComponent implements OnInit {
         }
 
         this.dataList = this.dataList.filter(
-          (item: any) =>
-            (item?.claimStateId ||
-              item?.yatClaimStateDTO?.claimStateId ||
-              item?.yatClaimStateDTO?.id ||
-              item?.id) != claimStateId
+          (item: any) => item?.claimStateId != claimStateId
         );
         this.$common.showMessage(res?.message || 'Claim restored successfully.', 'success');
         this.$claim.notifyStatusCountRefresh();
@@ -184,12 +172,14 @@ export class ArchiveComponent implements OnInit {
     }
   }
 
-  private getPageTitle(): string {
-    return this.queueModule === 'CLM' ? 'Claim Archive' : 'Archive';
-  }
-
-  private resolveQueueFormId(): string {
-    return this.queueModule === 'CLM' ? 'CLM' : 'ADV';
+  private buildAdvanceViewUrl(data: any): string {
+    const claim = data?.yatClaimDTO;
+    const viewUrl = claim?.codeSubFormDTO?.viewUrl;
+    const claimId = claim?.claimId;
+    if (!viewUrl || !claimId) {
+      return '';
+    }
+    return `${this.$auth.getModuleName()}/${String(viewUrl).replace(/^\/+/, '')}?id=${encodeURIComponent(claimId)}`;
   }
 }
 

@@ -43,14 +43,11 @@ export class InboxComponent implements OnInit {
   formObj: any = {};
   noOfPage: any = 10;
   p: any = 1;
-  queueModule: 'ADV' | 'CLM' = 'ADV';
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
     this.roleCodes = this.$auth.codeRoleType();
-    const routeData = this.route.snapshot?.data || {};
-    this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
     this.handleEsignFeedback();
     this.getState();
   }
@@ -102,7 +99,7 @@ export class InboxComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.codeStatus?.inbox,
-        formId: this.resolveQueueFormId(),
+        formId: 'ADV',
       }, codeRoleList),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
@@ -114,11 +111,7 @@ export class InboxComponent implements OnInit {
     if (!this.canViewRow(data)) {
       return;
     }
-    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
-      data,
-      data?.claimState || this.codeStatus?.inbox,
-      true
-    );
+    const routeUrl = this.buildAdvanceFormUrl(data);
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
     }
@@ -130,7 +123,7 @@ export class InboxComponent implements OnInit {
     }
 
     const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    const claimId = claim?.claimId;
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'danger');
       return;
@@ -151,8 +144,7 @@ export class InboxComponent implements OnInit {
         if (response?.status === true) {
           this.$common.showMessage(response?.message || 'Moved to draft successfully.', 'success');
           this.dataList = this.dataList.filter(
-            (item: any) =>
-              (item?.yatClaimDTO?.claimId || item?.claimId || item?.formId || item?.id) != claimId
+            (item: any) => item?.yatClaimDTO?.claimId != claimId
           );
           this.router.navigateByUrl(this.$auth.getModuleName() + '/manual-draft');
           return;
@@ -171,7 +163,7 @@ export class InboxComponent implements OnInit {
   }
 
   hasClaimState(data: any): boolean {
-    const claimState = data?.yatClaimDTO?.claimState || data?.claimState || data?.statusId;
+    const claimState = data?.yatClaimDTO?.claimState;
     return !this.$auth.isNullOrEmpty(claimState);
   }
 
@@ -192,24 +184,10 @@ export class InboxComponent implements OnInit {
   }
 
   canShowPreviousAdvance(data: any): boolean {
-    if (this.queueModule === 'CLM') {
-      return false;
-    }
     const claim = data?.yatClaimDTO || {};
-    const subFormId = String(claim?.codeSubFormDTO?.subFormId || data?.subFormId || '').toUpperCase();
-    const refAdvanceId = claim?.refAdvanceId || data?.refAdvanceId;
+    const subFormId = String(claim?.codeSubFormDTO?.subFormId || '').toUpperCase();
+    const refAdvanceId = claim?.refAdvanceId;
     return subFormId === 'T' && !this.$auth.isNullOrEmpty(refAdvanceId);
-  }
-
-  isClaimQueue(): boolean {
-    return this.queueModule === 'CLM';
-  }
-
-  canShowViewHistory(data: any): boolean {
-    if (!this.isClaimQueue()) {
-      return false;
-    }
-    return !this.$auth.isNullOrEmpty(data?.yatClaimDTO?.initClaimId);
   }
 
   openPreviousAdvance(data: any): void {
@@ -219,7 +197,7 @@ export class InboxComponent implements OnInit {
 
     const claim = data?.yatClaimDTO || {};
     this.formId = null;
-    this.claimId = claim?.refAdvanceId || data?.refAdvanceId || null;
+    this.claimId = claim?.refAdvanceId || null;
     setTimeout(() => {
       $('#viewHistoryModal').modal('show');
     }, 0);
@@ -249,8 +227,14 @@ export class InboxComponent implements OnInit {
     this.reverse = !this.reverse;
   }
 
-  private resolveQueueFormId(): string {
-    return this.queueModule === 'CLM' ? 'CLM' : 'ADV';
+  private buildAdvanceFormUrl(data: any): string {
+    const claim = data?.yatClaimDTO;
+    const formUrl = claim?.codeSubFormDTO?.formUrl;
+    const claimId = claim?.claimId;
+    if (!formUrl || !claimId) {
+      return '';
+    }
+    return `${this.$auth.getModuleName()}/${String(formUrl).replace(/^\/+/, '')}?id=${encodeURIComponent(claimId)}`;
   }
 }
 

@@ -26,8 +26,8 @@ export class FormManualAdvDetailComponent implements OnInit {
     this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.route.queryParamMap.subscribe((params) => {
       const claimId =
-        params.get('claimId') ||
         params.get('id') ||
+        params.get('claimId') ||
         params.get('formId') ||
         params.get('supId') ||
         '';

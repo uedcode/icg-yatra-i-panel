@@ -103,8 +103,8 @@
                       <tr
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse  | paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
-                        <td>{{(dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen}} </td>
-                        <td>{{(dataObj?.yatClaimDTO?.updatedOn || dataObj?.updatedOn || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:"medium" }}</td>
+                        <td>{{dataObj?.yatClaimDTO?.codeSubFormDTO?.descr | showHypen}} </td>
+                        <td>{{dataObj?.yatClaimDTO?.updatedOn | showDate:"medium" }}</td>
                         <td>
                           <button class="btn btn-primary" title="Edit" (click)="actionPage(dataObj)">Edit</button>
                         </td>
@@ -118,7 +118,7 @@
                       </tr>
 
                       <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                        <td colspan="20">No Records Available</td>
+                        <td colspan="20">No Records</td>
                       </tr>
                       <tr class="noExl pagination_area"
                         *ngIf="dataList?.length">

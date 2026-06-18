@@ -57,7 +57,7 @@ export class PreviewTyDutyComponent implements OnInit {
     this.subFormId = this.normalizeSubFormId(this.route.snapshot.data?.['subFormId']);
     this.route.queryParams.subscribe((params) => {
       this.claimId =
-        params?.claimId || params?.id || params?.formId || params?.supId || null;
+        params?.id || params?.claimId || params?.formId || params?.supId || null;
       this.supplementaryId = params?.supId || null;
       this.subFormId = this.normalizeSubFormId(params?.subFormId || this.subFormId);
       this.getClaimDetails();

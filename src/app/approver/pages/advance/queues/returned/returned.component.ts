@@ -22,7 +22,6 @@ export class ReturnedComponent implements OnInit {
   codeStatus;
   userIdDetails: any;
   queueState = '';
-  queueModule: 'ADV' | 'CLM' = 'ADV';
 
   constructor(
     private location: Location,
@@ -49,8 +48,6 @@ export class ReturnedComponent implements OnInit {
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
-    const routeData = this.route.snapshot?.data || {};
-    this.queueModule = routeData['queueModule'] === 'CLM' ? 'CLM' : 'ADV';
     this.queueState = this.getQueueState();
     this.getState();
   }
@@ -66,7 +63,7 @@ export class ReturnedComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.queueState,
-        formId: this.resolveQueueFormId(),
+        formId: 'ADV',
       }, codeRoleList),
     };
     this.$claim.getClaimStates(config).subscribe((res: any) => {
@@ -75,10 +72,7 @@ export class ReturnedComponent implements OnInit {
   }
 
   viewForm(data) {
-    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
-      data,
-      data?.claimState || this.queueState
-    );
+    const routeUrl = this.buildAdvanceViewUrl(data);
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
     }
@@ -116,8 +110,14 @@ export class ReturnedComponent implements OnInit {
       : this.codeStatus?.rejected;
   }
 
-  private resolveQueueFormId(): string {
-    return this.queueModule === 'CLM' ? 'CLM' : 'ADV';
+  private buildAdvanceViewUrl(data: any): string {
+    const claim = data?.yatClaimDTO;
+    const viewUrl = claim?.codeSubFormDTO?.viewUrl;
+    const claimId = claim?.claimId;
+    if (!viewUrl || !claimId) {
+      return '';
+    }
+    return `${this.$auth.getModuleName()}/${String(viewUrl).replace(/^\/+/, '')}?id=${encodeURIComponent(claimId)}`;
   }
 
 }

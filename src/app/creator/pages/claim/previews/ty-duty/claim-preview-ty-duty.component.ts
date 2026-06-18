@@ -39,7 +39,7 @@ export class ClaimPreviewTyDutyComponent implements OnInit {
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.route.queryParams.subscribe((params) => {
-      this.claimId = params?.claimId || params?.id || params?.formId || params?.supId || null;
+      this.claimId = params?.id || params?.claimId || params?.formId || params?.supId || null;
       this.supplementaryId = params?.supId || null;
       this.subFormId = this.normalizeSubFormId(
         params?.subFormId || this.route.snapshot.data?.['subFormId'] || this.defaultSubFormId

@@ -113,54 +113,13 @@ filterDataObj;
     this.applyServerSearch();
   }
 
-  private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
-    const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
-    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
-    if (id === 'P') return detail ? 'preview-pmt-duty' : 'form-pmt-duty';
-    if (id === 'T') return detail ? 'preview-ty-duty' : 'form-ty-duty';
-    if (id === 'F') return detail ? 'preview-fte-advance' : 'form-fte-advance';
-    if (id === 'L') return detail ? 'preview-ltc-advance' : 'form-ltc-advance';
-    if (id === 'M') return detail ? 'form-manual-adv-detail' : 'form-manual-adv';
-    return null;
-  }
-
   viewForm(data) {
-    const payId = data?.yatPayDetailsDTO?.id || data?.id;
-    if (payId && (data?.yatPayDetailsDTO || data?.viewUrl === 'form-pay-details' || data?.formUrl === 'form-pay-details')) {
-      this.router.navigateByUrl(this.$auth.getModuleName() + `/form-pay-details?id=${payId}`);
-      return;
-    }
-
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-    const subFormId =
-      claim?.codeSubFormDTO?.subFormId ||
-      data?.subFormId ||
-      data?.codeSubFormDTO?.subFormId;
-    const route = this.getCreatorClaimRoute(subFormId, true);
-
-    if (claimId && route) {
-      const queryString = route === 'preview-ty-duty'
-        ? `id=${claimId}`
-        : `claimId=${claimId}&subFormId=${subFormId}`;
+    const claim = data?.yatClaimDTO;
+    const legacyViewUrl = claim?.codeSubFormDTO?.viewUrl;
+    const claimId = claim?.claimId;
+    if (legacyViewUrl && claimId) {
       this.router.navigateByUrl(
-        this.$auth.getModuleName() + `/${route}?${queryString}`
-      );
-      return;
-    }
-
-    const legacyViewUrl =
-      claim?.codeSubFormDTO?.viewUrl ||
-      data?.codeSubFormDTO?.viewUrl ||
-      data?.viewUrl;
-    const legacyViewId = claimId || claim?.formId || data?.formId || data?.id;
-    if (legacyViewUrl && legacyViewId) {
-      this.router.navigateByUrl(
-        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${legacyViewId}`
+        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${claimId}`
       );
     }
   }
@@ -192,7 +151,7 @@ filterDataObj;
   }
 
   loadClaimObservations(data: any): void {
-    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId;
+    const claimId = data?.yatClaimDTO?.claimId;
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'warning');
       return;
@@ -211,12 +170,8 @@ filterDataObj;
   }
 
   archiveClaim(data: any): void {
-    const claimStateId =
-      data?.claimStateId ||
-      data?.yatClaimStateDTO?.claimStateId ||
-      data?.yatClaimStateDTO?.id ||
-      data?.id;
-    const listKey = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || claimStateId;
+    const claimStateId = data?.claimStateId;
+    const listKey = data?.yatClaimDTO?.claimId;
 
     if (!claimStateId || this.archiveLoadingMap[listKey]) {
       return;
@@ -239,11 +194,7 @@ filterDataObj;
         }
 
         this.dataList = this.dataList.filter(
-          (item: any) =>
-            (item?.claimStateId ||
-              item?.yatClaimStateDTO?.claimStateId ||
-              item?.yatClaimStateDTO?.id ||
-              item?.id) != claimStateId
+          (item: any) => item?.claimStateId != claimStateId
         );
         this.$common.showMessage(res?.message || 'Claim archived successfully.', 'success');
       },
@@ -255,8 +206,8 @@ filterDataObj;
   }
 
   downloadVoucher(data: any): void {
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    const claim = data?.yatClaimDTO;
+    const claimId = claim?.claimId;
     if (!claimId) {
       this.$common.showMessage('Claim id is not available for voucher download.', 'warning');
       return;
@@ -275,15 +226,13 @@ filterDataObj;
         const voucherPath =
           voucher?.voucherFileUrl ||
           claim?.voucherFileUrl ||
-          claim?.voucherUrl ||
-          data?.voucherFileUrl ||
-          data?.voucherUrl;
+          claim?.voucherUrl;
         if (!res?.status || !voucherPath) {
           this.$common.showMessage(res?.message || 'Voucher file is not available.', 'warning');
           return;
         }
 
-        const fileName = `VC-${voucher?.formId || claim?.formId || claimId}.pdf`;
+        const fileName = `VC-${claim?.formId}.pdf`;
         this.$common.downloadAbsolute(`${this.$common.fileUrl}${voucherPath}`, fileName);
         this.$common.showMessage(res?.message || 'Voucher downloaded successfully.');
       },
@@ -296,9 +245,7 @@ filterDataObj;
   downloadSignedForm(data: any): void {
     const url =
       data?.yatClaimDTO?.inkSignedFileUrl ||
-      data?.yatClaimDTO?.signedFileUrl ||
-      data?.inkSignedFileUrl ||
-      data?.signedFileUrl;
+      data?.yatClaimDTO?.signedFileUrl;
     if (!url) {
       this.$common.showMessage('Signed form is not available.', 'warning');
       return;
@@ -307,21 +254,19 @@ filterDataObj;
   }
 
   hasVoucher(data: any): boolean {
-    return !!(data?.yatClaimDTO?.punchingId || data?.yatClaimDTO?.voucherFileUrl || data?.voucherFileUrl);
+    return !!data?.yatClaimDTO?.punchingId;
   }
 
   hasSignedForm(data: any): boolean {
     return !!(
       data?.yatClaimDTO?.inkSignedFileUrl ||
-      data?.yatClaimDTO?.signedFileUrl ||
-      data?.inkSignedFileUrl ||
-      data?.signedFileUrl
+      data?.yatClaimDTO?.signedFileUrl
     );
   }
 
   isExtendDutyDisabled(data: any): boolean {
-    const claim = data?.yatClaimDTO || data || {};
-    const subFormId = claim?.codeSubFormDTO?.subFormId || data?.subFormId;
+    const claim = data?.yatClaimDTO;
+    const subFormId = claim?.codeSubFormDTO?.subFormId;
     return !!claim?.refClaimId || subFormId !== 'T' || !!claim?.refExtendedAdvId;
   }
 
@@ -330,14 +275,14 @@ filterDataObj;
       return;
     }
 
-    const claim = data?.yatClaimDTO || data || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
+    const claim = data?.yatClaimDTO;
+    const claimId = claim?.claimId;
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'warning');
       return;
     }
 
-    const route = this.getCreatorClaimRoute('T', false);
+    const route = claim?.codeSubFormDTO?.formUrl;
     if (!route) {
       this.$common.showMessage('TY advance route is not available.', 'warning');
       return;

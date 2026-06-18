@@ -164,7 +164,7 @@ describe('FormFteComponent', () => {
 
     component.navigatePreview('', 778);
     expect(component.router.navigate).toHaveBeenCalledWith(['../preview-fte-claim'], {
-      queryParams: { claimId: 778, subFormId: 'FTE', supId: 'SUP-78' }
+      queryParams: { id: 778, subFormId: 'FTE', supId: 'SUP-78' }
     });
   });
 });

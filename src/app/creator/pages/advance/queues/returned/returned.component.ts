@@ -108,82 +108,36 @@ filterDataObj
   }
 
   isTyAdvance(data: any): boolean {
-    const subFormId = (data?.yatClaimDTO?.codeSubFormDTO?.subFormId || data?.subFormId || '').toUpperCase();
-    return subFormId === 'T' || subFormId === 'TYA' || subFormId === 'TY' || subFormId === 'TYD' || subFormId === 'TYCLM';
+    return data?.yatClaimDTO?.codeSubFormDTO?.subFormId === 'T';
   }
 
   resubmitForm(data: any): void {
-    const claimId = data?.yatClaimDTO?.claimId || data?.claimId || data?.formId || data?.id;
-    const subFormId =
-      data?.yatClaimDTO?.codeSubFormDTO?.subFormId ||
-      data?.codeSubFormDTO?.subFormId ||
-      data?.subFormId;
-    const route = this.getCreatorClaimRoute(subFormId, false);
+    const claim = data?.yatClaimDTO;
+    const claimId = claim?.claimId;
+    const subFormId = claim?.codeSubFormDTO?.subFormId;
+    const route = claim?.codeSubFormDTO?.formUrl;
 
     if (!claimId || !route) {
       this.$common.showMessage('Unable to identify request for resubmit.', 'danger');
       return;
     }
 
-    this.router.navigate([this.$auth.getModuleName() + `/${route}`], {
-      queryParams: {
-        id: claimId,
-        claimId,
-        resubId: claimId,
-        subFormId,
-      },
-    });
-  }
+    const queryParams: any = {
+      resubId: claimId,
+      subFormId,
+    };
+    queryParams.id = claimId;
 
-  private getCreatorClaimRoute(subFormId: string | null, detail = false): string | null {
-    const id = (subFormId || '').toUpperCase();
-    if (id === 'PMTA' || id === 'PMT' || id === 'PMTCLM') return detail ? 'preview-pmt-duty-claim' : 'form-pmt-duty-claim';
-    if (id === 'TYA' || id === 'TY' || id === 'TYD' || id === 'TYCLM') return detail ? 'preview-ty-duty-claim' : 'form-ty-duty-claim';
-    if (id === 'FTEA' || id === 'FTE' || id === 'FTECLM') return detail ? 'preview-fte-claim' : 'form-fte-claim';
-    if (id === 'LTCA' || id === 'LTC' || id === 'LTCCLM') return detail ? 'preview-ltc-claim' : 'form-ltc-claim';
-    if (id === 'RS' || id === 'RES' || id === 'R' || id === 'RESCLM') return detail ? 'preview-resettlement-claim' : 'form-resettlement-claim';
-    if (id === 'P') return detail ? 'preview-pmt-duty' : 'form-pmt-duty';
-    if (id === 'T') return detail ? 'preview-ty-duty' : 'form-ty-duty';
-    if (id === 'F') return detail ? 'preview-fte-advance' : 'form-fte-advance';
-    if (id === 'L') return detail ? 'preview-ltc-advance' : 'form-ltc-advance';
-    if (id === 'M') return detail ? 'form-manual-adv-detail' : 'form-manual-adv';
-    return null;
+    this.router.navigate([this.$auth.getModuleName() + `/${route}`], { queryParams });
   }
 
   viewForm(data) {
-    const payId = data?.yatPayDetailsDTO?.id || data?.id;
-    if (payId && (data?.yatPayDetailsDTO || data?.viewUrl === 'form-pay-details' || data?.formUrl === 'form-pay-details')) {
-      this.router.navigateByUrl(this.$auth.getModuleName() + `/form-pay-details?id=${payId}`);
-      return;
-    }
-
-    const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-    const subFormId =
-      claim?.codeSubFormDTO?.subFormId ||
-      data?.subFormId ||
-      data?.codeSubFormDTO?.subFormId;
-    const route = this.getCreatorClaimRoute(subFormId, true);
-
-    if (claimId && route) {
-      const queryString = route === 'preview-ty-duty'
-        ? `id=${claimId}`
-        : `claimId=${claimId}&subFormId=${subFormId}`;
+    const claim = data?.yatClaimDTO;
+    const legacyViewUrl = claim?.codeSubFormDTO?.viewUrl;
+    const claimId = claim?.claimId;
+    if (legacyViewUrl && claimId) {
       this.router.navigateByUrl(
-        this.$auth.getModuleName() +
-          `/${route}?${queryString}`
-      );
-      return;
-    }
-
-    const legacyViewUrl =
-      claim?.codeSubFormDTO?.viewUrl ||
-      data?.codeSubFormDTO?.viewUrl ||
-      data?.viewUrl;
-    const legacyViewId = claimId || claim?.formId || data?.formId || data?.id;
-    if (legacyViewUrl && legacyViewId) {
-      this.router.navigateByUrl(
-        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${legacyViewId}`
+        this.$auth.getModuleName() + `/${legacyViewUrl}?id=${claimId}`
       );
     }
   }

@@ -37,7 +37,7 @@ export class PayOutboxComponent implements OnInit {
         roleTypeId: this.userIdDetails?.roleTypeId,
         userId: this.userIdDetails?.userId,
         unitId: '',
-        gxUnitId: this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId,
+        gxUnitId: this.userIdDetails?.gxUnitId || '',
         state: this.codeStatus?.outbox,
         isArchive: '0',
         formId: '',

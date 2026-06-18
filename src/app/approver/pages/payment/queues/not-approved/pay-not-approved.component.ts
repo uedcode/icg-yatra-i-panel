@@ -54,7 +54,7 @@ export class PayNotApprovedComponent implements OnInit {
   }
 
   viewForm(row: any): void {
-    const payId = row?.yatPayDetailsDTO?.id || row?.id;
+    const payId = row?.yatPayDetailsDTO?.id;
     if (!payId) return;
     this.router.navigateByUrl(
       `${this.$auth.getModuleName()}/form-pay-details?id=${payId}&mode=view`
