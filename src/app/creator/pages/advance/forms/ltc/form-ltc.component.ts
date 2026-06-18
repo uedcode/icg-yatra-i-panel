@@ -15,6 +15,8 @@ import {
   validateLegacyRequiredSection,
 } from '../shared/helpers/legacy-form-validation.helper';
 
+declare var $: any;
+
 type YesNoNA = 'Yes' | 'No' | 'NA' | '';
 
 interface CodeLtcTypeDTO {
@@ -85,7 +87,7 @@ interface YatLtcAdvDTO {
   ltcPlace: string;
   gxUnit: string;
 
-  isNewlyMarried: boolean;
+  isNewlyMarried: YesNoNA;
   yatSpouseDetailDTO: YatSpouseDetailDTO;
 
   appliedTo: string;
@@ -105,6 +107,7 @@ interface ClaimsModel {
   signWith: string;
   occDate: string;
   gxFormFileUrl: string;
+  deleteGxFileUrl?: string | null;
   internalRemarks: string;
   gxFormModel?: any;
   codeSubFormDTO?: any;
@@ -141,6 +144,7 @@ export class FormLtcAdvanceComponent implements OnInit {
   isPreviewDisabled = false;
   showErrors = false;
   gxFormUploading = false;
+  eSignTempFormObj: any = null;
 
   // Sign types (match your old constants concept)
   codeSignType = {
@@ -164,7 +168,8 @@ export class FormLtcAdvanceComponent implements OnInit {
   allUnits: string[] = [];
   allCodeLtcType: Array<{ ltcTypeId: string | number; descr: string }> = [];
   blockYears: string[] = [];
-  doe = 2; // degree of entitlement / family eligibility, replace by API logic
+  doe = 1;
+  presentUnitStatus: any = null;
 
   // Travel UI state
   travelModes = [
@@ -197,6 +202,21 @@ export class FormLtcAdvanceComponent implements OnInit {
 
   // base url for existing file
   fileUrl = ''; // set from env/config
+  showIfscModal = false;
+  newIfscCode = '';
+  showLtcEntitledModal = false;
+  ltcEntitled: any = { singleBlockYear: [], listYearsAvailed: [] };
+  showLtcAvailedHistoryModal = false;
+  ltcAvailedHistory: any = { singleBlockYear: [], listYearsAvailed: [] };
+  sideList = [
+    'Self LTC (Hometown)',
+    'Self and Family (Hometown)',
+    'All India LTC',
+    'Special Place LTC',
+    'AFSP',
+    'EPC',
+    'Additional LTC',
+  ];
 
   // Temp travel entry
   tempLtcTravelDetails: Partial<YatDtsDetailDTO> = this.defaultTempTravel();
@@ -254,7 +274,10 @@ export class FormLtcAdvanceComponent implements OnInit {
 
   private initFromRoute(): void {
     const qp = this.route.snapshot.queryParamMap;
-    this.claimIdParam = qp.get('claimId') || qp.get('id') || qp.get('resubId');
+    this.claimIdParam =
+      qp.get('id') ||
+      (this.activeFormKind === 'claim' ? qp.get('claimId') : null) ||
+      qp.get('resubId');
     this.resubClaimId = qp.get('resubId');
     this.supplementaryId = qp.get('supId');
   }
@@ -264,7 +287,7 @@ export class FormLtcAdvanceComponent implements OnInit {
     return {
       claimId: null,
       claimState: null,
-      signWith: this.codeSignType.inkSign,
+      signWith: this.codeSignType.eSign,
       occDate: '',
       gxFormFileUrl: '',
       internalRemarks: '',
@@ -298,7 +321,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       blockYear: '',
       joiningDate: '',
       placeOfVisit: '',
-      isDts: '',
+      isDts: 'Yes',
       arrFare: '',
       arrBtnFare: '',
       totalAmt: '0',
@@ -315,7 +338,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       codeHrPincodeVillageDTOs: [],
       ltcPlace: '',
       gxUnit: '',
-      isNewlyMarried: false,
+      isNewlyMarried: 'No',
       yatSpouseDetailDTO: {
         memberName: '',
         age: '',
@@ -383,14 +406,101 @@ export class FormLtcAdvanceComponent implements OnInit {
   }
 
   private toNumber(v: any): number {
-    const n = Number(String(v ?? '').replace(/[^\d.]/g, ''));
-    return Number.isFinite(n) ? n : 0;
+    return this.normalizeAmountNumber(v, 0) ?? 0;
+  }
+
+  private normalizeAmountNumber(value: any, emptyValue: number | null = null): number | null {
+    const raw = String(value ?? '').trim().replace(/[^\d.]/g, '');
+    if (!raw) return emptyValue;
+
+    const amount = Number(raw);
+    return Number.isFinite(amount) ? amount : emptyValue;
+  }
+
+  private normalizeAmountString(value: any, emptyValue = ''): string {
+    const amount = this.normalizeAmountNumber(value, null);
+    return amount === null ? emptyValue : String(amount);
   }
 
   private formatDateInput(value: any): string {
     if (!value) return '';
     const dt = this.datePipe.transform(value, 'yyyy-MM-dd');
     return dt || '';
+  }
+
+  private normalizeBankDetail(bank: any): ClaimBankDetailDTO {
+    const current = this.claims?.yatClaimBankDetailDTO || {
+      bankName: '',
+      ifscCode: '',
+      bankAccNo: '',
+      micrCode: '',
+    };
+    const merged: any = {
+      ...current,
+      ...(bank || {}),
+    };
+    const accountValue =
+      merged.bankAccNo ??
+      merged.accountNo ??
+      (current as any).bankAccNo ??
+      (current as any).accountNo ??
+      '';
+
+    return {
+      bankName: merged.bankName ?? '',
+      ifscCode: merged.ifscCode ?? '',
+      bankAccNo: accountValue,
+      micrCode: merged.micrCode ?? '',
+    };
+  }
+
+  private normalizeLtcTravelRows(rows: any[]): any[] {
+    return (rows || []).map((row: any) => {
+      const amount = this.normalizeAmountString(row?.amount);
+      const tempAmount = this.normalizeAmountString(row?.tempAmount) || amount;
+      return {
+        ...row,
+        amount,
+        tempAmount,
+      };
+    });
+  }
+
+  private mergeSavedLtcResponse(obj: any): void {
+    if (!obj) return;
+
+    const currentAdv = this.claims?.yatLtcAdvDTOs?.[0] || {};
+    const savedAdv = Array.isArray(obj.yatLtcAdvDTOs)
+      ? obj.yatLtcAdvDTOs[0]
+      : null;
+    const savedDtsRows = Array.isArray(obj.yatDtsDetailDTOs)
+      ? this.normalizeLtcTravelRows(obj.yatDtsDetailDTOs)
+      : this.claims.yatDtsDetailDTOs;
+    const savedFamilyRows = Array.isArray(obj.yatFamilyDetailDTOs)
+      ? obj.yatFamilyDetailDTOs
+      : this.claims.yatFamilyDetailDTOs;
+    const savedDocs = Array.isArray(obj.yatDocsDTOs)
+      ? obj.yatDocsDTOs
+      : this.documentDtos;
+
+    this.claims = {
+      ...this.claims,
+      ...obj,
+      occDate: this.formatDateInput(obj.occDate ?? this.claims.occDate),
+      gxFormFileUrl: obj.gxFormFileUrl || this.claims.gxFormFileUrl,
+      yatLtcAdvDTOs: [{ ...currentAdv, ...(savedAdv || {}) }],
+      yatFamilyDetailDTOs: savedFamilyRows,
+      yatDtsDetailDTOs: savedDtsRows,
+      yatDocsDTOs: savedDocs,
+      yatClaimBankDetailDTO: this.normalizeBankDetail(obj.yatClaimBankDetailDTO),
+    };
+
+    this.documentDtos = this.claims.yatDocsDTOs || [];
+    this.$codeDocInfo.setDocument(this.documentDtos as []);
+    this.showGxFileBrowse = !this.claims.gxFormFileUrl;
+    delete (this.claims as any).deleteGxFileUrl;
+    this.calculateAmount();
+    this.checkForPreviewBtn();
   }
 
   // ---------- GX file ----------
@@ -433,9 +543,27 @@ export class FormLtcAdvanceComponent implements OnInit {
   }
 
   // ---------- LTC / block logic ----------
-  changeLtcType(): void {
-    // your Java logic likely toggles hometown enable/disable etc.
-    // keep minimal: reset place fields when type changes
+  changeLtcType(getCalled = false): void {
+    const adv = this.claims.yatLtcAdvDTOs[0];
+    const ltcTypeId = adv.codeLtcTypeDTO?.ltcTypeId;
+
+    if (!getCalled) {
+      if (String(ltcTypeId || '') !== 'PAI' && String(ltcTypeId || '') !== 'SP') {
+        adv.ltcPlace = '';
+      }
+
+      if (this.isSpecialIslandLtcType(ltcTypeId) && !this.presentUnitStatus) {
+        adv.codeLtcTypeDTO = { ltcTypeId: null };
+        this.$common.showMessage('Person borne in Island unit can avail this', 'danger');
+        return;
+      }
+    }
+
+    this.validateAdditionalLtcIfRequired();
+
+    if (!this.isPlaceVisitRequired()) {
+      adv.ltcPlace = '';
+    }
     this.hideDiv();
   }
 
@@ -447,18 +575,38 @@ export class FormLtcAdvanceComponent implements OnInit {
   isPlaceVisitRequired(): boolean {
     const id = this.claims.yatLtcAdvDTOs[0].codeLtcTypeDTO?.ltcTypeId;
     return (
-      id === this.yatLtcTypes.placeAnywhereInIndia ||
-      id === this.yatLtcTypes.specialPlace
+      String(id) === String(this.yatLtcTypes.placeAnywhereInIndia) ||
+      String(id) === String(this.yatLtcTypes.specialPlace)
     );
   }
 
-  ltcChange(_mode: 's' | 'f', _calc: boolean): void {
-    // you probably also recalc entitlement/selected family members
-    // keep minimal
+  ltcChange(mode: 's' | 'f', _calc: boolean): void {
+    const adv = this.claims.yatLtcAdvDTOs[0];
+    const ltcTypeId = adv.codeLtcTypeDTO?.ltcTypeId;
+    let legacyType = mode;
+
+    if (
+      adv.ltcType === this.yatLtcSubTypes.self ||
+      String(ltcTypeId) === 'AFSP' ||
+      String(ltcTypeId) === 'ESP'
+    ) {
+      legacyType = 's';
+    } else if (adv.ltcType === this.yatLtcSubTypes.partial) {
+      legacyType = 'f';
+    }
+
+    this.loadLtcBlockYears(legacyType, ltcTypeId);
+    this.loadLtcTypes(legacyType);
+  }
+
+  onNewlyMarriedChange(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.claims.yatLtcAdvDTOs[0].isNewlyMarried = checked ? 'Yes' : 'No';
+    this.resetSpouseDetails();
   }
 
   resetSpouseDetails(): void {
-    if (!this.claims.yatLtcAdvDTOs[0].isNewlyMarried) {
+    if (this.claims.yatLtcAdvDTOs[0].isNewlyMarried !== 'Yes') {
       this.claims.yatLtcAdvDTOs[0].yatSpouseDetailDTO = {
         memberName: '',
         age: '',
@@ -543,6 +691,13 @@ export class FormLtcAdvanceComponent implements OnInit {
   }
 
   deleteLtcTravelDetails(index: number): void {
+    const confirmDelete = window.confirm(
+      'Do you really want to delete this row?'
+    );
+    if (!confirmDelete) {
+      return;
+    }
+
     this.claims.yatDtsDetailDTOs.splice(index, 1);
     this.calculateAmount();
   }
@@ -558,7 +713,34 @@ export class FormLtcAdvanceComponent implements OnInit {
     this.travelBtnName = 'Add';
   }
 
+  normalizeFinancialPlace(): void {
+    const adv = this.claims?.yatLtcAdvDTOs?.[0];
+    if (!adv) {
+      return;
+    }
+    adv.place = String(adv.place || '').toUpperCase();
+  }
+
+  normalizeLtcPlace(): void {
+    const adv = this.claims?.yatLtcAdvDTOs?.[0];
+    if (!adv) {
+      return;
+    }
+    adv.ltcPlace = String(adv.ltcPlace || '').toUpperCase();
+  }
+
   // ---------- Amount calculations ----------
+  onSavedTravelAmountChange(row: YatDtsDetailDTO): void {
+    const originalAmount = this.toNumber(row?.amount);
+    const editedAmount = this.toNumber(row?.tempAmount);
+
+    if (originalAmount > 0 && editedAmount > originalAmount) {
+      row.tempAmount = String(originalAmount);
+    }
+
+    this.calculateAmount();
+  }
+
   calculateAmount(): void {
     // totalAmt = sum of tempAmount
     const total = this.claims.yatDtsDetailDTOs.reduce(
@@ -587,51 +769,141 @@ export class FormLtcAdvanceComponent implements OnInit {
 
   // ---------- Actions (wire to your real services) ----------
   loadInitialMasterData(): void {
-    // Replace by API calls
+    this.loadPresentUnitStatus();
+    this.loadDoeDifference();
+    this.loadLtcFamilyDetails();
+    this.ltcChange('s', true);
+  }
 
-    this.allUnits = ['UNIT A', 'UNIT B', 'UNIT C'];
-    this.blockYears = ['2024-2025', '2026-2027', '2028-2029'];
-
-    this.allCodeLtcType = [
-      {
-        ltcTypeId: this.yatLtcTypes.placeAnywhereInIndia,
-        descr: 'Place Anywhere in India',
+  private loadPresentUnitStatus(): void {
+    const config = {
+      headers: {
+        presentUnit: this.userIdDetails?.unitId,
+        pid: this.userIdDetails?.userId,
       },
-      { ltcTypeId: this.yatLtcTypes.specialPlace, descr: 'Special Place' },
-      { ltcTypeId: 'HOMETOWN', descr: 'Home Town' },
-    ];
-
-    // Example unit list for Applied To
-    this.claims.yatLtcAdvDTOs[0].unitList = [
-      'Directorate',
-      'GC Delhi',
-      'Unit XYZ',
-    ];
-
-    // Example villages
-    this.claims.yatLtcAdvDTOs[0].codeHrPincodeVillageDTOs = [
-      { village: 'SONIPAT' },
-      { village: 'DELHI' },
-    ];
-
-    // Example family
-    this.claims.yatFamilyDetailDTOs = [
-      {
-        memberName: 'Self',
-        age: '30',
-        relation: 'Self',
-        occupation: 'Service',
-        checkedIndicator: true,
-      },
-    ];
-
-    // Bank example
-    this.claims.yatClaimBankDetailDTO = {
-      bankName: 'SBI',
-      ifscCode: 'SBIN0000000',
-      bankAccNo: '1234567890',
-      micrCode: '110002345',
     };
+
+    this.$claim.getPresentUnitStatus(config).subscribe(
+      (response: any) => {
+        if (response?.status === true) {
+          this.presentUnitStatus = response.object;
+        }
+      },
+      (error: any) => {
+        console.error('Error while loading present unit status.', error);
+      }
+    );
+  }
+
+  private isSpecialIslandLtcType(ltcTypeId: any): boolean {
+    const typeId = String(ltcTypeId || '');
+    return typeId === 'AFSP' || typeId === 'ESP' || typeId === 'SFL';
+  }
+
+  private validateAdditionalLtcIfRequired(): void {
+    const adv = this.claims.yatLtcAdvDTOs[0];
+    const ltcTypeId = adv.codeLtcTypeDTO?.ltcTypeId;
+    if (String(ltcTypeId || '') !== 'ALTC' || !adv.blockYear) {
+      return;
+    }
+
+    const config = {
+      headers: {
+        userId: this.userIdDetails?.userId,
+        blockYear: adv.blockYear,
+        ltcType: ltcTypeId,
+      },
+    };
+
+    this.$claim.validateAdditionalLtc(config).subscribe(
+      () => {},
+      (error: any) => {
+        console.error('Error while validating additional LTC.', error);
+      }
+    );
+  }
+
+  private loadLtcFamilyDetails(): void {
+    const config = {
+      headers: {
+        userId: this.userIdDetails?.userId,
+      },
+    };
+
+    this.$claim.getLtcFamilyDetails(config).subscribe(
+      (response: any) => {
+        if (response?.status && Array.isArray(response.object)) {
+          this.claims.yatFamilyDetailDTOs = response.object;
+        }
+      },
+      (error: any) => {
+        console.error('Error while loading LTC family details.', error);
+      }
+    );
+  }
+
+  private loadDoeDifference(): void {
+    const config = {
+      headers: {
+        userId: this.userIdDetails?.userId,
+      },
+    };
+
+    this.$claim.getLtcDoeDifference(config).subscribe(
+      (response: any) => {
+        if (response?.status) {
+          this.doe = this.toNumber(response.object);
+        }
+      },
+      (error: any) => {
+        console.error('Error while loading LTC DOE difference.', error);
+      }
+    );
+  }
+
+  private loadLtcBlockYears(
+    type: 's' | 'f',
+    ltcTypeId?: string | number | null
+  ): void {
+    const config = {
+      headers: {
+        type,
+        userId: this.userIdDetails?.userId,
+        calledFrom: this.codeClaim.ltcAdv,
+        ltcTypeId: ltcTypeId || '',
+        isDropdown: '1',
+      },
+    };
+
+    this.$claim.getLtcBlockYears(config).subscribe(
+      (response: any) => {
+        if (response?.status && Array.isArray(response.object)) {
+          this.blockYears = response.object;
+        }
+      },
+      (error: any) => {
+        console.error('Error while loading LTC block years.', error);
+      }
+    );
+  }
+
+  private loadLtcTypes(type: 's' | 'f'): void {
+    const config = {
+      headers: {
+        type,
+      },
+    };
+
+    this.$claim.getLtcTypes(config).subscribe(
+      (response: any) => {
+        if (response?.status && Array.isArray(response.object)) {
+          this.allCodeLtcType = response.object;
+        }
+      },
+      (error: any) => {
+        console.error('Error while loading LTC types.', error);
+      }
+    );
   }
 
   getFormDetails(): void {
@@ -688,7 +960,7 @@ export class FormLtcAdvanceComponent implements OnInit {
             adv.blockYear = dto.blockYear ?? '';
             adv.joiningDate = this.formatDateInput(dto.joiningDate);
             adv.placeOfVisit = dto.placeOfVisit ?? '';
-            adv.isDts = dto.isDts ?? '';
+            adv.isDts = dto.isDts ?? adv.isDts ?? 'Yes';
             adv.arrFare = dto.arrFare ?? '';
             adv.arrBtnFare = dto.arrBtnFare ?? '';
             adv.totalAmt = dto.totalAmt ?? '0';
@@ -707,9 +979,10 @@ export class FormLtcAdvanceComponent implements OnInit {
             )
               ? dto.codeHrPincodeVillageDTOs
               : adv.codeHrPincodeVillageDTOs;
+            this.applySelectedHomeTown(adv);
             adv.ltcPlace = dto.ltcPlace ?? '';
             adv.gxUnit = dto.gxUnit ?? '';
-            adv.isNewlyMarried = !!dto.isNewlyMarried;
+            adv.isNewlyMarried = dto.isNewlyMarried === 'Yes' ? 'Yes' : 'No';
             adv.yatSpouseDetailDTO =
               dto.yatSpouseDetailDTO || adv.yatSpouseDetailDTO;
             adv.appliedTo = dto.appliedTo ?? '';
@@ -734,16 +1007,10 @@ export class FormLtcAdvanceComponent implements OnInit {
               ? obj.yatFamilyDetailDTOs
               : this.claims.yatFamilyDetailDTOs,
             yatDtsDetailDTOs: Array.isArray(obj.yatDtsDetailDTOs)
-              ? obj.yatDtsDetailDTOs.map((row: any) => ({
-                  ...row,
-                  tempAmount: row?.tempAmount ?? row?.amount ?? '',
-                }))
+              ? this.normalizeLtcTravelRows(obj.yatDtsDetailDTOs)
               : this.claims.yatDtsDetailDTOs,
             yatDocsDTOs: Array.isArray(obj.yatDocsDTOs) ? obj.yatDocsDTOs : [],
-            yatClaimBankDetailDTO: {
-              ...this.claims.yatClaimBankDetailDTO,
-              ...(obj.yatClaimBankDetailDTO || {}),
-            },
+            yatClaimBankDetailDTO: this.normalizeBankDetail(obj.yatClaimBankDetailDTO),
           };
           if (this.resubClaimId) {
             (this.claims as any).refAdvanceId = this.resubClaimId;
@@ -778,6 +1045,17 @@ export class FormLtcAdvanceComponent implements OnInit {
     this.isPreviewDisabled = !this.claims?.claimId;
   }
 
+  private applySelectedHomeTown(adv: YatLtcAdvDTO): void {
+    const selectedVillage = (adv.codeHrPincodeVillageDTOs || []).find(
+      (item: any) => String(item?.isSelected) === '1'
+    );
+
+    if (selectedVillage?.village) {
+      adv.placeOfVisit = selectedVillage.village;
+      this.disableHomeTown = true;
+    }
+  }
+
   checkValidSignType(): void {
     // your real rule depends on "appliedTo" etc.
     // keep minimal: if eSign selected but appliedTo empty => block
@@ -794,7 +1072,7 @@ export class FormLtcAdvanceComponent implements OnInit {
     const claimId = this.claims?.claimId;
     if (!claimId) {
       this.$common.showMessage(
-        'Please save the LTC claim before checking eSign availability.',
+        `Please save the ${this.getFormDisplayName()} before checking eSign availability.`,
         'danger'
       );
       this.claims.signWith = this.codeSignType.inkSign;
@@ -815,7 +1093,7 @@ export class FormLtcAdvanceComponent implements OnInit {
         if (response?.status !== true) {
           this.claims.signWith = this.codeSignType.inkSign;
           this.$common.showMessage(
-            response?.message || 'eSign is not available for this claim.',
+            response?.message || `eSign is not available for this ${this.getFormDisplayName()}.`,
             'danger'
           );
         }
@@ -836,31 +1114,153 @@ export class FormLtcAdvanceComponent implements OnInit {
   }
 
   getLtcEntitled(): void {
-    this.$common.showMessage('LTC entitlement lookup is not configured yet.', 'danger');
+    const config = {
+      headers: {
+        userId: this.userIdDetails?.userId,
+        unitId: this.userIdDetails?.unitId,
+      },
+    };
+
+    this.$common.showLoader();
+    this.$claim.getLtcEntitled(config).subscribe({
+      next: (response: any) => {
+        this.$common.hideLoader();
+        if (response?.status === true) {
+          this.ltcEntitled = response.object || {
+            singleBlockYear: [],
+            listYearsAvailed: [],
+          };
+          this.showLtcEntitledModal = true;
+        } else {
+          this.$common.showMessage(
+            response?.message || 'Unable to load LTC entitlement.',
+            'danger'
+          );
+        }
+      },
+      error: (error: any) => {
+        this.$common.hideLoader();
+        console.error('Error while loading LTC entitlement.', error);
+        this.$common.showMessage('Unable to load LTC entitlement.', 'danger');
+      },
+    });
+  }
+
+  closeLtcEntitledModal(): void {
+    this.showLtcEntitledModal = false;
+  }
+
+  getEntitlementCell(row: any, index: number): any {
+    const prefixes = ['first', 'second', 'third', 'fourth'];
+    const prefix = prefixes[index] || prefixes[0];
+    return {
+      availed: row?.[`${prefix}YearAvailed`],
+      members: row?.[`${prefix}ListMember`] || [],
+    };
   }
 
   getLtcAvailedHistory(): void {
-    const moduleUrl = this.$auth.getModuleName
-      ? this.$auth.getModuleName()
-      : '';
-    const query: any = {};
-    if (this.claims?.claimId) {
-      query.id = this.claims.claimId;
-    }
-    if (moduleUrl) {
-      this.router.navigate([`${moduleUrl}/form-ltc-availed-history`], {
-        queryParams: query,
-      });
-    } else {
-      this.router.navigate(['../form-ltc-availed-history'], {
-        relativeTo: this.route,
-        queryParams: query,
-      });
-    }
+    const config = {
+      headers: {
+        userId: this.userIdDetails?.userId,
+        unitId: this.userIdDetails?.unitId,
+      },
+    };
+
+    this.$common.showLoader();
+    this.$claim.getLtcAvailedEntitledHistory(config).subscribe({
+      next: (response: any) => {
+        this.$common.hideLoader();
+        if (response?.status === true) {
+          this.ltcAvailedHistory = response.object || {
+            singleBlockYear: [],
+            listYearsAvailed: [],
+          };
+          this.showLtcAvailedHistoryModal = true;
+        } else {
+          this.$common.showMessage(
+            response?.message || 'Unable to load LTC availed history.',
+            'danger'
+          );
+        }
+      },
+      error: (error: any) => {
+        this.$common.hideLoader();
+        console.error('Error while loading LTC availed history.', error);
+        this.$common.showMessage(
+          'Unable to load LTC availed history.',
+          'danger'
+        );
+      },
+    });
+  }
+
+  closeLtcAvailedHistoryModal(): void {
+    this.showLtcAvailedHistoryModal = false;
+  }
+
+  formatDisplayDate(value: any): string {
+    return this.datePipe.transform(value, 'dd-MMM-yyyy') || '-';
   }
 
   openIfscModal(): void {
-    this.$common.showMessage('IFSC modal flow is not configured yet.', 'danger');
+    this.newIfscCode = this.claims?.yatClaimBankDetailDTO?.ifscCode || '';
+    this.showIfscModal = true;
+  }
+
+  closeIfscModal(): void {
+    this.showIfscModal = false;
+  }
+
+  submitIFSCUpdate(): void {
+    const ifscCode = (this.newIfscCode || '').trim().toUpperCase();
+    if (this.isNullOrEmpty(ifscCode)) {
+      this.$common.showMessage('Please enter IFSC code.', 'danger');
+      return;
+    }
+
+    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode)) {
+      this.$common.showMessage('Please enter valid IFSC code.', 'danger');
+      return;
+    }
+
+    const bankObj: any = {
+      ifscCode,
+      userId: this.claims?.aclUserDTO?.userId || this.userIdDetails?.userId || null,
+    };
+    const config: any = { headers: {} };
+
+    if (this.claims?.claimId) {
+      config.headers.claimId = this.claims.claimId;
+    }
+
+    this.$common.showLoader();
+    this.$claim.createOrUpdateIfsc(bankObj, config).subscribe({
+      next: (response: any) => {
+        const data: any = this.$common.parseResponse(response);
+        this.$common.hideLoader();
+
+        if (data?.status === true) {
+          this.claims.yatClaimBankDetailDTO.ifscCode =
+            data.object?.[0]?.ifscCode || ifscCode;
+          this.$common.showMessage(
+            data.message || 'IFSC Code updated successfully.',
+            'success'
+          );
+          this.closeIfscModal();
+        } else {
+          this.$common.showMessage(
+            data?.message || 'Failed to update IFSC.',
+            'danger'
+          );
+        }
+      },
+      error: (error: any) => {
+        this.$common.hideLoader();
+        console.error('Error while updating IFSC:', error);
+        this.$common.showMessage('Error while updating IFSC code.', 'danger');
+      },
+    });
   }
 
   navigatePreview(): void {
@@ -870,21 +1270,28 @@ export class FormLtcAdvanceComponent implements OnInit {
       return;
     }
 
-    this.router.navigate([`../${this.getPreviewRoute()}`], {
-      relativeTo: this.route,
-      queryParams:
-        this.activeFormKind === 'claim'
-          ? {
-              claimId,
-              subFormId: this.activeSubFormId,
-              ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
-            }
-          : {
-              id: claimId,
-              subFormId: this.activeSubFormId,
-              ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
-            },
-    });
+    const route = this.getPreviewRoute();
+    const queryParams = this.activeFormKind === 'claim'
+      ? {
+          id: claimId,
+          subFormId: this.activeSubFormId,
+          ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+        }
+      : {
+          id: claimId,
+          ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+        };
+
+    const queryString = Object.entries(queryParams)
+      .filter(([, value]) => value !== undefined && value !== null && value !== '')
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+      )
+      .join('&');
+    const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
+    const previewUrl = `${String(moduleUrl || '').replace(/\/$/, '')}/${route}${queryString ? `?${queryString}` : ''}`;
+    window.open(previewUrl, '_blank');
   }
 
   private navigateAfterSave(
@@ -895,16 +1302,16 @@ export class FormLtcAdvanceComponent implements OnInit {
     if (!moduleUrl) return;
 
     if (status === this.codeClaimState.outbox) {
-      this.router.navigateByUrl(moduleUrl + `/submitted`);
+      this.router.navigateByUrl(
+        moduleUrl + (this.activeFormKind === 'claim' ? `/claim-new` : `/new`)
+      );
       return;
     }
 
     if (this.supplementaryId && savedClaimId) {
       this.router.navigate([moduleUrl + `/${this.getCurrentFormRoute()}`], {
         queryParams: {
-          ...(this.activeFormKind === 'claim'
-            ? { id: savedClaimId }
-            : { id: savedClaimId }),
+          id: savedClaimId,
           supId: this.supplementaryId,
         },
       });
@@ -912,6 +1319,78 @@ export class FormLtcAdvanceComponent implements OnInit {
     }
 
     this.router.navigateByUrl(moduleUrl + `/draft`);
+  }
+
+  private buildClaimRemarkPayload(
+    status: string,
+    claimId: string,
+    remark: string = ''
+  ): any {
+    return {
+      claimId,
+      roleTypeId: this.userIdDetails?.roleTypeId,
+      userId: this.userIdDetails?.userId,
+      status,
+      remark,
+      financialYear: this.userIdDetails?.financialYear,
+      moduleId: this.userIdDetails?.moduleId,
+    };
+  }
+
+  private completeSubmitStatusTransition(claimId: string): void {
+    if (!claimId) {
+      this.$common.showMessage(
+        `Unable to submit ${this.getFormDisplayName()} without claim id.`,
+        'danger'
+      );
+      this.$common.hideLoader();
+      this.disableBtn = false;
+      return;
+    }
+
+    const payload = this.buildClaimRemarkPayload(this.codeClaimState.outbox, claimId);
+    const isESign = this.claims.signWith === this.codeSignType.eSign;
+    const statusRequest$ = isESign
+      ? this.$claim.prepareForESign(payload)
+      : this.$claim.changeClaimStatusById(payload);
+
+    statusRequest$.subscribe(
+      (response: any) => {
+        this.$common.hideLoader();
+        this.disableBtn = false;
+
+        if (!response?.status) {
+          this.$common.showMessage(
+            response?.message || `Unable to submit ${this.getFormDisplayName()}.`,
+            'danger'
+          );
+          return;
+        }
+
+        this.$claim.notifyStatusCountRefresh();
+
+        if (isESign) {
+          this.eSignTempFormObj = response.object || payload;
+          if (typeof $ !== 'undefined') {
+            $('#esign_modal').modal('show');
+          }
+          return;
+        }
+
+        const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
+        if (moduleUrl) {
+          this.router.navigateByUrl(moduleUrl + '/new');
+        }
+      },
+      () => {
+        this.$common.hideLoader();
+        this.disableBtn = false;
+        this.$common.showMessage(
+          `Unable to submit ${this.getFormDisplayName()}.`,
+          'danger'
+        );
+      }
+    );
   }
 
   formValidate(): void {
@@ -1033,11 +1512,13 @@ export class FormLtcAdvanceComponent implements OnInit {
     const ok = window.confirm('Do you really want to delete this GX Form?');
     if (!ok) return;
 
-    this.$formManage.deleteByUrl(this.claims.gxFormFileUrl);
-    this.$formManage.docFileUrlDeleted.pipe(take(1)).subscribe(() => {
-      this.claims.gxFormFileUrl = null;
-      this.showGxFileBrowse = true;
-    });
+    this.claims.deleteGxFileUrl = this.claims.gxFormFileUrl;
+    this.claims.gxFormFileUrl = null;
+    this.gxFile = null;
+    this.gxFileName = '';
+    if (this.gxFilePreviewUrl) URL.revokeObjectURL(this.gxFilePreviewUrl);
+    this.gxFilePreviewUrl = '';
+    this.showGxFileBrowse = true;
   }
 
   openSelectedGxFile() {
@@ -1147,10 +1628,27 @@ export class FormLtcAdvanceComponent implements OnInit {
     });
   }
 
+  private mapTravelRowsForSave(rows: any[]): any[] {
+    return (rows || []).map((row) => {
+      const amount =
+        this.normalizeAmountString(row?.tempAmount) ||
+        this.normalizeAmountString(row?.amount, '0');
+      const cleaned = {
+        ...row,
+        amount,
+      };
+      delete cleaned.tempAmount;
+      return cleaned;
+    });
+  }
+
   saveClaim(type: string, status: string): void {
     if (type !== this.codeClaim.ltcAdv) return;
 
     this.calculateAmount();
+    this.removeEmoji();
+    this.normalizeFinancialPlace();
+    this.normalizeLtcPlace();
     this.disableBtn = true;
     this.$common.showLoader();
 
@@ -1177,7 +1675,10 @@ export class FormLtcAdvanceComponent implements OnInit {
         subFormId: this.activeSubFormId,
       };
 
-      tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
+      tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.claims.yatDocsDTOs || []);
+      tempClaim.yatDtsDetailDTOs = this.mapTravelRowsForSave(
+        tempClaim.yatDtsDetailDTOs || []
+      );
       if (this.supplementaryId) tempClaim.supClaimId = this.supplementaryId;
       if (this.resubClaimId) tempClaim.refAdvanceId = this.resubClaimId;
       tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
@@ -1204,6 +1705,7 @@ export class FormLtcAdvanceComponent implements OnInit {
           if (obj?.claimId || obj?.id) {
             this.claims.claimId = obj.claimId || obj.id;
           }
+          this.mergeSavedLtcResponse(obj);
 
           const moduleUrl = this.$auth.getModuleName
             ? this.$auth.getModuleName()
@@ -1220,25 +1722,27 @@ export class FormLtcAdvanceComponent implements OnInit {
               'success'
             );
           }
-          this.navigateAfterSave(
-            status,
-            obj.claimId || obj.id || this.claims.claimId || this.claimIdParam
-          );
-
-          this.$common.hideLoader();
-          this.disableBtn = false;
+          const savedClaimId =
+            obj.claimId || obj.id || this.claims.claimId || this.claimIdParam;
+          if (status === this.codeClaimState.outbox) {
+            this.completeSubmitStatusTransition(savedClaimId);
+          } else {
+            this.navigateAfterSave(status, savedClaimId);
+            this.$common.hideLoader();
+            this.disableBtn = false;
+          }
           this.checkForPreviewBtn();
         },
         (err: any) => {
-          console.error('Error while saving LTC claim', err);
-          this.$common.showMessage('Error while saving LTC claim.', 'danger');
+          console.error(`Error while saving ${this.getFormDisplayName()}`, err);
+          this.$common.showMessage(`Error while saving ${this.getFormDisplayName()}.`, 'danger');
           this.$common.hideLoader();
           this.disableBtn = false;
         }
       );
     } catch (err) {
-      console.error('Exception while saving LTC claim', err);
-      this.$common.showMessage('Error while saving LTC claim.', 'danger');
+      console.error(`Exception while saving ${this.getFormDisplayName()}`, err);
+      this.$common.showMessage(`Error while saving ${this.getFormDisplayName()}.`, 'danger');
       this.$common.hideLoader();
       this.disableBtn = false;
     }

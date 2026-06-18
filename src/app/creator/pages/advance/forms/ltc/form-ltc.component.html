@@ -337,8 +337,9 @@
                                 &nbsp;&nbsp;
 
                                 <label class="control-label">
-                                  <input type="checkbox" [(ngModel)]="claims.yatLtcAdvDTOs[0].isNewlyMarried"
-                                    [ngModelOptions]="{standalone:true}" (ngModelChange)="resetSpouseDetails()" />
+                                  <input type="checkbox"
+                                    [checked]="claims.yatLtcAdvDTOs[0].isNewlyMarried === 'Yes'"
+                                    (change)="onNewlyMarriedChange($event)" />
                                   Newly Married
                                 </label>
                               </span>
@@ -368,6 +369,135 @@
                                     (click)="getLtcAvailedHistory()">
                                     LTC availed history
                                   </button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="modal fade modal_index in" role="dialog"
+                              [ngClass]="{ 'show d-block': showLtcEntitledModal }"
+                              *ngIf="showLtcEntitledModal">
+                              <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                  <div class="modal-body">
+                                    <button type="button" class="close" aria-label="Close"
+                                      (click)="closeLtcEntitledModal()">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <div class="center-box">
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <h4><strong>LTC Entitlement</strong></h4>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <table class="table table-bordered table-hover">
+                                            <tbody>
+                                              <tr>
+                                                <th></th>
+                                                <th style="text-align: center;"
+                                                  *ngFor="let year of ltcEntitled?.singleBlockYear">
+                                                  {{ year }}
+                                                </th>
+                                              </tr>
+                                              <tr *ngFor="let row of ltcEntitled?.listYearsAvailed; let rowIndex = index">
+                                                <td>{{ sideList[rowIndex] }}</td>
+                                                <td *ngFor="let year of ltcEntitled?.singleBlockYear; let yearIndex = index">
+                                                  <ng-container *ngIf="getEntitlementCell(row, yearIndex) as cell">
+                                                    <div class="panel panel-body text-center"
+                                                      style="padding: 5px 2px; margin-bottom: 0"
+                                                      [style.background-color]="cell.availed == 0 ? '#FF4859' : '#2AEF20'"
+                                                      *ngIf="!cell.members?.length">
+                                                      <input type="checkbox" disabled [checked]="!!cell.availed" />
+                                                    </div>
+                                                    <div class="panel panel-body"
+                                                      style="padding: 5px 2px; margin-bottom: 0"
+                                                      *ngIf="cell.members?.length">
+                                                      <div><b>Name/Relation</b></div>
+                                                      <div *ngFor="let family of cell.members">
+                                                        <p class="table_p">{{ family.memberName }}/{{ family.relation }}</p>
+                                                      </div>
+                                                    </div>
+                                                  </ng-container>
+                                                </td>
+                                              </tr>
+                                              <tr *ngIf="!ltcEntitled?.listYearsAvailed?.length">
+                                                <td [attr.colspan]="(ltcEntitled?.singleBlockYear?.length || 0) + 1"
+                                                  style="text-align: center">
+                                                  No Records
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="modal fade modal_index in" role="dialog"
+                              [ngClass]="{ 'show d-block': showLtcAvailedHistoryModal }"
+                              *ngIf="showLtcAvailedHistoryModal">
+                              <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                  <div class="modal-body">
+                                    <button type="button" class="close" aria-label="Close"
+                                      (click)="closeLtcAvailedHistoryModal()">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <div class="center-box">
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <h4><strong>LTC Availed History</strong></h4>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <table class="table table-bordered table-hover">
+                                            <tbody>
+                                              <tr>
+                                                <th></th>
+                                                <th style="text-align: center;"
+                                                  *ngFor="let year of ltcAvailedHistory?.singleBlockYear">
+                                                  {{ year }}
+                                                </th>
+                                              </tr>
+                                              <tr *ngFor="let row of ltcAvailedHistory?.listYearsAvailed; let rowIndex = index">
+                                                <td>{{ sideList[rowIndex] }}</td>
+                                                <td *ngFor="let year of ltcAvailedHistory?.singleBlockYear; let yearIndex = index">
+                                                  <ng-container *ngIf="getEntitlementCell(row, yearIndex) as cell">
+                                                    <div class="panel panel-body text-center"
+                                                      style="padding: 5px 2px; margin-bottom: 0"
+                                                      *ngIf="!cell.members?.length">
+                                                      <input type="checkbox" disabled [checked]="!!cell.availed" />
+                                                    </div>
+                                                    <div class="panel panel-body"
+                                                      style="padding: 5px 2px; margin-bottom: 0"
+                                                      *ngIf="cell.members?.length">
+                                                      <div><b>Name/Relation/Occurrence Date</b></div>
+                                                      <div *ngFor="let family of cell.members">
+                                                        <p class="table_p">
+                                                          {{ family.memberName }}/{{ family.relation }}/{{ formatDisplayDate(family.occDate) }}
+                                                        </p>
+                                                      </div>
+                                                    </div>
+                                                  </ng-container>
+                                                </td>
+                                              </tr>
+                                              <tr *ngIf="!ltcAvailedHistory?.listYearsAvailed?.length">
+                                                <td [attr.colspan]="(ltcAvailedHistory?.singleBlockYear?.length || 0) + 1"
+                                                  style="text-align: center">
+                                                  No Records
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -417,6 +547,7 @@
                                 <div class="col-md-3 padd_5">
                                   <input type="text" class="form-control" required maxlength="200"
                                     [(ngModel)]="claims.yatLtcAdvDTOs[0].ltcPlace" name="ltcPlace"
+                                    (ngModelChange)="normalizeLtcPlace()"
                                     placeholder="Place" />
                                 </div>
                               </div>
@@ -444,7 +575,7 @@
                                           <td>
                                             <input type="checkbox" [(ngModel)]="f.checkedIndicator"
                                               [ngModelOptions]="{standalone:true}"
-                                              [disabled]="claims.yatLtcAdvDTOs[0].isNewlyMarried===true" />
+                                              [disabled]="claims.yatLtcAdvDTOs[0].isNewlyMarried === 'Yes'" />
                                           </td>
                                           <td>{{f.memberName}}</td>
                                           <td>{{f.age}}</td>
@@ -463,7 +594,7 @@
                             </div>
 
                             <!-- Spouse Details -->
-                            <div class="form-group" *ngIf="claims.yatLtcAdvDTOs[0].isNewlyMarried===true">
+                            <div class="form-group" *ngIf="claims.yatLtcAdvDTOs[0].isNewlyMarried === 'Yes'">
                               <div class="row">
                                 <div class="col-md-12">
                                   <label class="control-label">Spouse Details</label>
@@ -626,7 +757,7 @@
                                         <td>
                                           <input class="form-control" [(ngModel)]="t.tempAmount"
                                             [ngModelOptions]="{standalone:true}"
-                                            (input)="onlyNumber($event); calculateAmount()" />
+                                            (input)="onlyNumber($event); onSavedTravelAmountChange(t)" />
                                         </td>
                                         <td>{{showHyphen(t.reasonForNoDts)}}</td>
                                         <td>{{showHyphen(t.remarks)}}</td>
@@ -645,7 +776,7 @@
                                       </tr>
 
                                       <tr *ngIf="!claims?.yatDtsDetailDTOs?.length">
-                                        <td colspan="10" style="text-align:center;">No Record Found</td>
+                                        <td colspan="10" style="text-align:center;">No Records</td>
                                       </tr>
                                     </tbody>
                                   </table>
@@ -683,7 +814,9 @@
                                     </div>
                                     <div class="col-md-8 padd_5">
                                       <input type="text" class="form-control" required maxlength="200"
-                                        [(ngModel)]="claims.yatLtcAdvDTOs[0].place" name="place" placeholder="Place" />
+                                        [(ngModel)]="claims.yatLtcAdvDTOs[0].place"
+                                        (ngModelChange)="normalizeFinancialPlace()"
+                                        name="place" placeholder="Place" />
                                     </div>
                                   </div>
                                 </div>
@@ -716,6 +849,7 @@
                                 <input type="checkbox" required [(ngModel)]="claims.yatLtcAdvDTOs[0].isUndertaking"
                                   name="isUndertaking" />
                                 I undertake to produce Air/Railway/Road ticket within 10 days to drawal of advance
+                                <sup>*</sup>
                               </label>
                             </div>
 
@@ -806,6 +940,44 @@
                               </div>
                             </div>
 
+                            <!-- IFSC Modal -->
+                            <div class="modal fade ifsc-modal-backdrop" tabindex="-1" role="dialog"
+                              [ngClass]="{ 'show d-block': showIfscModal }" *ngIf="showIfscModal">
+                              <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                <div class="modal-content shadow-lg border-0">
+                                  <div class="modal-header py-2 bg-primary text-white">
+                                    <h5 class="modal-title mb-0">Update IFSC Code</h5>
+                                    <button type="button" class="close text-white" (click)="closeIfscModal()">
+                                      <span>&times;</span>
+                                    </button>
+                                  </div>
+
+                                  <div class="modal-body">
+                                    <div class="form-group mb-2">
+                                      <label class="font-weight-semibold mb-1">
+                                        IFSC Code<span class="text-danger">*</span>
+                                      </label>
+                                      <input type="text" class="form-control form-control-sm" maxlength="11"
+                                        [(ngModel)]="newIfscCode" placeholder="e.g. SBIN0013242" />
+                                      <small class="text-muted">
+                                        Please enter 11 character IFSC code for your bank branch.
+                                      </small>
+                                    </div>
+                                  </div>
+
+                                  <div class="modal-footer py-2">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                                      (click)="closeIfscModal()">
+                                      Cancel
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" (click)="submitIFSCUpdate()">
+                                      Submit
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
                             <label class="control-label">
                               <code>
                                 Note:- In case of any change in the bank account details please contact SASTRA. The form should be submitted only when the account details are corrected.
@@ -828,8 +1000,6 @@
                         <div class="tab-content" *ngIf="activeTab==='ship5'">
                           <div class="tab-pane active show" style="margin-top:10px;">
 
-                            <app-common-document [documentDtos]="documentDtos"></app-common-document>
-
                             <div class="form-group">
                               <div class="row">
                                 <div class="col-md-12">
@@ -839,7 +1009,8 @@
 
                               <div class="row">
                                 <div class="col-md-12">
-                                  <textarea rows="6" class="form-control" [(ngModel)]="claims.internalRemarks"
+                                  <textarea id="internalRemarks" rows="6" cols="225" maxlength="500"
+                                    class="form-control" [(ngModel)]="claims.internalRemarks"
                                     name="internalRemarks" (ngModelChange)="removeEmoji()"></textarea>
                                 </div>
                               </div>

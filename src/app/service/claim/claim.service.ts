@@ -327,6 +327,15 @@ export class ClaimService {
     );
   }
 
+  getPresentUnitStatus(config?: any) {
+    return this.http.get<any>(`codeUnit/getPresentUnitStatus`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
   /**
    * Station master.
    * Old JS: codeStationUrl = ApiUrl + "codeStation"; /all
@@ -416,6 +425,28 @@ export class ClaimService {
   }
 
   /**
+   * LTC block year master.
+   * Old JS: blockYearUrl = ApiUrl + "ltcAdv"; /blockYear
+   */
+  getLtcBlockYears(config?: any) {
+    return this.http.get<any>(`ltcAdv/blockYear`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  validateAdditionalLtc(config?: any) {
+    return this.http.get<any>(`ltcAdv/validateAdditionalLTC`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  /**
    * General remarks master for form.
    * Old JS: formRemarkUrl = ApiUrl + "formRemark"; /all
    */
@@ -474,6 +505,32 @@ export class ClaimService {
 
   getLtcAvailedEntitledHistory(config?: any) {
     return this.http.get<any>(`ltcAvailedHist/getLTCAvailedHistory`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  /**
+   * LTC DOE difference controls Self and Family visibility.
+   * Old JS: ltcAvailedHistUrl = ApiUrl + "ltcAvailedHist"; /getDOEDifference
+   */
+  getLtcDoeDifference(config?: any) {
+    return this.http.get<any>(`ltcAvailedHist/getDOEDifference`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  /**
+   * LTC family details.
+   * Old JS: ltcAvailedHistUrl = ApiUrl + "ltcAvailedHist"; /getFamilyDetails
+   */
+  getLtcFamilyDetails(config?: any) {
+    return this.http.get<any>(`ltcAvailedHist/getFamilyDetails`, config).pipe(
       map((res) => {
         this.$common.parseResponse(res);
         return res;

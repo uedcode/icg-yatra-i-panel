@@ -418,9 +418,8 @@ const routes: Routes = [
       },
       {
         path: 'form-pmt',
-        component: FormPmtDutyComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'PMT Advance', roles: CREATOR_ROLES, subFormId: 'P', formKind: 'advance' },
+        redirectTo: 'form-pmt-duty',
+        pathMatch: 'full',
       },
       {
         path: 'form-ltc-advance',
@@ -430,9 +429,8 @@ const routes: Routes = [
       },
       {
         path: 'form-ltc',
-        component: FormLtcAdvanceComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'LTC Advance', roles: CREATOR_ROLES, subFormId: 'L', formKind: 'advance' },
+        redirectTo: 'form-ltc-advance',
+        pathMatch: 'full',
       },
       {
         path: 'form-manual-adv',

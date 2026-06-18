@@ -12,7 +12,6 @@ import { MasterShipService } from 'src/app/service/master/master-ship.service';
 import { UserService } from 'src/app/service/admin/user.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
-import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
 import { ClaimUtilService } from 'src/app/service/claim/claim-util.service';
 import {
   clearLegacyInvalidFromEvent,
@@ -25,6 +24,7 @@ interface YatForeignTravelDetailDTO {
   id?: string | null;
   amount?: number | string | null;
   descr?: string | null;
+  ltcTravelPrimaryKey?: string | null;
   yatClaimDTO?: any;
 }
 
@@ -72,6 +72,8 @@ interface YatForeignDutyAdvDTO {
   advAmt?: number | string | null;
   totalBudgetedAmt?: number | string | null;
   dtsAmount?: number | string | null;
+  travelDetailsFTEAmt?: number | string | null;
+  nonDtsAmount?: number | string | null;
 
   tempTransferToType?: string | null;
   dutyStation?: string | null;
@@ -130,7 +132,6 @@ export class FormFteComponent implements OnInit {
   fteIsDtsDisabled = false;
   fteTravelBtnName = 'Add';
   fteTravelDetailsBtn = false;
-  private fteEditIndex: number | null = null;
 
   tempFteTravel: any = {
     source: null,
@@ -147,7 +148,8 @@ export class FormFteComponent implements OnInit {
   editTravelIndex: number | null = null;
   row: any;
   noDtsAmount: 0;
-  documentDtos: any[] = [];
+  eSignTempFormObj: any = null;
+  private fteTravelPrimaryKeyCounter = 0;
 
   onFteModeChange() {
     const mode = (this.tempFteTravel.modeOfTravel || '').trim();
@@ -230,6 +232,36 @@ export class FormFteComponent implements OnInit {
     if (!this.claims.yatDtsDetailDTOs) this.claims.yatDtsDetailDTOs = [];
   }
 
+  private nextFteTravelPrimaryKey(): number {
+    this.fteTravelPrimaryKeyCounter += 1;
+    return this.fteTravelPrimaryKeyCounter;
+  }
+
+  private nextForeignTravelId(): string {
+    return Math.random().toString(36).substring(7);
+  }
+
+  private normalizeFteDtsRows(rows: any[] | null | undefined): any[] {
+    return (rows || []).map((row: any) => ({
+      ...row,
+      ltcTravelPrimaryKey: row?.ltcTravelPrimaryKey ?? this.nextFteTravelPrimaryKey(),
+      amount: this.normalizeAmountValue(row?.amount, null),
+      tempAmount:
+        this.normalizeAmountValue(row?.tempAmount, null) ??
+        this.normalizeAmountValue(row?.amount, null),
+      _reasonError: false,
+    }));
+  }
+
+  private normalizeForeignTravelRows(rows: any[] | null | undefined): any[] {
+    return (rows || []).map((row: any) => ({
+      ...row,
+      id: row?.id ?? this.nextForeignTravelId(),
+      ltcTravelPrimaryKey: row?.ltcTravelPrimaryKey ?? this.nextForeignTravelId(),
+      amount: this.normalizeAmountValue(row?.amount, null),
+    }));
+  }
+
   addFteTravelDetails(): void {
     this.ensureDtsList();
     if (!this.validateTempFteTravel()) return;
@@ -237,7 +269,8 @@ export class FormFteComponent implements OnInit {
     const t = this.tempFteTravel;
 
     const row: any = {
-      dtsDetailId: null,
+      ltcTravelPrimaryKey: t.ltcTravelPrimaryKey || this.nextFteTravelPrimaryKey(),
+      dtsDetailId: t.dtsDetailId ?? null,
       source: (t.source || '').trim(),
       destination: (t.destination || '').trim(),
       modeOfTravel: t.modeOfTravel,
@@ -246,6 +279,7 @@ export class FormFteComponent implements OnInit {
       isDts: t.isDts,
       reasonForNoDts: t.isDts === 'No' ? (t.reasonForNoDts || '').trim() : null,
       remarks: (t.remarks || '').trim(),
+      amount: (t.amount ?? '').toString().trim(),
       // ✅ keep amount editable like TY duty
       tempAmount: (t.amount ?? '').toString().trim(),
     };
@@ -275,13 +309,15 @@ export class FormFteComponent implements OnInit {
 
     this.tempFteTravel = {
       source: row.source ?? null,
+      dtsDetailId: row.dtsDetailId ?? null,
       destination: row.destination ?? null,
       modeOfTravel: row.modeOfTravel ?? null,
       otherModeOfTravel: row.otherModeOfTravel ?? null,
       isDts: row.isDts ?? null,
-      amount: row.tempAmount ?? null,
+      amount: row.tempAmount ?? row.amount ?? null,
       reasonForNoDts: row.reasonForNoDts ?? null,
       remarks: row.remarks ?? null,
+      ltcTravelPrimaryKey: row.ltcTravelPrimaryKey ?? null,
       _reasonError: false,
     };
 
@@ -294,14 +330,18 @@ export class FormFteComponent implements OnInit {
     this.claims.yatDtsDetailDTOs.splice(i, 1);
 
     if (this.fteEditTravelIndex === i) this.resetTempFteTravelDetails();
+    if (this.fteEditTravelIndex !== null && this.fteEditTravelIndex > i) {
+      this.fteEditTravelIndex -= 1;
+    }
     this.recalcFteTotals();
   }
 
   resetTempFteTravelDetails() {
-    this.fteEditIndex = null;
+    this.fteEditTravelIndex = null;
     this.fteTravelBtnName = 'Add';
     this.tempFteTravel = {
       source: null,
+      dtsDetailId: null,
       destination: null,
       modeOfTravel: null,
       otherModeOfTravel: null,
@@ -309,6 +349,7 @@ export class FormFteComponent implements OnInit {
       amount: null,
       reasonForNoDts: null,
       remarks: null,
+      ltcTravelPrimaryKey: null,
       _reasonError: false,
     };
     this.fteOtherMode = false;
@@ -325,6 +366,12 @@ export class FormFteComponent implements OnInit {
   // tempFteTravel: any;
   // fteTravelDetailsBtn: any;
   // fteTravelBtnName: any;
+
+  private normalizeFtePurposeTypes(list: any[]): any[] {
+    return (list || []).filter(
+      (item: any) => item?.descr !== this.purposeType.investive
+    );
+  }
 
   getPurposeTypes(): void {
     this.$common.showLoader();
@@ -343,8 +390,9 @@ export class FormFteComponent implements OnInit {
           return;
         }
 
-        this.purposeTypes = Array.isArray(res.object) ? res.object : [];
-        console.log('FTE purposeTypes =>', this.purposeTypes);
+        this.purposeTypes = this.normalizeFtePurposeTypes(
+          Array.isArray(res.object) ? res.object : []
+        );
       },
       error: (err) => {
         this.$common.hideLoader();
@@ -367,9 +415,9 @@ export class FormFteComponent implements OnInit {
 
     this.$dropdownManage.getPurposeTypes(config).subscribe({
       next: (res: any) => {
-        // adjust these keys if your backend uses different property names
-        this.purposeTypes = Array.isArray(res?.object) ? res.object : [];
-        console.log('FTE purposeTypes:', this.purposeTypes);
+        this.purposeTypes = this.normalizeFtePurposeTypes(
+          Array.isArray(res?.object) ? res.object : []
+        );
       },
       error: (e) => {
         console.error('Purpose types error', e);
@@ -379,64 +427,114 @@ export class FormFteComponent implements OnInit {
   }
 
   navigatePreview(route: string, id: any): void {
+    const previewRoute = route || 'preview-fte-advance';
     const previewId = id || this.claims?.claimId || this.claimIdParam;
-    this.router.navigate([`../${this.getPreviewRoute()}`], {
-      queryParams:
-        this.activeFormKind === 'claim'
-          ? {
-              id: previewId,
-              subFormId: this.activeSubFormId,
-              ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
-            }
-          : {
-              id: previewId,
-              subFormId: this.activeSubFormId,
-              ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
-            },
-    });
+    if (!previewRoute || !previewId) return;
+
+    const queryParams = {
+      id: previewId,
+      ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+    };
+    const queryString = Object.entries(queryParams)
+      .filter(([, value]) => value !== undefined && value !== null && value !== '')
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+      )
+      .join('&');
+    const moduleUrl = this.getModuleUrl();
+    const previewUrl = `${moduleUrl}/${previewRoute}${queryString ? `?${queryString}` : ''}`;
+    window.open(previewUrl, '_blank');
   }
 
-  private navigateAfterSave(
-    status: string,
-    savedClaimId?: string | null
-  ): void {
+  private getModuleUrl(): string {
     const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
-    if (!moduleUrl) return;
+    return String(moduleUrl || '').replace(/\/$/, '');
+  }
 
-    if (status === this.codeClaimState.outbox) {
-      this.router.navigateByUrl(moduleUrl + `/submitted`);
+  private buildClaimRemarkPayload(
+    status: string,
+    claimId: string,
+    remark: string = ''
+  ): any {
+    return {
+      claimId,
+      roleTypeId: this.userIdDetails?.roleTypeId,
+      userId: this.userIdDetails?.userId,
+      status,
+      remark,
+      financialYear: this.userIdDetails?.financialYear,
+      moduleId:
+        this.userIdDetails?.moduleId ||
+        (this.$auth.getRuntimeModuleId ? this.$auth.getRuntimeModuleId() : undefined),
+    };
+  }
+
+  private completeLegacyStatusTransition(status: string, claimId: string): void {
+    if (!claimId) {
+      this.$common.showMessage('Unable to update FTE Advance status.', 'danger');
+      this.$common.hideLoader();
+      this.disableBtn = false;
       return;
     }
 
-    if (this.supplementaryId && savedClaimId) {
-      this.router.navigate([moduleUrl + `/${this.getCurrentFormRoute()}`], {
-        queryParams: {
-          ...(this.activeFormKind === 'claim'
-            ? { id: savedClaimId }
-            : { id: savedClaimId }),
-          supId: this.supplementaryId,
-        },
-      });
-      return;
-    }
+    const payload = this.buildClaimRemarkPayload(status, claimId);
+    const isESignSubmit =
+      status === this.codeClaimState.outbox &&
+      this.claims?.signWith === this.codeSignType.eSign;
+    const statusRequest = isESignSubmit
+      ? this.$claim.prepareForESign(payload)
+      : this.$claim.changeClaimStatusById(payload);
 
-    this.router.navigateByUrl(moduleUrl + `/draft`);
-  }
+    statusRequest.subscribe(
+      (res: any) => {
+        if (res?.status === false) {
+          this.$common.showMessage(
+            res?.message || 'Unable to update FTE Advance status.',
+            'danger'
+          );
+          this.$common.hideLoader();
+          this.disableBtn = false;
+          return;
+        }
 
-  private resolveFormKind(rawFormKind: any): 'advance' | 'claim' {
-    if (String(rawFormKind || '').toLowerCase() === 'claim') {
-      return 'claim';
-    }
-    const routePath = this.route.snapshot.routeConfig?.path || '';
-    return routePath.includes('claim') ? 'claim' : 'advance';
-  }
+        this.$claim.notifyStatusCountRefresh();
+        if (isESignSubmit) {
+          this.eSignTempFormObj = {
+            id: claimId,
+            claimId,
+            roleTypeId: this.userIdDetails?.roleTypeId,
+            userId: this.userIdDetails?.userId,
+            status,
+            remark: '',
+            financialYear: this.userIdDetails?.financialYear,
+            moduleId:
+              this.userIdDetails?.moduleId ||
+              (this.$auth.getRuntimeModuleId ? this.$auth.getRuntimeModuleId() : undefined),
+          };
+          if (typeof $ !== 'undefined') {
+            $('#esign_modal').modal('show');
+          }
+        } else if (status === this.codeClaimState.outbox) {
+          const moduleUrl = this.getModuleUrl();
+          if (moduleUrl) {
+            this.router.navigateByUrl(moduleUrl + '/new');
+          }
+        }
 
-  private getCurrentFormRoute(): string {
-    return this.activeFormKind === 'claim' ? 'form-fte-claim' : 'form-fte-advance';
-  }
-
-  private getPreviewRoute(): string {
-    return this.activeFormKind === 'claim' ? 'preview-fte-claim' : 'preview-fte-advance';
+        this.$common.hideLoader();
+        this.disableBtn = false;
+      },
+      (err: any) => {
+        console.error('Error while updating FTE Advance status', err);
+        this.$common.showMessage(
+          'Error while updating FTE Advance status.',
+          'danger'
+        );
+        this.$common.hideLoader();
+        this.disableBtn = false;
+      }
+    );
   }
 
   checkValidSignType(
@@ -463,7 +561,7 @@ export class FormFteComponent implements OnInit {
         if (response?.status === false) {
           this.claims.signWith = this.codeSignType.inkSign;
           this.$common.showMessage(
-            response?.message || 'eSign is not available for this FTE claim.',
+            response?.message || 'eSign is not available for this FTE Advance.',
             'danger'
           );
         }
@@ -515,18 +613,13 @@ export class FormFteComponent implements OnInit {
   newIfscCode: string = '';
 
   // Travel add/edit state
-  tempTravel: YatForeignTravelDetailDTO = {};
-  selectedTravelIndex: number | null = null;
-  travelBtnName = 'Add';
-
   // Claim model
   claims: ClaimsFteAdv = this.createEmptyClaims();
   //isIfscNull: any;
-  activeFormKind: 'advance' | 'claim' = 'advance';
   activeSubFormId: string = this.codeClaim.fteAdv;
 
   get pageTitle(): string {
-    return this.activeFormKind === 'claim' ? 'FTE Claim' : 'REQUISITION FOR FTE ADVANCE';
+    return 'REQUISITION FOR FTE ADVANCE';
   }
 
   get currentFormCode(): string {
@@ -548,8 +641,7 @@ export class FormFteComponent implements OnInit {
     private $user: UserService,
     private $common: CommonService,
     private $claim: ClaimService,
-    private $util: ClaimUtilService,
-    private $codeDocInfo: CodeDocInfoService
+    private $util: ClaimUtilService
   ) {}
 
   ngOnInit(): void {
@@ -560,9 +652,6 @@ export class FormFteComponent implements OnInit {
     this.initFromRoute();
     this.getUnits();
     this.loadFtePurposeTypes();
-    this.$codeDocInfo.documentDtos.subscribe((docs: any) => {
-      this.documentDtos = Array.isArray(docs) ? docs : [];
-    });
 
     this.route.queryParams.subscribe(() => {
       this.getFormDetails();
@@ -571,10 +660,9 @@ export class FormFteComponent implements OnInit {
 
   private initFromRoute(): void {
     const qp = this.route.snapshot.queryParamMap;
-    this.activeFormKind = this.resolveFormKind(this.route.snapshot.data?.['formKind']);
-    this.activeSubFormId = this.activeFormKind === 'claim' ? this.codeClaim.fteClm : this.codeClaim.fteAdv;
+    this.activeSubFormId = this.codeClaim.fteAdv;
     this.claims.codeSubFormDTO = { subFormId: this.activeSubFormId };
-    this.claimIdParam = qp.get('claimId') || qp.get('id') || qp.get('resubId');
+    this.claimIdParam = qp.get('id') || qp.get('resubId');
     this.resubClaimId = qp.get('resubId');
     this.supplementaryId = qp.get('supId');
   }
@@ -635,7 +723,7 @@ export class FormFteComponent implements OnInit {
       duration: null,
       stationProceedingTo: null,
 
-      isDts: null,
+      isDts: 'Yes',
       reasonDts: null,
 
       arrFare: null,
@@ -669,16 +757,6 @@ export class FormFteComponent implements OnInit {
       value === undefined ||
       (typeof value === 'string' && value.trim() === '')
     );
-  }
-
-  private toNumber(value: unknown): number {
-    if (value === null || value === undefined || value === '') return 0;
-    const n = Number(value);
-    return isNaN(n) ? 0 : n;
-  }
-
-  private sumTravelAmount(rows: YatForeignTravelDetailDTO[]): number {
-    return (rows || []).reduce((sum, r) => sum + this.toNumber(r?.amount), 0);
   }
 
   /* ======================
@@ -771,7 +849,7 @@ export class FormFteComponent implements OnInit {
             adv.date = dto.date ?? null;
 
             // ---------- DTS ----------
-            adv.isDts = dto.isDts ?? null;
+            adv.isDts = dto.isDts ?? adv.isDts ?? 'Yes';
             adv.reasonDts = dto.reasonDts ?? null;
 
             // ---------- AMOUNTS ----------
@@ -782,14 +860,16 @@ export class FormFteComponent implements OnInit {
             adv.totalBudgetedAmt = dto.totalBudgetedAmt ?? 0;
 
             // ---------- TRAVEL DETAILS LIST ----------
-            const travelList = Array.isArray(obj.yatForeignTravelDetailDTOs)
-              ? obj.yatForeignTravelDetailDTOs
-              : [];
+            const travelList = this.normalizeForeignTravelRows(
+              Array.isArray(obj.yatForeignTravelDetailDTOs)
+                ? obj.yatForeignTravelDetailDTOs
+                : []
+            );
             this.claims.yatForeignTravelDetailDTOs = travelList;
 
             // ---------- BANK ----------
             const bank = obj.yatClaimBankDetailDTO || {};
-            this.claims.yatClaimBankDetailDTO = {
+            const normalizedBankDetail = {
               ...this.claims.yatClaimBankDetailDTO,
               bankName:
                 bank.bankName ?? this.claims.yatClaimBankDetailDTO.bankName,
@@ -803,8 +883,12 @@ export class FormFteComponent implements OnInit {
               micrCode:
                 bank.micrCode ?? this.claims.yatClaimBankDetailDTO.micrCode,
               bankAccNo:
-                bank.bankAccNo ?? this.claims.yatClaimBankDetailDTO.bankAccNo,
+                bank.bankAccNo ??
+                bank.accountNo ??
+                this.claims.yatClaimBankDetailDTO.bankAccNo ??
+                this.claims.yatClaimBankDetailDTO.accountNo,
             };
+            this.claims.yatClaimBankDetailDTO = normalizedBankDetail;
 
             // merge claim root (keeps your component structure stable)
             this.claims = {
@@ -812,17 +896,16 @@ export class FormFteComponent implements OnInit {
               ...obj,
               yatForeignDutyAdvDTOs: [{ ...adv }],
               yatForeignTravelDetailDTOs: travelList,
-              yatDtsDetailDTOs: obj.yatDtsDetailDTOs || this.claims.yatDtsDetailDTOs,
+              yatDtsDetailDTOs: this.normalizeFteDtsRows(
+                obj.yatDtsDetailDTOs || this.claims.yatDtsDetailDTOs
+              ),
               yatDocsDTOs: obj.yatDocsDTOs || [],
-              yatClaimBankDetailDTO:
-                obj.yatClaimBankDetailDTO || this.claims.yatClaimBankDetailDTO,
+              yatClaimBankDetailDTO: normalizedBankDetail,
             };
             if (this.resubClaimId) {
               (this.claims as any).refAdvanceId = this.resubClaimId;
             }
 
-            this.documentDtos = this.claims.yatDocsDTOs || [];
-            this.$codeDocInfo.setDocument(this.documentDtos as []);
             this.claims.signWith =
               obj.signWith || this.claims.signWith || this.codeSignType.eSign;
             this.showGxFileBrowse = !this.claims?.gxFormFileUrl;
@@ -867,79 +950,7 @@ export class FormFteComponent implements OnInit {
    * ====================== */
   calculateAmount(type: string): void {
     if (type !== this.codeClaim.fteAdv) return;
-
-    const adv = this.claims.yatForeignDutyAdvDTOs[0];
-    if (!adv) return;
-
-    // Travel total from list
-    const travelTotal = this.sumTravelAmount(
-      this.claims.yatForeignTravelDetailDTOs
-    );
-
-    // Add arrFare if used
-    const arrFare = this.toNumber(adv.arrFare);
-
-    const total = travelTotal + arrFare;
-
-    adv.totalAmt = total;
-    // Your Java DTO has advAmt + totalBudgetedAmt, keep it simple like TY:
-    adv.advAmt = Math.round(total);
-    adv.dtsAmount = this.toNumber(adv.dtsAmount); // keep server value unless you compute it somewhere else
-    adv.totalBudgetedAmt =
-      this.toNumber(adv.advAmt) + this.toNumber(adv.dtsAmount);
-  }
-
-  /* ======================
-   *  TRAVEL ADD/EDIT/DELETE
-   * ====================== */
-  addTravel(detail: YatForeignTravelDetailDTO, type: string): void {
-    if (type !== this.codeClaim.fteAdv) return;
-
-    if (this.isNullOrEmpty(detail.descr)) {
-      this.$common.showMessage('Description is required.', 'danger');
-      return;
-    }
-    if (this.isNullOrEmpty(detail.amount)) {
-      this.$common.showMessage('Amount is required.', 'danger');
-      return;
-    }
-
-    if (this.selectedTravelIndex !== null) {
-      this.claims.yatForeignTravelDetailDTOs[this.selectedTravelIndex] = {
-        ...detail,
-      };
-    } else {
-      this.claims.yatForeignTravelDetailDTOs.push({ ...detail });
-    }
-
-    this.resetTempTravel();
-    this.calculateAmount(this.codeClaim.fteAdv);
-  }
-
-  editTravel(index: number): void {
-    if (index < 0 || index >= this.claims.yatForeignTravelDetailDTOs.length)
-      return;
-    this.selectedTravelIndex = index;
-    this.tempTravel = { ...this.claims.yatForeignTravelDetailDTOs[index] };
-    this.travelBtnName = 'Update';
-  }
-
-  deleteTravel(index: number, type: string): void {
-    if (type !== this.codeClaim.fteAdv) return;
-    if (index < 0 || index >= this.claims.yatForeignTravelDetailDTOs.length)
-      return;
-
-    const ok = window.confirm('Do you really want to delete this row?');
-    if (!ok) return;
-
-    this.claims.yatForeignTravelDetailDTOs.splice(index, 1);
-    this.calculateAmount(this.codeClaim.fteAdv);
-  }
-
-  resetTempTravel(): void {
-    this.tempTravel = {} as YatForeignTravelDetailDTO;
-    this.selectedTravelIndex = null;
-    this.travelBtnName = 'Add';
+    this.recalcFteTotals();
   }
 
   /* ======================
@@ -1051,10 +1062,11 @@ export class FormFteComponent implements OnInit {
       if (!tempClaim.signWith) tempClaim.signWith = this.codeSignType.eSign;
       if (this.supplementaryId) tempClaim.supClaimId = this.supplementaryId;
       if (this.resubClaimId) tempClaim.refAdvanceId = this.resubClaimId;
-      tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
+      tempClaim.yatDocsDTOs = [];
 
       // ifsc flag
       tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
+      this.normalizeFtePayloadForSave(tempClaim);
 
       // date conversions for adv DTO
       tempClaim.yatForeignDutyAdvDTOs.forEach((adv: any) => {
@@ -1077,6 +1089,16 @@ export class FormFteComponent implements OnInit {
 
       this.$claim.createOrUpdateAdvance(formData, null).subscribe(
         (res: any) => {
+          if (!res || res?.status === false) {
+            this.$common.showMessage(
+              res?.message || 'Unable to save FTE Advance.',
+              'danger'
+            );
+            this.$common.hideLoader();
+            this.disableBtn = false;
+            return;
+          }
+
           const obj = Array.isArray(res?.object)
             ? res.object[0]
             : res?.object || res?.obj || res;
@@ -1090,14 +1112,14 @@ export class FormFteComponent implements OnInit {
 
           if (obj.id || obj.claimId)
             this.claims.claimId = obj.claimId || obj.id;
-
-          const moduleUrl = this.$auth.getModuleName
-            ? this.$auth.getModuleName()
-            : '';
+          this.mergeSavedFteResponse(obj);
+          if (this.resubClaimId) {
+            (this.claims as any).refAdvanceId = this.resubClaimId;
+          }
 
           if (respStatus === this.codeClaimState.outbox) {
             this.$common.showMessage(
-              res?.message || 'FTE claim submitted successfully!',
+              res?.message || 'FTE Advance submitted successfully!',
               'success'
             );
           } else if (respStatus === this.codeClaimState.draft) {
@@ -1106,19 +1128,16 @@ export class FormFteComponent implements OnInit {
               'success'
             );
           }
-          this.navigateAfterSave(
+          this.completeLegacyStatusTransition(
             respStatus,
             obj.claimId || obj.id || this.claims.claimId || this.claimIdParam
           );
-
-          this.$common.hideLoader();
-          this.disableBtn = false;
           this.checkForPreviewBtn();
         },
         (err: any) => {
-          console.error('Error while saving FTE Advance claim', err);
+          console.error('Error while saving FTE Advance', err);
           this.$common.showMessage(
-            'Error while saving FTE Advance claim.',
+            'Error while saving FTE Advance.',
             'danger'
           );
           this.$common.hideLoader();
@@ -1126,9 +1145,9 @@ export class FormFteComponent implements OnInit {
         }
       );
     } catch (err) {
-      console.error('Exception while saving FTE Advance claim', err);
+      console.error('Exception while saving FTE Advance', err);
       this.$common.showMessage(
-        'Error while saving FTE Advance claim.',
+        'Error while saving FTE Advance.',
         'danger'
       );
       this.$common.hideLoader();
@@ -1201,7 +1220,7 @@ export class FormFteComponent implements OnInit {
     }
 
     if (!Array.isArray(this.claims.yatDtsDetailDTOs) || this.claims.yatDtsDetailDTOs.length === 0) {
-      this.activateTab('ship4');
+      this.activateTab('ship2');
       this.$common.showMessage('Please add at least one travel detail row.', 'danger');
       return false;
     }
@@ -1219,7 +1238,7 @@ export class FormFteComponent implements OnInit {
       const message = (invalidTravelRow?.modeOfTravel || '').trim() === 'Others'
         ? 'Please fill Other Mode of Travel for all travel detail rows.'
         : 'Reason for not using DTS is required for all non-DTS travel detail rows.';
-      this.activateTab('ship4');
+      this.activateTab('ship2');
       this.$common.showMessage(message, 'danger');
       return false;
     }
@@ -1244,13 +1263,18 @@ export class FormFteComponent implements OnInit {
   }
 
   submitIFSCUpdate(): void {
-    if (this.isNullOrEmpty(this.newIfscCode)) {
+    const ifscCode = (this.newIfscCode || '').trim().toUpperCase();
+    if (this.isNullOrEmpty(ifscCode)) {
       this.$common.showMessage('Please enter IFSC code.', 'danger');
+      return;
+    }
+    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode)) {
+      this.$common.showMessage('Please enter valid IFSC code.', 'danger');
       return;
     }
 
     const bankObj: any = {
-      ifscCode: this.newIfscCode.trim(),
+      ifscCode,
       userId:
         this.claims?.aclUserDTO?.userId || this.userIdDetails?.userId || null,
     };
@@ -1258,27 +1282,30 @@ export class FormFteComponent implements OnInit {
     const config: any = { headers: {} };
     if (this.claims?.claimId) config.headers.claimId = this.claims.claimId;
 
+    this.$common.showLoader();
     this.$claim.createOrUpdateIfsc(bankObj, config).subscribe({
       next: (response: any) => {
         const data: any = this.$common.parseResponse(response);
+        this.$common.hideLoader();
         if (data && data.status === true) {
           if (this.claims?.yatClaimBankDetailDTO) {
             this.claims.yatClaimBankDetailDTO.ifscCode =
-              data.object?.[0]?.ifscCode || this.newIfscCode;
+              data.object?.[0]?.ifscCode || ifscCode;
           }
           this.$common.showMessage(
-            data.message || 'IFSC updated successfully',
+            data.message || 'IFSC Code updated successfully.',
             'success'
           );
           this.closeIfscModal();
         } else {
           this.$common.showMessage(
-            data?.message || 'Failed to update IFSC.',
+            data?.message || 'Failed to update IFSC code.',
             'danger'
           );
         }
       },
       error: (err: any) => {
+        this.$common.hideLoader();
         console.error('Error while updating IFSC:', err);
         this.$common.showMessage('Error while updating IFSC code.', 'danger');
       },
@@ -1299,12 +1326,12 @@ export class FormFteComponent implements OnInit {
         },
         (err) => {
           this.$common.hideLoader();
-          console.log(err);
+          console.error('Error while loading FTE units.', err);
         }
       );
     } catch (error) {
       this.$common.hideLoader();
-      console.log(error);
+      console.error('Error while loading FTE units.', error);
     }
   }
 
@@ -1364,26 +1391,12 @@ export class FormFteComponent implements OnInit {
     const adv = this.claims?.yatForeignDutyAdvDTOs?.[0];
     if (!adv) return;
 
-    const type = (adv.purposeType || '').toString().trim();
-
-    // If user chooses "Other", clear guest details
-    if (type === this.purposeType.other) {
-      adv.personName = null;
-      adv.relation = null;
-      adv.age = null;
-      adv.gender = null;
-    }
-
-    // If user chooses "Investiture Ceremony", clear free-text purpose
-    if (type === this.purposeType.investive) {
-      adv.purpose = null;
-    }
+    adv.purpose = null;
+    adv.personName = null;
+    adv.relation = null;
+    adv.age = null;
+    adv.gender = null;
   }
-
-  // deleteGxForm(): void {
-  //   (this.claims as any).gxFormFileUrl = null;
-  //   this.gxFormModel = null;
-  // }
 
   // --- GX Form Upload (PDF up to 512 KB) ---
 
@@ -1538,77 +1551,20 @@ export class FormFteComponent implements OnInit {
     }
   }
 
-  // temp row (matches YatForeignTravelDetailDTO)
-  tempForeignTravel: any = {
-    id: null,
-    descr: null,
-    amount: null,
-  };
+  allowOnlyTravelAlphabets(event: any, field: 'source' | 'destination'): void {
+    const value = String(event?.target?.value || '');
+    const cleaned = value.replace(/[^a-zA-Z ]/g, '');
+
+    if (event?.target) {
+      event.target.value = cleaned;
+    }
+
+    this.tempFteTravel[field] = cleaned;
+  }
 
   foreignTravelBtnName = 'Add';
   foreignTravelBtnDisabled = false;
   private editForeignTravelIndex: number | null = null;
-
-  private validateForeignTravelRow(row: any): boolean {
-    if (this.isNullOrEmpty(row?.descr)) return false;
-    if (this.isNullOrEmpty(row?.amount)) return false;
-    return true;
-  }
-
-  addOrUpdateForeignTravel() {
-    this.ensureForeignTravelList();
-
-    // basic validation
-    if (!this.validateForeignTravelRow(this.tempForeignTravel)) {
-      // use your toast/alert here if you have
-      return;
-    }
-
-    const row = {
-      id: this.tempForeignTravel.id ?? null,
-      descr: (this.tempForeignTravel.descr || '').trim(),
-      amount: this.tempForeignTravel.amount, // keep as string if backend expects string
-    };
-
-    if (this.editForeignTravelIndex !== null) {
-      this.claims.yatForeignTravelDetailDTOs[this.editForeignTravelIndex] = row;
-    } else {
-      this.claims.yatForeignTravelDetailDTOs.push(row);
-    }
-
-    this.resetForeignTravelTemp();
-  }
-
-  editForeignTravel(i: number) {
-    const row = this.claims?.yatForeignTravelDetailDTOs?.[i];
-    if (!row) return;
-
-    this.editForeignTravelIndex = i;
-    this.foreignTravelBtnName = 'Update';
-
-    this.tempForeignTravel = {
-      id: row.id ?? null,
-      descr: row.descr ?? null,
-      amount: row.amount ?? null,
-    };
-  }
-
-  deleteForeignTravel(i: number) {
-    if (!this.claims?.yatForeignTravelDetailDTOs?.length) return;
-
-    this.claims.yatForeignTravelDetailDTOs.splice(i, 1);
-
-    // if deleting the row being edited, reset
-    if (this.editForeignTravelIndex === i) this.resetForeignTravelTemp();
-  }
-
-  resetForeignTravelTemp() {
-    this.editForeignTravelIndex = null;
-    this.foreignTravelBtnName = 'Add';
-    this.tempForeignTravel = { id: null, descr: null, amount: null };
-  }
-
-  // Add these in FormFteComponent class
 
   tempForeignTravelDetail: any = { id: null, descr: null, amount: null };
 
@@ -1618,14 +1574,16 @@ export class FormFteComponent implements OnInit {
       .toString()
       .trim();
 
-    // Description required
-    if (!d) {
-      this.$common.showMessage('Description is required.', 'danger');
+    if (!rawAmt) {
+      this.$common.showMessage('Amount Field is required', 'danger');
       return;
     }
 
-    // Amount required + numeric + > 0
-    // digits only (no minus, no decimal). If you want decimal, tell me.
+    if (!d) {
+      this.$common.showMessage('Remark Field is required', 'danger');
+      return;
+    }
+
     if (!/^\d+$/.test(rawAmt)) {
       this.$common.showMessage('Amount must be a valid number.', 'danger');
       return;
@@ -1642,8 +1600,14 @@ export class FormFteComponent implements OnInit {
     }
 
     if (this.editForeignTravelIndex !== null) {
+      const rowId = this.tempForeignTravelDetail?.id;
       const row =
+        this.claims.yatForeignTravelDetailDTOs.find((item: any) => item?.id === rowId) ||
         this.claims.yatForeignTravelDetailDTOs[this.editForeignTravelIndex];
+      if (!row) {
+        this.resetForeignTravelDetail();
+        return;
+      }
 
       row.descr = d;
       row.amount = amt; // store as number
@@ -1652,7 +1616,8 @@ export class FormFteComponent implements OnInit {
       this.foreignTravelBtnName = 'Add';
     } else {
       this.claims.yatForeignTravelDetailDTOs.push({
-        id: null,
+        id: this.nextForeignTravelId(),
+        ltcTravelPrimaryKey: this.nextForeignTravelId(),
         descr: d,
         amount: amt, // store as number
       });
@@ -1681,18 +1646,111 @@ export class FormFteComponent implements OnInit {
 
     this.claims.yatForeignTravelDetailDTOs.splice(index, 1);
 
-    // if deleting the one being edited
     if (this.editForeignTravelIndex === index) {
       this.resetForeignTravelDetail();
+    } else if (this.editForeignTravelIndex !== null && this.editForeignTravelIndex > index) {
+      this.editForeignTravelIndex -= 1;
     }
 
-    this.editForeignTravelIndex = null;
-    this.foreignTravelBtnName = 'Add';
     this.recalcFteTotals();
   }
 
   resetForeignTravelDetail(): void {
     this.tempForeignTravelDetail = { id: null, descr: '', amount: '' };
+    this.editForeignTravelIndex = null;
+    this.foreignTravelBtnName = 'Add';
+  }
+
+  onFteTravelAmountChange(row: any): void {
+    if (!row) return;
+
+    const rawValue = (row.tempAmount ?? '').toString().trim();
+    if (rawValue === '') {
+      this.recalcFteTotals();
+      return;
+    }
+
+    const currentAmount = Number(rawValue);
+    const originalAmount = Number(row.amount ?? 0);
+    if (
+      Number.isFinite(currentAmount) &&
+      Number.isFinite(originalAmount) &&
+      originalAmount > 0 &&
+      currentAmount > originalAmount
+    ) {
+      row.tempAmount = originalAmount;
+    }
+
+    this.recalcFteTotals();
+  }
+
+  private mergeSavedFteResponse(obj: any): void {
+    if (!obj) return;
+
+    const currentAdv = this.claims.yatForeignDutyAdvDTOs?.[0] || this.createEmptyFteAdv();
+    const savedAdv = Array.isArray(obj.yatForeignDutyAdvDTOs)
+      ? obj.yatForeignDutyAdvDTOs[0]
+      : null;
+    const savedDtsRows = Array.isArray(obj.yatDtsDetailDTOs)
+      ? this.normalizeFteDtsRows(obj.yatDtsDetailDTOs)
+      : this.claims.yatDtsDetailDTOs;
+    const savedForeignRows = this.normalizeForeignTravelRows(
+      Array.isArray(obj.yatForeignTravelDetailDTOs)
+        ? obj.yatForeignTravelDetailDTOs
+        : this.claims.yatForeignTravelDetailDTOs
+    );
+    const bank = obj.yatClaimBankDetailDTO || this.claims.yatClaimBankDetailDTO;
+
+    this.claims = {
+      ...this.claims,
+      ...obj,
+      yatForeignDutyAdvDTOs: [{ ...currentAdv, ...(savedAdv || {}) }],
+      yatDtsDetailDTOs: savedDtsRows,
+      yatForeignTravelDetailDTOs: savedForeignRows,
+      yatClaimBankDetailDTO: {
+        ...this.claims.yatClaimBankDetailDTO,
+        ...bank,
+        bankAccNo:
+          bank?.bankAccNo ??
+          bank?.accountNo ??
+          this.claims.yatClaimBankDetailDTO.bankAccNo ??
+          this.claims.yatClaimBankDetailDTO.accountNo,
+      },
+      yatDocsDTOs: [],
+    };
+
+    this.showGxFileBrowse = !this.claims?.gxFormFileUrl;
+    delete (this.claims as any).deleteGxFileUrl;
+    this.recalcFteTotals();
+  }
+
+  private normalizeFtePayloadForSave(tempClaim: any): void {
+    const adv = tempClaim?.yatForeignDutyAdvDTOs?.[0];
+    if (adv) {
+      tempClaim.claimAmt = adv.advAmt ?? 0;
+    }
+
+    if (Array.isArray(tempClaim?.yatDtsDetailDTOs)) {
+      tempClaim.yatDtsDetailDTOs = tempClaim.yatDtsDetailDTOs.map((row: any) => {
+        const normalized = { ...row };
+        normalized.amount =
+          this.normalizeAmountValue(normalized.tempAmount, null) ??
+          this.normalizeAmountValue(normalized.amount, 0);
+        delete normalized.tempAmount;
+        delete normalized._reasonError;
+        delete normalized.ltcTravelPrimaryKey;
+        return normalized;
+      });
+    }
+
+    if (Array.isArray(tempClaim?.yatForeignTravelDetailDTOs)) {
+      tempClaim.yatForeignTravelDetailDTOs = tempClaim.yatForeignTravelDetailDTOs.map((row: any) => {
+        const normalized = { ...row };
+        normalized.amount = this.normalizeAmountValue(normalized.amount, 0);
+        delete normalized.ltcTravelPrimaryKey;
+        return normalized;
+      });
+    }
   }
 
   recalcFteTotals(): void {
@@ -1708,57 +1766,37 @@ export class FormFteComponent implements OnInit {
     const fin = this.claims?.yatForeignTravelDetailDTOs || [];
 
     const dtsTotal = travel
-      .filter((r: any) => (r?.isDts ?? '') === 'Yes')
+      .filter((r: any) => !['NA', 'No'].includes((r?.isDts ?? '').toString()))
       .reduce((s: number, r: any) => s + num(r?.tempAmount ?? r?.amount), 0);
 
     const nonDtsTravelTotal = travel
-      .filter((r: any) => (r?.isDts ?? '') === 'No')
+      .filter((r: any) => ['NA', 'No'].includes((r?.isDts ?? '').toString()))
       .reduce((s: number, r: any) => s + num(r?.tempAmount ?? r?.amount), 0);
 
-    const finTotal = fin.reduce((s: number, r: any) => s + num(r?.amount), 0);
+    const foreignTravelAmount = fin.reduce((s: number, r: any) => s + num(r?.amount), 0);
 
-    // ✅ No DTS Amount = Non-DTS Travel + Financial Entries
-    this.noDtsAmount = nonDtsTravelTotal + finTotal;
+    this.noDtsAmount = nonDtsTravelTotal + foreignTravelAmount;
 
-    // ✅ Advance Request/Admissible should be ONLY No-DTS bucket (Java behavior)
+    adv.travelDetailsFTEAmt = foreignTravelAmount;
+    adv.nonDtsAmount = dtsTotal + foreignTravelAmount;
     adv.totalAmt = this.noDtsAmount;
     adv.advAmt = this.noDtsAmount;
-
-    // ✅ DTS Amount separate
     adv.dtsAmount = dtsTotal;
+    adv.totalBudgetedAmt = num(adv.advAmt) + dtsTotal;
 
-    // ✅ Amount to be budgeted = DTS + NoDTS
-    adv.totalBudgetedAmt = dtsTotal + this.noDtsAmount;
-
-    this.claims.claimAmt = String(adv.totalBudgetedAmt ?? 0);
+    this.claims.claimAmt = String(adv.advAmt ?? 0);
   }
-
-  payload = {
-    ...this.claims,
-    claimAmt: this.claims.claimAmt?.toString() ?? '0',
-  };
 
   private num(v: any): number {
-    const n = Number((v ?? '').toString().trim());
-    return isNaN(n) ? 0 : n;
+    return this.normalizeAmountValue(v, 0) ?? 0;
   }
 
-  private calcDtsAmountFromTravel(): number {
-    const rows = this.claims?.yatDtsDetailDTOs || [];
-    return rows
-      .filter((r: any) => (r?.isDts || '').toString().toUpperCase() === 'YES')
-      .reduce((sum: number, r: any) => {
-        const v = r?.tempAmount ?? r?.amount ?? 0;
-        return sum + this.num(v);
-      }, 0);
-  }
+  private normalizeAmountValue(value: any, emptyValue: number | null = null): number | null {
+    const raw = (value ?? '').toString().trim().replace(/,/g, '');
+    if (!raw) return emptyValue;
 
-  private calcTotalTravelAmount(): number {
-    const rows = this.claims?.yatDtsDetailDTOs || [];
-    return rows.reduce((sum: number, r: any) => {
-      const v = r?.tempAmount ?? r?.amount ?? 0;
-      return sum + this.num(v);
-    }, 0);
+    const amount = Number(raw);
+    return Number.isFinite(amount) ? amount : emptyValue;
   }
 
   private parsePositiveAmount(raw: any): number | null {
@@ -1776,20 +1814,5 @@ export class FormFteComponent implements OnInit {
     return n;
   }
 
-  private mapClaimDocumentsForSave(documents: any[]): any[] {
-    return (documents || []).map((doc) => {
-      const codeDocInfoDTO = doc?.codeDocInfoDTO || null;
-      return {
-        ...doc,
-        codeDocInfoDTO: codeDocInfoDTO
-          ? {
-              id: codeDocInfoDTO.id,
-              docName: codeDocInfoDTO.docName,
-            }
-          : null,
-        descr: doc?.otherDocName || doc?.descr || null,
-      };
-    });
-  }
 }
 

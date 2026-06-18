@@ -17,9 +17,13 @@ describe('FormTydutyComponent', () => {
       claimId: null,
       signWith: 'ES',
       codeUnitDTO: { unit: 'U1', descr: 'Unit One' },
-      gxFormFileUrl: '',
+      gxFormFileUrl: 'gx-ty.pdf',
       yatDtsDetailDTOs: [],
       yatTempDutyAdvDTOs: [{
+        gxUnit: 'GX',
+        gxNumber: 'GX-1',
+        gxDate: '2026-01-01',
+        purposeType: 'Official',
         arrFare: 100,
         isAvailFoodCharge: false,
         isAvailHotelAcc: false,
@@ -29,6 +33,7 @@ describe('FormTydutyComponent', () => {
         dtsAmount: 0,
         advAmt: 0,
         totalBudgetedAmt: 0,
+        isDts: 'Yes',
         stationProceedingTo: 'Mumbai',
         foodChargeDays: null,
         foodChargeRatePerDay: null,
@@ -39,7 +44,7 @@ describe('FormTydutyComponent', () => {
         accHToDutyPerDay: null,
         accHToDutyDays: null
       }],
-      yatClaimBankDetailDTO: { ifscCode: '' }
+      yatClaimBankDetailDTO: { ifscCode: 'SBIN0000001', bankAccNo: '1234567890' }
     };
     component.$common = jasmine.createSpyObj('CommonService', ['showMessage', 'parseResponse', 'checkForValidFile', 'showLoader', 'hideLoader']);
     component.$common.parseResponse.and.callFake((r: any) => r);
@@ -71,6 +76,12 @@ describe('FormTydutyComponent', () => {
     component.validateSection = jasmine.createSpy('validateSection').and.returnValue(true);
     return component;
   };
+
+  it('defaults hidden claim-level DTS flag to Yes like legacy TY init', () => {
+    const component = createComponent();
+    const adv = (component as any).createEmptyTyAdv();
+    expect(adv.isDts).toBe('Yes');
+  });
 
   it('calculates TY amounts with ARR, food, hotel, and DTS split', () => {
     const component = createComponent();
@@ -196,6 +207,19 @@ describe('FormTydutyComponent', () => {
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please select the applied to unit.', 'danger');
   });
 
+  it('rejects submit when legacy bank details are missing', () => {
+    const component = createComponent();
+    component.claims.yatDtsDetailDTOs = [{ isDts: 'Yes', tempAmount: 100, modeOfTravel: 'Train' }];
+    component.claims.yatClaimBankDetailDTO.ifscCode = '';
+    const saveSpy = spyOn(component, 'saveClaim');
+
+    component.submitTy();
+
+    expect(saveSpy).not.toHaveBeenCalled();
+    expect(component.tyBusinessInvalidSection).toBe('ship4');
+    expect(component.$common.showMessage).toHaveBeenCalledWith('Please fill IFSC Code.', 'danger');
+  });
+
   it('keeps legacy Form Validate as validation-only and does not save', () => {
     const component = createComponent();
     const saveSpy = spyOn(component, 'saveClaim');
@@ -245,8 +269,8 @@ describe('FormTydutyComponent', () => {
       source: 'A',
       destination: 'B',
       modeOfTravel: 'Train',
-      amount: 100,
-      tempAmount: 75,
+      amount: '1,200',
+      tempAmount: '',
       isDts: 'Yes',
       _reasonForNoDtsError: true,
     }];
@@ -255,7 +279,7 @@ describe('FormTydutyComponent', () => {
 
     const formData = component.$claim.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
-    expect(payload.yatDtsDetailDTOs[0].amount).toBe(75);
+    expect(payload.yatDtsDetailDTOs[0].amount).toBe(1200);
     expect(payload.yatDtsDetailDTOs[0].tempAmount).toBeUndefined();
     expect(payload.yatDtsDetailDTOs[0]._reasonForNoDtsError).toBeUndefined();
   });
@@ -316,7 +340,8 @@ describe('FormTydutyComponent', () => {
       },
     };
     const values: Record<string, string> = {
-      claimId: 'C_ID_1',
+      id: 'C_ID_1',
+      claimId: 'C_ID_ANGULAR_OLD',
       subFormId: 'T',
       gxUnitId: '226',
       supId: 'SUP_1',
@@ -333,6 +358,56 @@ describe('FormTydutyComponent', () => {
     expect(component.supplementryId).toBe('SUP_1');
     expect(component.extnClaimId).toBe('EXT_1');
     expect(component.claims.codeSubFormDTO.subFormId).toBe('T');
+  });
+
+  it('ignores old claimId query key for TY advance routes and keeps it only for claim wrappers', () => {
+    const component = createComponent();
+    component.route = {
+      snapshot: {
+        data: { subFormId: 'T', formKind: 'advance' },
+        routeConfig: { path: 'form-ty-duty' },
+      },
+    };
+
+    component['syncRouteStateFromQuery']({
+      get: (key: string) => ({ claimId: 'C_ID_OLD', subFormId: 'T' }[key] || null),
+    });
+
+    expect(component.claimIdParam).toBeNull();
+
+    component.route = {
+      snapshot: {
+        data: { subFormId: 'TYD', formKind: 'claim' },
+        routeConfig: { path: 'form-ty-duty-claim' },
+      },
+    };
+
+    component['syncRouteStateFromQuery']({
+      get: (key: string) => ({ claimId: 'C_ID_CLAIM', subFormId: 'TYD' }[key] || null),
+    });
+
+    expect(component.claimIdParam).toBe('C_ID_CLAIM');
+  });
+
+  it('prefers legacy id query key over claimId for TY edit route state', () => {
+    const component = createComponent();
+    component.route = {
+      snapshot: {
+        data: { subFormId: 'T', formKind: 'advance' },
+        routeConfig: { path: 'form-ty-duty' },
+      },
+    };
+
+    component['syncRouteStateFromQuery']({
+      get: (key: string) => ({
+        id: 'C_ID_LEGACY',
+        claimId: 'C_ID_ANGULAR_OLD',
+        subFormId: 'T',
+      }[key] || null),
+    });
+
+    expect(component.claimIdParam).toBe('C_ID_LEGACY');
+    expect(component.formId).toBe('C_ID_LEGACY');
   });
 
   it('maps new TY form personal and bank details from claim/single response', () => {
@@ -354,6 +429,11 @@ describe('FormTydutyComponent', () => {
           bankAccNo: '00131150000656',
           micrCode: 'MICR1',
         },
+        yatDtsDetailDTOs: [
+          { isDts: 'Yes', amount: '1,200' },
+          { isDts: 'No', amount: '500', tempAmount: '' },
+          { isDts: 'NA', amount: '' },
+        ],
       }],
     }));
 
@@ -368,8 +448,46 @@ describe('FormTydutyComponent', () => {
     expect(adv.videPresentUnit).toBe('ICGS Delhi');
     expect(component.claims.yatClaimBankDetailDTO.ifscCode).toBe('HDFC0000013');
     expect(component.claims.yatClaimBankDetailDTO.bankAccNo).toBe('00131150000656');
+    expect(component.claims.yatDtsDetailDTOs[0].amount).toBe(1200);
+    expect(component.claims.yatDtsDetailDTOs[0].tempAmount).toBe(1200);
+    expect(component.claims.yatDtsDetailDTOs[1].amount).toBe(500);
+    expect(component.claims.yatDtsDetailDTOs[1].tempAmount).toBe(500);
+    expect(component.claims.yatDtsDetailDTOs[2].amount).toBeNull();
+    expect(component.claims.yatDtsDetailDTOs[2].tempAmount).toBeNull();
     expect(component.claims.claimId).toBeNull();
     expect(component.isPreviewDisabled).toBeTrue();
+  });
+
+  it('does not hydrate TY advance personal fields from non-legacy flattened roots', () => {
+    const component = createComponent();
+    component.claims.yatTempDutyAdvDTOs[0].name = null;
+    component.claims.yatTempDutyAdvDTOs[0].rank = null;
+    component.claims.yatTempDutyAdvDTOs[0].pno = null;
+    component.$claim.getSingleClaim.and.returnValue(of({
+      status: true,
+      object: [{
+        name: 'Flattened User',
+        rank: 'Rank Root',
+        pno: 'PNO-ROOT',
+        userBasicDetailDTO: {
+          name: 'User Root',
+          rank: 'Root Rank',
+          pno: 'PNO-USER',
+        },
+        bankDetailDTO: {
+          ifscCode: 'IGNORED0001',
+          bankAccNo: 'IGNORED',
+        },
+      }],
+    }));
+
+    component.getFormDetails();
+
+    const adv = component.claims.yatTempDutyAdvDTOs[0];
+    expect(adv.name).toBeNull();
+    expect(adv.rank).toBeNull();
+    expect(adv.pno).toBeNull();
+    expect(component.claims.yatClaimBankDetailDTO.ifscCode).toBe('SBIN0000001');
   });
 
   it('does not set fake claim id when new TY response is false', () => {

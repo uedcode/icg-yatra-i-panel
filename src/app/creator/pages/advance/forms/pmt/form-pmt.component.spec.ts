@@ -86,7 +86,10 @@ describe('FormPmtDutyComponent', () => {
       'getPayLevels',
       'createOrUpdateAdvance',
       'checkEsignAvailability',
-      'createOrUpdateIfsc'
+      'createOrUpdateIfsc',
+      'prepareForESign',
+      'changeClaimStatusById',
+      'notifyStatusCountRefresh'
     ]);
     formManageService = jasmine.createSpyObj<FormManageService>('FormManageService', [
       'uploadImg',
@@ -121,7 +124,12 @@ describe('FormPmtDutyComponent', () => {
           gxDate: 1700000000000
         }],
         yatDtsDetailDTOs: [{ modeOfTravel: 'Train', isDts: 'Yes', amount: 700 }],
-        yatDocsDTOs: [{ docName: 'Existing Doc' }]
+        yatDocsDTOs: [{ docName: 'Existing Doc' }],
+        yatClaimBankDetailDTO: {
+          bankName: 'HDFC BANK LTD',
+          ifscCode: 'HDFC0000013',
+          accountNo: '00131150000656'
+        }
       }]
     }) as any);
     claimService.getUnits.and.returnValue(of({ status: true, object: [{ unit: 'U1' }] }) as any);
@@ -131,6 +139,8 @@ describe('FormPmtDutyComponent', () => {
       object: [{ claimId: 202 }]
     }) as any);
     claimService.checkEsignAvailability.and.returnValue(of({ status: true }) as any);
+    claimService.prepareForESign.and.returnValue(of({ status: true }) as any);
+    claimService.changeClaimStatusById.and.returnValue(of({ status: true }) as any);
     claimService.createOrUpdateIfsc.and.returnValue(of({
       status: true,
       object: [{ ifscCode: 'SBIN0001234' }]
@@ -170,6 +180,8 @@ describe('FormPmtDutyComponent', () => {
     expect(component.claims.signWith).toBe('ES');
     expect(component.claims.yatPermDutyAdvDTOs[0].pmtType).toBe('F');
     expect(component.claims.yatPermDutyAdvDTOs[0].familyType).toBe('SF');
+    expect(component.claims.yatPermDutyAdvDTOs[0].isDts).toBe('Yes');
+    expect(component.claims.yatPermDutyAdvDTOs[0].arrPerson).toBe(0);
   });
 
   it('should show the legacy PMT claim title in claim mode', () => {
@@ -189,8 +201,8 @@ describe('FormPmtDutyComponent', () => {
     expect(component.pageTitle).toBe('Supplementary Resettlement Claim');
   });
 
-  it('should initialize route context, load reference data, and publish fetched documents', () => {
-    setQueryParams({ claimId: '101', supId: '501', gxUnitId: '2' });
+  it('should initialize route context, load reference data, repair defaults, and publish fetched documents', () => {
+    setQueryParams({ id: '101', supId: '501', gxUnitId: '2' });
 
     component.ngOnInit();
 
@@ -204,8 +216,52 @@ describe('FormPmtDutyComponent', () => {
     expect(config.headers.claimId).toBe('101');
     expect(config.headers.supCLaimId).toBe('501');
     expect(component.claims.claimId).toBe(101);
+    expect(component.claims.yatPermDutyAdvDTOs[0].isDts).toBe('Yes');
+    expect(component.claims.yatPermDutyAdvDTOs[0].arrPerson).toBe(0);
+    expect(component.claims.yatClaimBankDetailDTO.bankAccNo).toBe('00131150000656');
+    expect((component.claims.yatDtsDetailDTOs[0] as any).tempAmount).toBe(700);
     expect(component.documentDtos.length).toBe(1);
     expect(codeDocInfoService.setDocument).toHaveBeenCalledWith(component.documentDtos as any);
+  });
+
+  it('should ignore old claimId query key for PMT advance routes but keep it for claim wrappers', () => {
+    setQueryParams({ claimId: 'OLD_ADVANCE_ID' });
+    component.ngOnInit();
+    expect(component.claimIdParam).toBeNull();
+
+    fixture = TestBed.createComponent(FormPmtDutyComponent);
+    component = fixture.componentInstance;
+    route.snapshot.data = { subFormId: 'PMT', formKind: 'claim' };
+    setQueryParams({ claimId: 'CLAIM_ID_1' });
+
+    component.ngOnInit();
+
+    expect(component.claimIdParam).toBe('CLAIM_ID_1');
+  });
+
+  it('should normalize saved PMT DTS string, comma, and blank amount values', () => {
+    claimService.getSingleClaim.and.returnValue(of({
+      status: true,
+      object: [{
+        claimId: 909,
+        codeUnitDTO: { unit: 'U1', descr: 'Unit One' },
+        yatPermDutyAdvDTOs: [{ pmtType: 'F', familyType: 'SF', areaType: 'M' }],
+        yatDtsDetailDTOs: [
+          { modeOfTravel: 'Train', isDts: 'Yes', amount: '1,600' },
+          { modeOfTravel: 'Road', isDts: 'No', amount: '500', tempAmount: '' },
+          { modeOfTravel: 'Road', isDts: 'NA', amount: '' }
+        ],
+      }]
+    }) as any);
+
+    component.ngOnInit();
+
+    expect((component.claims.yatDtsDetailDTOs[0] as any).amount).toBe(1600);
+    expect((component.claims.yatDtsDetailDTOs[0] as any).tempAmount).toBe(1600);
+    expect((component.claims.yatDtsDetailDTOs[1] as any).amount).toBe(500);
+    expect((component.claims.yatDtsDetailDTOs[1] as any).tempAmount).toBe(500);
+    expect((component.claims.yatDtsDetailDTOs[2] as any).amount).toBe('');
+    expect((component.claims.yatDtsDetailDTOs[2] as any).tempAmount).toBe('');
   });
 
   it('should calculate PMT amount from composite, transport, land, ship, and DTS rows', () => {
@@ -237,8 +293,30 @@ describe('FormPmtDutyComponent', () => {
     expect(adv.totalBudgetedAmt).toBe('2920');
   });
 
+  it('should calculate island composite grant using compact legacy area type value', () => {
+    component.claims.yatPermDutyAdvDTOs = [{
+      basicPay: 64100,
+      areaType: 'I',
+      isAvailComposite: 'Y',
+    } as any];
+
+    component.onAreaTypeChange();
+
+    const adv = component.claims.yatPermDutyAdvDTOs[0];
+    expect(adv.compositeGrant).toBe('');
+    expect(adv.compositeGrantIsland).toBe('64100');
+    expect(adv.totalAmt).toBe('64100');
+    expect(adv.advAmt).toBe('64100');
+  });
+
   it('should require a reason before adding a non-DTS travel row', () => {
-    component.addTravelDetails({ modeOfTravel: 'Bus', isDts: 'No', amount: 100 } as any);
+    component.addTravelDetails({
+      source: 'Delhi',
+      destination: 'Mumbai',
+      modeOfTravel: 'Bus',
+      isDts: 'No',
+      tempAmount: 100
+    } as any);
 
     expect(component.claims.yatDtsDetailDTOs.length).toBe(0);
     expect(commonService.showMessage).toHaveBeenCalledWith(
@@ -249,17 +327,22 @@ describe('FormPmtDutyComponent', () => {
 
   it('should add and update travel rows while preserving editable temp amounts', () => {
     component.addTravelDetails({
+      source: 'Delhi',
+      destination: 'Mumbai',
       modeOfTravel: 'Train',
       isDts: 'Yes',
-      amount: 500
+      tempAmount: 500
     } as any);
 
     expect(component.claims.yatDtsDetailDTOs.length).toBe(1);
     expect((component.claims.yatDtsDetailDTOs[0] as any).tempAmount).toBe(500);
+    expect((component.claims.yatDtsDetailDTOs[0] as any).amount).toBe(500);
 
     component.editTravelDetails(0);
     expect(component.travelBtnName).toBe('Update');
     component.addTravelDetails({
+      source: 'Delhi',
+      destination: 'Mumbai',
       modeOfTravel: 'Flight',
       isDts: 'Yes',
       amount: 900,
@@ -301,15 +384,17 @@ describe('FormPmtDutyComponent', () => {
     expect(commonService.showMessage).not.toHaveBeenCalled();
   });
 
-  it('should delete GX upload after confirmation', () => {
+  it('should mark GX upload for deletion after confirmation', () => {
     component.claims.gxFormFileUrl = 'old-gx.pdf';
+    component.gxFormModel = 'old-model';
     spyOn(window, 'confirm').and.returnValue(true);
 
     component.deleteGxForm();
-    formManageService.docFileUrlDeleted.next(true);
 
-    expect(formManageService.deleteByUrl).toHaveBeenCalledWith('old-gx.pdf');
+    expect(formManageService.deleteByUrl).not.toHaveBeenCalled();
+    expect(component.claims.deleteGxFileUrl).toBe('old-gx.pdf');
     expect(component.claims.gxFormFileUrl).toBeNull();
+    expect(component.gxFormModel).toBeNull();
   });
 
   it('should not delete GX upload when user cancels confirmation', () => {
@@ -322,6 +407,14 @@ describe('FormPmtDutyComponent', () => {
     expect(component.claims.gxFormFileUrl).toBe('old-gx.pdf');
   });
 
+  it('should strip emoji from internal remarks like legacy PMT advance form', () => {
+    component.claims.internalRemarks = 'Move household goods 🚢 by rail';
+
+    component.removeEmoji();
+
+    expect(component.claims.internalRemarks).toBe('Move household goods  by rail');
+  });
+
   it('should save a draft with normalized claim payload and navigate to draft list', () => {
     component.userIdDetails = userDetails;
     seedValidClaim();
@@ -329,11 +422,27 @@ describe('FormPmtDutyComponent', () => {
     component.claims.yatClaimBankDetailDTO = { ifscCode: '' } as any;
     component.claims.yatPermDutyAdvDTOs[0].gxDate = '2026-01-01';
     component.claims.yatPermDutyAdvDTOs[0].wefDate = '2026-01-02';
+    component.claims.deleteGxFileUrl = 'old-gx.pdf';
+    component.claims.internalRemarks = 'Draft remarks 🚢';
     component.documentDtos = [{
       codeDocInfoDTO: { id: 9, docName: 'GX Form' },
       otherDocName: 'Uploaded GX',
       fileUrl: 'gx-doc.pdf'
     } as any];
+    claimService.createOrUpdateAdvance.and.returnValue(of({
+      status: true,
+      object: [{
+        claimId: 303,
+        yatPermDutyAdvDTOs: [{ advAmt: 3210, totalAmt: 3210 }],
+        yatDtsDetailDTOs: [{ modeOfTravel: 'Train', isDts: 'Yes', amount: 1600 }],
+        yatFamilyDetailDTOs: [{ name: 'Family Member' }],
+        yatDocsDTOs: [{ docName: 'Saved Doc' }],
+        yatClaimBankDetailDTO: {
+          accountNo: '00131150000656',
+          ifscCode: 'HDFC0000013'
+        }
+      }]
+    }) as any);
 
     component.saveDraft();
 
@@ -346,10 +455,43 @@ describe('FormPmtDutyComponent', () => {
     expect(payload.codeSubFormDTO.subFormId).toBe('P');
     expect(payload.codeUnitDTO).toEqual({ unit: 'U1' });
     expect(payload.ifscnull).toBeTrue();
+    expect(payload.deleteGxFileUrl).toBe('old-gx.pdf');
+    expect(payload.internalRemarks).toBe('Draft remarks ');
     expect(payload.yatDocsDTOs[0].codeDocInfoDTO).toEqual({ id: 9, docName: 'GX Form' });
     expect(payload.yatDtsDetailDTOs[0].amount).toBe(1600);
     expect((payload.yatDtsDetailDTOs[0] as any).tempAmount).toBeUndefined();
+    expect(component.claims.claimId).toBe(303);
+    expect((component.claims.yatPermDutyAdvDTOs[0] as any).advAmt).toBe(3210);
+    expect((component.claims.yatDtsDetailDTOs[0] as any).amount).toBe(1600);
+    expect((component.claims.yatDtsDetailDTOs[0] as any).tempAmount).toBe(1600);
+    expect((component.claims.yatFamilyDetailDTOs[0] as any).name).toBe('Family Member');
+    expect(component.claims.yatClaimBankDetailDTO.bankAccNo).toBe('00131150000656');
+    expect(component.documentDtos).toEqual([{ docName: 'Saved Doc' }] as any);
+    expect(codeDocInfoService.setDocument).toHaveBeenCalledWith(component.documentDtos as any);
+    expect(component.claims.deleteGxFileUrl).toBeUndefined();
     expect(router.navigateByUrl).toHaveBeenCalledWith('/creator/draft');
+  });
+
+  it('should preserve original PMT DTS amount when edited temp amount is blank before save', () => {
+    component.userIdDetails = userDetails;
+    seedValidClaim();
+    component.claims.yatDtsDetailDTOs = [{
+      modeOfTravel: 'Train',
+      isDts: 'Yes',
+      amount: '1,600',
+      tempAmount: ''
+    } as any];
+    claimService.createOrUpdateAdvance.and.returnValue(of({
+      status: true,
+      object: [{ claimId: 404, yatDtsDetailDTOs: [{ modeOfTravel: 'Train', isDts: 'Yes', amount: 1600 }] }]
+    }) as any);
+
+    component.saveDraft();
+
+    const formData = claimService.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
+    const payload = JSON.parse(formData.get('yatClaimDTO') as string);
+    expect(payload.yatDtsDetailDTOs[0].amount).toBe(1600);
+    expect((payload.yatDtsDetailDTOs[0] as any).tempAmount).toBeUndefined();
   });
 
   it('should block submit when GX form is missing after PMT validations pass', () => {
@@ -387,17 +529,63 @@ describe('FormPmtDutyComponent', () => {
     expect(claimService.createOrUpdateAdvance).not.toHaveBeenCalled();
   });
 
-  it('should submit a valid PMT claim to outbox and navigate to submitted list', () => {
+  it('should submit a valid PMT claim to outbox and navigate to new list', () => {
     seedValidClaim();
     spyOn(component as any, 'runPmtClientValidationOnly').and.returnValue(true);
     spyOn(component as any, 'validatePmtBusinessFields').and.returnValue(true);
+    component.claims.signWith = 'IS';
 
     component.submitPmt();
 
     const formData = claimService.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.claimState).toBe('OB');
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/creator/submitted');
+    expect(claimService.changeClaimStatusById).toHaveBeenCalledWith(jasmine.objectContaining({
+      claimId: 202,
+      status: 'OB',
+      userId: 42,
+      roleTypeId: 'CR'
+    }));
+    expect(claimService.notifyStatusCountRefresh).toHaveBeenCalled();
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/creator/new');
+  });
+
+  it('should submit eSign PMT through prepareForESign after advance save', () => {
+    seedValidClaim();
+    spyOn(component as any, 'runPmtClientValidationOnly').and.returnValue(true);
+    spyOn(component as any, 'validatePmtBusinessFields').and.returnValue(true);
+    component.claims.signWith = 'ES';
+    component.userIdDetails = {
+      ...userDetails,
+      financialYear: '2026',
+      moduleId: 'ADV'
+    };
+    claimService.createOrUpdateAdvance.and.returnValue(of({
+      status: true,
+      object: [{ claimId: 404 }]
+    }) as any);
+
+    component.submitPmt();
+
+    expect(claimService.prepareForESign).toHaveBeenCalledWith(jasmine.objectContaining({
+      claimId: 404,
+      status: 'OB',
+      userId: 42,
+      roleTypeId: 'CR',
+      financialYear: '2026',
+      moduleId: 'ADV'
+    }));
+    expect(claimService.changeClaimStatusById).not.toHaveBeenCalled();
+    expect(component.eSignTempFormObj).toEqual(jasmine.objectContaining({
+      id: 404,
+      claimId: 404,
+      status: 'OB',
+      userId: 42,
+      roleTypeId: 'CR'
+    }));
+    expect(claimService.notifyStatusCountRefresh).toHaveBeenCalled();
+    expect(commonService.hideLoader).toHaveBeenCalled();
+    expect(component.disableBtn).toBeFalse();
   });
 
   it('should fall back to ink sign when eSign availability fails', () => {
@@ -616,16 +804,29 @@ describe('FormPmtDutyComponent', () => {
     component.claims.claimId = 321;
     component.supplementaryId = 'SUP-7';
     component.activeSubFormId = 'P';
+    authService.getModuleName.and.returnValue('/adv/creator');
 
+    spyOn(window, 'open');
     component.navigatePreview('P', '321');
 
+    expect(window.open).toHaveBeenCalledWith(
+      '/adv/creator/preview-pmt-duty?id=321&supId=SUP-7',
+      '_blank'
+    );
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should route linked PMT previews with legacy id query key', () => {
+    component.activeSubFormId = 'RS';
+
+    component.openLinkedPreview('preview-resettlement', 'C_ID_LINKED');
+
     expect(router.navigate).toHaveBeenCalledWith(
-      ['../preview-pmt-duty'],
+      ['../preview-resettlement'],
       {
         queryParams: {
-          id: '321',
-          subFormId: 'P',
-          supId: 'SUP-7'
+          id: 'C_ID_LINKED',
+          subFormId: 'RS'
         }
       }
     );
@@ -644,7 +845,7 @@ describe('FormPmtDutyComponent', () => {
       ['/creator/form-pmt-duty'],
       {
         queryParams: {
-          claimId: 909,
+          id: 909,
           supId: 'SUP-1'
         }
       }

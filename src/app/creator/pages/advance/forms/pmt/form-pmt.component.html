@@ -69,13 +69,16 @@
                               Bank Details
                             </a>
                           </li>
-                          <li role="presentation">
+                          <li role="presentation" *ngIf="activeFormKind === 'claim'">
                             <a id="ship5-tab" href="#ship5" aria-controls="ship5" role="tab" data-toggle="tab">
                               Supporting Documents
                             </a>
                           </li>
                           <li role="presentation">
-                            <a id="ship6-tab" href="#ship6" aria-controls="ship6" role="tab" data-toggle="tab">
+                            <a [id]="activeFormKind === 'claim' ? 'ship6-tab' : 'ship5-tab'"
+                              [href]="activeFormKind === 'claim' ? '#ship6' : '#ship5'"
+                              [attr.aria-controls]="activeFormKind === 'claim' ? 'ship6' : 'ship5'"
+                              role="tab" data-toggle="tab">
                               Remarks
                             </a>
                           </li>
@@ -785,7 +788,7 @@
                                   </div>
                                 </div>
 
-                                <div class="form-group" *ngIf="claims?.yatPermDutyAdvDTOs[0]?.areaType === 'Island'">
+                                <div class="form-group" *ngIf="claims?.yatPermDutyAdvDTOs[0]?.areaType === 'I'">
                                   <div class="row">
                                     <div class="col-md-4 padd_5">
                                       <label class="control-label">
@@ -1123,8 +1126,8 @@
                             </div>
                           </div>
 
-                          <!-- ================= TAB 5: REMARKS ================= -->
-                          <div id="ship5" class="tab-pane fade">
+                          <!-- ================= TAB 5: SUPPORTING DOCUMENTS ================= -->
+                          <div id="ship5" class="tab-pane fade" *ngIf="activeFormKind === 'claim'">
 
                             <app-common-document [documentDtos]="documentDtos"></app-common-document>
 
@@ -1148,7 +1151,7 @@
                           </div>
 
                           <!-- ================= TAB 6: REMARKS ================= -->
-                          <div id="ship6" class="tab-pane fade">
+                          <div [id]="activeFormKind === 'claim' ? 'ship6' : 'ship5'" class="tab-pane fade">
 
                             <div class="form-group">
                               <div class="row">
@@ -1158,8 +1161,9 @@
                               </div>
                               <div class="row">
                                 <div class="col-md-12">
-                                  <textarea rows="6" cols="225" class="form-control"
-                                    [(ngModel)]="claims.internalRemarks" name="internalRemarks"></textarea>
+                                  <textarea id="internalRemarks" rows="6" cols="225" maxlength="500"
+                                    class="form-control" [(ngModel)]="claims.internalRemarks"
+                                    (ngModelChange)="removeEmoji()" name="internalRemarks"></textarea>
                                 </div>
                               </div>
                             </div>

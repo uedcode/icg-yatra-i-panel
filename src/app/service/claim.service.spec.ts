@@ -124,6 +124,17 @@ describe('ClaimService', () => {
     singleReq.flush({});
   });
 
+  it('gets LTC family details from legacy availed-history endpoint', () => {
+    service.getLtcFamilyDetails({ headers: { userId: 'U-LTC' } }).subscribe();
+
+    const req = httpMock.expectOne('ltcAvailedHist/getFamilyDetails');
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('userId')).toBe('U-LTC');
+    req.flush({ status: true, object: [] });
+
+    expect(commonService.parseResponse).toHaveBeenCalledWith({ status: true, object: [] });
+  });
+
   it('keeps legacy FormData wrapper on the advance create or update endpoint', () => {
     const formData = new FormData();
     formData.append('yatClaimDTO', new Blob(['{}'], { type: 'application/json' }));

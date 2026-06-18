@@ -382,7 +382,10 @@ export class FormTydutyComponent implements OnInit {
     this.claims.codeSubFormDTO = { subFormId: this.activeSubFormId };
     this.formId = qp.get('id');
     this.subFormId = querySubFormId;
-    this.claimIdParam = qp.get('claimId') || qp.get('id') || qp.get('resubId');
+    this.claimIdParam =
+      qp.get('id') ||
+      (this.activeFormKind === 'claim' ? qp.get('claimId') : null) ||
+      qp.get('resubId');
     this.resubClaimId = qp.get('resubId');
     this.extnClaimId = qp.get('extnClaimId') || qp.get('extnId');
     this.supplementryId = qp.get('supId');
@@ -465,7 +468,7 @@ export class FormTydutyComponent implements OnInit {
       dtsAmount: 0,
       advAmt: 0,
       totalBudgetedAmt: 0,
-      isDts: null,
+      isDts: 'Yes',
     };
   }
 
@@ -480,11 +483,15 @@ export class FormTydutyComponent implements OnInit {
   }
 
   private toNumber(value: unknown): number {
-    if (value === null || value === undefined || value === '') {
-      return 0;
-    }
-    const n = Number(value);
-    return isNaN(n) ? 0 : n;
+    return this.normalizeAmountNumber(value, 0) ?? 0;
+  }
+
+  private normalizeAmountNumber(value: unknown, emptyValue: number | null = null): number | null {
+    const raw = String(value ?? '').trim().replace(/,/g, '');
+    if (!raw) return emptyValue;
+
+    const amount = Number(raw);
+    return Number.isFinite(amount) ? amount : emptyValue;
   }
 
   private sumOfColumn(arr: any[], key: string): number {
@@ -975,41 +982,29 @@ export class FormTydutyComponent implements OnInit {
     );
   }
 
-  private mapTyPersonalDetails(adv: YatTempDutyAdvDTO, source: any, root: any): void {
-    const user = root?.userBasicDetailDTO || root?.aclUserDTO || {};
+  private mapTyPersonalDetails(adv: YatTempDutyAdvDTO, source: any, _root: any): void {
     const presentUnit = this.pickFirstValue(
       source?.videPresentUnit,
       source?.presentUnit,
-      root?.videPresentUnit,
-      root?.presentUnit,
-      user?.unitName,
-      user?.unit,
-      root?.codeUnitDTO?.descr
+      adv.videPresentUnit,
+      adv.presentUnit
     );
     const payLevel = this.pickFirstValue(
       source?.payLevel,
       source?.paylevel,
-      root?.payLevel,
-      root?.paylevel,
-      user?.payLevel,
-      user?.paylevel,
       adv.payLevel
     );
     const basicPayRaw = this.pickFirstValue(
       source?.basicPay,
       source?.basPay,
-      root?.basicPay,
-      root?.basPay,
-      user?.basicPay,
-      user?.basPay,
       adv.basicPay
     );
 
-    adv.pno = this.pickFirstValue(source?.pno, source?.persNo, root?.pno, root?.persNo, user?.pno, user?.persNo, adv.pno, null);
+    adv.pno = this.pickFirstValue(source?.pno, source?.persNo, adv.pno, null);
     adv.name =
-      String(this.pickFirstValue(source?.name, source?.userName, root?.name, root?.userName, user?.name, user?.userName, adv.name, '')).trim() ||
+      String(this.pickFirstValue(source?.name, source?.userName, adv.name, '')).trim() ||
       null;
-    adv.rank = this.pickFirstValue(source?.rank, source?.rankName, root?.rank, root?.rankName, user?.rank, user?.rankName, adv.rank, null);
+    adv.rank = this.pickFirstValue(source?.rank, source?.rankName, adv.rank, null);
     adv.presentUnit = presentUnit ?? adv.presentUnit ?? null;
     adv.videPresentUnit = presentUnit ?? adv.videPresentUnit ?? null;
     adv.payLevel = payLevel ?? null;
@@ -1018,15 +1013,13 @@ export class FormTydutyComponent implements OnInit {
       : null;
     adv.availedCategory = this.pickFirstValue(
       source?.availedCategory,
-      root?.availedCategory,
-      user?.availedCategory,
       adv.availedCategory,
       null
     );
   }
 
   private mapTyBankDetails(root: any): void {
-    const bank = root?.yatClaimBankDetailDTO || root?.bankDetailDTO || {};
+    const bank = root?.yatClaimBankDetailDTO || {};
     this.claims.yatClaimBankDetailDTO = {
       ...this.claims.yatClaimBankDetailDTO,
       bankName: this.pickFirstValue(bank.bankName, this.claims.yatClaimBankDetailDTO.bankName),
@@ -1064,10 +1057,7 @@ export class FormTydutyComponent implements OnInit {
         },
       ],
       yatDtsDetailDTOs: Array.isArray(savedClaim.yatDtsDetailDTOs)
-        ? savedClaim.yatDtsDetailDTOs.map((row: any) => ({
-            ...row,
-            tempAmount: this.pickFirstValue(row.tempAmount, row.amount, null),
-          }))
+        ? this.normalizeTyDtsRows(savedClaim.yatDtsDetailDTOs)
         : this.claims.yatDtsDetailDTOs,
       yatClaimBankDetailDTO: {
         ...this.claims.yatClaimBankDetailDTO,
@@ -1079,6 +1069,21 @@ export class FormTydutyComponent implements OnInit {
     delete (this.claims as any).deleteGxFileUrl;
     this.syncGxFileBrowseState();
     this.checkForPreviewBtn();
+  }
+
+  private normalizeTyDtsRows(rows: any[]): any[] {
+    return (rows || []).map((row: any) => {
+      const amount = this.normalizeAmountNumber(row?.amount, null);
+      const tempAmount =
+        this.normalizeAmountNumber(row?.tempAmount, null) ??
+        amount;
+
+      return {
+        ...row,
+        amount,
+        tempAmount,
+      };
+    });
   }
 
   private hasTyPersonalDetails(): boolean {
@@ -1330,20 +1335,18 @@ export class FormTydutyComponent implements OnInit {
               ...this.claims,
               ...obj,
               yatTempDutyAdvDTOs: [{ ...adv }],
-              yatDtsDetailDTOs: obj.yatDtsDetailDTOs || [],
+              yatDtsDetailDTOs: this.normalizeTyDtsRows(obj.yatDtsDetailDTOs || []),
               yatDocsDTOs: obj.yatDocsDTOs || [],
             };
-            this.normalizeDtsTempAmounts();
 
             this.claims.signWith =
               obj.signWith || this.claims.signWith || this.codeSignType.eSign;
             this.documentDtos = this.claims.yatDocsDTOs || [];
             this.$codeDocInfo.setDocument(this.documentDtos as []);
-          } else if (obj.userBasicDetailDTO) {
-            this.mapTyPersonalDetails(adv, obj.userBasicDetailDTO, obj);
-            this.mapTyBankDetails(obj);
           } else {
-            this.mapTyPersonalDetails(adv, obj, obj);
+            // Legacy TY advance fills personal fields from yatTempDutyAdvDTOs[0].
+            // Avoid flattened/user-root fallbacks here so Advance and Claim
+            // contracts stay separate.
             this.mapTyBankDetails(obj);
           }
 
@@ -1391,12 +1394,12 @@ export class FormTydutyComponent implements OnInit {
         },
         (err) => {
           this.$common.hideLoader();
-          console.log(err);
+          console.error('Error while loading TY units.', err);
         }
       );
     } catch (error) {
       this.$common.hideLoader();
-      console.log(error);
+      console.error('Error while loading TY units.', error);
     }
   }
 
@@ -1414,11 +1417,11 @@ export class FormTydutyComponent implements OnInit {
           }
         },
         (err) => {
-          console.log(err);
+          console.error('Error while loading TY stations.', err);
         }
       );
     } catch (error) {
-      console.log(error);
+      console.error('Error while loading TY stations.', error);
     }
   }
 
@@ -1497,7 +1500,9 @@ export class FormTydutyComponent implements OnInit {
     if (!moduleUrl) return;
 
     if (status === this.codeClaimState.outbox) {
-      this.router.navigateByUrl(moduleUrl + `/submitted`);
+      this.router.navigateByUrl(
+        moduleUrl + (this.activeFormKind === 'claim' ? `/claim-new` : `/new`)
+      );
       return;
     }
 
@@ -1541,7 +1546,12 @@ export class FormTydutyComponent implements OnInit {
 
   private completeLegacyStatusTransition(status: string, claimId: string): void {
     if (!claimId) {
-      this.$common.showMessage('Unable to update claim status.', 'danger');
+      this.$common.showMessage(
+        `Unable to update ${
+          this.activeFormKind === 'claim' ? 'TY Duty claim' : 'TY Duty advance'
+        } status.`,
+        'danger'
+      );
       this.$common.hideLoader();
       this.disableBtn = false;
       return;
@@ -1559,7 +1569,10 @@ export class FormTydutyComponent implements OnInit {
       (res: any) => {
         if (res?.status === false) {
           this.$common.showMessage(
-            res?.message || 'Unable to update claim status.',
+            res?.message ||
+              `Unable to update ${
+                this.activeFormKind === 'claim' ? 'TY Duty claim' : 'TY Duty advance'
+              } status.`,
             'danger'
           );
           this.$common.hideLoader();
@@ -1595,9 +1608,16 @@ export class FormTydutyComponent implements OnInit {
         this.disableBtn = false;
       },
       (err: any) => {
-        console.error('Error while updating TY Duty claim status', err);
+        console.error(
+          `Error while updating ${
+            this.activeFormKind === 'claim' ? 'TY Duty claim' : 'TY Duty advance'
+          } status`,
+          err
+        );
         this.$common.showMessage(
-          'Error while updating TY Duty claim status.',
+          `Error while updating ${
+            this.activeFormKind === 'claim' ? 'TY Duty claim' : 'TY Duty advance'
+          } status.`,
           'danger'
         );
         this.$common.hideLoader();
@@ -1622,7 +1642,10 @@ export class FormTydutyComponent implements OnInit {
         if (response?.status === false) {
           this.claims.signWith = this.codeSignType.inkSign;
           this.$common.showMessage(
-            response?.message || 'eSign is not available for this TY Duty claim.',
+            response?.message ||
+              `eSign is not available for this ${
+                this.activeFormKind === 'claim' ? 'TY Duty claim' : 'TY Duty advance'
+              }.`,
             'danger'
           );
         }
@@ -1754,7 +1777,7 @@ export class FormTydutyComponent implements OnInit {
     }
   }
 
-  //Save TY Duty claim
+  // Save TY Duty form
   saveClaim(
     type: string,
     status: string,
@@ -1785,9 +1808,9 @@ export class FormTydutyComponent implements OnInit {
 
       if (Array.isArray(tempClaim.yatDtsDetailDTOs)) {
         tempClaim.yatDtsDetailDTOs.forEach((elem: any) => {
-          if (elem.tempAmount != null && elem.tempAmount !== '') {
-            elem.amount = Number(elem.tempAmount);
-          }
+          elem.amount =
+            this.normalizeAmountNumber(elem.tempAmount, null) ??
+            this.normalizeAmountNumber(elem.amount, 0);
           delete elem.tempAmount;
           delete elem._reasonForNoDtsError;
         });
@@ -1858,7 +1881,10 @@ export class FormTydutyComponent implements OnInit {
         (res: any) => {
           if (!res || res?.status === false) {
             this.$common.showMessage(
-              res?.message || 'Unable to save TY Duty claim.',
+              res?.message ||
+                `Unable to save ${
+                  this.activeFormKind === 'claim' ? 'TY Duty claim' : 'TY Duty advance'
+                }.`,
               'danger'
             );
             this.$common.hideLoader();
@@ -1884,12 +1910,18 @@ export class FormTydutyComponent implements OnInit {
 
           if (respStatus === this.codeClaimState.outbox) {
             this.$common.showMessage(
-              res?.message || 'TY Duty claim submitted successfully!',
+              res?.message ||
+                `${
+                  this.activeFormKind === 'claim' ? 'TY Duty claim' : 'TY Duty advance'
+                } submitted successfully!`,
               'success'
             );
           } else if (respStatus === this.codeClaimState.draft) {
             this.$common.showMessage(
-              res?.message || 'TY Duty draft saved successfully.',
+              res?.message ||
+                `${
+                  this.activeFormKind === 'claim' ? 'TY Duty claim' : 'TY Duty advance'
+                } draft saved successfully.`,
               'success'
             );
           }
@@ -1899,9 +1931,16 @@ export class FormTydutyComponent implements OnInit {
           );
         },
         (err: any) => {
-          console.error('Error while saving TY Duty claim', err);
+          console.error(
+            `Error while saving ${
+              this.activeFormKind === 'claim' ? 'TY Duty claim' : 'TY Duty advance'
+            }`,
+            err
+          );
           this.$common.showMessage(
-            'Error while saving TY Duty claim.',
+            `Error while saving ${
+              this.activeFormKind === 'claim' ? 'TY Duty claim' : 'TY Duty advance'
+            }.`,
             'danger'
           );
           this.$common.hideLoader();
@@ -1909,8 +1948,18 @@ export class FormTydutyComponent implements OnInit {
         }
       );
     } catch (err) {
-      console.error('Error while saving TY Duty claim', err);
-      this.$common.showMessage('Error while saving TY Duty claim.', 'danger');
+      console.error(
+        `Error while saving ${
+          this.activeFormKind === 'claim' ? 'TY Duty claim' : 'TY Duty advance'
+        }`,
+        err
+      );
+      this.$common.showMessage(
+        `Error while saving ${
+          this.activeFormKind === 'claim' ? 'TY Duty claim' : 'TY Duty advance'
+        }.`,
+        'danger'
+      );
       this.$common.hideLoader();
       this.disableBtn = false;
     }
@@ -2458,6 +2507,17 @@ export class FormTydutyComponent implements OnInit {
         ? 'Please fill Other Mode of Travel for all travel detail rows.'
         : 'Reason for not using DTS is required for all non-DTS travel detail rows.';
       this.$common.showMessage(message, 'danger');
+      return false;
+    }
+
+    this.tyBusinessInvalidSection = 'ship4';
+    const bank = this.claims?.yatClaimBankDetailDTO || {};
+    if (this.isNullOrEmpty(bank.ifscCode)) {
+      this.$common.showMessage('Please fill IFSC Code.', 'danger');
+      return false;
+    }
+    if (this.isNullOrEmpty(bank.bankAccNo || bank.accountNo)) {
+      this.$common.showMessage('Account Number is required.', 'danger');
       return false;
     }
 

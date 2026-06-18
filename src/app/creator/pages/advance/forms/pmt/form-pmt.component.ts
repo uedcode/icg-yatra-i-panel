@@ -87,7 +87,7 @@ interface YatPermDutyAdvDTO {
   isDts?: string | null;
   reasonDts?: string | null;
 
-  arrPerson?: string | null;
+  arrPerson?: number | string | null;
   arrFare?: string | null;
 
   transPerEffectKg?: string | null;
@@ -134,6 +134,7 @@ interface Claims {
   gxUnitId?: string | null;
   signWith?: string | null;
   gxFormFileUrl?: string | null;
+  deleteGxFileUrl?: string | null;
 
   occDate?: any;
   subDate?: any;
@@ -211,6 +212,7 @@ export class FormPmtDutyComponent implements OnInit {
   showIfscModal = false;
   newIfscCode: string = '';
   claimId: any;
+  eSignTempFormObj: any = null;
 
   isPreviewDisabled = true;
   disableBtn = false;
@@ -267,7 +269,10 @@ export class FormPmtDutyComponent implements OnInit {
     };
 
     const qp = this.route.snapshot.queryParamMap;
-    this.claimIdParam = qp.get('claimId') || qp.get('id') || qp.get('resubId');
+    this.claimIdParam =
+      qp.get('id') ||
+      (this.activeFormKind === 'claim' ? qp.get('claimId') : null) ||
+      qp.get('resubId');
     this.resubClaimId = qp.get('resubId');
     this.supplementaryId = qp.get('supId');
 
@@ -340,10 +345,10 @@ export class FormPmtDutyComponent implements OnInit {
       pmtTypeClaimId: null,
       compositeGrantAmt: '0',
 
-      isDts: null,
+      isDts: 'Yes',
       reasonDts: null,
 
-      arrPerson: null,
+      arrPerson: 0,
       arrFare: null,
 
       transPerEffectKg: null,
@@ -393,6 +398,151 @@ export class FormPmtDutyComponent implements OnInit {
     const n = this.toNumber(ms);
     if (!n) return null;
     return this.datePipe.transform(new Date(n), 'yyyy-MM-dd');
+  }
+
+  private normalizeBankDetail(bank: any): YatClaimBankDetailDTO {
+    const current = this.claims?.yatClaimBankDetailDTO || {};
+    const merged = {
+      ...current,
+      ...(bank || {}),
+    };
+    const accountValue =
+      merged.bankAccNo ??
+      merged.accountNo ??
+      current.bankAccNo ??
+      current.accountNo ??
+      null;
+
+    return {
+      ...merged,
+      bankAccNo: accountValue,
+      accountNo: merged.accountNo ?? accountValue,
+    };
+  }
+
+  private normalizePmtDtsRows(rows: any[]): YatDtsDetailDTO[] {
+    return (rows || []).map((row: any) => ({
+      ...row,
+      amount: this.normalizeAmountValue(row?.amount, null) ?? (row?.amount ?? ''),
+      tempAmount:
+        this.normalizeAmountValue(row?.tempAmount, null) ??
+        this.normalizeAmountValue(row?.amount, null) ??
+        '',
+    }));
+  }
+
+  private mergeSavedPmtResponse(obj: any): void {
+    if (!obj) return;
+
+    const currentAdv = this.claims?.yatPermDutyAdvDTOs?.[0] || this.createEmptyPmtAdv();
+    const savedAdv = Array.isArray(obj.yatPermDutyAdvDTOs)
+      ? obj.yatPermDutyAdvDTOs[0]
+      : null;
+    const savedDtsRows = Array.isArray(obj.yatDtsDetailDTOs)
+      ? this.normalizePmtDtsRows(obj.yatDtsDetailDTOs)
+      : this.claims.yatDtsDetailDTOs;
+    const savedFamilyRows = Array.isArray(obj.yatFamilyDetailDTOs)
+      ? obj.yatFamilyDetailDTOs
+      : this.claims.yatFamilyDetailDTOs;
+    const savedDocs = Array.isArray(obj.yatDocsDTOs)
+      ? obj.yatDocsDTOs
+      : this.documentDtos;
+
+    this.claims = {
+      ...this.claims,
+      ...obj,
+      yatPermDutyAdvDTOs: [{ ...currentAdv, ...(savedAdv || {}) }],
+      yatDtsDetailDTOs: savedDtsRows,
+      yatFamilyDetailDTOs: savedFamilyRows,
+      yatDocsDTOs: savedDocs,
+      yatClaimBankDetailDTO: this.normalizeBankDetail(obj.yatClaimBankDetailDTO),
+    };
+
+    this.claimId = this.claims.claimId;
+    this.documentDtos = this.claims.yatDocsDTOs || [];
+    this.$codeDocInfo.setDocument(this.documentDtos as []);
+    this.ensureDefaultPmtValues();
+    delete (this.claims as any).deleteGxFileUrl;
+    this.refreshEntitledUi();
+    this.checkForPreviewBtn();
+  }
+
+  private buildClaimRemarkPayload(
+    status: string,
+    claimId: string,
+    remark: string = ''
+  ): any {
+    return {
+      claimId,
+      roleTypeId: this.userIdDetails?.roleTypeId,
+      userId: this.userIdDetails?.userId,
+      status,
+      remark,
+      financialYear: this.userIdDetails?.financialYear,
+      moduleId: this.userIdDetails?.moduleId,
+    };
+  }
+
+  private completeSubmitStatusTransition(claimId: string): void {
+    if (!claimId) {
+      this.$common.showMessage(
+        `Unable to update ${this.getFormDisplayName()} status.`,
+        'danger'
+      );
+      this.$common.hideLoader();
+      this.disableBtn = false;
+      return;
+    }
+
+    const status = this.codeClaimState.outbox;
+    const payload = this.buildClaimRemarkPayload(status, claimId);
+    const isESignSubmit = this.claims?.signWith === this.codeSignType.eSign;
+    const statusRequest = isESignSubmit
+      ? this.$claim.prepareForESign(payload)
+      : this.$claim.changeClaimStatusById(payload);
+
+    statusRequest.subscribe(
+      (res: any) => {
+        if (res?.status === false) {
+          this.$common.showMessage(
+            res?.message || `Unable to update ${this.getFormDisplayName()} status.`,
+            'danger'
+          );
+          this.$common.hideLoader();
+          this.disableBtn = false;
+          return;
+        }
+
+        this.$claim.notifyStatusCountRefresh();
+        if (isESignSubmit) {
+          this.eSignTempFormObj = {
+            id: claimId,
+            claimId,
+            roleTypeId: this.userIdDetails?.roleTypeId,
+            userId: this.userIdDetails?.userId,
+            status,
+            remark: '',
+            financialYear: this.userIdDetails?.financialYear,
+            moduleId: this.userIdDetails?.moduleId,
+          };
+          if (typeof $ !== 'undefined') {
+            $('#esign_modal').modal('show');
+          }
+        } else {
+          const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
+          if (moduleUrl) this.router.navigateByUrl(moduleUrl + '/new');
+        }
+
+        this.$common.hideLoader();
+        this.disableBtn = false;
+      },
+      (err: any) => {
+        console.error('Error while updating PMT status', err);
+        this.$common.showMessage('Error while updating PMT status.', 'danger');
+        this.$common.hideLoader();
+        this.disableBtn = false;
+      }
+    );
   }
 
   /* ===================== LOAD SINGLE ===================== */
@@ -453,11 +603,12 @@ export class FormPmtDutyComponent implements OnInit {
             ...this.claims,
             ...obj,
             yatPermDutyAdvDTOs: [{ ...existingAdv, ...(dto || {}) }],
-            yatDtsDetailDTOs: obj.yatDtsDetailDTOs || [],
+            yatDtsDetailDTOs: Array.isArray(obj.yatDtsDetailDTOs)
+              ? this.normalizePmtDtsRows(obj.yatDtsDetailDTOs)
+              : [],
             yatFamilyDetailDTOs: obj.yatFamilyDetailDTOs || [],
             yatDocsDTOs: obj.yatDocsDTOs || [],
-            yatClaimBankDetailDTO:
-              obj.yatClaimBankDetailDTO || this.claims.yatClaimBankDetailDTO,
+            yatClaimBankDetailDTO: this.normalizeBankDetail(obj.yatClaimBankDetailDTO),
           };
           if (this.resubClaimId) {
             (this.claims as any).refAdvanceId = this.resubClaimId;
@@ -524,12 +675,12 @@ export class FormPmtDutyComponent implements OnInit {
         },
         (err) => {
           this.$common.hideLoader();
-          console.log(err);
+          console.error('Error while loading PMT units.', err);
         }
       );
     } catch (error) {
       this.$common.hideLoader();
-      console.log(error);
+      console.error('Error while loading PMT units.', error);
     }
   }
 
@@ -544,8 +695,7 @@ export class FormPmtDutyComponent implements OnInit {
   }
 
   private n(v: any): number {
-    const x = Number(v);
-    return isNaN(x) ? 0 : x;
+    return this.normalizeAmountValue(v, 0) ?? 0;
   }
 
   calculateAmount(type: string): void {
@@ -899,6 +1049,8 @@ export class FormPmtDutyComponent implements OnInit {
     if (!adv.familyType) adv.familyType = 'SF';
     if (!adv.areaType) adv.areaType = 'M';
     if (!adv.isAvailComposite) adv.isAvailComposite = 'N';
+    if (this.isNullOrEmpty(adv.isDts)) adv.isDts = 'Yes';
+    if (this.isNullOrEmpty(adv.arrPerson)) adv.arrPerson = 0;
   }
 
   onCompositeToggle(): void {
@@ -1074,6 +1226,10 @@ export class FormPmtDutyComponent implements OnInit {
       detail.tempAmount = detail.amount as any;
     }
 
+    if (this.isNullOrEmpty(detail.amount)) {
+      detail.amount = detail.tempAmount as any;
+    }
+
     if (this.selectedTravelIndex !== null) {
       this.claims.yatDtsDetailDTOs[this.selectedTravelIndex] = { ...detail };
     } else {
@@ -1149,10 +1305,18 @@ export class FormPmtDutyComponent implements OnInit {
     const ok = window.confirm('Do you really want to delete this GX Form?');
     if (!ok) return;
 
-    this.$formManage.deleteByUrl(this.claims.gxFormFileUrl);
-    this.$formManage.docFileUrlDeleted.pipe(take(1)).subscribe(() => {
-      this.claims.gxFormFileUrl = null;
-    });
+    this.claims.deleteGxFileUrl = this.claims.gxFormFileUrl;
+    this.claims.gxFormFileUrl = null;
+    this.gxFormModel = null;
+  }
+
+  removeEmoji(): void {
+    if (this.claims.internalRemarks) {
+      this.claims.internalRemarks = this.claims.internalRemarks.replace(
+        /[\uD800-\uDBFF][\uDC00-\uDFFF]/g,
+        ''
+      );
+    }
   }
 
   /* ===================== SAVE ===================== */
@@ -1161,6 +1325,7 @@ export class FormPmtDutyComponent implements OnInit {
     if (type !== this.codeClaim.pmtAdv && type !== this.codeClaim.resettleClm) return;
 
     this.calculateAmount(this.codeClaim.pmtAdv);
+    this.removeEmoji();
     this.disableBtn = true;
     this.$common.showLoader();
 
@@ -1173,9 +1338,9 @@ export class FormPmtDutyComponent implements OnInit {
 
       if (Array.isArray(tempClaim.yatDtsDetailDTOs)) {
         tempClaim.yatDtsDetailDTOs.forEach((elem: any) => {
-          if (elem.tempAmount != null && elem.tempAmount !== '') {
-            elem.amount = Number(elem.tempAmount);
-          }
+          elem.amount =
+            this.normalizeAmountValue(elem.tempAmount, null) ??
+            this.normalizeAmountValue(elem.amount, 0);
           delete elem.tempAmount;
         });
       }
@@ -1221,9 +1386,6 @@ export class FormPmtDutyComponent implements OnInit {
 
       this.$claim.createOrUpdateAdvance(formData, null).subscribe(
         (res: any) => {
-          this.$common.hideLoader();
-          this.disableBtn = false;
-
           const obj = Array.isArray(res?.object)
             ? res.object[0]
             : res?.object || res?.obj || res;
@@ -1231,6 +1393,7 @@ export class FormPmtDutyComponent implements OnInit {
             this.claims.claimId = obj.claimId;
             this.claimId = obj.claimId;
           }
+          this.mergeSavedPmtResponse(obj);
 
           if (showToast) {
             const successMsg =
@@ -1240,7 +1403,14 @@ export class FormPmtDutyComponent implements OnInit {
             this.$common.showMessage(successMsg, 'success');
           }
 
-          this.navigateAfterSave(status, obj.claimId || obj.id || this.claimId);
+          const savedClaimId = obj.claimId || obj.id || this.claimId;
+          if (status === this.codeClaimState.outbox) {
+            this.completeSubmitStatusTransition(savedClaimId);
+          } else {
+            this.$common.hideLoader();
+            this.disableBtn = false;
+            this.navigateAfterSave(status, savedClaimId);
+          }
           this.checkForPreviewBtn();
         },
         (err: any) => {
@@ -1523,21 +1693,31 @@ export class FormPmtDutyComponent implements OnInit {
   }
 
   navigatePreview(type: string, id: string): void {
+    const route = this.getPreviewRoute();
     const previewId = id || this.claims.claimId || this.claimIdParam;
-    this.router.navigate([`../${this.getPreviewRoute()}`], {
-      queryParams:
-        this.activeFormKind === 'claim'
-          ? {
-              id: previewId,
-              subFormId: this.activeSubFormId,
-              ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
-            }
-          : {
-              id: previewId,
-              subFormId: this.activeSubFormId,
-              ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
-            },
-    });
+    if (!route || !previewId) return;
+
+    const queryParams = this.activeFormKind === 'claim'
+      ? {
+          id: previewId,
+          subFormId: this.activeSubFormId,
+          ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+        }
+      : {
+          id: previewId,
+          ...(this.supplementaryId ? { supId: this.supplementaryId } : {}),
+        };
+
+    const queryString = Object.entries(queryParams)
+      .filter(([, value]) => value !== undefined && value !== null && value !== '')
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+      )
+      .join('&');
+    const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
+    const previewUrl = `${String(moduleUrl || '').replace(/\/$/, '')}/${route}${queryString ? `?${queryString}` : ''}`;
+    window.open(previewUrl, '_blank');
   }
 
   get isResettlementClaimMode(): boolean {
@@ -1553,7 +1733,7 @@ export class FormPmtDutyComponent implements OnInit {
 
     this.router.navigate([`../${route}`], {
       queryParams: {
-        claimId,
+        id: claimId,
         subFormId: this.activeSubFormId,
       },
     });
@@ -1567,16 +1747,16 @@ export class FormPmtDutyComponent implements OnInit {
     if (!moduleUrl) return;
 
     if (status === this.codeClaimState.outbox) {
-      this.router.navigateByUrl(moduleUrl + `/submitted`);
+      this.router.navigateByUrl(
+        moduleUrl + (this.activeFormKind === 'claim' ? `/claim-new` : `/new`)
+      );
       return;
     }
 
     if (this.supplementaryId && savedClaimId) {
       this.router.navigate([moduleUrl + `/${this.getCurrentFormRoute()}`], {
         queryParams: {
-          ...(this.activeFormKind === 'claim'
-            ? { id: savedClaimId }
-            : { id: savedClaimId }),
+          id: savedClaimId,
           supId: this.supplementaryId,
         },
       });
@@ -1845,8 +2025,15 @@ export class FormPmtDutyComponent implements OnInit {
   }
 
   toNumber(v: any): number {
-    const n = Number(v);
-    return isNaN(n) ? 0 : n;
+    return this.normalizeAmountValue(v, 0) ?? 0;
+  }
+
+  private normalizeAmountValue(value: any, emptyValue: number | null = null): number | null {
+    const raw = (value ?? '').toString().trim().replace(/,/g, '');
+    if (!raw) return emptyValue;
+
+    const amount = Number(raw);
+    return Number.isFinite(amount) ? amount : emptyValue;
   }
 
   enforceKgLimit(mode: 'land' | 'ship'): void {
