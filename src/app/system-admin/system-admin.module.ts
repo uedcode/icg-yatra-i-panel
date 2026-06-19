@@ -33,8 +33,6 @@ import { FaqComponent as ManageFaqComponent } from './pages/manage-masters/manag
 import { FaqComponent as SupportFaqComponent } from './pages/support/faq/faq.component';
 import { ProfileSettingComponent } from './pages/support/profile-setting/profile-setting.component';
 import { WebDetailComponent } from './pages/support/web-detail/web-detail.component';
-import { PortComponent } from './pages/manage-masters/manage-port/port/port.component';
-import { AddPortModalComponent } from './pages/manage-masters/manage-port/add-port-modal/add-port-modal.component';
 import { ShipComponent } from './pages/manage-masters/manage-ship/ship/ship.component';
 import { AddShipModalComponent } from './pages/manage-masters/manage-ship/add-ship-modal/add-ship-modal.component';
 import { InboxComponent } from './pages/import-export/normal/inbox/inbox.component';
@@ -84,8 +82,6 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         DocumentsComponent,
         AddDocumentsModalComponent,
         AddFaqModalComponent,
-        PortComponent,
-        AddPortModalComponent,
         PortRateComponent,
         AddPortRateModalComponent,
         ShipComponent,

@@ -3,16 +3,16 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { UnitAdminComponent } from './unit-admin.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { RoleComponent } from './pages/role/role.component';
+import { RoleComponent } from './pages/role-management/manage-role/role.component';
 import { AuthGuard } from '../auth.guard';
-import { ProfileSettingComponent } from './pages/profile-setting/profile-setting.component';
-import { FaqComponent } from './pages/faq/faq.component';
-import { WebDetailComponent } from './pages/web-detail/web-detail.component';
-import { UnitAdminRoleComponent } from './pages/unit-admin-role/unit-admin-role.component';
-import { ArchiveComponent } from './pages/archive/archive.component';
-import { UpdatePmtUnitComponent } from './pages/update-pmt-unit/update-pmt-unit.component';
-import { ReportTyDutyComponent } from './pages/report-ty-duty/report-ty-duty.component';
-import { ManagePaylevelTransactionComponent } from './pages/manage-paylevel-transaction/manage-paylevel-transaction.component';
+import { ProfileSettingComponent } from './pages/support/profile-setting/profile-setting.component';
+import { FaqComponent } from './pages/support/faq/faq.component';
+import { WebDetailComponent } from './pages/support/web-detail/web-detail.component';
+import { UnitAdminRoleComponent } from './pages/role-management/manage-unit-admin/unit-admin-role.component';
+import { ArchiveComponent } from './pages/role-management/archive/archive.component';
+import { UpdatePmtUnitComponent } from './pages/duty-management/update-pmt-unit/update-pmt-unit.component';
+import { ReportTyDutyComponent } from './pages/duty-management/report-ty-duty/report-ty-duty.component';
+import { ManagePaylevelTransactionComponent } from './pages/duty-management/manage-paylevel-transaction/manage-paylevel-transaction.component';
 
 const UNIT_ADMIN_ROLES = ['UN'];
 

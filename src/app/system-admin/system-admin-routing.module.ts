@@ -15,8 +15,6 @@ import { FaqComponent as ManageFaqComponent } from './pages/manage-masters/manag
 import { FaqComponent as SupportFaqComponent } from './pages/support/faq/faq.component';
 import { ProfileSettingComponent } from './pages/support/profile-setting/profile-setting.component';
 import { WebDetailComponent } from './pages/support/web-detail/web-detail.component';
-import { PortComponent } from './pages/manage-masters/manage-port/port/port.component';
-import { AddPortModalComponent } from './pages/manage-masters/manage-port/add-port-modal/add-port-modal.component';
 import { ShipComponent } from './pages/manage-masters/manage-ship/ship/ship.component';
 import { AddShipModalComponent } from './pages/manage-masters/manage-ship/add-ship-modal/add-ship-modal.component';
 import { InboxComponent } from './pages/import-export/normal/inbox/inbox.component';
@@ -104,12 +102,6 @@ const routes: Routes = [
     data: { title: 'Document update', roles: SYSTEM_ADMIN_ROLES },
   },
   {
-    path: 'ports',
-    component: PortComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Manage Ports', roles: SYSTEM_ADMIN_ROLES },
-  },
-  {
     path: 'port-rate',
     component: PortRateComponent,
     canActivate: [AuthGuard],
@@ -144,12 +136,6 @@ const routes: Routes = [
     component: AddDocumentsModalComponent,
     canActivate: [AuthGuard],
     data: { title: 'Add Documents Modal', roles: SYSTEM_ADMIN_ROLES },
-  },
-  {
-    path: 'add-port-modal',
-    component: AddPortModalComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'Add Port Modal', roles: SYSTEM_ADMIN_ROLES },
   },
   {
     path: 'add-ship-modal',

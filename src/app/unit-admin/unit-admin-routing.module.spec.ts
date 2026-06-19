@@ -1,7 +1,7 @@
 import { routes } from './unit-admin-routing.module';
-import { RoleComponent } from './pages/role/role.component';
-import { UnitAdminRoleComponent } from './pages/unit-admin-role/unit-admin-role.component';
-import { ArchiveComponent } from './pages/archive/archive.component';
+import { RoleComponent } from './pages/role-management/manage-role/role.component';
+import { UnitAdminRoleComponent } from './pages/role-management/manage-unit-admin/unit-admin-role.component';
+import { ArchiveComponent } from './pages/role-management/archive/archive.component';
 
 describe('UnitAdminRoutingModule', () => {
   const childRoutes = routes[0].children || [];
