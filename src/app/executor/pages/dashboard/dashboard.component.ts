@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
-            this.countObj = response.object || {};
+            this.countObj = Array.isArray(response.object) ? response.object[0] || {} : response.object || {};
           }
         },
         () => {

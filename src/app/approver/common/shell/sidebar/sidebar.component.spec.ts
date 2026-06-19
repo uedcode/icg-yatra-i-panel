@@ -73,7 +73,7 @@ describe('SidebarComponent', () => {
     claimService.getStatusCount.and.returnValue(
       of({
         status: true,
-        object: {
+        object: [{
           inboxCount: 11,
           outboxCount: 12,
           approvedCount: 13,
@@ -92,7 +92,7 @@ describe('SidebarComponent', () => {
           payObCount: 31,
           payApCount: 32,
           payNapCount: 33
-        }
+        }]
       }) as any
     );
 
