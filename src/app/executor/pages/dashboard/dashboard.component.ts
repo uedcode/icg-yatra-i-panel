@@ -3,7 +3,6 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { buildLegacyStateCountHeaders } from 'src/app/shared/utils/legacy-api.util';
-import { normalizeSidebarCounts } from 'src/app/shared/utils/sidebar-count.util';
 
 @Component({
   selector: 'app-executor-dashboard',
@@ -39,7 +38,7 @@ export class DashboardComponent implements OnInit {
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
-            this.countObj = normalizeSidebarCounts(response.object);
+            this.countObj = response.object || {};
           }
         },
         () => {

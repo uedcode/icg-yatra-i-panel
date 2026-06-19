@@ -87,7 +87,11 @@ describe('SidebarComponent', () => {
           notApprovedClaimCount: 24,
           passedClaimCount: 25,
           notPassedClaimCount: 26,
-          archiveClaimCount: 27
+          archiveClaimCount: 27,
+          payIbCount: 30,
+          payObCount: 31,
+          payApCount: 32,
+          payNapCount: 33
         }
       }) as any
     );
@@ -124,25 +128,14 @@ describe('SidebarComponent', () => {
         gxUnitId: 'UNIT-VE'
       }
     });
-    expect(component.countObj).toEqual({
-      draft: 0,
-      inbox: 11,
-      outbox: 12,
-      approved: 13,
-      rejected: 14,
-      passed: 15,
-      notPassed: 16,
-      archive: 17,
-      newClaim: 0,
-      inboxClaim: 21,
-      outboxClaim: 22,
-      draftClaim: 0,
-      approvedClaim: 23,
-      notApprovedClaim: 24,
-      passedClaim: 25,
-      notPassedClaim: 26,
-      archiveClaim: 27
-    });
+    expect(component.countObj.inboxCount).toBe(11);
+    expect(component.countObj.outboxCount).toBe(12);
+    expect(component.countObj.notApprovedCount).toBe(14);
+    expect(component.countObj.archiveClaimCount).toBe(27);
+    expect(component.countObj.payIbCount).toBe(30);
+    expect(component.countObj.payObCount).toBe(31);
+    expect(component.countObj.payApCount).toBe(32);
+    expect(component.countObj.payNapCount).toBe(33);
     expect(commonService.hideLoader).toHaveBeenCalled();
   });
 
@@ -189,19 +182,19 @@ describe('SidebarComponent', () => {
     component.ngOnInit();
 
     expect(commonService.hideLoader).toHaveBeenCalled();
-    expect(component.countObj.inbox).toBe(0);
-    expect(component.countObj.approved).toBe(0);
+    expect(component.countObj.inboxCount).toBeUndefined();
+    expect(component.countObj.approvedCount).toBeUndefined();
   });
 
   it('does not overwrite count object when API returns status false', () => {
-    component.countObj.inbox = 99;
+    component.countObj.inboxCount = 99;
     claimService.getStatusCount.and.returnValue(
       of({ status: false, object: { inboxCount: 1 } }) as any
     );
 
     component.getCount();
 
-    expect(component.countObj.inbox).toBe(99);
+    expect(component.countObj.inboxCount).toBe(99);
     expect(commonService.hideLoader).toHaveBeenCalled();
   });
 
@@ -229,6 +222,10 @@ describe('SidebarComponent', () => {
     expect(text).toContain('Archive');
     expect(text).toContain('Settings');
     expect(text).toContain('Update Pay Details');
+    expect(text).toContain('Inbox 30');
+    expect(text).toContain('Outbox 31');
+    expect(text).toContain('Approved 32');
+    expect(text).toContain('Not Approved 33');
     expect(text).not.toContain('Manual Draft');
     expect(text).not.toContain('Budget Allocation');
   });

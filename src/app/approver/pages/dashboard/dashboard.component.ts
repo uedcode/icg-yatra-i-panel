@@ -4,7 +4,6 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { buildLegacyStateCountHeaders } from 'src/app/shared/utils/legacy-api.util';
-import { normalizeSidebarCounts } from 'src/app/shared/utils/sidebar-count.util';
 
 declare var $: any;
 @Component({
@@ -90,7 +89,7 @@ export class DashboardComponent implements OnInit {
             this.$claim.getStatusCount(this.config).subscribe((response: any) => {
                 this.$common.hideLoader();
                 if (response.status === true) {
-                    this.countObj = normalizeSidebarCounts(response.object);
+                    this.countObj = response.object || {};
                 }
             }, err => {
                 this.$common.hideLoader();

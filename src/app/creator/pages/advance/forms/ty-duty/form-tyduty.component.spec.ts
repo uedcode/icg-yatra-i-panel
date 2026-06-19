@@ -11,8 +11,8 @@ describe('FormTydutyComponent', () => {
     component.supplementryId = null;
     component.activeFormKind = 'advance';
     component.activeSubFormId = 'T';
-    component.gxUnitId = 2;
-    component.userIdDetails = { userId: 42, unitId: 'U1' };
+    component.gxUnitId = null;
+    component.userIdDetails = { userId: 42, unitId: 'U1', budgetDate: '2026-04-01' };
     component.claims = {
       claimId: null,
       signWith: 'ES',
@@ -54,6 +54,8 @@ describe('FormTydutyComponent', () => {
       'createOrUpdateIfsc',
       'createOrUpdateAdvance',
       'getSingleClaim',
+      'validateClaims',
+      'checkValidSignType',
       'changeClaimStatusById',
       'prepareForESign',
       'notifyStatusCountRefresh',
@@ -62,6 +64,8 @@ describe('FormTydutyComponent', () => {
     component.$claim.createOrUpdateIfsc.and.returnValue(of({ status: true, object: [{ ifscCode: 'SBIN0099' }] }));
     component.$claim.createOrUpdateAdvance.and.returnValue(of({ object: [{ claimId: 321 }] }));
     component.$claim.getSingleClaim.and.returnValue(of({ status: false }));
+    component.$claim.validateClaims.and.returnValue(of({ status: true, object: [] }));
+    component.$claim.checkValidSignType.and.returnValue(of({ status: true, object: 'ES' }));
     component.$claim.changeClaimStatusById.and.returnValue(of({ status: true }));
     component.$claim.prepareForESign.and.returnValue(of({ status: true }));
     component.$codeDocInfo = jasmine.createSpyObj('CodeDocInfoService', ['setDocument']);
@@ -222,12 +226,15 @@ describe('FormTydutyComponent', () => {
 
   it('keeps legacy Form Validate as validation-only and does not save', () => {
     const component = createComponent();
+    component.claims.yatDtsDetailDTOs = [{ isDts: 'Yes', tempAmount: 100, modeOfTravel: 'Train' }];
     const saveSpy = spyOn(component, 'saveClaim');
 
     component.validate('T', 'OB');
 
     expect(saveSpy).not.toHaveBeenCalled();
     expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
+    expect(component.$claim.validateClaims).toHaveBeenCalled();
+    expect(component.$common.showMessage).toHaveBeenCalledWith('No Error', 'success');
   });
 
   it('submits TY claim when section and business validations pass', () => {
@@ -282,6 +289,7 @@ describe('FormTydutyComponent', () => {
     expect(payload.yatDtsDetailDTOs[0].amount).toBe(1200);
     expect(payload.yatDtsDetailDTOs[0].tempAmount).toBeUndefined();
     expect(payload.yatDtsDetailDTOs[0]._reasonForNoDtsError).toBeUndefined();
+    expect(payload.yatDtsDetailDTOs[0].ltcTravelPrimaryKey).toBeUndefined();
   });
 
   it('starts common eSign modal flow after eSign submit save', () => {
@@ -326,7 +334,22 @@ describe('FormTydutyComponent', () => {
         isFetch: 'true',
         subFormId: 'T',
         isPreview: 'false',
-        gxUnitId: '2',
+        budgetDate: '2026-04-01',
+      }),
+    });
+    const headers = component.$claim.getSingleClaim.calls.mostRecent().args[0].headers;
+    expect(headers.gxUnitId).toBeUndefined();
+  });
+
+  it('sends gxUnitId to claim/single only when legacy URL provides it', () => {
+    const component = createComponent();
+    component.gxUnitId = 226;
+
+    component.getFormDetails();
+
+    expect(component.$claim.getSingleClaim).toHaveBeenCalledWith({
+      headers: jasmine.objectContaining({
+        gxUnitId: '226',
       }),
     });
   });
@@ -446,6 +469,9 @@ describe('FormTydutyComponent', () => {
     expect(adv.payLevel).toBe('L08');
     expect(adv.basicPay).toBe(64100);
     expect(adv.videPresentUnit).toBe('ICGS Delhi');
+    expect(adv.appliedTo).toBeNull();
+    expect(component.hideStationOrUnit).toBeFalse();
+    expect(component.hideStationAndUnit).toBeFalse();
     expect(component.claims.yatClaimBankDetailDTO.ifscCode).toBe('HDFC0000013');
     expect(component.claims.yatClaimBankDetailDTO.bankAccNo).toBe('00131150000656');
     expect(component.claims.yatDtsDetailDTOs[0].amount).toBe(1200);
@@ -456,6 +482,23 @@ describe('FormTydutyComponent', () => {
     expect(component.claims.yatDtsDetailDTOs[2].tempAmount).toBeNull();
     expect(component.claims.claimId).toBeNull();
     expect(component.isPreviewDisabled).toBeTrue();
+  });
+
+  it('updates sign type from legacy validation endpoint', () => {
+    const component = createComponent();
+    component.claims.signWith = 'ES';
+    component.$claim.checkValidSignType.and.returnValue(of({ status: true, object: 'IS', message: 'Ink Sign required' }));
+
+    component.checkValidSignType('ES', 'ICGS Delhi');
+
+    expect(component.$claim.checkValidSignType).toHaveBeenCalledWith({
+      headers: jasmine.objectContaining({
+        unitName: 'ICGS Delhi',
+        userId: 42,
+      }),
+    });
+    expect(component.claims.signWith).toBe('IS');
+    expect(component.$common.showMessage).toHaveBeenCalledWith('Ink Sign required', 'warning');
   });
 
   it('does not hydrate TY advance personal fields from non-legacy flattened roots', () => {

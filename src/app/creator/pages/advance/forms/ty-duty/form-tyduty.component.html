@@ -93,7 +93,7 @@
 
                             <div class="row">
                               <!-- Name -->
-                              <div class="col-md-4" *ngIf="!hideStationOrUnit && hideStationAndUnit">
+                              <div class="col-md-4">
                                 <div class="form-group">
                                   <div class="row">
                                     <div class="col-md-4 padd_5">
@@ -201,7 +201,7 @@
                                         [(ngModel)]="claims.yatTempDutyAdvDTOs[0].tempTransferToType"
                                         name="tempTransferToType"
                                         (change)="changeTransType(claims.yatTempDutyAdvDTOs[0].tempTransferToType, codeClaim?.tyAdv)">
-                                        <option value="" disabled>Select Unit Type</option>
+                                        <option [ngValue]="null" disabled>Select Unit Type</option>
                                         <option value="CG Unit">CG Unit</option>
                                         <option value="Army Unit">Army Unit</option>
                                         <option value="Naval Unit">Naval Unit</option>
@@ -214,7 +214,7 @@
                               </div>
 
                               <!-- Name of Unit -->
-                              <div class="col-md-4">
+                              <div class="col-md-4" *ngIf="!hideStationOrUnit && hideStationAndUnit">
                                 <div class="form-group">
                                   <div class="row">
                                     <div class="col-md-4 padd_5">
@@ -265,7 +265,7 @@
                                       <select class="form-control" required
                                         [(ngModel)]="claims.yatTempDutyAdvDTOs[0].appliedTo" name="appliedTo"
                                         (ngModelChange)="checkValidSignType(claims.signWith, claims.yatTempDutyAdvDTOs[0].appliedTo)">
-                                        <option value="" disabled>Select</option>
+                                        <option [ngValue]="null" disabled>Select</option>
                                         <option *ngFor="let unit of claims.yatTempDutyAdvDTOs[0].unitList"
                                           [ngValue]="unit">
                                           {{ unit }}
@@ -398,7 +398,7 @@
                                       <select class="form-control" required name="purposeType"
                                         [(ngModel)]="claims.yatTempDutyAdvDTOs[0].purposeType"
                                         (ngModelChange)="clearChangeData()">
-                                        <option [ngValue]="''" disabled>Select Type</option>
+                                        <option [ngValue]="null" disabled>Select Type</option>
                                         <option *ngFor="let dir of purposeTypes" [ngValue]="dir.descr">
                                           {{ dir.descr }}
                                         </option>

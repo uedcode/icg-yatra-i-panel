@@ -3,11 +3,6 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { ClaimService } from 'src/app/service/claim/claim.service';
 import { Subscription } from 'rxjs';
-import {
-  DEFAULT_SIDEBAR_COUNTS,
-  normalizeSidebarCounts,
-  SidebarCounts,
-} from 'src/app/shared/utils/sidebar-count.util';
 import { buildLegacyStateCountHeaders } from 'src/app/shared/utils/legacy-api.util';
 
 declare var $: any;
@@ -26,7 +21,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   userIdDetails;
   codeRoleList;
   config;
-  countObj: SidebarCounts = { ...DEFAULT_SIDEBAR_COUNTS };
+  countObj: any = {};
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
@@ -55,7 +50,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
       this.$claim.getStatusCount(this.config).subscribe((response: any) => {
         this.$common.hideLoader();
         if (response.status === true) {
-          this.countObj = normalizeSidebarCounts(response.object);
+          this.countObj = response.object || {};
         }
       }, err => {
         this.$common.hideLoader();

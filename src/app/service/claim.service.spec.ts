@@ -135,6 +135,30 @@ describe('ClaimService', () => {
     expect(commonService.parseResponse).toHaveBeenCalledWith({ status: true, object: [] });
   });
 
+  it('checks LTC availed history using the legacy misspelled endpoint', () => {
+    service.checkLtcAvailedHistory({ headers: { userId: 'U-LTC' } }).subscribe();
+
+    const req = httpMock.expectOne('ltcAvailedHist/checkIsAvaliedHistory');
+    expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('userId')).toBe('U-LTC');
+    req.flush({ status: true, object: 0 });
+  });
+
+  it('loads and saves home town through legacy hometown endpoints', () => {
+    service.initHomeTown({ headers: { userId: 'U-LTC' } }).subscribe();
+    service.saveHomeTown({ userId: 'U-LTC', homeTown: 'Sonipat' }).subscribe();
+
+    const initReq = httpMock.expectOne('hometown/initHometown');
+    expect(initReq.request.method).toBe('GET');
+    expect(initReq.request.headers.get('userId')).toBe('U-LTC');
+    initReq.flush({ status: true, object: 'Sonipat' });
+
+    const saveReq = httpMock.expectOne('hometown/createOrUpdate');
+    expect(saveReq.request.method).toBe('POST');
+    expect(saveReq.request.body).toEqual({ userId: 'U-LTC', homeTown: 'Sonipat' });
+    saveReq.flush({ status: true });
+  });
+
   it('keeps legacy FormData wrapper on the advance create or update endpoint', () => {
     const formData = new FormData();
     formData.append('yatClaimDTO', new Blob(['{}'], { type: 'application/json' }));

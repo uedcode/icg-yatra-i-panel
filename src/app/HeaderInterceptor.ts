@@ -1,19 +1,18 @@
-import { AuthTokenService } from 'src/app/service/auth/auth-token.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { Injector } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { tap, switchMap, catchError, filter, take, mapTo } from 'rxjs/operators';
+import { switchMap, catchError, filter, take, finalize } from 'rxjs/operators';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Injectable()
 export class HeaderInterceptor implements HttpInterceptor {
   private isRefreshing = false;
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private hasHandledRefreshFailure = false;
+  private readonly refreshFailedToken = '__YATRA_REFRESH_FAILED__';
+  private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   private readonly legacyBaseApiPrefixes = [
     'codeMisc',
     'utilPno',
@@ -22,7 +21,7 @@ export class HeaderInterceptor implements HttpInterceptor {
     'businessRule',
   ];
 
-  constructor(private $common: CommonService, public AuthTokenService: AuthTokenService, public $auth: AuthService) { }
+  constructor(private $common: CommonService, public $auth: AuthService) { }
 
   intercept(
     req: HttpRequest<any>,
@@ -98,17 +97,21 @@ export class HeaderInterceptor implements HttpInterceptor {
         catchError(error => {
           if ((error instanceof HttpErrorResponse && (error.status === 406 || error.status === 408 || error.status === 417))) {
             this.$auth.destroySession("3");
+            return throwError(() => error);
           }
           if (error instanceof HttpErrorResponse && error.status === 401) {
             if (isAuthAPI) {
-              if (dummyrequest.body.map.get('is_login') == "1") {
+              const isLogin = this.getRequestBodyValue(dummyrequest.body, 'is_login');
+              const grantType = this.getRequestBodyValue(dummyrequest.body, 'grant_type');
+              if (grantType === 'refresh_token' || isLogin === "0") {
+                this.handleRefreshFailure();
+              } else if (isLogin == "1") {
                 this.$common.showMessage(
                   "That's not the right password or Username. Please try again.",
                   'danger'
                 );
-              } else if (dummyrequest.body.map.get('is_login') == "0") {
-                this.$auth.destroySession("3");
               }
+              return throwError(() => error);
             } else {
               return this.handle401Error(dummyrequest, next);
             }
@@ -116,7 +119,7 @@ export class HeaderInterceptor implements HttpInterceptor {
             if (isAuthAPI) {
               this.$common.showMessage(error.error.error_description, 'danger');
             }
-            return throwError(error);
+            return throwError(() => error);
           }
         }));
     } catch (error) {
@@ -161,24 +164,84 @@ export class HeaderInterceptor implements HttpInterceptor {
     });
   }
 
-  private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+  private getRequestBodyValue(body: any, key: string): string | null {
+    if (!body) {
+      return null;
+    }
+    if (body instanceof HttpParams) {
+      return body.get(key);
+    }
+    if (typeof body.get === 'function') {
+      return body.get(key);
+    }
+    if (body.map && typeof body.map.get === 'function') {
+      return body.map.get(key);
+    }
+    return body[key] ?? null;
+  }
+
+  private handleRefreshFailure(): void {
+    if (this.hasHandledRefreshFailure) {
+      return;
+    }
+    this.hasHandledRefreshFailure = true;
+    this.$auth.destroySession("3");
+  }
+
+  private getRefreshAccessToken(response: any): string {
+    return response?.access_token || response?.accessToken || response?.object?.access_token || response?.object?.accessToken || '';
+  }
+
+  private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
 
-      return this.AuthTokenService.refreshToken().pipe(
-        switchMap((token: any) => {
+      const refreshToken = this.$auth.getRefreshToken();
+      if (!refreshToken) {
+        this.isRefreshing = false;
+        this.refreshTokenSubject.next(this.refreshFailedToken);
+        this.handleRefreshFailure();
+        return throwError(() => new Error('Refresh token is not available.'));
+      }
+
+      let params = new HttpParams();
+      params = params.append('refresh_token', refreshToken);
+      params = params.append('grant_type', 'refresh_token');
+
+      return this.$auth.refresh(params).pipe(
+        catchError((error) => {
+          this.refreshTokenSubject.next(this.refreshFailedToken);
+          this.handleRefreshFailure();
+          return throwError(() => error);
+        }),
+        switchMap((response: any) => {
+          const accessToken = this.getRefreshAccessToken(response);
+          if (!accessToken) {
+            this.refreshTokenSubject.next(this.refreshFailedToken);
+            this.handleRefreshFailure();
+            return throwError(() => new Error('Refresh token response did not include an access token.'));
+          }
+
+          this.hasHandledRefreshFailure = false;
+          this.$auth.createSession(response, 'NONE');
+          this.refreshTokenSubject.next(accessToken);
+          return next.handle(this.addToken(request, accessToken));
+        }),
+        finalize(() => {
           this.isRefreshing = false;
-          this.refreshTokenSubject.next(token.access_token);
-          return next.handle(this.addToken(request, token.access_token));
-        }));
+        })
+      );
 
     } else {
       return this.refreshTokenSubject.pipe(
         filter(token => token != null),
         take(1),
         switchMap(jwt => {
+          if (jwt === this.refreshFailedToken) {
+            return throwError(() => new Error('Session expired while refreshing token.'));
+          }
           return next.handle(this.addToken(request, jwt));
         }));
     }

@@ -410,6 +410,25 @@ describe('AuthService', () => {
     expect(service.enableFeatures('COM')).toBeTrue();
   });
 
+  it('should store and read refreshed tokens from active module scoped storage', () => {
+    const moduleStorageKeys = environment.authConfig.moduleStorageKeys.ADV;
+    spyOn(service, 'getRuntimeModuleId').and.returnValue('ADV');
+
+    service.createSession(
+      {
+        access_token: 'adv-access-token',
+        refresh_token: 'adv-refresh-token',
+        expires_in: '1800',
+      },
+      'NONE'
+    );
+
+    expect(localStorage.getItem(moduleStorageKeys.accessToken)).toBe('adv-access-token');
+    expect(localStorage.getItem(moduleStorageKeys.refreshToken)).toBe('adv-refresh-token');
+    expect(service.getAccessToken()).toBe('adv-access-token');
+    expect(service.getRefreshToken()).toBe('adv-refresh-token');
+  });
+
   it('should build form details payload from stored creator user context', () => {
     service.createSession(sessionPayload, 'NONE');
 

@@ -1292,6 +1292,8 @@ table.table tbody tr:hover {
   align-items: center;
   gap: 10px;
   min-height: 42px;
+  width: calc(100% - 20px);
+  box-sizing: border-box;
   margin: 3px 10px;
   padding: 8px 12px !important;
   border: 1px solid transparent;
@@ -1315,8 +1317,10 @@ table.table tbody tr:hover {
 
 .app-sidebar .side-menu .side-menu__item .side-menu__label,
 .side-menu .side-menu__item .side-menu__label {
-  display: inline-flex;
+  display: flex !important;
   align-items: center;
+  justify-content: space-between;
+  flex: 1 1 auto;
   min-width: 0;
   gap: 6px;
 }
@@ -1497,11 +1501,31 @@ body[class*="theme_"] .app-sidebar .side-menu li.slide.is-expanded .slide-menu l
 }
 
 .app-sidebar .side-menu .counts,
-.side-menu .counts {
+.app-sidebar .side-menu .badge,
+.side-menu .counts,
+.side-menu .badge {
   flex: 0 0 auto;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  border: 0 !important;
+  border-radius: 999px !important;
+  font-size: 11px !important;
+  font-weight: 700;
+  line-height: 1;
   color: #ffffff !important;
   background: #ef476f !important;
   box-shadow: 0 4px 10px rgba(239, 71, 111, 0.25);
+}
+
+.app-sidebar .side-menu .side-menu__item .counts,
+.app-sidebar .side-menu .side-menu__item .badge,
+.side-menu .side-menu__item .counts,
+.side-menu .side-menu__item .badge {
+  margin-left: auto !important;
 }
 
 .app-sidebar .side-menu .slide-menu .slide-item .counts,
@@ -2135,9 +2159,188 @@ ngx-select-ex.legacy-invalid-field .ngx-select__toggle,
   border-color: red !important;
 }
 
+/* Final broad form override: several legacy-migrated pages use div-based
+   template-driven layouts instead of <form>/.page_form wrappers. */
+label sup,
+.control-label sup,
+.form-label sup,
+#validateForm label sup,
+.panel_card label sup,
+.content-wrap label sup,
+label .required-msg,
+.control-label .required-msg,
+.form-label .required-msg,
+label .form-required,
+.control-label .form-required,
+.form-label .form-required,
+label .text-danger,
+.control-label .text-danger,
+.form-label .text-danger {
+  display: inline !important;
+  margin-left: 2px !important;
+  color: #ff0000 !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  vertical-align: super !important;
+  white-space: nowrap !important;
+}
+
+input.form-control:disabled,
+select.form-control:disabled,
+textarea.form-control:disabled,
+.form-control:disabled,
+input.form-control[disabled],
+select.form-control[disabled],
+textarea.form-control[disabled],
+.form-control[disabled],
+input.form-control[readonly],
+select.form-control[readonly],
+textarea.form-control[readonly],
+.form-control[readonly] {
+  background-color: #d9d9d9 !important;
+  background-image: none !important;
+  border-color: #c8c8c8 !important;
+  color: #25364a !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+  -webkit-text-fill-color: #25364a !important;
+}
+
+ngx-select.ngx-select_disabled .ngx-select__toggle,
+ngx-select[disabled] .ngx-select__toggle,
+ngx-select-ex.ngx-select_disabled .ngx-select__toggle,
+ngx-select-ex[disabled] .ngx-select__toggle {
+  background-color: #d9d9d9 !important;
+  background-image: none !important;
+  border-color: #c8c8c8 !important;
+  color: #25364a !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}
+
+ngx-select.ngx-select_disabled .ngx-select__placeholder,
+ngx-select.ngx-select_disabled .ngx-select__selected,
+ngx-select[disabled] .ngx-select__placeholder,
+ngx-select[disabled] .ngx-select__selected,
+ngx-select-ex.ngx-select_disabled .ngx-select__placeholder,
+ngx-select-ex.ngx-select_disabled .ngx-select__selected,
+ngx-select-ex[disabled] .ngx-select__placeholder,
+ngx-select-ex[disabled] .ngx-select__selected {
+  color: #25364a !important;
+}
+
+.legacy-invalid-field,
+input.legacy-invalid-field,
+select.legacy-invalid-field,
+textarea.legacy-invalid-field,
+ngx-select.legacy-invalid-field .ngx-select__toggle,
+ngx-select-ex.legacy-invalid-field .ngx-select__toggle,
+.legacy-invalid-field .ngx-select__toggle,
+.legacy-invalid-field .form-control {
+  border-color: red !important;
+}
+
 [data-radio-wrapper].legacy-invalid-field {
   border: 1px solid red !important;
   border-radius: 4px;
   padding: 6px 10px;
+}
+
+/* Global Form Required + Disabled Contract
+   Keep disabled/read-only fields and required markers consistent across
+   Creator, Approver, Unit Admin, System Admin, and Executor forms. */
+.page_form label sup,
+.page_form .control-label sup,
+.page_form .form-label sup,
+form label sup,
+form .control-label sup,
+form .form-label sup,
+label .required-msg,
+.control-label .required-msg,
+.form-label .required-msg,
+label .form-required,
+.control-label .form-required,
+.form-label .form-required,
+label .text-danger,
+.control-label .text-danger,
+.form-label .text-danger {
+  display: inline !important;
+  margin-left: 2px !important;
+  color: #ff0000 !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  vertical-align: super !important;
+  white-space: nowrap !important;
+}
+
+.page_form input.form-control:disabled,
+.page_form select.form-control:disabled,
+.page_form textarea.form-control:disabled,
+.page_form .form-control:disabled,
+.page_form input.form-control[readonly],
+.page_form select.form-control[readonly],
+.page_form textarea.form-control[readonly],
+.page_form .form-control[readonly],
+form input.form-control:disabled,
+form select.form-control:disabled,
+form textarea.form-control:disabled,
+form .form-control:disabled,
+form input.form-control[readonly],
+form select.form-control[readonly],
+form textarea.form-control[readonly],
+form .form-control[readonly] {
+  background-color: #d9d9d9 !important;
+  border-color: #c8c8c8 !important;
+  color: #25364a !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+  -webkit-text-fill-color: #25364a !important;
+}
+
+.page_form ngx-select.ngx-select_disabled .ngx-select__toggle,
+.page_form ngx-select[disabled] .ngx-select__toggle,
+.page_form ngx-select-ex.ngx-select_disabled .ngx-select__toggle,
+.page_form ngx-select-ex[disabled] .ngx-select__toggle,
+form ngx-select.ngx-select_disabled .ngx-select__toggle,
+form ngx-select[disabled] .ngx-select__toggle,
+form ngx-select-ex.ngx-select_disabled .ngx-select__toggle,
+form ngx-select-ex[disabled] .ngx-select__toggle {
+  background-color: #d9d9d9 !important;
+  border-color: #c8c8c8 !important;
+  color: #25364a !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}
+
+.page_form ngx-select.ngx-select_disabled .ngx-select__placeholder,
+.page_form ngx-select.ngx-select_disabled .ngx-select__selected,
+.page_form ngx-select[disabled] .ngx-select__placeholder,
+.page_form ngx-select[disabled] .ngx-select__selected,
+.page_form ngx-select-ex.ngx-select_disabled .ngx-select__placeholder,
+.page_form ngx-select-ex.ngx-select_disabled .ngx-select__selected,
+.page_form ngx-select-ex[disabled] .ngx-select__placeholder,
+.page_form ngx-select-ex[disabled] .ngx-select__selected,
+form ngx-select.ngx-select_disabled .ngx-select__placeholder,
+form ngx-select.ngx-select_disabled .ngx-select__selected,
+form ngx-select[disabled] .ngx-select__placeholder,
+form ngx-select[disabled] .ngx-select__selected,
+form ngx-select-ex.ngx-select_disabled .ngx-select__placeholder,
+form ngx-select-ex.ngx-select_disabled .ngx-select__selected,
+form ngx-select-ex[disabled] .ngx-select__placeholder,
+form ngx-select-ex[disabled] .ngx-select__selected {
+  color: #25364a !important;
+}
+
+.legacy-invalid-field,
+input.legacy-invalid-field,
+select.legacy-invalid-field,
+textarea.legacy-invalid-field,
+ngx-select.legacy-invalid-field .ngx-select__toggle,
+ngx-select-ex.legacy-invalid-field .ngx-select__toggle,
+.legacy-invalid-field .ngx-select__toggle,
+.legacy-invalid-field .form-control {
+  border-color: red !important;
 }
 

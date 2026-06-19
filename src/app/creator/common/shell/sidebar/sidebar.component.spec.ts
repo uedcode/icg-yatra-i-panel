@@ -76,7 +76,10 @@ describe('SidebarComponent', () => {
           notApprovedClaimCount: 15,
           passedClaimCount: 16,
           notPassedClaimCount: 17,
-          archiveClaimCount: 18
+          archiveClaimCount: 18,
+          payObCount: 31,
+          payApCount: 32,
+          payNapCount: 33
         }
       }) as any
     );
@@ -113,25 +116,13 @@ describe('SidebarComponent', () => {
         userId: 'CREATOR-1'
       }
     });
-    expect(component.countObj).toEqual({
-      archive: 9,
-      draft: 2,
-      inbox: 3,
-      outbox: 4,
-      approved: 5,
-      rejected: 6,
-      passed: 7,
-      notPassed: 8,
-      newClaim: 10,
-      inboxClaim: 11,
-      outboxClaim: 12,
-      draftClaim: 13,
-      approvedClaim: 14,
-      notApprovedClaim: 15,
-      passedClaim: 16,
-      notPassedClaim: 17,
-      archiveClaim: 18
-    });
+    expect(component.countObj.inboxCount).toBe(3);
+    expect(component.countObj.outboxCount).toBe(4);
+    expect(component.countObj.notApprovedCount).toBe(6);
+    expect(component.countObj.archiveClaimCount).toBe(18);
+    expect(component.countObj.payObCount).toBe(31);
+    expect(component.countObj.payApCount).toBe(32);
+    expect(component.countObj.payNapCount).toBe(33);
     expect(commonService.hideLoader).toHaveBeenCalled();
   });
 
@@ -163,8 +154,8 @@ describe('SidebarComponent', () => {
     component.ngOnInit();
 
     expect(commonService.hideLoader).toHaveBeenCalled();
-    expect(component.countObj.inbox).toBe(0);
-    expect(component.countObj.approved).toBe(0);
+    expect(component.countObj.inboxCount).toBeUndefined();
+    expect(component.countObj.approvedCount).toBeUndefined();
   });
 
   it('renders creator ADV legacy sidebar labels with count badges', () => {
@@ -184,6 +175,9 @@ describe('SidebarComponent', () => {
     expect(text).toContain('Not Passed 8');
     expect(text).toContain('Archive 9');
     expect(text).toContain('Update Pay Details');
+    expect(text).toContain('Outbox 31');
+    expect(text).toContain('Approved 32');
+    expect(text).toContain('Not Approved 33');
   });
 
   it('renders creator CLM legacy sidebar labels and hides ADV pay menu', () => {

@@ -218,6 +218,12 @@ export class FormLtcAdvanceComponent implements OnInit {
     'Additional LTC',
   ];
 
+  codeClaim = { ltcAdv: 'L' } as const;
+  codeClaimState = {
+    draft: 'DR',
+    outbox: 'OB',
+  } as const;
+
   // Temp travel entry
   tempLtcTravelDetails: Partial<YatDtsDetailDTO> = this.defaultTempTravel();
 
@@ -229,11 +235,6 @@ export class FormLtcAdvanceComponent implements OnInit {
   resubClaimId: string | null = null;
   supplementaryId: string | null = null;
   documentDtos: any[] = [];
-  codeClaim = { ltcAdv: 'L' } as const;
-  codeClaimState = {
-    draft: 'DR',
-    outbox: 'OB',
-  } as const;
 
   get pageTitle(): string {
     if (this.activeFormKind === 'claim') {

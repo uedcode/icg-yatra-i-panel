@@ -89,6 +89,15 @@ export class ClaimService {
     );
   }
 
+  checkValidSignType(config?: any) {
+    return this.http.get<any>(`validation/checkValidSignType`, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
   /**
    * Get list of claims ready for claim (outbox/inbox style).
    * Old JS: $http.get(url + "/readyForClaim", config)
@@ -526,11 +535,46 @@ export class ClaimService {
   }
 
   /**
+   * Legacy spelling is "Avalied" in the backend endpoint.
+   * Old JS: ltcAvailedHistUrl = ApiUrl + "ltcAvailedHist"; /checkIsAvaliedHistory
+   */
+  checkLtcAvailedHistory(config?: any) {
+    return this.http.get<any>(`ltcAvailedHist/checkIsAvaliedHistory`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  /**
    * LTC family details.
    * Old JS: ltcAvailedHistUrl = ApiUrl + "ltcAvailedHist"; /getFamilyDetails
    */
   getLtcFamilyDetails(config?: any) {
     return this.http.get<any>(`ltcAvailedHist/getFamilyDetails`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  /**
+   * Home town master used before first LTC advance/history creation.
+   * Old JS: ApiUrl + "hometown"; /initHometown
+   */
+  initHomeTown(config?: any) {
+    return this.http.get<any>(`hometown/initHometown`, config).pipe(
+      map((res) => {
+        this.$common.parseResponse(res);
+        return res;
+      })
+    );
+  }
+
+  saveHomeTown(payload: any) {
+    return this.http.post<any>(`hometown/createOrUpdate`, payload).pipe(
       map((res) => {
         this.$common.parseResponse(res);
         return res;

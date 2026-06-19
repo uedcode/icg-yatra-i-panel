@@ -241,6 +241,7 @@ export class FormPayDetailsComponent implements OnInit {
       return;
     }
 
+    this.closeSubmitModal();
     this.submitBtn = true;
     const payload = { ...this.claims };
     payload.formId = this.$auth.getRuntimeModuleId();
@@ -261,6 +262,9 @@ export class FormPayDetailsComponent implements OnInit {
         }
         this.submitBtn = false;
         this.$common.hideLoader();
+        if (res?.message) {
+          this.$common.showMessage(res.message, 'danger');
+        }
       },
       () => {
         this.submitBtn = false;
@@ -284,7 +288,14 @@ export class FormPayDetailsComponent implements OnInit {
         if (res?.status) {
           this.$common.showMessage(res?.message || 'Pay details submitted successfully.');
           this.$claim.notifyStatusCountRefresh();
-          this.router.navigateByUrl(`${this.$auth.getModuleName()}/form-pay-details`);
+          this.resetToFreshForm();
+          setTimeout(() => {
+            this.router.navigateByUrl(`${this.$auth.getModuleName()}/form-pay-details`);
+          }, 1200);
+          return;
+        }
+        if (res?.message) {
+          this.$common.showMessage(res.message, 'danger');
         }
       },
       () => {
@@ -292,6 +303,40 @@ export class FormPayDetailsComponent implements OnInit {
         this.submitBtn = false;
       }
     );
+  }
+
+  private closeSubmitModal(): void {
+    $('#submitModal').modal('hide');
+    $('.modal-backdrop').remove();
+    $('body').removeClass('modal-open').css('padding-right', '');
+  }
+
+  private resetToFreshForm(): void {
+    const user = this.$auth.getUserDetails();
+    this.payId = '';
+    this.isPreview = false;
+    this.showFileBrowse = true;
+    this.docFile = null;
+    this.docUploading = false;
+    this.appliedUnit = '';
+    this.claims = {
+      id: '',
+      formId: this.$auth.getRuntimeModuleId(),
+      pno: user?.pno || '',
+      name: user?.name || '',
+      rank: user?.rank || '',
+      payLevel: user?.payLevel || '',
+      basicPay: user?.basicPay || '',
+      videPresentUnit: user?.unitName || user?.gxUnitName || '',
+      newPayLevel: '',
+      newBasicPay: '',
+      fromDt: '',
+      reason: '',
+      docName: '',
+      docUrl: '',
+      remark: '',
+      deleteFileUrl: '',
+    };
   }
 
   get fileLabel(): string {

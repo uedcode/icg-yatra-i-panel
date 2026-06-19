@@ -1231,14 +1231,17 @@ export class FormTydutyComponent implements OnInit {
     try {
       this.$common.showLoader();
       const headers: any = {
-        isPreview: 'false',
-        gxUnitId: String(this.gxUnitId || this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId || ''),
-        userId: this.userIdDetails?.userId ?? '',
-        subFormId: this.activeSubFormId,
         isFetch: 'true',
+        isPreview: 'false',
+        subFormId: this.activeSubFormId,
+        userId: this.userIdDetails?.userId ?? '',
         claimId: '',
+        budgetDate: this.getLegacyBudgetDate(),
       };
 
+      if (this.gxUnitId !== null && this.gxUnitId !== undefined) {
+        headers.gxUnitId = String(this.gxUnitId);
+      }
       if (this.claimIdParam) {
         headers.claimId = this.claimIdParam;
       }
@@ -1323,10 +1326,7 @@ export class FormTydutyComponent implements OnInit {
               adv.unitList = [];
             }
 
-            adv.appliedTo =
-              (dto.appliedTo ?? adv.videPresentUnit ?? adv.presentUnit ?? adv.appliedTo ?? '')
-                .toString()
-                .trim() || null;
+            adv.appliedTo = (dto.appliedTo ?? '').toString().trim() || null;
 
             this.mapTyBankDetails(obj);
 
@@ -1352,6 +1352,7 @@ export class FormTydutyComponent implements OnInit {
 
           const mappedAdv = this.claims.yatTempDutyAdvDTOs?.[0];
           this.changeTransType(mappedAdv?.tempTransferToType || null, this.codeClaim.tyAdv);
+          this.checkValidSignType(this.claims.signWith, mappedAdv?.appliedTo || null, true);
           this.syncGxFileBrowseState();
           this.checkForPreviewBtn();
         },
@@ -1401,6 +1402,15 @@ export class FormTydutyComponent implements OnInit {
       this.$common.hideLoader();
       console.error('Error while loading TY units.', error);
     }
+  }
+
+  private getLegacyBudgetDate(): any {
+    return (
+      (this.userIdDetails as any)?.budgetDate ||
+      (this.$auth as any)?.budgetDate ||
+      (this.$auth as any)?.getBudgetDate?.() ||
+      ''
+    );
   }
 
   getStations() {
@@ -1458,8 +1468,42 @@ export class FormTydutyComponent implements OnInit {
     }
   }
 
-  checkValidSignType(signWith: string | null, appliedTo: string | null): void {
-    // Add sign/appliedTo validation if needed
+  checkValidSignType(signWith: string | null, appliedTo: string | null, getCalled: boolean = false): void {
+    const selectedSign = signWith || this.claims?.signWith;
+    if (!selectedSign || !this.userIdDetails?.userId) {
+      return;
+    }
+
+    const unitName =
+      appliedTo ||
+      this.claims?.yatTempDutyAdvDTOs?.[0]?.appliedTo ||
+      (this.userIdDetails as any)?.gxUnitName ||
+      (this.userIdDetails as any)?.unitName ||
+      '';
+
+    const config = {
+      headers: {
+        unitName,
+        userId: this.userIdDetails.userId,
+      },
+    };
+
+    this.$claim.checkValidSignType(config).subscribe(
+      (response: any) => {
+        if (response?.status === true && response.object && response.object !== selectedSign) {
+          this.claims.signWith = response.object;
+          if (!getCalled) {
+            this.$common.showMessage(
+              response.message || 'Sign type updated as per selected unit.',
+              'warning'
+            );
+          }
+        }
+      },
+      (error) => {
+        console.error('Error while validating TY sign type.', error);
+      }
+    );
   }
   navigatePreview(type, id) {
     const route = type || this.getPreviewRoute();
@@ -1777,6 +1821,93 @@ export class FormTydutyComponent implements OnInit {
     }
   }
 
+  private buildTySavePayload(status: string): any {
+    this.calculateAmount(this.codeClaim.tyAdv);
+
+    const tempClaim: any = JSON.parse(JSON.stringify(this.claims));
+    tempClaim.claimAmt = tempClaim.yatTempDutyAdvDTOs?.[0]?.advAmt ?? 0;
+
+    if (tempClaim.yatTempDutyAdvDTOs) {
+      if (!Array.isArray(tempClaim.yatTempDutyAdvDTOs)) {
+        tempClaim.yatTempDutyAdvDTOs = [tempClaim.yatTempDutyAdvDTOs];
+      }
+    } else {
+      tempClaim.yatTempDutyAdvDTOs = [];
+    }
+    tempClaim.yatTempDutyAdvDTOs.forEach((adv: any) => {
+      delete adv.presentUnit; // backend DTO has videPresentUnit, not Angular display alias
+    });
+
+    if (Array.isArray(tempClaim.yatDtsDetailDTOs)) {
+      tempClaim.yatDtsDetailDTOs.forEach((elem: any) => {
+        elem.amount =
+          this.normalizeAmountNumber(elem.tempAmount, null) ??
+          this.normalizeAmountNumber(elem.amount, 0);
+        delete elem.tempAmount;
+        delete elem._reasonForNoDtsError;
+        delete elem.ltcTravelPrimaryKey;
+      });
+    }
+
+    if (status === this.codeClaimState.outbox) {
+      tempClaim.claimState = this.codeClaimState.outbox;
+    }
+
+    if (this.userIdDetails && this.userIdDetails.roleTypeId) {
+      tempClaim.roleTypeId = this.userIdDetails.roleTypeId;
+    }
+
+    if (!tempClaim.aclUserDTO && this.userIdDetails?.userId) {
+      tempClaim.aclUserDTO = { userId: this.userIdDetails.userId };
+    }
+
+    tempClaim.codeSubFormDTO = {
+      ...(tempClaim.codeSubFormDTO || {}),
+      subFormId: this.activeSubFormId,
+    };
+    if (tempClaim.codeUnitDTO && this.claims?.codeUnitDTO?.unit) {
+      tempClaim.codeUnitDTO = {
+        unit: this.claims.codeUnitDTO.unit,
+      };
+    }
+
+    if (!tempClaim.signWith) {
+      tempClaim.signWith = this.codeSignType.eSign;
+    }
+    if (this.supplementryId) {
+      tempClaim.supClaimId = this.supplementryId;
+    }
+    if (this.resubClaimId) {
+      tempClaim.refAdvanceId = this.resubClaimId;
+    }
+    if (this.extnClaimId) {
+      tempClaim.extendedAdvId = this.extnClaimId;
+    }
+    tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
+
+    tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
+
+    if (tempClaim.occDate) {
+      tempClaim.occDate = new Date(tempClaim.occDate).getTime();
+    }
+
+    if (Array.isArray(tempClaim.yatTempDutyAdvDTOs)) {
+      tempClaim.yatTempDutyAdvDTOs.forEach((adv: any) => {
+        adv.gxDate = this.UtilService.toMillis(adv.gxDate);
+        adv.date = this.UtilService.toMillis(adv.date);
+        adv.wefDate = this.UtilService.toMillis(adv.wefDate);
+      });
+    }
+
+    tempClaim.occDate = this.UtilService.toMillis(tempClaim.occDate);
+    tempClaim.subDate = this.UtilService.toMillis(tempClaim.subDate);
+    tempClaim.reportingDate = this.UtilService.toMillis(tempClaim.reportingDate);
+    tempClaim.voucherDate = this.UtilService.toMillis(tempClaim.voucherDate);
+    tempClaim.dob = this.UtilService.toMillis(tempClaim.dob);
+
+    return tempClaim;
+  }
+
   // Save TY Duty form
   saveClaim(
     type: string,
@@ -1792,87 +1923,7 @@ export class FormTydutyComponent implements OnInit {
     this.$common.showLoader();
 
     try {
-      const tempClaim: any = JSON.parse(JSON.stringify(this.claims));
-      tempClaim.claimAmt = tempClaim.yatTempDutyAdvDTOs?.[0]?.advAmt ?? 0;
-
-      if (tempClaim.yatTempDutyAdvDTOs) {
-        if (!Array.isArray(tempClaim.yatTempDutyAdvDTOs)) {
-          tempClaim.yatTempDutyAdvDTOs = [tempClaim.yatTempDutyAdvDTOs];
-        }
-      } else {
-        tempClaim.yatTempDutyAdvDTOs = [];
-      }
-      tempClaim.yatTempDutyAdvDTOs.forEach((adv: any) => {
-        delete adv.presentUnit; // backend only knows videPresentUnit
-      });
-
-      if (Array.isArray(tempClaim.yatDtsDetailDTOs)) {
-        tempClaim.yatDtsDetailDTOs.forEach((elem: any) => {
-          elem.amount =
-            this.normalizeAmountNumber(elem.tempAmount, null) ??
-            this.normalizeAmountNumber(elem.amount, 0);
-          delete elem.tempAmount;
-          delete elem._reasonForNoDtsError;
-        });
-      }
-
-      if (status === this.codeClaimState.outbox) {
-        tempClaim.claimState = this.codeClaimState.outbox;
-      }
-
-      if (this.userIdDetails && this.userIdDetails.roleTypeId) {
-        tempClaim.roleTypeId = this.userIdDetails.roleTypeId;
-      }
-
-      if (!tempClaim.aclUserDTO && this.userIdDetails?.userId) {
-        tempClaim.aclUserDTO = { userId: this.userIdDetails.userId };
-      }
-
-      tempClaim.codeSubFormDTO = {
-        ...(tempClaim.codeSubFormDTO || {}),
-        subFormId: this.activeSubFormId,
-      };
-      if (tempClaim.codeUnitDTO && this.claims?.codeUnitDTO?.unit) {
-        tempClaim.codeUnitDTO = {
-          unit: this.claims.codeUnitDTO.unit,
-        };
-      }
-
-      if (!tempClaim.signWith) {
-        tempClaim.signWith = 'ES';
-      }
-      if (this.supplementryId) {
-        tempClaim.supClaimId = this.supplementryId;
-      }
-      if (this.resubClaimId) {
-        tempClaim.refAdvanceId = this.resubClaimId;
-      }
-      if (this.extnClaimId) {
-        tempClaim.extendedAdvId = this.extnClaimId;
-      }
-      tempClaim.yatDocsDTOs = this.mapClaimDocumentsForSave(this.documentDtos);
-
-      tempClaim.ifscnull = !tempClaim.yatClaimBankDetailDTO?.ifscCode;
-
-      if (tempClaim.occDate) {
-        tempClaim.occDate = new Date(tempClaim.occDate).getTime();
-      }
-
-      if (Array.isArray(tempClaim.yatTempDutyAdvDTOs)) {
-        tempClaim.yatTempDutyAdvDTOs.forEach((adv: any) => {
-          adv.gxDate = this.UtilService.toMillis(adv.gxDate);
-          adv.date = this.UtilService.toMillis(adv.date);
-          adv.wefDate = this.UtilService.toMillis(adv.wefDate);
-        });
-      }
-
-      tempClaim.occDate = this.UtilService.toMillis(tempClaim.occDate);
-      tempClaim.subDate = this.UtilService.toMillis(tempClaim.subDate);
-      tempClaim.reportingDate = this.UtilService.toMillis(
-        tempClaim.reportingDate
-      );
-      tempClaim.voucherDate = this.UtilService.toMillis(tempClaim.voucherDate);
-      tempClaim.dob = this.UtilService.toMillis(tempClaim.dob);
+      const tempClaim = this.buildTySavePayload(status);
 
       const formData = new FormData();
       formData.append('yatClaimDTO', JSON.stringify(tempClaim));
@@ -2303,6 +2354,45 @@ export class FormTydutyComponent implements OnInit {
     return true;
   }
 
+  private runTyServerValidation(status: string, onSuccess?: () => void): void {
+    const validationPayload = this.buildTySavePayload(status);
+    this.$common.showLoader();
+
+    this.$claim.validateClaims(validationPayload).subscribe(
+      (response: any) => {
+        this.$common.hideLoader();
+        if (!response || response.status === false) {
+          this.$common.showMessage(response?.message || 'Validation failed.', 'danger');
+          return;
+        }
+
+        const errors = Array.isArray(response.object)
+          ? response.object
+          : response.object
+            ? [response.object]
+            : [];
+        if (errors.length > 0) {
+          this.showErrors = errors;
+          const firstError = errors[0]?.error || errors[0]?.message || errors[0]?.descr || errors[0];
+          this.$common.showMessage(String(firstError || 'Please resolve validation errors.'), 'danger');
+          return;
+        }
+
+        this.showErrors = [];
+        if (status) {
+          onSuccess?.();
+        } else {
+          this.$common.showMessage(response.message || 'No Error', 'success');
+        }
+      },
+      (error) => {
+        this.$common.hideLoader();
+        console.error('Error while validating TY Duty Advance.', error);
+        this.$common.showMessage('Error while validating TY Duty Advance.', 'danger');
+      }
+    );
+  }
+
   validateTy(type: string): void {
     if (type !== this.codeClaim.tyAdv && type !== this.activeSubFormId) return;
 
@@ -2316,10 +2406,7 @@ export class FormTydutyComponent implements OnInit {
         return;
       }
 
-      this.$common.showMessage(
-        'Validation successful. Please submit the form to proceed.',
-        'success'
-      );
+      this.runTyServerValidation('');
     } catch (err) {
       console.error('Error during TY validation', err);
     }
@@ -2335,7 +2422,9 @@ export class FormTydutyComponent implements OnInit {
       return;
     }
 
-    this.saveClaim(this.codeClaim.tyAdv, this.codeClaimState.outbox, true);
+    this.runTyServerValidation(this.codeClaimState.outbox, () => {
+      this.saveClaim(this.codeClaim.tyAdv, this.codeClaimState.outbox, true);
+    });
   }
 
   private validateTyBusinessFields(): boolean {

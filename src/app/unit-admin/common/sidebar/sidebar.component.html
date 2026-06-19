@@ -27,7 +27,7 @@
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
         [routerLink]="['archive']"><i class="side-menu__icon fa fa-archive"></i><span
           class="side-menu__label">Archive </span>
-        <span class="badge" *ngIf="archiveCount != 0">{{archiveCount}}</span></a>
+        <span class="counts" *ngIf="archiveCount != 0">{{archiveCount}}</span></a>
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"

@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { ClaimService } from 'src/app/service/claim/claim.service';
 declare var $: any;
 
 @Component({
@@ -23,11 +24,18 @@ export class NewComponent implements OnInit {
     private route: ActivatedRoute,
     private $common: CommonService,
     private $codeSubForm: CodeSubFormService,
+    private $claim: ClaimService,
   ) { }
 
   dataList: any = [];
   config: any;
   userIdDetails;
+  ltcCreateSubForm: any = null;
+  ltcFamilyDetails: any[] = [];
+  ltcHomeTown = '';
+  ltcCertify: 1 | 0 | null = null;
+  showLtcFamilyModal = false;
+  showUpdateFamilyModal = false;
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
@@ -117,6 +125,11 @@ export class NewComponent implements OnInit {
     const yatraRoute = this.getCreatorClaimRoute(subFormId);
     let moduleUrl = this.$auth.getModuleName();
 
+    if ((subFormId || '').toUpperCase() === 'L') {
+      this.startLegacyLtcCreateFlow(data);
+      return;
+    }
+
     if (yatraRoute) {
       this.router.navigateByUrl(
         moduleUrl + `/${yatraRoute}?subFormId=${subFormId}`
@@ -127,6 +140,125 @@ export class NewComponent implements OnInit {
     this.router.navigateByUrl(
       moduleUrl + `/${data?.formUrl}?subFormId=${data.subFormId}`
     );
+  }
+
+  private startLegacyLtcCreateFlow(subForm: any): void {
+    const userId = this.userIdDetails?.userId || '';
+    const config = { headers: { userId } };
+
+    this.ltcCreateSubForm = subForm;
+    this.$common.showLoader();
+    this.$claim.getLtcDoeDifference(config).subscribe({
+      next: (response: any) => {
+        const doe = Number(response?.object || 0);
+        if (!(doe > 1)) {
+          this.$common.hideLoader();
+          this.$common.showMessage('On completion of one year service LTC entitlement commence', 'danger');
+          return;
+        }
+        this.loadLtcAvailedHistory(config);
+      },
+      error: (error) => {
+        this.$common.hideLoader();
+        this.$common.showMessage(`${error?.status || ''} : ${error?.statusText || 'Unable to check LTC entitlement'}`, 'danger');
+      },
+    });
+  }
+
+  private loadLtcAvailedHistory(config: any): void {
+    this.$claim.checkLtcAvailedHistory(config).subscribe({
+      next: (response: any) => {
+        const result = Number(response?.object);
+        if (result === 0) {
+          this.loadLtcFamilyDetails(config);
+          return;
+        }
+        this.$common.hideLoader();
+        if (result === 1) {
+          this.navigateToLtcForm();
+          return;
+        }
+        this.$common.showMessage(response?.message || 'Unable to create LTC advance.', 'danger');
+      },
+      error: (error) => {
+        this.$common.hideLoader();
+        this.$common.showMessage(`${error?.status || ''} : ${error?.statusText || 'Unable to check LTC availed history'}`, 'danger');
+      },
+    });
+  }
+
+  private loadLtcFamilyDetails(config: any): void {
+    this.$claim.getLtcFamilyDetails(config).subscribe({
+      next: (response: any) => {
+        this.ltcFamilyDetails = Array.isArray(response?.object) ? response.object : [];
+        this.loadHomeTown(config);
+      },
+      error: (error) => {
+        this.$common.hideLoader();
+        this.$common.showMessage(`${error?.status || ''} : ${error?.statusText || 'Unable to load family details'}`, 'danger');
+      },
+    });
+  }
+
+  private loadHomeTown(config: any): void {
+    this.$claim.initHomeTown(config).subscribe({
+      next: (response: any) => {
+        this.$common.hideLoader();
+        this.ltcHomeTown = response?.object || '';
+        this.ltcCertify = null;
+        this.showLtcFamilyModal = true;
+      },
+      error: () => {
+        this.$common.hideLoader();
+        this.ltcHomeTown = '';
+        this.ltcCertify = null;
+        this.showLtcFamilyModal = true;
+      },
+    });
+  }
+
+  submitLtcFamilyConfirmation(): void {
+    const homeTown = String(this.ltcHomeTown || '').trim();
+    if (!homeTown) {
+      this.$common.showMessage('Please Enter Home Town', 'danger');
+      return;
+    }
+    if (this.ltcCertify !== 1 && this.ltcCertify !== 0) {
+      this.$common.showMessage('Choose some option', 'danger');
+      return;
+    }
+
+    const userId = this.userIdDetails?.userId || '';
+    this.$common.showLoader();
+    this.$claim.saveHomeTown({ homeTown, userId }).subscribe({
+      next: () => {
+        this.$common.hideLoader();
+        this.showLtcFamilyModal = false;
+        if (this.ltcCertify === 1) {
+          this.router.navigateByUrl(this.$auth.getModuleName() + '/form-ltc-availed-history');
+          return;
+        }
+        this.showUpdateFamilyModal = true;
+      },
+      error: (error) => {
+        this.$common.hideLoader();
+        this.$common.showMessage(`${error?.status || ''} : ${error?.statusText || 'Unable to save home town'}`, 'danger');
+      },
+    });
+  }
+
+  closeLtcFamilyModal(): void {
+    this.showLtcFamilyModal = false;
+  }
+
+  closeUpdateFamilyModal(): void {
+    this.showUpdateFamilyModal = false;
+  }
+
+  private navigateToLtcForm(): void {
+    const moduleUrl = this.$auth.getModuleName();
+    const subFormId = this.ltcCreateSubForm?.subFormId || 'L';
+    this.router.navigateByUrl(moduleUrl + `/form-ltc-advance?subFormId=${subFormId}`);
   }
 
   goBack() {
