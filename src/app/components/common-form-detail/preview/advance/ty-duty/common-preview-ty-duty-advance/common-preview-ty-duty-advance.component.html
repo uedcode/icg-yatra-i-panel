@@ -1,0 +1,253 @@
+<div class="wrapper">
+  <div class="container">
+    <div class="aligned">
+      <button type="button" class="btn btn-warning request_view_back" title="Back to Page" (click)="goBack()">
+        Back <i class="fa fa-chevron-left" style="display: inline-block"></i>
+      </button>
+    </div>
+
+    <div class="main-content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-white">
+            <div class="panel-body">
+              <div class="general-data">
+                <h4 class="head_ing">
+                  <strong>{{ heading }}</strong>
+                  <span *ngIf="claims?.formId"> - {{ claims.formId }}</span>
+                </h4>
+
+                <div class="text-right mb-2" *ngIf="claims?.inkSignedFileUrl">
+                  <button type="button" class="btn btn-info" (click)="$auth.viewFile(claims.inkSignedFileUrl)">View</button>
+                </div>
+
+                <div class="level_1">
+                  <label class="mr-3">
+                    <input type="radio" name="signRadio" [checked]="isInkSign" disabled />
+                    Ink Sign
+                  </label>
+                  <label>
+                    <input type="radio" name="signRadio" [checked]="isESign" disabled />
+                    eSign
+                  </label>
+                </div>
+
+                <div class="level_1">
+                  <h4 class="head_ing">(a)<strong>Personal Details</strong></h4>
+
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Name</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.name) }}</p></div>
+                    <div class="col-md-3"><p><strong>Rank</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.rank) }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Personnel Number</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.pno) }}</p></div>
+                    <div class="col-md-3"><p><strong>Pay Level</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.payLevel) }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Basic Pay (In Rs.)</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.basicPay) }}</p></div>
+                    <div class="col-md-3"><p><strong>Probable duration of Ty duty(In days)</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.duration) }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Present Unit</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.videPresentUnit) }}</p></div>
+                    <div class="col-md-3"><p><strong>Temporary Duty to</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.tempTransferToType) }}</p></div>
+                    <div class="col-md-3"><p><strong>Applied To</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.appliedTo) }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Gx Unit</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.gxUnit) }}</p></div>
+                    <div class="col-md-3"><p><strong>{{ gxLabelPrefix }} Number</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.gxNumber) }}</p></div>
+                    <div class="col-md-3"><p><strong>{{ gxLabelPrefix }} Date</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(gxDate) }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>{{ gxFormLabel }}</strong></p></div>
+                    <div class="col-md-3"><p>{{ gxFormStatus }}</p></div>
+                    <div class="col-md-3"><p><strong>Purpose Type</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(purposeType) }}</p></div>
+                  </div>
+                  <div class="row" *ngIf="showPurpose">
+                    <div class="col-md-3"><p><strong>Purpose of Ty duty</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.purpose) }}</p></div>
+                  </div>
+                  <div class="row" *ngIf="showUnitStation">
+                    <div class="col-md-3"><p><strong>Name of Unit</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.tempTransTo) }}</p></div>
+                    <div class="col-md-3"><p><strong>Station proceeding to</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.stationProceedingTo) }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Occurrence Date (Movement Date)</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(occDate) }}</p></div>
+                    <div class="col-md-3" *ngIf="showDutyStation"><p><strong>Duty Station to</strong></p></div>
+                    <div class="col-md-3" *ngIf="showDutyStation"><p>{{ display(tyDuty?.dutyStation) }}</p></div>
+                    <div class="col-md-3" *ngIf="showExtendedFrom"><p><strong>Extended From</strong></p></div>
+                    <div class="col-md-3" *ngIf="showExtendedFrom">
+                      <button type="button" class="btn btn-info" (click)="navigatePreview('preview-ty-duty', claims?.extendedAdvId)">View</button>
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="showExtendedDuty">
+                    <div class="col-md-3"><p><strong>Extended Duty</strong></p></div>
+                    <div class="col-md-3">
+                      <button type="button" class="btn btn-info" (click)="navigatePreview('preview-ty-duty', claims?.refExtendedAdvId)">View</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="level_1" *ngIf="showGuestDetails">
+                  <h4><strong style="text-decoration: underline;">Guest Details</strong></h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Relation</th>
+                          <th>Age</th>
+                          <th>Gender</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{ display(tyDuty?.personName) }}</td>
+                          <td>{{ display(tyDuty?.relation) }}</td>
+                          <td>{{ display(tyDuty?.age) }}</td>
+                          <td>{{ display(tyDuty?.gender) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="level_1">
+                  <h4 class="head_ing">(b)<strong>Travel Details</strong></h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th>From</th>
+                          <th>To</th>
+                          <th>Travel Mode</th>
+                          <th>DTS</th>
+                          <th>Amount (In Rs.)</th>
+                          <th>Reason for not using DTS</th>
+                          <th>Remarks</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let row of travelRows">
+                          <td>{{ display(row?.source) }}</td>
+                          <td>{{ display(row?.destination) }}</td>
+                          <td>{{ display(row?.modeOfTravel) }}</td>
+                          <td>{{ display(row?.isDts) }}</td>
+                          <td>{{ display(row?.amount) }}</td>
+                          <td>{{ display(row?.reasonForNoDts) }}</td>
+                          <td>{{ display(row?.remarks) }}</td>
+                        </tr>
+                        <tr *ngIf="!travelRows.length">
+                          <td colspan="7" class="text-center">No Record Found</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="level_1">
+                  <h4 class="head_ing">(c)<strong>Financial Terms</strong></h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                      <tbody>
+                        <tr>
+                          <td>Food charges for</td>
+                          <td>{{ display(tyDuty?.foodChargeDays) }} days</td>
+                          <td>{{ display(tyDuty?.foodChargeRatePerDay) }} per day</td>
+                          <td>{{ display(tyDuty?.foodChargePerc) }}% GST</td>
+                          <td>{{ display(tyDuty?.totalFoodCharge) }}</td>
+                        </tr>
+                        <tr>
+                          <td>Hotel accommodation charges for</td>
+                          <td>{{ display(tyDuty?.hotelAccDays) }} days</td>
+                          <td>{{ display(tyDuty?.hotelAccRatePerDay) }} per day</td>
+                          <td>{{ display(tyDuty?.hotelChargePerc) }}% GST</td>
+                          <td>{{ display(tyDuty?.totalHotelAcc) }}</td>
+                        </tr>
+                        <tr>
+                          <td>Road mileage from duty station to Rail/Air/Road and back</td>
+                          <td>{{ display(tyDuty?.arrToDutyRate) }} kms</td>
+                          <td>{{ display(tyDuty?.arrToDutyKm) }} Per kms</td>
+                          <td>-</td>
+                          <td>{{ display(tyDuty?.arrToDutyRs) }}</td>
+                        </tr>
+                        <tr>
+                          <td>Travel charges from hotel accommodation to duty station within city</td>
+                          <td>{{ display(tyDuty?.accHToDutyDays) }} days</td>
+                          <td *ngFor="let cell of accHToDutyCells">{{ cell }}</td>
+                          <td>-</td>
+                          <td>{{ display(tyDuty?.totalAccHToDuty) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Place</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(tyDuty?.place) }}</p></div>
+                  </div>
+                </div>
+
+                <div class="level_1">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Advance Request</th>
+                          <th>Advance Admissible</th>
+                          <th>DTS Amount</th>
+                          <th>Amount to be budgeted</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{ displayZero(tyDuty?.totalAmt) }}</td>
+                          <td>{{ displayZero(tyDuty?.advAmt) }}</td>
+                          <td>{{ displayZero(tyDuty?.dtsAmount) }}</td>
+                          <td>{{ displayZero(tyDuty?.totalBudgetedAmt) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="level_1">
+                  <h4 class="head_ing">(d)<strong>Bank Details</strong></h4>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Bank Name</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(bankDetails?.bankName) }}</p></div>
+                    <div class="col-md-3"><p><strong>IFSC Code</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(bankDetails?.ifscCode) }}</p></div>
+                    <div class="col-md-3"><p><strong>Account Number</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(bankDetails?.bankAccNo) }}</p></div>
+                    <div class="col-md-3"><p><strong>MICR Code</strong></p></div>
+                    <div class="col-md-3"><p>{{ display(bankDetails?.micrCode) }}</p></div>
+                  </div>
+                </div>
+
+                <div class="level_1">
+                  <h4 class="head_ing">(e)<strong>Remarks</strong></h4>
+                  <p>{{ display(claims?.internalRemarks) }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

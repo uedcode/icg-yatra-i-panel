@@ -51,25 +51,25 @@ import { ClaimNotApprovedComponent } from './pages/claim/queues/not-approved/cla
 import { ClaimPassedComponent } from './pages/claim/queues/passed/claim-passed.component';
 import { ClaimNotPassedComponent } from './pages/claim/queues/not-passed/claim-not-passed.component';
 import { ClaimArchiveComponent } from './pages/claim/queues/archive/claim-archive.component';
-import { ClaimPreviewVoucherComponent } from './pages/claim/previews/voucher/claim-preview-voucher.component';
-import { ClaimMovementUpdateComponent } from './pages/claim/previews/movement-update/claim-movement-update.component';
-import { ClaimPreviewPmtDutyComponent } from './pages/claim/previews/pmt-duty/claim-preview-pmt-duty.component';
-import { ClaimPreviewTyDutyComponent } from './pages/claim/previews/ty-duty/claim-preview-ty-duty.component';
-import { ClaimPreviewFteComponent } from './pages/claim/previews/fte/claim-preview-fte.component';
-import { ClaimPreviewLtcComponent } from './pages/claim/previews/ltc/claim-preview-ltc.component';
-import { ClaimPreviewResettlementComponent } from './pages/claim/previews/resettlement/claim-preview-resettlement.component';
+import { ClaimPreviewVoucherComponent } from './pages/claim/previews/voucher-claim/preview-voucher-claim.component';
+import { ClaimMovementUpdateComponent } from './pages/claim/previews/movement-update-claim/preview-movement-update-claim.component';
+import { ClaimPreviewPmtDutyComponent } from './pages/claim/previews/pmt-duty-claim/preview-pmt-duty-claim.component';
+import { ClaimPreviewTyDutyComponent } from './pages/claim/previews/ty-duty-claim/preview-ty-duty-claim.component';
+import { ClaimPreviewFteComponent } from './pages/claim/previews/fte-claim/preview-fte-claim.component';
+import { ClaimPreviewLtcComponent } from './pages/claim/previews/ltc-claim/preview-ltc-claim.component';
+import { ClaimPreviewResettlementComponent } from './pages/claim/previews/resettlement-claim/preview-resettlement-claim.component';
 import { AdvanceFormPmtDutyComponent } from './pages/advance/reviews/pmt-duty/advance-form-pmt-duty.component';
-import { AdvancePreviewPmtDutyComponent } from './pages/advance/previews/pmt-duty/advance-preview-pmt-duty.component';
+import { AdvancePreviewPmtDutyComponent } from './pages/advance/previews/pmt-duty-advance/preview-pmt-duty-advance.component';
 import { AdvanceFormTyDutyComponent } from './pages/advance/reviews/ty-duty/advance-form-ty-duty.component';
-import { AdvancePreviewTyDutyComponent } from './pages/advance/previews/ty-duty/advance-preview-ty-duty.component';
+import { AdvancePreviewTyDutyComponent } from './pages/advance/previews/ty-duty-advance/preview-ty-duty-advance.component';
 import { AdvanceFormFteComponent } from './pages/advance/reviews/fte/advance-form-fte.component';
-import { AdvancePreviewFteComponent } from './pages/advance/previews/fte/advance-preview-fte.component';
+import { AdvancePreviewFteComponent } from './pages/advance/previews/fte-advance/preview-fte-advance.component';
 import { AdvanceFormLtcComponent } from './pages/advance/reviews/ltc/advance-form-ltc.component';
-import { AdvancePreviewLtcComponent } from './pages/advance/previews/ltc/advance-preview-ltc.component';
+import { AdvancePreviewLtcComponent } from './pages/advance/previews/ltc-advance/preview-ltc-advance.component';
 import { AdvanceFormManualComponent } from './pages/advance/reviews/manual/advance-form-manual.component';
-import { AdvancePreviewManualComponent } from './pages/advance/previews/manual/advance-preview-manual.component';
+import { AdvancePreviewManualComponent } from './pages/advance/previews/manual-advance/preview-manual-advance.component';
 import { AdvanceFormLtcHistoryComponent } from './pages/advance/reviews/ltc-history/advance-form-ltc-history.component';
-import { AdvancePreviewLtcHistoryComponent } from './pages/advance/previews/ltc-history/advance-preview-ltc-history.component';
+import { AdvancePreviewLtcHistoryComponent } from './pages/advance/previews/ltc-availed-history/preview-ltc-availed-history.component';
 
 const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more options
   optionValueField: 'id',
