@@ -4,14 +4,14 @@ import { of, throwError } from 'rxjs';
 import { CommonProfileSettingComponent } from './common-profile-setting.component';
 import { CommonService } from 'src/app/service/core/common.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { TotpService } from 'src/app/service/auth/totp.service';
+import { TotpApiService } from 'src/app/service/api/security/totp-api.service';
 
 describe('CommonProfileSettingComponent', () => {
   let component: CommonProfileSettingComponent;
   let fixture: ComponentFixture<CommonProfileSettingComponent>;
   let commonService: jasmine.SpyObj<CommonService>;
   let authService: jasmine.SpyObj<AuthService>;
-  let totpService: jasmine.SpyObj<TotpService>;
+  let totpService: jasmine.SpyObj<TotpApiService>;
 
   beforeEach(async () => {
     commonService = jasmine.createSpyObj<CommonService>('CommonService', [
@@ -23,7 +23,7 @@ describe('CommonProfileSettingComponent', () => {
       'codeRoleType',
       'getUserDetails'
     ]);
-    totpService = jasmine.createSpyObj<TotpService>('TotpService', [
+    totpService = jasmine.createSpyObj<TotpApiService>('TotpApiService', [
       'checkTOtp',
       'disableTOtp'
     ]);
@@ -38,7 +38,7 @@ describe('CommonProfileSettingComponent', () => {
       providers: [
         { provide: CommonService, useValue: commonService },
         { provide: AuthService, useValue: authService },
-        { provide: TotpService, useValue: totpService }
+        { provide: TotpApiService, useValue: totpService }
       ]
     })
       .compileComponents();

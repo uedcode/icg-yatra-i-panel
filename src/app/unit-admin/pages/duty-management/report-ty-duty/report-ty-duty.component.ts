@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { MarkTyApiService } from 'src/app/service/api/mark-ty/mark-ty-api.service';
+import { MarkTyApiService } from 'src/app/service/api/admin/mark-ty-api.service';
 
 @Component({
   selector: 'app-report-ty-duty',

@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
-import { FormStateApiService } from 'src/app/service/api/form-state/form-state-api.service';
+import { FormStateApiService } from 'src/app/service/api/form/form-state-api.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 

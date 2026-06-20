@@ -5,13 +5,13 @@ import * as crypto from 'crypto-js';
 import { VerifyOtpModalComponent } from './verify-otp-modal.component';
 import { CommonService } from 'src/app/service/core/common.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { OtpService } from 'src/app/service/auth/otp.service';
+import { OtpApiService } from 'src/app/service/api/security/otp-api.service';
 
 describe('VerifyOtpModalComponent', () => {
   let component: VerifyOtpModalComponent;
   let fixture: ComponentFixture<VerifyOtpModalComponent>;
   let commonService: jasmine.SpyObj<CommonService>;
-  let otpService: jasmine.SpyObj<OtpService>;
+  let otpService: jasmine.SpyObj<OtpApiService>;
 
   beforeEach(async () => {
     commonService = jasmine.createSpyObj<CommonService>('CommonService', [
@@ -19,7 +19,7 @@ describe('VerifyOtpModalComponent', () => {
       'hideLoader',
       'showMessage'
     ]);
-    otpService = jasmine.createSpyObj<OtpService>('OtpService', ['verifyOtp', 'sendOtp']);
+    otpService = jasmine.createSpyObj<OtpApiService>('OtpApiService', ['verifyOtp', 'sendOtp']);
     otpService.verifyOtp.and.returnValue(
       of({ status: true, object: { userId: 'encUser', otp: 'encOtp' } }) as any
     );
@@ -32,7 +32,7 @@ describe('VerifyOtpModalComponent', () => {
       providers: [
         { provide: CommonService, useValue: commonService },
         { provide: AuthService, useValue: {} },
-        { provide: OtpService, useValue: otpService }
+        { provide: OtpApiService, useValue: otpService }
       ]
     })
       .compileComponents();

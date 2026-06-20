@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { YatPayDetailsApiService } from 'src/app/service/api/yat-pay-details/yat-pay-details-api.service';
+import { YatPayDetailsApiService } from 'src/app/service/api/payment/yat-pay-details-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({

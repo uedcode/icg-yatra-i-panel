@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
-import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
+import { CodeUnitApiService } from 'src/app/service/api/code/code-unit-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({

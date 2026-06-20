@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { TyDutyPurposeApiService } from 'src/app/service/api/ty-duty-purpose/ty-duty-purpose-api.service';
+import { TyDutyPurposeApiService } from 'src/app/service/api/masters/ty-duty-purpose-api.service';
 
 declare var $: any;
 

@@ -5,9 +5,9 @@ import { Router } from '@angular/router';
 import * as crypto from 'crypto-js';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { OtpService } from 'src/app/service/auth/otp.service';
+import { OtpApiService } from 'src/app/service/api/security/otp-api.service';
 import { environment } from 'src/environments/environment';
-import { SecurityService } from 'src/app/service/auth/security.service';
+import { SecurityApiService } from 'src/app/service/api/security/security-api.service';
 
 declare var $: any;
 
@@ -22,9 +22,9 @@ export class LoginComponent implements OnInit {
   constructor(
     private $common: CommonService,
     public $auth: AuthService,
-    public $otp: OtpService,
+    public $otp: OtpApiService,
     private router: Router,
-    public $security: SecurityService,
+    public $security: SecurityApiService,
   ) { }
 
   @ViewChild('loginValidation', { static: true }) loginValidation: NgForm;

@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CommonService } from 'src/app/service/core/common.service';
-import { UtilMessageApiService } from 'src/app/service/api/util-message/util-message-api.service';
+import { UtilMessageApiService } from 'src/app/service/api/masters/util-message-api.service';
 
 declare var $: any;
 

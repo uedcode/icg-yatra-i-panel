@@ -2,12 +2,10 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
-
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { FormApiService } from 'src/app/service/api/form/form-api.service';
-import { ImportExportApiService } from 'src/app/service/api/import-export/import-export-api.service';
+import { ImportExportApiService } from 'src/app/service/api/batch/import-export-api.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 declare var $: any;
 
 @Component({
@@ -24,10 +22,9 @@ export class InboxComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $form: FormApiService,
     public $importExportBatch: ImportExportApiService,
     private $claimApi: ClaimApiService,
-    private $claimStateApi: ClaimStateApiService,
+    private $claimStateApi: ClaimStateApiService
   ) { }
 
   @Input() dataList: Array<any> = [];

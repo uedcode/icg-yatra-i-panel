@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
-import { CodeGxTypeApiService } from 'src/app/service/api/code-gx-type/code-gx-type-api.service';
+import { CodeUnitApiService } from 'src/app/service/api/code/code-unit-api.service';
+import { CodeGxTypeApiService } from 'src/app/service/api/code/code-gx-type-api.service';
 
 interface MovementGxDetail {
   gxType?: string | null;

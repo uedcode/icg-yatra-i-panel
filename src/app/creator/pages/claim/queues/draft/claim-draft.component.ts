@@ -1,13 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { Location } from '@angular/common';
-
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Router } from '@angular/router';
-import { FormManageService } from 'src/app/service/core/form-manage.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
-import { ClaimRemarkApiService } from 'src/app/service/api/claim-remark/claim-remark-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
+import { ClaimRemarkApiService } from 'src/app/service/api/claim/claim-remark-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -29,10 +27,9 @@ export class ClaimDraftComponent implements OnInit {
     public $auth: AuthService,
     private $common: CommonService,
     private router: Router,
-    private $formManage: FormManageService,
     private $claimApi: ClaimApiService,
     private $claimStateApi: ClaimStateApiService,
-    private $claimRemarkApi: ClaimRemarkApiService,
+    private $claimRemarkApi: ClaimRemarkApiService
   ) { }
 
   @Input() dataList: Array<any> = [];

@@ -5,7 +5,7 @@ declare var $: any;
 import * as crypto from 'crypto-js';
 import { NgOtpInputComponent } from 'ng-otp-input';
 import { environment } from 'src/environments/environment';
-import { OtpService } from 'src/app/service/auth/otp.service';
+import { OtpApiService } from 'src/app/service/api/security/otp-api.service';
 
 @Component({
     selector: 'app-forgot-password-modal',
@@ -17,7 +17,7 @@ export class ForgotPasswordModalComponent implements OnInit {
 
   constructor(private $common: CommonService,
     public $auth: AuthService,
-    public $otp: OtpService,
+    public $otp: OtpApiService,
   ) {
   }
 

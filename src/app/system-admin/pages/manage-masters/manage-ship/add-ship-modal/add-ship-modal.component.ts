@@ -11,7 +11,7 @@ import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { MasterShipApiService } from 'src/app/service/api/master-ship/master-ship-api.service';
+import { MasterShipApiService } from 'src/app/service/api/masters/master-ship-api.service';
 
 @Component({
     selector: 'app-add-ship-modal',

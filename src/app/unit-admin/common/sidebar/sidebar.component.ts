@@ -1,6 +1,6 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { RoleApiService } from 'src/app/service/api/role/role-api.service';
+import { RoleApiService } from 'src/app/service/api/admin/role-api.service';
 
 declare var $: any;
 

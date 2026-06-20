@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { BusinessRuleApiService } from 'src/app/service/api/business-rule/business-rule-api.service';
+import { BusinessRuleApiService } from 'src/app/service/api/masters/business-rule-api.service';
 
 declare var $: any;
 

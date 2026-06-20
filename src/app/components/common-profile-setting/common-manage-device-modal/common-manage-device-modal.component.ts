@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { DevicetService } from 'src/app/service/core/device.service';
+import { DeviceApiService } from 'src/app/service/api/security/device-api.service';
 import { environment } from 'src/environments/environment';
 declare var $: any;
 
@@ -16,7 +16,7 @@ export class CommonManageDeviceModalComponent implements OnInit {
 
   constructor(
     private $common: CommonService,
-    private $device: DevicetService,
+    private $device: DeviceApiService,
     private $auth: AuthService,
   ) { }
 

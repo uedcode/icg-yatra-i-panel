@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
-import { VersionHistoryApiService } from 'src/app/service/api/version-history/version-history-api.service';
+import { VersionHistoryApiService } from 'src/app/service/api/masters/version-history-api.service';
 
 declare var $: any;
 

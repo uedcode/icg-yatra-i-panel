@@ -6,16 +6,15 @@ import { UtilService } from 'src/app/service/core/util.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
-import { EsignApiService } from 'src/app/service/api/esign/esign-api.service';
-import { BankIfscApiService } from 'src/app/service/api/bank-ifsc/bank-ifsc-api.service';
-import { FormManageService } from 'src/app/service/core/form-manage.service';
-import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
-import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
-import { CodeLtcTypeApiService } from 'src/app/service/api/code-ltc-type/code-ltc-type-api.service';
-import { LtcAdvApiService } from 'src/app/service/api/ltc-adv/ltc-adv-api.service';
-import { LtcAvailedHistApiService } from 'src/app/service/api/ltc-availed-hist/ltc-availed-hist-api.service';
-import { take } from 'rxjs/operators';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
+import { EsignApiService } from 'src/app/service/api/security/esign-api.service';
+import { BankIfscApiService } from 'src/app/service/api/code/bank-ifsc-api.service';
+import { FormDocumentService } from 'src/app/service/core/form-document.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code/code-doc-info-api.service';
+import { CodeUnitApiService } from 'src/app/service/api/code/code-unit-api.service';
+import { CodeLtcTypeApiService } from 'src/app/service/api/code/code-ltc-type-api.service';
+import { LtcAdvApiService } from 'src/app/service/api/claim/ltc-adv-api.service';
+import { LtcAvailedHistApiService } from 'src/app/service/api/claim/ltc-availed-hist-api.service';
 import {
   clearLegacyInvalidFromEvent,
   validateLegacyRequiredSection,
@@ -261,7 +260,7 @@ export class FormLtcAdvanceComponent implements OnInit {
     private $claimStateApi: ClaimStateApiService,
     private $esignApi: EsignApiService,
     private $bankIfscApi: BankIfscApiService,
-    private $formManage: FormManageService,
+    private $formDocument: FormDocumentService,
     private $codeUnitApi: CodeUnitApiService,
     private $codeLtcTypeApi: CodeLtcTypeApiService,
     private $ltcAdvApi: LtcAdvApiService,
@@ -1506,10 +1505,10 @@ export class FormLtcAdvanceComponent implements OnInit {
 
     this.gxFormUploading = true;
 
-    this.$formManage.uploadImg(event);
-    this.$formManage.docFileUrl.pipe(take(1)).subscribe((res: unknown) => {
-      this.gxFormUploading = false;
-      if (res) {
+    this.$formDocument.uploadSupportDoc(file).subscribe(
+      (res) => {
+        this.gxFormUploading = false;
+        if (res) {
         this.claims.gxFormFileUrl = res as string;
         this.showGxFileBrowse = false;
       } else {
@@ -1517,7 +1516,15 @@ export class FormLtcAdvanceComponent implements OnInit {
         this.claims.gxFormFileUrl = null;
         input.value = '';
       }
-    });
+      },
+      (error) => {
+        this.gxFormUploading = false;
+        this.$common.showMessage('Unable to upload GX Form.', 'danger');
+        this.claims.gxFormFileUrl = null;
+        input.value = '';
+        console.log(error);
+      }
+    );
   }
 
   deleteGxForm(): void {

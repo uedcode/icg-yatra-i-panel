@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code/code-doc-info-api.service';
 declare var $: any;
 
 @Component({

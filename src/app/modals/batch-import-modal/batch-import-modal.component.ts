@@ -1,8 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { BatchDiaryApiService } from 'src/app/service/api/batch-diary/batch-diary-api.service';
-import { ImportExportApiService } from 'src/app/service/api/import-export/import-export-api.service';
+import { BatchDiaryApiService } from 'src/app/service/api/batch/batch-diary-api.service';
+import { ImportExportApiService } from 'src/app/service/api/batch/import-export-api.service';
 import { Router } from '@angular/router';
 declare var $: any;
 @Component({

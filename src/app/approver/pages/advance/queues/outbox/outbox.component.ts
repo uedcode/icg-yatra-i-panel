@@ -2,14 +2,11 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
-
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormApiService } from 'src/app/service/api/form/form-api.service';
-import { FormManageService } from 'src/app/service/core/form-manage.service';
-import { CodeSubFormApiService } from 'src/app/service/api/code-sub-form/code-sub-form-api.service';
+import { Router } from '@angular/router';
+import { CodeSubFormApiService } from 'src/app/service/api/code/code-sub-form-api.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -29,14 +26,10 @@ export class OutboxComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $form: FormApiService,
     private router: Router,
-    private $formManage: FormManageService,
     private $codeSubForm: CodeSubFormApiService,
     private $claimApi: ClaimApiService,
-    private $claimStateApi: ClaimStateApiService,
-    private route: ActivatedRoute
-
+    private $claimStateApi: ClaimStateApiService
   ) {}
 
   @Input() dataList: Array<any> = [];

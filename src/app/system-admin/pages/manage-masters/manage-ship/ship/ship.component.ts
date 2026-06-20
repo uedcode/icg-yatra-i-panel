@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { MasterShipApiService } from 'src/app/service/api/master-ship/master-ship-api.service';
+import { MasterShipApiService } from 'src/app/service/api/masters/master-ship-api.service';
 declare var $: any;
 
 @Component({

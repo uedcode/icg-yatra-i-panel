@@ -7,15 +7,15 @@ import * as crypto from 'crypto-js';
 import { LoginComponent } from './login.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { OtpService } from 'src/app/service/auth/otp.service';
-import { SecurityService } from 'src/app/service/auth/security.service';
+import { OtpApiService } from 'src/app/service/api/security/otp-api.service';
+import { SecurityApiService } from 'src/app/service/api/security/security-api.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authService: jasmine.SpyObj<AuthService>;
   let commonService: jasmine.SpyObj<CommonService>;
-  let otpService: jasmine.SpyObj<OtpService>;
+  let otpService: jasmine.SpyObj<OtpApiService>;
   let router: jasmine.SpyObj<Router>;
 
   const createComponent = () => {
@@ -37,7 +37,7 @@ describe('LoginComponent', () => {
       'showLoader',
       'showMessage'
     ]);
-    otpService = jasmine.createSpyObj<OtpService>('OtpService', ['sendOtp']);
+    otpService = jasmine.createSpyObj<OtpApiService>('OtpApiService', ['sendOtp']);
     router = jasmine.createSpyObj<Router>('Router', ['navigateByUrl']);
 
     authService.getUserDetails.and.returnValue(null);
@@ -50,9 +50,9 @@ describe('LoginComponent', () => {
       providers: [
         { provide: AuthService, useValue: authService },
         { provide: CommonService, useValue: commonService },
-        { provide: OtpService, useValue: otpService },
+        { provide: OtpApiService, useValue: otpService },
         { provide: Router, useValue: router },
-        { provide: SecurityService, useValue: {} }
+        { provide: SecurityApiService, useValue: {} }
       ]
     })
     .compileComponents();

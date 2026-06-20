@@ -1,11 +1,9 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Component, Inject, OnInit, DOCUMENT } from '@angular/core';
-import { RoleApiService } from 'src/app/service/api/role/role-api.service';
-import { UserApiService } from 'src/app/service/api/user/user-api.service';
+import { RoleApiService } from 'src/app/service/api/admin/role-api.service';
+import { UserApiService } from 'src/app/service/api/admin/user-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-
 import { HttpParams } from '@angular/common/http';
 //import { Location } from '@angular/common';
 
@@ -23,8 +21,6 @@ export class HeaderComponent implements OnInit {
     public $auth: AuthService,
     private $user: UserApiService,
     private $roleApi: RoleApiService,
-    private route: Router,
-    private router: Router,
     @Inject(DOCUMENT) document: any
   ) { }
 

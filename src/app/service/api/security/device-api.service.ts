@@ -6,12 +6,12 @@ import { CommonService } from 'src/app/service/core/common.service';
 @Injectable({
   providedIn: 'root'
 })
-export class UserTokenService {
+export class DeviceApiService {
 
   constructor(private $common: CommonService, private http: HttpClient) { }
 
-  userTokenUpdate(config) {
-    return this.http.post<any>(`service/userToken/createOrUpdate`, null, config).pipe(
+  createOrUpdate(object) {
+    return this.http.post<any>(`device/createOrUpdate`, object).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
@@ -19,14 +19,24 @@ export class UserTokenService {
     );
   }
 
-  userTokenDelete(config) {
-    return this.http.get<any>(`service/userToken/deleteByIds`, config).pipe(
+  get(config) {
+    return this.http.get<any>(`device/all`, config).pipe(
       map((response: any) => {
         this.$common.parseResponse(response);
         return response;
       })
     );
   }
+
+  delete(ids) {
+    return this.http.get<any>(`device/deleteByIds`, ids).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
 
 }
 

@@ -11,7 +11,7 @@ import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code/code-doc-info-api.service';
 
 @Component({
     selector: 'app-add-documents-modal',

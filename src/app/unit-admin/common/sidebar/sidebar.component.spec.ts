@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { SidebarComponent } from './sidebar.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { RoleApiService } from 'src/app/service/api/role/role-api.service';
+import { RoleApiService } from 'src/app/service/api/admin/role-api.service';
 import { of } from 'rxjs';
 
 describe('SidebarComponent', () => {

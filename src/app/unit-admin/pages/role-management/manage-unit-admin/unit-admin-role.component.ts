@@ -4,8 +4,8 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { RoleApiService } from 'src/app/service/api/role/role-api.service';
-import { UserApiService } from 'src/app/service/api/user/user-api.service';
+import { RoleApiService } from 'src/app/service/api/admin/role-api.service';
+import { UserApiService } from 'src/app/service/api/admin/user-api.service';
 
 @Component({
   selector: 'app-unit-admin-role',

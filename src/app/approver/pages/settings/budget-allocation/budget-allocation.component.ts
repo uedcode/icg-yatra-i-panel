@@ -3,8 +3,8 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ClaimBudgetApiService } from 'src/app/service/api/claim-budget/claim-budget-api.service';
-import { CodeDirApiService } from 'src/app/service/api/code-dir/code-dir-api.service';
+import { ClaimBudgetApiService } from 'src/app/service/api/claim/claim-budget-api.service';
+import { CodeDirApiService } from 'src/app/service/api/code/code-dir-api.service';
 
 @Component({
   selector: 'app-budget-allocation',

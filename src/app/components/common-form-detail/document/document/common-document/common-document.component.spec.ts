@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 
 import { CommonDocumentComponent } from './common-document.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code/code-doc-info-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { FormDocumentService } from 'src/app/service/core/form-document.service';
+import { FormWorkflowService } from 'src/app/service/core/form-workflow.service';
 
 describe('CommonDocumentComponent', () => {
   let component: CommonDocumentComponent;
@@ -15,11 +16,8 @@ describe('CommonDocumentComponent', () => {
   let authService: jasmine.SpyObj<AuthService>;
   let codeDocInfoService: jasmine.SpyObj<CodeDocInfoApiService>;
   let routeQueryParams: Subject<any>;
-  let formDetail$: Subject<any>;
-  let documentList$: Subject<any>;
-  let docFileUrl$: Subject<any>;
-  let docFileUrlDeleted$: Subject<any>;
-  let formManageService: any;
+  let formDocumentService: jasmine.SpyObj<FormDocumentService>;
+  let formWorkflowService: jasmine.SpyObj<FormWorkflowService>;
 
   const billDoc = { id: 1, docName: 'Bill' };
   const ticketDoc = { id: 2, docName: 'Ticket' };
@@ -27,31 +25,30 @@ describe('CommonDocumentComponent', () => {
 
   beforeEach(() => {
     routeQueryParams = new Subject<any>();
-    formDetail$ = new Subject<any>();
-    documentList$ = new Subject<any>();
-    docFileUrl$ = new Subject<any>();
-    docFileUrlDeleted$ = new Subject<any>();
 
     commonService = jasmine.createSpyObj<CommonService>('CommonService', [
       'checkForValidFile',
+      'showLoader',
+      'hideLoader',
       'showMessage'
     ]);
     authService = jasmine.createSpyObj<AuthService>('AuthService', ['viewFile']);
     codeDocInfoService = jasmine.createSpyObj<CodeDocInfoApiService>('CodeDocInfoApiService', [
       'setDocument'
     ]);
-    formManageService = {
-      deleteByUrl: jasmine.createSpy('deleteByUrl'),
-      docFileUrl: docFileUrl$,
-      docFileUrlDeleted: docFileUrlDeleted$,
-      documentList: documentList$,
-      formDetail: formDetail$,
-      getDocument: jasmine.createSpy('getDocument'),
-      getSingleForm: jasmine.createSpy('getSingleForm'),
-      uploadImg: jasmine.createSpy('uploadImg')
-    };
+    formDocumentService = jasmine.createSpyObj<FormDocumentService>('FormDocumentService', [
+      'deleteSupportDocByUrl',
+      'loadRequiredDocuments',
+      'uploadSupportDoc'
+    ]);
+    formWorkflowService = jasmine.createSpyObj<FormWorkflowService>('FormWorkflowService', [
+      'loadFormDetails'
+    ]);
 
     commonService.checkForValidFile.and.returnValue(true);
+    formDocumentService.deleteSupportDocByUrl.and.returnValue(of(true));
+    formDocumentService.loadRequiredDocuments.and.returnValue(of({ status: true, object: [] }));
+    formDocumentService.uploadSupportDoc.and.returnValue(of('/uploaded/bill.pdf'));
 
     return TestBed.configureTestingModule({
       declarations: [CommonDocumentComponent],
@@ -60,7 +57,8 @@ describe('CommonDocumentComponent', () => {
         { provide: AuthService, useValue: authService },
         { provide: CodeDocInfoApiService, useValue: codeDocInfoService },
         { provide: CommonService, useValue: commonService },
-        { provide: FormManageService, useValue: formManageService }
+        { provide: FormDocumentService, useValue: formDocumentService },
+        { provide: FormWorkflowService, useValue: formWorkflowService }
       ]
     })
     .compileComponents();
@@ -79,10 +77,13 @@ describe('CommonDocumentComponent', () => {
     component.ngOnInit();
 
     routeQueryParams.next({ subFormId: 'PMT' });
-    documentList$.next([billDoc, otherDoc]);
+    formDocumentService.loadRequiredDocuments.and.returnValue(
+      of({ status: true, object: [billDoc, otherDoc] })
+    );
+    component.getDocument(null);
 
     expect(component.subFormId).toBe('PMT');
-    expect(formManageService.getDocument).toHaveBeenCalledOnceWith('PMT');
+    expect(formDocumentService.loadRequiredDocuments).toHaveBeenCalledWith('PMT');
     expect(component.documentList).toEqual([billDoc, otherDoc]);
     expect(component.tempDocumentList).toEqual([billDoc, otherDoc]);
   });
@@ -98,17 +99,17 @@ describe('CommonDocumentComponent', () => {
     ];
 
     component.ngOnInit();
-    routeQueryParams.next({ id: 'FORM-1', subFormId: 'PMT' });
-    formDetail$.next({
+    formWorkflowService.loadFormDetails.and.returnValue(of({
       formDocsDTOs: existingDocuments,
       codeSubFormDTO: { subFormId: 'PMT' }
-    });
+    }));
+    routeQueryParams.next({ id: 'FORM-1', subFormId: 'PMT' });
 
-    expect(formManageService.getSingleForm).toHaveBeenCalled();
+    expect(formWorkflowService.loadFormDetails).toHaveBeenCalled();
     expect(component.documentDtos).toEqual(existingDocuments);
     expect(codeDocInfoService.setDocument).toHaveBeenCalledWith(existingDocuments);
     expect(component.subFormId).toBe('PMT');
-    expect(formManageService.getDocument).toHaveBeenCalledWith('PMT');
+    expect(formDocumentService.loadRequiredDocuments).toHaveBeenCalledWith('PMT');
   });
 
   it('clears form references from existing documents for supplementary route', () => {
@@ -130,13 +131,15 @@ describe('CommonDocumentComponent', () => {
   it('filters already uploaded document names case-insensitively and keeps Other available', () => {
     component.formId = 'FORM-2';
     component.subFormId = 'LTC';
+    formDocumentService.loadRequiredDocuments.and.returnValue(
+      of({ status: true, object: [billDoc, ticketDoc, otherDoc] })
+    );
 
     component.getDocument([
       { codeDocInfoDTO: { id: 1, docName: 'bill' } }
     ]);
-    documentList$.next([billDoc, ticketDoc, otherDoc]);
 
-    expect(formManageService.getDocument).toHaveBeenCalledOnceWith('LTC');
+    expect(formDocumentService.loadRequiredDocuments).toHaveBeenCalledWith('LTC');
     expect(component.tempDocumentList).toEqual([ticketDoc, otherDoc]);
   });
 
@@ -147,7 +150,7 @@ describe('CommonDocumentComponent', () => {
     component.uploadImg({ currentTarget: { files: [] } }, 'url');
 
     expect(component.documentObj.url).toBeNull();
-    expect(formManageService.uploadImg).not.toHaveBeenCalled();
+    expect(formDocumentService.uploadSupportDoc).not.toHaveBeenCalled();
   });
 
   it('uploads a valid file and stores the returned document url', () => {
@@ -155,9 +158,8 @@ describe('CommonDocumentComponent', () => {
     component.documentObj = {};
 
     component.uploadImg(event, 'url');
-    docFileUrl$.next('/uploaded/bill.pdf');
 
-    expect(formManageService.uploadImg).toHaveBeenCalledOnceWith(event);
+    expect(formDocumentService.uploadSupportDoc).toHaveBeenCalledOnceWith(event.currentTarget.files[0]);
     expect(component.documentObj.url).toBe('/uploaded/bill.pdf');
   });
 
@@ -165,9 +167,8 @@ describe('CommonDocumentComponent', () => {
     component.documentObj = { url: '/uploaded/bill.pdf' };
 
     component.deleteDoc('url');
-    docFileUrlDeleted$.next(true);
 
-    expect(formManageService.deleteByUrl).toHaveBeenCalledOnceWith('/uploaded/bill.pdf');
+    expect(formDocumentService.deleteSupportDocByUrl).toHaveBeenCalledOnceWith('/uploaded/bill.pdf');
     expect(component.documentObj.url).toBeNull();
   });
 

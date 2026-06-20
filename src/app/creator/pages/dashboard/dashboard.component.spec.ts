@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { DashboardComponent } from './dashboard.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;

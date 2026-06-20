@@ -6,10 +6,10 @@ import { of } from 'rxjs';
 import { NewComponent } from './new.component';
 import { CommonService } from 'src/app/service/core/common.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CodeSubFormApiService } from 'src/app/service/api/code-sub-form/code-sub-form-api.service';
+import { CodeSubFormApiService } from 'src/app/service/api/code/code-sub-form-api.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
-import { HometownApiService } from 'src/app/service/api/hometown/hometown-api.service';
-import { LtcAvailedHistApiService } from 'src/app/service/api/ltc-availed-hist/ltc-availed-hist-api.service';
+import { HometownApiService } from 'src/app/service/api/claim/hometown-api.service';
+import { LtcAvailedHistApiService } from 'src/app/service/api/claim/ltc-availed-hist-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 

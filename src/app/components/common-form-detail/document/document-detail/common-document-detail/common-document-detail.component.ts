@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
-import { CommonService } from 'src/app/service/core/common.service';
-import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code/code-doc-info-api.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -13,9 +11,7 @@ import { environment } from 'src/environments/environment';
 })
 export class CommonDocumentDetailComponent implements OnInit {
   constructor(
-    private $common: CommonService,
     public $auth: AuthService,
-    private $formManage: FormManageService,
     public $codeDocInfo: CodeDocInfoApiService
   ) {}
 

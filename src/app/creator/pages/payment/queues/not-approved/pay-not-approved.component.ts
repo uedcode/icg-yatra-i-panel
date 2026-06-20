@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { PayStateApiService } from 'src/app/service/api/pay-state/pay-state-api.service';
+import { PayStateApiService } from 'src/app/service/api/payment/pay-state-api.service';
 import { Router } from '@angular/router';
 import { CommonService } from 'src/app/service/core/common.service';
 

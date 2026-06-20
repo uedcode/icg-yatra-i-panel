@@ -2,7 +2,7 @@ import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { EsignApiService } from 'src/app/service/api/esign/esign-api.service';
+import { EsignApiService } from 'src/app/service/api/security/esign-api.service';
 import { environment } from 'src/environments/environment';
 declare var $: any;
 

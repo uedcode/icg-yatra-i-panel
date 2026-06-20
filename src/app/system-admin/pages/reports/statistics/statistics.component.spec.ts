@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 
 import { StatisticsComponent } from './statistics.component';
-import { CodeMiscApiService } from 'src/app/service/api/code-misc/code-misc-api.service';
+import { CodeMiscApiService } from 'src/app/service/api/code/code-misc-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PipeModule } from 'src/app/app-pipe.module';
 import { AuthService } from 'src/app/service/auth/auth.service';

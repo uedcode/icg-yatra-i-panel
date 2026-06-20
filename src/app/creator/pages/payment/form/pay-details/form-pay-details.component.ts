@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { PayStateApiService } from 'src/app/service/api/pay-state/pay-state-api.service';
-import { YatPayDetailsApiService } from 'src/app/service/api/yat-pay-details/yat-pay-details-api.service';
-import { TempDocInfoApiService } from 'src/app/service/api/temp-doc-info/temp-doc-info-api.service';
+import { PayStateApiService } from 'src/app/service/api/payment/pay-state-api.service';
+import { YatPayDetailsApiService } from 'src/app/service/api/payment/yat-pay-details-api.service';
+import { TempDocInfoApiService } from 'src/app/service/api/form/temp-doc-info-api.service';
 declare var $: any;
 
 @Component({

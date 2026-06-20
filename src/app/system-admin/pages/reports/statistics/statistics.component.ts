@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { LegendPosition } from '@swimlane/ngx-charts';
-import { CodeMiscApiService } from 'src/app/service/api/code-misc/code-misc-api.service';
+import { CodeMiscApiService } from 'src/app/service/api/code/code-misc-api.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 

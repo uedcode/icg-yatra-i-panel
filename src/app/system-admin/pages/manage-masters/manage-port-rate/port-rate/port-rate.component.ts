@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { PortRateApiService } from 'src/app/service/api/port-rate/port-rate-api.service';
+import { PortRateApiService } from 'src/app/service/api/masters/port-rate-api.service';
 declare var $: any;
 
 @Component({

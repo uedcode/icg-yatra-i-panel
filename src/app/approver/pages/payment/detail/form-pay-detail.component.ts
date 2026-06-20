@@ -2,9 +2,9 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
-import { PayStateApiService } from 'src/app/service/api/pay-state/pay-state-api.service';
-import { YatPayDetailsApiService } from 'src/app/service/api/yat-pay-details/yat-pay-details-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
+import { PayStateApiService } from 'src/app/service/api/payment/pay-state-api.service';
+import { YatPayDetailsApiService } from 'src/app/service/api/payment/yat-pay-details-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
 

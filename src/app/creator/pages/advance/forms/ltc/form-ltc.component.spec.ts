@@ -101,9 +101,9 @@ describe('FormLtcAdvanceComponent', () => {
     }));
     component.$claimApi.getPresentUnitStatus.and.returnValue(of({ status: true, object: true }));
     component.$claimApi.validateAdditionalLtc.and.returnValue(of({ status: true, object: 'Yes' }));
-    component.$formManage = jasmine.createSpyObj('FormManageService', ['uploadImg', 'deleteByUrl']);
-    component.$formManage.docFileUrl = new Subject<string>();
-    component.$formManage.docFileUrlDeleted = new Subject<boolean>();
+    component.$formDocument = jasmine.createSpyObj('FormDocumentService', ['uploadSupportDoc', 'deleteSupportDocByUrl']);
+    component.$formDocument.uploadSupportDoc.and.returnValue(of('gx-ltc.pdf'));
+    component.$formDocument.deleteSupportDocByUrl.and.returnValue(of(true));
     component.$codeDocInfo = jasmine.createSpyObj('CodeDocInfoApiService', ['setDocument']);
     component.$codeDocInfo.documentDtos = new Subject<any>();
     component.UtilService = jasmine.createSpyObj('UtilService', ['toMillis']);
@@ -484,12 +484,11 @@ describe('FormLtcAdvanceComponent', () => {
     const component = createComponent();
     component.$common.checkForValidFile.and.returnValue(false);
     component.uploadGxForm({ target: { files: [{ size: 1024 }], value: 'x' } } as any);
-    expect(component.$formManage.uploadImg).not.toHaveBeenCalled();
+    expect(component.$formDocument.uploadSupportDoc).not.toHaveBeenCalled();
 
     component.$common.checkForValidFile.and.returnValue(true);
     component.uploadGxForm({ target: { files: [{ size: 1024 }], value: '' } } as any);
-    component.$formManage.docFileUrl.next('gx-ltc.pdf');
-    expect(component.$formManage.uploadImg).toHaveBeenCalled();
+    expect(component.$formDocument.uploadSupportDoc).toHaveBeenCalled();
     expect(component.claims.gxFormFileUrl).toBe('gx-ltc.pdf');
     expect(component.showGxFileBrowse).toBeFalse();
   });
@@ -504,12 +503,12 @@ describe('FormLtcAdvanceComponent', () => {
     spyOn(window, 'confirm').and.returnValues(false, true);
 
     component.deleteGxForm();
-    expect(component.$formManage.deleteByUrl).not.toHaveBeenCalled();
+    expect(component.$formDocument.deleteSupportDocByUrl).not.toHaveBeenCalled();
     expect(component.claims.gxFormFileUrl).toBe('old-gx.pdf');
 
     component.deleteGxForm();
 
-    expect(component.$formManage.deleteByUrl).not.toHaveBeenCalled();
+    expect(component.$formDocument.deleteSupportDocByUrl).not.toHaveBeenCalled();
     expect(component.claims.deleteGxFileUrl).toBe('old-gx.pdf');
     expect(component.claims.gxFormFileUrl).toBeNull();
     expect(component.gxFile).toBeNull();

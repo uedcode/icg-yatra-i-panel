@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ImportExportApiService } from 'src/app/service/api/import-export/import-export-api.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { ImportExportApiService } from 'src/app/service/api/batch/import-export-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 declare var $: any;
 
 @Component({

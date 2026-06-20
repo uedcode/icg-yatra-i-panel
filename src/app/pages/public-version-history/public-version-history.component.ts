@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { VersionHistoryApiService } from 'src/app/service/api/version-history/version-history-api.service';
+import { VersionHistoryApiService } from 'src/app/service/api/masters/version-history-api.service';
 
 @Component({
   selector: 'app-public-version-history',

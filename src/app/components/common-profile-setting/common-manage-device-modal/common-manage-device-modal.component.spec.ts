@@ -3,7 +3,7 @@ import { of, throwError } from 'rxjs';
 
 import { CommonManageDeviceModalComponent } from './common-manage-device-modal.component';
 import { CommonService } from 'src/app/service/core/common.service';
-import { DevicetService } from 'src/app/service/core/device.service';
+import { DeviceApiService } from 'src/app/service/api/security/device-api.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
@@ -11,7 +11,7 @@ describe('CommonManageDeviceModalComponent', () => {
   let component: CommonManageDeviceModalComponent;
   let fixture: ComponentFixture<CommonManageDeviceModalComponent>;
   let commonService: jasmine.SpyObj<CommonService>;
-  let deviceService: jasmine.SpyObj<DevicetService>;
+  let deviceService: jasmine.SpyObj<DeviceApiService>;
   let authService: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
@@ -20,7 +20,7 @@ describe('CommonManageDeviceModalComponent', () => {
       'hideLoader',
       'showMessage'
     ]);
-    deviceService = jasmine.createSpyObj<DevicetService>('DevicetService', [
+    deviceService = jasmine.createSpyObj<DeviceApiService>('DeviceApiService', [
       'get',
       'delete'
     ]);
@@ -44,7 +44,7 @@ describe('CommonManageDeviceModalComponent', () => {
       declarations: [CommonManageDeviceModalComponent],
       providers: [
         { provide: CommonService, useValue: commonService },
-        { provide: DevicetService, useValue: deviceService },
+        { provide: DeviceApiService, useValue: deviceService },
         { provide: AuthService, useValue: authService }
       ]
     })

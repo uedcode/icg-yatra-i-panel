@@ -2,9 +2,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code/code-doc-info-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { FormDocumentService } from 'src/app/service/core/form-document.service';
+import { FormWorkflowService } from 'src/app/service/core/form-workflow.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -19,7 +20,8 @@ export class CommonDocumentComponent implements OnInit {
     private $common: CommonService,
     public $auth: AuthService,
     private route: ActivatedRoute,
-    private $formManage: FormManageService,
+    private $formDocument: FormDocumentService,
+    private $formWorkflow: FormWorkflowService,
     public $codeDocInfo: CodeDocInfoApiService
   ) { }
 
@@ -44,21 +46,34 @@ export class CommonDocumentComponent implements OnInit {
 
   // for getting subFormId
   getFormDetails() {
-    this.$formManage?.getSingleForm();
-    this.$formManage?.formDetail.subscribe((res) => {
-      if (res) {
-        this.tempObj = res;
+    this.$common.showLoader();
+    this.$formWorkflow
+      .loadFormDetails({
+        id: this.formId,
+        subFormId: this.subFormId,
+        supId: this.supplementryId,
+      })
+      .subscribe(
+        (res) => {
+          this.$common.hideLoader();
+          if (!res) {
+            return;
+          }
+          this.tempObj = res;
 
-        // this.documentDtos = this.tempObj?.formDocsDTOs;
-        this.documentDtos = this.clearFormDTOIfSupplementry(
-          this.tempObj?.formDocsDTOs,
-          this.supplementryId
-        );
-        this.$codeDocInfo.setDocument(this.documentDtos);
-        this.subFormId = this.tempObj?.codeSubFormDTO?.subFormId;
-        this.getDocument(this.documentDtos);
-      }
-    });
+          this.documentDtos = this.clearFormDTOIfSupplementry(
+            this.tempObj?.formDocsDTOs,
+            this.supplementryId
+          );
+          this.$codeDocInfo.setDocument(this.documentDtos);
+          this.subFormId = this.tempObj?.codeSubFormDTO?.subFormId;
+          this.getDocument(this.documentDtos);
+        },
+        (error) => {
+          this.$common.hideLoader();
+          console.log(error);
+        }
+      );
   }
   clearFormDTOIfSupplementry(documents: any[], supplementryId: any): any[] {
     if (!supplementryId || !Array.isArray(documents)) {
@@ -102,11 +117,16 @@ export class CommonDocumentComponent implements OnInit {
   // }
 
   getDocument(list) {
-    this.$formManage?.getDocument(this.subFormId);
-    this.$formManage?.documentList.subscribe((res) => {
-      if (res) {
-        this.documentList = res;
-        this.tempDocumentList = res;
+    this.$common.showLoader();
+    this.$formDocument.loadRequiredDocuments(this.subFormId).subscribe(
+      (response: any) => {
+        this.$common.hideLoader();
+        if (response?.status !== true) {
+          return;
+        }
+
+        this.documentList = response?.object || [];
+        this.tempDocumentList = [...this.documentList];
 
         // Ensure "Other" document is always available
         const otherDoc = this.documentList.find((doc) => doc?.docName === 'Other');
@@ -126,8 +146,12 @@ export class CommonDocumentComponent implements OnInit {
             this.tempDocumentList.push(otherDoc);
           }
         }
+      },
+      (error) => {
+        this.$common.hideLoader();
+        console.log(error);
       }
-    });
+    );
   }
 
   // Get document end
@@ -138,18 +162,48 @@ export class CommonDocumentComponent implements OnInit {
     if (!isValidExtension) {
       return (this.documentObj.url = null);
     }
-    this.$formManage?.uploadImg(event);
-    this.$formManage?.docFileUrl.subscribe((res) => {
-      if (fileName == 'url') this.documentObj.url = res;
-    });
+    const file = event?.currentTarget?.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    this.$common.showLoader();
+    this.$formDocument.uploadSupportDoc(file).subscribe(
+      (res) => {
+        this.$common.hideLoader();
+        if (fileName == 'url') this.documentObj.url = res;
+      },
+      (error) => {
+        this.$common.hideLoader();
+        console.log(error);
+      }
+    );
   }
 
 
   deleteDoc(fileName) {
-    if (fileName == 'url') this.$formManage?.deleteByUrl(this.documentObj.url);
-    this.$formManage?.docFileUrlDeleted.subscribe((res) => {
-      if (fileName == 'url') this.documentObj.url = null;
-    });
+    if (fileName !== 'url') {
+      return;
+    }
+
+    if (!this.documentObj.url) {
+      this.documentObj.url = null;
+      return this.$common.showMessage("Missing file path", 'danger');
+    }
+
+    this.$common.showLoader();
+    this.$formDocument.deleteSupportDocByUrl(this.documentObj.url).subscribe(
+      (deleted) => {
+        this.$common.hideLoader();
+        if (deleted) {
+          this.documentObj.url = null;
+        }
+      },
+      (error) => {
+        this.$common.hideLoader();
+        console.log(error);
+      }
+    );
   }
   // Image upload and delet end
 

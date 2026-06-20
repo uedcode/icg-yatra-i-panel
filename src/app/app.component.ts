@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { filter, map } from 'rxjs/operators';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { environment } from 'src/environments/environment';
-import { CommonService } from 'src/app/service/core/common.service';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
@@ -18,8 +17,12 @@ export class AppComponent {
 
 	tokenPayload;
 
-	constructor(public $auth: AuthService, private $common: CommonService,
-        private router: Router, private activatedRoute: ActivatedRoute, private titleService: Title) { }
+	constructor(
+	  public $auth: AuthService,
+	  private router: Router,
+	  private activatedRoute: ActivatedRoute,
+	  private titleService: Title
+	) { }
 
 	ngOnInit() {
 		$('[data-toggle="tooltip"]').tooltip();

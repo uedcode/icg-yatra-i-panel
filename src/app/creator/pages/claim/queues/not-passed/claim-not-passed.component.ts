@@ -1,13 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { Location } from '@angular/common';
-
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Router } from '@angular/router';
-import { FormManageService } from 'src/app/service/core/form-manage.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
-import { ClaimObservationApiService } from 'src/app/service/api/claim-observation/claim-observation-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
+import { ClaimObservationApiService } from 'src/app/service/api/claim/claim-observation-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -25,11 +23,10 @@ export class ClaimNotPassedComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $formManage: FormManageService,
     private $claimApi: ClaimApiService,
     private $claimStateApi: ClaimStateApiService,
     private $claimObservationApi: ClaimObservationApiService,
-    private router: Router,
+    private router: Router
   ) { }
 
   @Input() dataList: Array<any> = [];

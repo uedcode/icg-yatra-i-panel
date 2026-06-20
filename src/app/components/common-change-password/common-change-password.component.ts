@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { UserApiService } from 'src/app/service/api/user/user-api.service';
+import { UserApiService } from 'src/app/service/api/admin/user-api.service';
 import { HttpParams } from '@angular/common/http';
 import * as crypto from 'crypto-js';
 

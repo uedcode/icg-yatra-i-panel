@@ -6,7 +6,7 @@ import { CommonService } from 'src/app/service/core/common.service';
 @Injectable({
   providedIn: 'root'
 })
-export class OtpService {
+export class OtpApiService {
 
   url = 'service/otp';
 

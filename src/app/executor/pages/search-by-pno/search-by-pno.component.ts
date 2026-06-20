@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 
 @Component({
   selector: 'app-search-by-pno',
@@ -16,7 +15,11 @@ export class SearchByPnoComponent implements OnInit {
   rows: any[] = [];
   user: any;
 
-  constructor(private $auth: AuthService, private $claimApi: ClaimApiService, private $claimStateApi: ClaimStateApiService, private router: Router) {}
+  constructor(
+    private $auth: AuthService,
+    private $claimStateApi: ClaimStateApiService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.user = this.$auth.getUserDetails();

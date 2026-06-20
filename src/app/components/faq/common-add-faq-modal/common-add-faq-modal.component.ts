@@ -3,7 +3,7 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { Component, Input, OnInit, Output, ViewChild, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
-import { FaqApiService } from 'src/app/service/api/faq/faq-api.service';
+import { FaqApiService } from 'src/app/service/api/masters/faq-api.service';
 declare var $: any;
 
 @Component({

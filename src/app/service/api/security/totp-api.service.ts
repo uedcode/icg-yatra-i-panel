@@ -6,7 +6,7 @@ import { CommonService } from 'src/app/service/core/common.service';
 @Injectable({
   providedIn: 'root'
 })
-export class TotpService {
+export class TotpApiService {
 
   constructor(private $common: CommonService, private http: HttpClient) { }
 

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
@@ -13,8 +12,10 @@ declare var $: any;
 })
 export class DashboardComponent implements OnInit {
 
-    constructor(private $common: CommonService, public $auth: AuthService,
-        private route: Router) { }
+    constructor(
+      private $common: CommonService,
+      public $auth: AuthService
+    ) { }
 
     /**Contants */
     userIdDetails: any;

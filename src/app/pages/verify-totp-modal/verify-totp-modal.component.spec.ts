@@ -4,13 +4,13 @@ import { of } from 'rxjs';
 import { VerifyTotpModalComponent } from './verify-totp-modal.component';
 import { CommonService } from 'src/app/service/core/common.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { OtpService } from 'src/app/service/auth/otp.service';
+import { OtpApiService } from 'src/app/service/api/security/otp-api.service';
 
 describe('VerifyTotpModalComponent', () => {
   let component: VerifyTotpModalComponent;
   let fixture: ComponentFixture<VerifyTotpModalComponent>;
   let commonService: jasmine.SpyObj<CommonService>;
-  let otpService: jasmine.SpyObj<OtpService>;
+  let otpService: jasmine.SpyObj<OtpApiService>;
 
   beforeEach(async () => {
     commonService = jasmine.createSpyObj<CommonService>('CommonService', [
@@ -18,7 +18,7 @@ describe('VerifyTotpModalComponent', () => {
       'hideLoader',
       'showMessage'
     ]);
-    otpService = jasmine.createSpyObj<OtpService>('OtpService', ['verifyTOtp', 'sendOtp']);
+    otpService = jasmine.createSpyObj<OtpApiService>('OtpApiService', ['verifyTOtp', 'sendOtp']);
     otpService.verifyTOtp.and.returnValue(of({ status: true }) as any);
     otpService.sendOtp.and.returnValue(of({ status: true, object: { otp: '123456' } }) as any);
 
@@ -27,7 +27,7 @@ describe('VerifyTotpModalComponent', () => {
       providers: [
         { provide: CommonService, useValue: commonService },
         { provide: AuthService, useValue: {} },
-        { provide: OtpService, useValue: otpService }
+        { provide: OtpApiService, useValue: otpService }
       ]
     })
       .compileComponents();

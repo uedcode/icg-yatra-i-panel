@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { TotpService } from 'src/app/service/auth/totp.service';
+import { TotpApiService } from 'src/app/service/api/security/totp-api.service';
 import * as crypto from 'crypto-js';
 declare var $: any;
 
@@ -16,7 +16,7 @@ export class CommonEnableTOtpModalComponent implements OnInit {
   constructor(
     private $common: CommonService,
     private $auth: AuthService,
-    private $totp: TotpService,
+    private $totp: TotpApiService,
   ) { }
 
   @Input() hitApi: any;

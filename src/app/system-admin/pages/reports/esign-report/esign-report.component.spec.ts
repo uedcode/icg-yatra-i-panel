@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 
 import { EsignReportComponent } from './esign-report.component';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
-import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
+import { CodeUnitApiService } from 'src/app/service/api/code/code-unit-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PipeModule } from 'src/app/app-pipe.module';
 

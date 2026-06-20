@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { CommonService } from 'src/app/service/core/common.service';
-import { UserTokenService } from 'src/app/service/auth/user-token.service';
+import { UserTokenApiService } from 'src/app/service/api/security/user-token-api.service';
 import { environment } from 'src/environments/environment';
 import { DatePipe } from '@angular/common';
 import { RuntimeModuleService, RuntimeModuleId } from 'src/app/service/auth/runtime-module.service';
@@ -21,7 +21,7 @@ export class AuthService {
     private http: HttpClient,
     private route: Router,
     private $common: CommonService,
-    private $userToken: UserTokenService,
+    private $userToken: UserTokenApiService,
     private datePipe: DatePipe,
     private runtimeModuleService: RuntimeModuleService
   ) {}

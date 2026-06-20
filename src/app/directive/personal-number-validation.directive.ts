@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener } from '@angular/core';
+import { Directive, HostListener } from '@angular/core';
 import { NgModel } from '@angular/forms';
 
 @Directive({
@@ -7,7 +7,9 @@ import { NgModel } from '@angular/forms';
 })
 export class PersonalNumberValidationDirective {
 
-  constructor(private _el: ElementRef, private ngModel: NgModel) { }
+  constructor(
+    private ngModel: NgModel
+  ) { }
 
   @HostListener('input', ['$event'])
   onInputChange(event: KeyboardEvent) {

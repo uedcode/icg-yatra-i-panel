@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CodeMiscApiService } from 'src/app/service/api/code-misc/code-misc-api.service';
+import { CodeMiscApiService } from 'src/app/service/api/code/code-misc-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({

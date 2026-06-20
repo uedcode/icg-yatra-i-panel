@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { ReportTyDutyComponent } from './report-ty-duty.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { MarkTyApiService } from 'src/app/service/api/mark-ty/mark-ty-api.service';
+import { MarkTyApiService } from 'src/app/service/api/admin/mark-ty-api.service';
 import { PipeModule } from 'src/app/app-pipe.module';
 
 describe('ReportTyDutyComponent', () => {

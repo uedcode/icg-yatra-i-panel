@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { ArchiveComponent } from './archive.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { RoleApiService } from 'src/app/service/api/role/role-api.service';
+import { RoleApiService } from 'src/app/service/api/admin/role-api.service';
 import { PipeModule } from 'src/app/app-pipe.module';
 
 describe('ArchiveComponent', () => {

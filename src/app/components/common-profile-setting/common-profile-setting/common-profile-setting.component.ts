@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { TotpService } from 'src/app/service/auth/totp.service';
+import { TotpApiService } from 'src/app/service/api/security/totp-api.service';
 declare var $: any;
 
 @Component({
@@ -15,7 +15,7 @@ export class CommonProfileSettingComponent implements OnInit {
   constructor(
     private $common: CommonService,
     private $auth: AuthService,
-    private $totp: TotpService,
+    private $totp: TotpApiService,
   ) { }
 
   formObj: any = {};

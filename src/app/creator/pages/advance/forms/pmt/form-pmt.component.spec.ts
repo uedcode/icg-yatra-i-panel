@@ -2,16 +2,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { of, Subject, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { AuthService } from '../../../../service/auth.service';
 import { ClaimApiService } from '../../../../service/api/claim/claim-api.service';
-import { ClaimStateApiService } from '../../../../service/api/claim-state/claim-state-api.service';
-import { EsignApiService } from '../../../../service/api/esign/esign-api.service';
-import { BankIfscApiService } from 'src/app/service/api/bank-ifsc/bank-ifsc-api.service';
+import { ClaimStateApiService } from '../../../../service/api/claim/claim-state-api.service';
+import { EsignApiService } from '../../../../service/api/security/esign-api.service';
+import { BankIfscApiService } from 'src/app/service/api/code/bank-ifsc-api.service';
 import { CommonService } from '../../../../service/common.service';
-import { FormManageService } from '../../../../service/form-manage.service';
-import { CodeDocInfoApiService } from '../../../../service/api/code-doc-info/code-doc-info-api.service';
+import { FormDocumentService } from 'src/app/service/core/form-document.service';
+import { CodeDocInfoApiService } from '../../../../service/api/code/code-doc-info-api.service';
 import { UtilService } from '../../../../service/util.service';
 import { FormPmtDutyComponent } from './form-pmt.component';
 
@@ -26,10 +26,7 @@ describe('FormPmtDutyComponent', () => {
   let claimStateApiService: jasmine.SpyObj<ClaimStateApiService>;
   let esignApiService: jasmine.SpyObj<EsignApiService>;
   let bankIfscApiService: jasmine.SpyObj<BankIfscApiService>;
-  let formManageService: jasmine.SpyObj<FormManageService> & {
-    docFileUrl: Subject<string>;
-    docFileUrlDeleted: Subject<boolean>;
-  };
+  let formDocumentService: jasmine.SpyObj<FormDocumentService>;
   let codeDocInfoService: jasmine.SpyObj<CodeDocInfoApiService> & { documentDtos: Subject<any> };
 
   const userDetails = {
@@ -100,15 +97,12 @@ describe('FormPmtDutyComponent', () => {
       'prepareForESign'
     ]);
     bankIfscApiService = jasmine.createSpyObj<BankIfscApiService>('BankIfscApiService', ['createOrUpdate']);
-    formManageService = jasmine.createSpyObj<FormManageService>('FormManageService', [
-      'uploadImg',
-      'deleteByUrl'
-    ]) as jasmine.SpyObj<FormManageService> & {
-      docFileUrl: Subject<string>;
-      docFileUrlDeleted: Subject<boolean>;
-    };
-    formManageService.docFileUrl = new Subject<string>();
-    formManageService.docFileUrlDeleted = new Subject<boolean>();
+    formDocumentService = jasmine.createSpyObj<FormDocumentService>('FormDocumentService', [
+      'uploadSupportDoc',
+      'deleteSupportDocByUrl'
+    ]);
+    formDocumentService.uploadSupportDoc.and.returnValue(of('gx-pmt.pdf'));
+    formDocumentService.deleteSupportDocByUrl.and.returnValue(of(true));
 
     codeDocInfoService = jasmine.createSpyObj<CodeDocInfoApiService>('CodeDocInfoApiService', [
       'setDocument'
@@ -173,7 +167,7 @@ describe('FormPmtDutyComponent', () => {
         { provide: ClaimStateApiService, useValue: claimStateApiService },
         { provide: EsignApiService, useValue: esignApiService },
         { provide: BankIfscApiService, useValue: bankIfscApiService },
-        { provide: FormManageService, useValue: formManageService },
+        { provide: FormDocumentService, useValue: formDocumentService },
         { provide: CodeDocInfoApiService, useValue: codeDocInfoService },
         { provide: HttpClient, useValue: jasmine.createSpyObj<HttpClient>('HttpClient', ['get']) }
       ]

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { PayLevelApiService } from 'src/app/service/api/pay-level/pay-level-api.service';
+import { PayLevelApiService } from 'src/app/service/api/masters/pay-level-api.service';
 
 declare var $: any;
 

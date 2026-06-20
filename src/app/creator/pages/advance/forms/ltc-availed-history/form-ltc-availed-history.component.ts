@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { LtcAvailedHistApiService } from 'src/app/service/api/ltc-availed-hist/ltc-availed-hist-api.service';
+import { LtcAvailedHistApiService } from 'src/app/service/api/claim/ltc-availed-hist-api.service';
 
 @Component({
   selector: 'app-form-ltc-availed-history',

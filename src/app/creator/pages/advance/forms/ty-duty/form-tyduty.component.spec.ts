@@ -1,4 +1,4 @@
-import { of, Subject, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { FormTydutyComponent } from './form-tyduty.component';
 
 describe('FormTydutyComponent', () => {
@@ -73,9 +73,9 @@ describe('FormTydutyComponent', () => {
     component.$esignApi.checkEsignAvailability.and.returnValue(of({ status: true }));
     component.$esignApi.prepareForESign.and.returnValue(of({ status: true }));
     component.$codeDocInfo = jasmine.createSpyObj('CodeDocInfoApiService', ['setDocument']);
-    component.$formManage = jasmine.createSpyObj('FormManageService', ['uploadImg', 'deleteByUrl']);
-    component.$formManage.docFileUrl = new Subject<string>();
-    component.$formManage.docFileUrlDeleted = new Subject<boolean>();
+    component.$formDocument = jasmine.createSpyObj('FormDocumentService', ['uploadSupportDoc', 'deleteSupportDocByUrl']);
+    component.$formDocument.uploadSupportDoc.and.returnValue(of('gx-ty.pdf'));
+    component.$formDocument.deleteSupportDocByUrl.and.returnValue(of(true));
     component.$auth = jasmine.createSpyObj('AuthService', ['getModuleName']);
     component.$auth.getModuleName.and.returnValue('/adv/creator');
     component.UtilService = { toMillis: (value: any) => value };
@@ -187,13 +187,12 @@ describe('FormTydutyComponent', () => {
   it('handles GX upload success and delete flow', () => {
     const component = createComponent();
     component.uploadGxForm({ target: { files: [{ size: 1024 }], value: '' } } as any);
-    component.$formManage.docFileUrl.next('gx-ty.pdf');
     expect(component.claims.gxFormFileUrl).toBe('gx-ty.pdf');
 
     component.claims.gxFormFileUrl = 'gx-ty.pdf';
     spyOn(window, 'confirm').and.returnValue(true);
     component.deleteGxForm();
-    expect(component.$formManage.deleteByUrl).not.toHaveBeenCalled();
+    expect(component.$formDocument.deleteSupportDocByUrl).not.toHaveBeenCalled();
     expect((component.claims as any).deleteGxFileUrl).toBe('gx-ty.pdf');
     expect(component.claims.gxFormFileUrl).toBeNull();
     expect(component.showGxFileBrowse).toBeTrue();

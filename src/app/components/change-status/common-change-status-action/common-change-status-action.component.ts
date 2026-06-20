@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { FormStateApiService } from 'src/app/service/api/form-state/form-state-api.service';
-import { RoleApiService } from 'src/app/service/api/role/role-api.service';
+import { FormStateApiService } from 'src/app/service/api/form/form-state-api.service';
+import { RoleApiService } from 'src/app/service/api/admin/role-api.service';
 declare var $: any;
 
 @Component({

@@ -1,14 +1,11 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CodeSubFormApiService } from 'src/app/service/api/code-sub-form/code-sub-form-api.service';
+import { CodeSubFormApiService } from 'src/app/service/api/code/code-sub-form-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
-import { HometownApiService } from 'src/app/service/api/hometown/hometown-api.service';
-import { LtcAvailedHistApiService } from 'src/app/service/api/ltc-availed-hist/ltc-availed-hist-api.service';
+import { HometownApiService } from 'src/app/service/api/claim/hometown-api.service';
+import { LtcAvailedHistApiService } from 'src/app/service/api/claim/ltc-availed-hist-api.service';
 declare var $: any;
 
 @Component({
@@ -26,9 +23,8 @@ export class NewComponent implements OnInit {
     private route: ActivatedRoute,
     private $common: CommonService,
     private $codeSubForm: CodeSubFormApiService,
-    private $claimApi: ClaimApiService,
     private $ltcAvailedHistApi: LtcAvailedHistApiService,
-    private $hometownApi: HometownApiService,
+    private $hometownApi: HometownApiService
   ) { }
 
   dataList: any = [];

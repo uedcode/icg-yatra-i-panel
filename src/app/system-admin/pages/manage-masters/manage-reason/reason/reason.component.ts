@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ReasonApiService } from 'src/app/service/api/reason/reason-api.service';
+import { ReasonApiService } from 'src/app/service/api/masters/reason-api.service';
 
 declare var $: any;
 

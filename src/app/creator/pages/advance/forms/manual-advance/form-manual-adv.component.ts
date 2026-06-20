@@ -3,9 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
-import { PayLevelApiService } from 'src/app/service/api/pay-level/pay-level-api.service';
-import { ReasonApiService } from 'src/app/service/api/reason/reason-api.service';
+import { CodeUnitApiService } from 'src/app/service/api/code/code-unit-api.service';
+import { PayLevelApiService } from 'src/app/service/api/masters/pay-level-api.service';
+import { ReasonApiService } from 'src/app/service/api/masters/reason-api.service';
 
 @Component({
   selector: 'app-form-manual-adv',

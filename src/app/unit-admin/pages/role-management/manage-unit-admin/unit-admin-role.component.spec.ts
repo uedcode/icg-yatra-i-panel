@@ -7,8 +7,8 @@ import { of } from 'rxjs';
 import { UnitAdminRoleComponent } from './unit-admin-role.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { RoleApiService } from 'src/app/service/api/role/role-api.service';
-import { UserApiService } from 'src/app/service/api/user/user-api.service';
+import { RoleApiService } from 'src/app/service/api/admin/role-api.service';
+import { UserApiService } from 'src/app/service/api/admin/user-api.service';
 import { PipeModule } from 'src/app/app-pipe.module';
 
 describe('UnitAdminRoleComponent', () => {

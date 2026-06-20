@@ -6,8 +6,8 @@ import { of } from 'rxjs';
 import { UpdatePmtUnitComponent } from './update-pmt-unit.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { MarkTyApiService } from 'src/app/service/api/mark-ty/mark-ty-api.service';
-import { UpdatePmtApiService } from 'src/app/service/api/update-pmt/update-pmt-api.service';
+import { MarkTyApiService } from 'src/app/service/api/admin/mark-ty-api.service';
+import { UpdatePmtApiService } from 'src/app/service/api/admin/update-pmt-api.service';
 import { PipeModule } from 'src/app/app-pipe.module';
 
 describe('UpdatePmtUnitComponent', () => {

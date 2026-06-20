@@ -1,26 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { TyDutyPurposeApiService } from 'src/app/service/api/ty-duty-purpose/ty-duty-purpose-api.service';
+import { TyDutyPurposeApiService } from 'src/app/service/api/masters/ty-duty-purpose-api.service';
 import { UtilService } from 'src/app/service/core/util.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { FormApiService } from 'src/app/service/api/form/form-api.service';
-import { FormManageService } from 'src/app/service/core/form-manage.service';
-import { FormStateApiService } from 'src/app/service/api/form-state/form-state-api.service';
-import { MasterShipApiService } from 'src/app/service/api/master-ship/master-ship-api.service';
-import { UserApiService } from 'src/app/service/api/user/user-api.service';
+import { FormDocumentService } from 'src/app/service/core/form-document.service';
+import { FormStateApiService } from 'src/app/service/api/form/form-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
-import { EsignApiService } from 'src/app/service/api/esign/esign-api.service';
-import { BankIfscApiService } from 'src/app/service/api/bank-ifsc/bank-ifsc-api.service';
-import { ClaimUtilService } from 'src/app/service/claim/claim-util.service';
-import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
-import {
-  clearLegacyInvalidFromEvent,
-  validateLegacyRequiredSection,
-} from '../shared/helpers/legacy-form-validation.helper';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
+import { EsignApiService } from 'src/app/service/api/security/esign-api.service';
+import { BankIfscApiService } from 'src/app/service/api/code/bank-ifsc-api.service';
+import { CodeUnitApiService } from 'src/app/service/api/code/code-unit-api.service';
+import { clearLegacyInvalidFromEvent, validateLegacyRequiredSection } from '../shared/helpers/legacy-form-validation.helper';
 
 declare var $: any;
 
@@ -639,16 +632,13 @@ export class FormFteComponent implements OnInit {
     public $auth: AuthService,
     public $form: FormApiService,
     public $formState: FormStateApiService,
-    private $formManage: FormManageService,
+    private $formDocument: FormDocumentService,
     private $tyDutyPurposeApi: TyDutyPurposeApiService,
-    private $ship: MasterShipApiService,
-    private $user: UserApiService,
     private $common: CommonService,
     private $claimApi: ClaimApiService,
     private $claimStateApi: ClaimStateApiService,
     private $esignApi: EsignApiService,
     private $bankIfscApi: BankIfscApiService,
-    private $util: ClaimUtilService,
     private $codeUnitApi: CodeUnitApiService
   ) {}
 
@@ -1437,14 +1427,12 @@ export class FormFteComponent implements OnInit {
       return;
     }
 
-    // 3) Proceed with upload
     this.gxFormUploading = true;
-    this.$formManage?.uploadImg(event);
 
-    this.$formManage?.docFileUrl.subscribe((res: unknown) => {
-      this.gxFormUploading = false;
-
-      if (res) {
+    this.$formDocument.uploadSupportDoc(file).subscribe(
+      (res) => {
+        this.gxFormUploading = false;
+        if (res) {
         this.claims.gxFormFileUrl = res as string;
         this.showGxFileBrowse = false;
       } else {
@@ -1453,7 +1441,16 @@ export class FormFteComponent implements OnInit {
         this.showGxFileBrowse = true;
         input.value = '';
       }
-    });
+      },
+      (error) => {
+        this.gxFormUploading = false;
+        this.$common.showMessage('Unable to upload GX Form.', 'danger');
+        this.claims.gxFormFileUrl = null;
+        this.showGxFileBrowse = true;
+        input.value = '';
+        console.log(error);
+      }
+    );
   }
 
   deleteGxForm(): void {
@@ -1823,5 +1820,4 @@ export class FormFteComponent implements OnInit {
   }
 
 }
-
 

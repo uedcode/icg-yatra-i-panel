@@ -7,13 +7,13 @@ import { of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { UserTokenService } from 'src/app/service/auth/user-token.service';
+import { UserTokenApiService } from 'src/app/service/api/security/user-token-api.service';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
   let commonService: jasmine.SpyObj<CommonService>;
-  let userTokenService: jasmine.SpyObj<UserTokenService>;
+  let userTokenService: jasmine.SpyObj<UserTokenApiService>;
   let router: jasmine.SpyObj<Router>;
 
   const storageKeys = environment.authConfig.storageKeys;
@@ -65,8 +65,8 @@ describe('AuthService', () => {
     ]);
     commonService.parseResponse.and.callFake((response: any) => response);
 
-    userTokenService = jasmine.createSpyObj<UserTokenService>(
-      'UserTokenService',
+    userTokenService = jasmine.createSpyObj<UserTokenApiService>(
+      'UserTokenApiService',
       ['userTokenDelete', 'userTokenUpdate']
     );
     userTokenService.userTokenDelete.and.returnValue(of({ status: true }));
@@ -86,7 +86,7 @@ describe('AuthService', () => {
         AuthService,
         DatePipe,
         { provide: CommonService, useValue: commonService },
-        { provide: UserTokenService, useValue: userTokenService },
+        { provide: UserTokenApiService, useValue: userTokenService },
         { provide: Router, useValue: router },
       ],
     });

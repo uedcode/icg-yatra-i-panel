@@ -2,8 +2,8 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { CodeHrPayApiService } from 'src/app/service/api/code-hr-pay/code-hr-pay-api.service';
-import { UserApiService } from 'src/app/service/api/user/user-api.service';
+import { CodeHrPayApiService } from 'src/app/service/api/code/code-hr-pay-api.service';
+import { UserApiService } from 'src/app/service/api/admin/user-api.service';
 
 @Component({
   selector: 'app-manage-paylevel-transaction',

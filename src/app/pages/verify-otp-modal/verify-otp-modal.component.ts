@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChil
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { NgOtpInputComponent } from 'ng-otp-input';
-import { OtpService } from 'src/app/service/auth/otp.service';
+import { OtpApiService } from 'src/app/service/api/security/otp-api.service';
 import * as crypto from 'crypto-js';
 declare var $: any;
 
@@ -16,7 +16,7 @@ export class VerifyOtpModalComponent implements OnInit {
 
   constructor(private $common: CommonService,
     public $auth: AuthService,
-    public $otp: OtpService,) {
+    public $otp: OtpApiService,) {
   }
 
   @Input() record: any;

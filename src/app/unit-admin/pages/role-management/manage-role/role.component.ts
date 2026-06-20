@@ -4,10 +4,10 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { DesignationApiService } from 'src/app/service/api/designation/designation-api.service';
-import { RoleApiService } from 'src/app/service/api/role/role-api.service';
-import { RoleTypeApiService } from 'src/app/service/api/role-type/role-type-api.service';
-import { UserApiService } from 'src/app/service/api/user/user-api.service';
+import { DesignationApiService } from 'src/app/service/api/code/designation-api.service';
+import { RoleApiService } from 'src/app/service/api/admin/role-api.service';
+import { RoleTypeApiService } from 'src/app/service/api/code/role-type-api.service';
+import { UserApiService } from 'src/app/service/api/admin/user-api.service';
 
 @Component({
   selector: 'app-role',

@@ -3,8 +3,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { MarkTyApiService } from 'src/app/service/api/mark-ty/mark-ty-api.service';
-import { UpdatePmtApiService } from 'src/app/service/api/update-pmt/update-pmt-api.service';
+import { MarkTyApiService } from 'src/app/service/api/admin/mark-ty-api.service';
+import { UpdatePmtApiService } from 'src/app/service/api/admin/update-pmt-api.service';
 
 @Component({
   selector: 'app-update-pmt-unit',

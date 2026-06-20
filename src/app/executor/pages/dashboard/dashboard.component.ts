@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { buildLegacyStateCountHeaders } from 'src/app/shared/utils/legacy-api.util';
 
