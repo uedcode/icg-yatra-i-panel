@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 
 @Component({
   selector: 'app-common-preview-ltc-advance',
@@ -32,7 +33,8 @@ export class CommonPreviewLtcAdvanceComponent implements OnInit {
     private datePipe: DatePipe,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
-    private $common: CommonService
+    private $common: CommonService,
+    private previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -109,7 +111,7 @@ export class CommonPreviewLtcAdvanceComponent implements OnInit {
   }
 
   goBack(): void {
-    this.location.back();
+    this.previewWindow.closeOrBack(this.location);
   }
 
   private normalizeSubFormId(subFormId: any): string {

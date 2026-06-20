@@ -1,11 +1,9 @@
-<div class="container-fluid" *ngIf="formObj">
-  <div class="row mb-3">
-    <div class="col-md-12">
-      <button type="button" class="btn btn-info" (click)="goBack()">Back</button>
+<div class="wrapper advance-preview-page" *ngIf="formObj">
+  <div class="container advance-preview-container">
+  <div class="card preview-card advance-preview-card mb-3">
+    <div class="preview-actions text-right">
+      <button type="button" class="btn btn-sm btn-warning mr-2" (click)="goBack()">Back</button>
     </div>
-  </div>
-
-  <div class="card mb-3">
     <div class="card-header">
       <strong>{{ previewHeading }}</strong>
     </div>
@@ -37,7 +35,7 @@
     </div>
   </div>
 
-  <div class="card mb-3">
+  <div class="card preview-card advance-preview-card mb-3">
     <div class="card-header">
       <strong>Family Details</strong>
     </div>
@@ -61,14 +59,14 @@
             <td>{{ row.checkedIndicator ? 'Yes' : 'No' }}</td>
           </tr>
           <tr *ngIf="!familyRows?.length">
-            <td colspan="5" class="text-center">No family details available.</td>
+            <td colspan="5" class="text-center">No Records</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <div class="card mb-3">
+  <div class="card preview-card advance-preview-card mb-3">
     <div class="card-header">
       <strong>Travel Details</strong>
     </div>
@@ -99,14 +97,14 @@
             <td>{{ display(row.remarks) }}</td>
           </tr>
           <tr *ngIf="!travelRows?.length">
-            <td colspan="7" class="text-center">No travel details available.</td>
+            <td colspan="7" class="text-center">No Record Found</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <div class="card mb-3">
+  <div class="card preview-card advance-preview-card mb-3">
     <div class="card-header">
       <strong>Documents</strong>
     </div>
@@ -129,7 +127,7 @@
               <button
                 *ngIf="doc?.url || doc?.fileUrl || doc?.docUrl"
                 type="button"
-                class="btn btn-warning btn-sm"
+                class="btn btn-info btn-sm"
                 (click)="$auth.viewFile(doc?.url || doc?.fileUrl || doc?.docUrl)"
               >
                 <i class="fa fa-eye"></i> View
@@ -138,20 +136,21 @@
             </td>
           </tr>
           <tr *ngIf="!documentDtos?.length">
-            <td colspan="4" class="text-center">No documents available.</td>
+            <td colspan="4" class="text-center">No Records</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <div class="card">
+  <div class="card preview-card advance-preview-card">
     <div class="card-header">
       <strong>Remarks</strong>
     </div>
     <div class="card-body">
       {{ display(formObj?.internalRemarks) }}
     </div>
+  </div>
   </div>
 </div>
 

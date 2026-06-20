@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { LtcAvailedHistApiService } from 'src/app/service/api/claim/ltc-availed-hist-api.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 
 @Component({
   selector: 'app-common-preview-ltc-availed-history',
@@ -16,21 +18,18 @@ export class CommonPreviewLtcAvailedHistoryComponent implements OnInit {
   rows: any[] = [];
 
   constructor(
+    private location: Location,
     private route: ActivatedRoute,
     public $auth: AuthService,
     private $ltcAvailedHistApi: LtcAvailedHistApiService,
-    private $common: CommonService
+    private $common: CommonService,
+    private previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.route.queryParamMap.subscribe((params) => {
-      this.claimId =
-        params.get('id') ||
-        params.get('claimId') ||
-        params.get('formId') ||
-        params.get('supId') ||
-        '';
+      this.claimId = params.get('id') || '';
       if (!this.claimId) return;
       this.loadData();
     });
@@ -77,6 +76,10 @@ export class CommonPreviewLtcAvailedHistoryComponent implements OnInit {
         console.log(err);
       }
     );
+  }
+
+  goBack(): void {
+    this.previewWindow.closeOrBack(this.location);
   }
 }
 

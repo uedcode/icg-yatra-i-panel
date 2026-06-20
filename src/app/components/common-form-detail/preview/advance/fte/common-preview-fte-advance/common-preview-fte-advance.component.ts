@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 
 @Component({
   selector: 'app-common-preview-fte-advance',
@@ -22,7 +23,8 @@ export class CommonPreviewFteAdvanceComponent implements OnInit {
     private datePipe: DatePipe,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
-    private $common: CommonService
+    private $common: CommonService,
+    private previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -86,11 +88,11 @@ export class CommonPreviewFteAdvanceComponent implements OnInit {
   navigatePreview(route: string, claimId: any): void {
     if (!route || !claimId) return;
     const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
-    window.open(`${moduleUrl}/${route}?id=${claimId}`, '_blank');
+    this.previewWindow.open(moduleUrl, route, { id: claimId });
   }
 
   goBack(): void {
-    this.location.back();
+    this.previewWindow.closeOrBack(this.location);
   }
 
   private loadPreview(): void {

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { LtcAvailedHistApiService } from 'src/app/service/api/claim/ltc-availed-hist-api.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 
 @Component({
   selector: 'app-form-ltc-availed-history',
@@ -35,7 +36,8 @@ export class FormLtcAvailedHistoryComponent implements OnInit {
     private $ltcAvailedHistApi: LtcAvailedHistApiService,
     private $common: CommonService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -210,9 +212,7 @@ export class FormLtcAvailedHistoryComponent implements OnInit {
       this.$common.showMessage('Please save LTC availed history first.', 'danger');
       return;
     }
-    this.router.navigate([`${this.$auth.getModuleName()}/form-ltc-availed-history-detail`], {
-      queryParams: { id: this.claimId },
-    });
+    this.previewWindow.open(this.$auth.getModuleName(), 'form-ltc-availed-history-detail', { id: this.claimId });
   }
 }
 

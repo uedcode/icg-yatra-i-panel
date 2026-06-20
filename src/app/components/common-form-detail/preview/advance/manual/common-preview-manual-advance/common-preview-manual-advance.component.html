@@ -1,25 +1,43 @@
-﻿<div class="page-header gov-page-toolbar">
-          <div class="page-leftheader">
-            <h4 class="page-title">Manual Advance Preview</h4>
+﻿<div class="wrapper advance-preview-page">
+  <div class="container advance-preview-container">
+    <div class="main-content">
+      <div class="panel panel-white preview-card advance-preview-card">
+        <div class="panel-body">
+          <div class="general-data">
+            <div class="preview-actions text-right">
+              <button type="button" class="btn btn-sm btn-warning mr-2" (click)="goBack()">Back</button>
+            </div>
+            <h4 class="head-ing"><strong>Manual Advance Preview</strong></h4>
+            <div class="level_1">
+              <div class="row">
+                <div class="col-md-3"><p><strong>Unit</strong></p></div>
+                <div class="col-md-3"><p>{{ manual?.codeUnitDTO?.descr || '-' }}</p></div>
+                <div class="col-md-3"><p><strong>PNo</strong></p></div>
+                <div class="col-md-3"><p>{{ manual?.pno || '-' }}</p></div>
+                <div class="col-md-3"><p><strong>Name</strong></p></div>
+                <div class="col-md-3"><p>{{ manual?.name || '-' }}</p></div>
+                <div class="col-md-3"><p><strong>Rank</strong></p></div>
+                <div class="col-md-3"><p>{{ manual?.rank || '-' }}</p></div>
+                <div class="col-md-3"><p><strong>Pay Level</strong></p></div>
+                <div class="col-md-3"><p>{{ manual?.payLevel || '-' }}</p></div>
+                <div class="col-md-3"><p><strong>Basic Pay</strong></p></div>
+                <div class="col-md-3"><p>{{ manual?.basicPay || '-' }}</p></div>
+                <div class="col-md-3"><p><strong>Form Type</strong></p></div>
+                <div class="col-md-3"><p>{{ manual?.formType || '-' }}</p></div>
+                <div class="col-md-3"><p><strong>Amount</strong></p></div>
+                <div class="col-md-3"><p>{{ manual?.amount || '-' }}</p></div>
+                <div class="col-md-3"><p><strong>Admissible</strong></p></div>
+                <div class="col-md-3"><p>{{ manual?.admissibleAmt || '-' }}</p></div>
+                <div class="col-md-3"><p><strong>Reason</strong></p></div>
+                <div class="col-md-9"><p>{{ manual?.reason || '-' }}</p></div>
+              </div>
+              <div class="mt-3" *ngIf="manual?.manualFormUrl">
+                <a class="btn btn-info btn-sm" [href]="manual?.manualFormUrl" target="_blank">View Manual Signed Form</a>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-4"><strong>Unit:</strong> {{ manual?.codeUnitDTO?.descr || '-' }}</div>
-              <div class="col-md-4"><strong>PNo:</strong> {{ manual?.pno || '-' }}</div>
-              <div class="col-md-4"><strong>Name:</strong> {{ manual?.name || '-' }}</div>
-              <div class="col-md-4 mt-2"><strong>Rank:</strong> {{ manual?.rank || '-' }}</div>
-              <div class="col-md-4 mt-2"><strong>Pay Level:</strong> {{ manual?.payLevel || '-' }}</div>
-              <div class="col-md-4 mt-2"><strong>Basic Pay:</strong> {{ manual?.basicPay || '-' }}</div>
-              <div class="col-md-4 mt-2"><strong>Form Type:</strong> {{ manual?.formType || '-' }}</div>
-              <div class="col-md-4 mt-2"><strong>Amount:</strong> {{ manual?.amount || '-' }}</div>
-              <div class="col-md-4 mt-2"><strong>Admissible:</strong> {{ manual?.admissibleAmt || '-' }}</div>
-              <div class="col-md-12 mt-2"><strong>Reason:</strong> {{ manual?.reason || '-' }}</div>
-              <div class="col-md-12 mt-3" *ngIf="manual?.manualFormUrl">
-                <a class="btn btn-info" [href]="manual?.manualFormUrl" target="_blank">View Manual Signed Form</a>
+      </div>
+    </div>
+  </div>
 </div>
-</div>
-</div>
-</div>
-

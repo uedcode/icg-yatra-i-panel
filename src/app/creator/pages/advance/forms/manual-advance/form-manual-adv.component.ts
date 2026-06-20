@@ -6,6 +6,7 @@ import { CommonService } from 'src/app/service/core/common.service';
 import { CodeUnitApiService } from 'src/app/service/api/code/code-unit-api.service';
 import { PayLevelApiService } from 'src/app/service/api/masters/pay-level-api.service';
 import { ReasonApiService } from 'src/app/service/api/masters/reason-api.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 
 @Component({
   selector: 'app-form-manual-adv',
@@ -59,7 +60,8 @@ export class FormManualAdvComponent implements OnInit {
     private $payLevelApi: PayLevelApiService,
     private $common: CommonService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -177,9 +179,7 @@ export class FormManualAdvComponent implements OnInit {
   openPreview() {
     const query: any = { subFormId: this.codeClaim.manualAdv };
     if (this.claimId) query.id = this.claimId;
-    this.router.navigate([`${this.$auth.getModuleName()}/form-manual-adv-detail`], {
-      queryParams: query,
-    });
+    this.previewWindow.open(this.$auth.getModuleName(), 'form-manual-adv-detail', query);
   }
 }
 

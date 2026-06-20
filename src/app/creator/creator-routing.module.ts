@@ -67,7 +67,129 @@ import { ClaimPreviewResettlementComponent } from './pages/claim/previews/resett
 
 const CREATOR_ROLES = ['CR'];
 
+const CREATOR_PREVIEW_ROUTES: Routes = [
+  {
+    path: 'preview-voucher',
+    component: PreviewVoucherComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Preview Voucher', roles: CREATOR_ROLES },
+  },
+  {
+    path: 'claim/preview-voucher',
+    redirectTo: 'preview-voucher',
+    pathMatch: 'full',
+  },
+  {
+    path: 'form-tyduty-detail',
+    redirectTo: 'preview-ty-duty',
+    pathMatch: 'full',
+  },
+  {
+    path: 'preview-ty-duty-claim',
+    component: ClaimPreviewTyDutyComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'TY Duty Claim Preview', roles: CREATOR_ROLES, subFormId: 'TYD', previewKind: 'claim' },
+  },
+  {
+    path: 'preview-ty-duty',
+    component: PreviewTyDutyComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'TY Duty Advance Preview', roles: CREATOR_ROLES },
+  },
+  {
+    path: 'preview-fte-advance',
+    component: PreviewFteAdvanceComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'FTE Advance Preview', roles: CREATOR_ROLES },
+  },
+  {
+    path: 'form-fte-detail',
+    component: PreviewFteAdvanceComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'FTE Detail', roles: CREATOR_ROLES },
+  },
+  {
+    path: 'form-pmt-detail',
+    component: PreviewPmtDutyComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'PMT Detail', roles: CREATOR_ROLES, subFormId: 'P', previewKind: 'advance' },
+  },
+  {
+    path: 'form-ltc-detail',
+    component: PreviewLtcAdvanceComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'LTC Detail', roles: CREATOR_ROLES },
+  },
+  {
+    path: 'form-pay-details-detail',
+    component: FormPayDetailsDetailComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Pay Details Detail', roles: CREATOR_ROLES },
+  },
+  {
+    path: 'preview-pmt-duty-claim',
+    component: ClaimPreviewPmtDutyComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'PMT Duty Claim Preview', roles: CREATOR_ROLES, subFormId: 'PMT', previewKind: 'claim' },
+  },
+  {
+    path: 'preview-pmt-duty',
+    component: PreviewPmtDutyComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'PMT Duty Advance Preview', roles: CREATOR_ROLES },
+  },
+  {
+    path: 'preview-fte-claim',
+    component: ClaimPreviewFteComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'FTE Claim Preview', roles: CREATOR_ROLES, subFormId: 'FTE', previewKind: 'claim' },
+  },
+  {
+    path: 'preview-ltc-claim',
+    component: ClaimPreviewLtcComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'LTC Claim Preview', roles: CREATOR_ROLES, subFormId: 'LTC', previewKind: 'claim' },
+  },
+  {
+    path: 'preview-ltc-advance',
+    component: PreviewLtcAdvanceComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'LTC Advance Preview', roles: CREATOR_ROLES },
+  },
+  {
+    path: 'preview-resettlement-claim',
+    component: ClaimPreviewResettlementComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Resettlement Claim Preview', roles: CREATOR_ROLES, subFormId: 'RS', previewKind: 'claim' },
+  },
+  {
+    path: 'preview-resettlement',
+    component: FormResettlementPreviewComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Resettlement Advance Preview', roles: CREATOR_ROLES, subFormId: 'RS', previewKind: 'advance' },
+  },
+  {
+    path: 'preview-pm-resettlementaim',
+    component: ClaimPreviewResettlementComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Resettlement Supplementary Preview', roles: CREATOR_ROLES, subFormId: 'RS', previewKind: 'claim' },
+  },
+  {
+    path: 'form-manual-adv-detail',
+    component: PreviewManualAdvanceComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'Manual Advance Detail', roles: CREATOR_ROLES },
+  },
+  {
+    path: 'form-ltc-availed-history-detail',
+    component: PreviewLtcAvailedHistoryComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'LTC Availed History Detail', roles: CREATOR_ROLES },
+  },
+];
+
 const routes: Routes = [
+  ...CREATOR_PREVIEW_ROUTES,
   {
     path: '',
     component: CreatorComponent,
@@ -117,116 +239,10 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'preview-voucher',
-        component: PreviewVoucherComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'Preview Voucher', roles: CREATOR_ROLES },
-      },
-      {
-        path: 'claim/preview-voucher',
-        redirectTo: 'preview-voucher',
-        pathMatch: 'full',
-      },
-      {
         path: 'claim-new',
         component: ClaimNewComponent,
         canActivate: [AuthGuard],
         data: { title: 'Claim New', roles: CREATOR_ROLES },
-      },
-      {
-        path: 'form-tyduty-detail',
-        redirectTo: 'preview-ty-duty',
-        pathMatch: 'full',
-      },
-      {
-        path: 'preview-ty-duty-claim',
-        component: ClaimPreviewTyDutyComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'TY Duty Claim Preview', roles: CREATOR_ROLES, subFormId: 'TYD', previewKind: 'claim' },
-      },
-      {
-        path: 'preview-ty-duty',
-        component: PreviewTyDutyComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'TY Duty Advance Preview', roles: CREATOR_ROLES },
-      },
-      {
-        path: 'preview-fte-advance',
-        component: PreviewFteAdvanceComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'FTE Advance Preview', roles: CREATOR_ROLES },
-      },
-      {
-        path: 'form-fte-detail',
-        component: PreviewFteAdvanceComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'FTE Detail', roles: CREATOR_ROLES },
-      },
-      {
-        path: 'form-pmt-detail',
-        component: PreviewPmtDutyComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'PMT Detail', roles: CREATOR_ROLES, subFormId: 'P', previewKind: 'advance' },
-      },
-      {
-        path: 'form-ltc-detail',
-        component: PreviewLtcAdvanceComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'LTC Detail', roles: CREATOR_ROLES },
-      },
-      {
-        path: 'form-pay-details-detail',
-        component: FormPayDetailsDetailComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'Pay Details Detail', roles: CREATOR_ROLES },
-      },
-      {
-        path: 'preview-pmt-duty-claim',
-        component: ClaimPreviewPmtDutyComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'PMT Duty Claim Preview', roles: CREATOR_ROLES, subFormId: 'PMT', previewKind: 'claim' },
-      },
-      {
-        path: 'preview-pmt-duty',
-        component: PreviewPmtDutyComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'PMT Duty Advance Preview', roles: CREATOR_ROLES },
-      },
-      {
-        path: 'preview-fte-claim',
-        component: ClaimPreviewFteComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'FTE Claim Preview', roles: CREATOR_ROLES, subFormId: 'FTE', previewKind: 'claim' },
-      },
-      {
-        path: 'preview-ltc-claim',
-        component: ClaimPreviewLtcComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'LTC Claim Preview', roles: CREATOR_ROLES, subFormId: 'LTC', previewKind: 'claim' },
-      },
-      {
-        path: 'preview-ltc-advance',
-        component: PreviewLtcAdvanceComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'LTC Advance Preview', roles: CREATOR_ROLES },
-      },
-      {
-        path: 'preview-resettlement-claim',
-        component: ClaimPreviewResettlementComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'Resettlement Claim Preview', roles: CREATOR_ROLES, subFormId: 'RS', previewKind: 'claim' },
-      },
-      {
-        path: 'preview-resettlement',
-        component: FormResettlementPreviewComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'Resettlement Advance Preview', roles: CREATOR_ROLES, subFormId: 'RS', previewKind: 'advance' },
-      },
-      {
-        path: 'preview-pm-resettlementaim',
-        component: ClaimPreviewResettlementComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'Resettlement Supplementary Preview', roles: CREATOR_ROLES, subFormId: 'RS', previewKind: 'claim' },
       },
       {
         path: 'inbox',
@@ -439,22 +455,10 @@ const routes: Routes = [
         data: { title: 'Manual Advance', roles: CREATOR_ROLES },
       },
       {
-        path: 'form-manual-adv-detail',
-        component: PreviewManualAdvanceComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'Manual Advance Detail', roles: CREATOR_ROLES },
-      },
-      {
         path: 'form-ltc-availed-history',
         component: FormLtcAvailedHistoryComponent,
         canActivate: [AuthGuard],
         data: { title: 'LTC Availed History', roles: CREATOR_ROLES },
-      },
-      {
-        path: 'form-ltc-availed-history-detail',
-        component: PreviewLtcAvailedHistoryComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'LTC Availed History Detail', roles: CREATOR_ROLES },
       },
       {
         path: 'form-pay-details',

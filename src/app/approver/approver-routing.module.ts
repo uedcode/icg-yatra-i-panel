@@ -59,7 +59,26 @@ import { AdvancePreviewManualComponent } from './pages/advance/previews/manual-a
 import { AdvanceFormLtcHistoryComponent } from './pages/advance/reviews/ltc-history/advance-form-ltc-history.component';
 import { AdvancePreviewLtcHistoryComponent } from './pages/advance/previews/ltc-availed-history/preview-ltc-availed-history.component';
 
+const APPROVER_PREVIEW_ROUTES: Routes = [
+  { path: 'preview-pmt-duty', component: AdvancePreviewPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
+  { path: 'preview-ty-duty', component: AdvancePreviewTyDutyComponent, canActivate: [AuthGuard], data: { title: 'TY Duty Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
+  { path: 'preview-fte-advance', component: AdvancePreviewFteComponent, canActivate: [AuthGuard], data: { title: 'FTE Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
+  { path: 'preview-ltc-advance', component: AdvancePreviewLtcComponent, canActivate: [AuthGuard], data: { title: 'LTC Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
+  { path: 'preview-manual-adv', component: AdvancePreviewManualComponent, canActivate: [AuthGuard], data: { title: 'Manual Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
+  { path: 'preview-ltc-availed-history', component: AdvancePreviewLtcHistoryComponent, canActivate: [AuthGuard], data: { title: 'LTC Availed History Preview', roles: ['VE1', 'VE2', 'AP'] } },
+  { path: 'preview-voucher', component: ClaimPreviewVoucherComponent, canActivate: [AuthGuard], data: { title: 'Voucher Preview', roles: ['VE1', 'VE2', 'AP'] } },
+  { path: 'movement-update-claim', component: ClaimMovementUpdateComponent, canActivate: [AuthGuard], data: { title: 'Movement Update Claim', roles: ['VE1', 'VE2', 'AP'] } },
+  { path: 'preview-pmt-duty-claim', component: ClaimPreviewPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Claim Preview', roles: ['VE1', 'VE2', 'AP'], subFormId: 'PMT' } },
+  { path: 'preview-ty-duty-claim', component: ClaimPreviewTyDutyComponent, canActivate: [AuthGuard], data: { title: 'TY Duty Claim Preview', roles: ['VE1', 'VE2', 'AP'], subFormId: 'TYD' } },
+  { path: 'preview-fte-claim', component: ClaimPreviewFteComponent, canActivate: [AuthGuard], data: { title: 'FTE Claim Preview', roles: ['VE1', 'VE2', 'AP'], subFormId: 'FTE' } },
+  { path: 'preview-ltc-claim', component: ClaimPreviewLtcComponent, canActivate: [AuthGuard], data: { title: 'LTC Claim Preview', roles: ['VE1', 'VE2', 'AP'], subFormId: 'LTC' } },
+  { path: 'preview-resettlement-claim', component: ClaimPreviewResettlementComponent, canActivate: [AuthGuard], data: { title: 'Resettlement Claim Preview', roles: ['VE1', 'VE2', 'AP'], subFormId: 'RS' } },
+  { path: 'preview-resettlement', component: ClaimPreviewResettlementComponent, canActivate: [AuthGuard], data: { title: 'Resettlement Preview', roles: ['VE1', 'VE2', 'AP'], subFormId: 'RS' } },
+  { path: 'preview-pm-resettlementaim', component: ClaimPreviewResettlementComponent, canActivate: [AuthGuard], data: { title: 'Resettlement Preview (Legacy Alias)', roles: ['VE1', 'VE2', 'AP'], subFormId: 'RS' } },
+];
+
 const routes: Routes = [
+  ...APPROVER_PREVIEW_ROUTES,
   {
     path: '',
     component: ApproverComponent,
@@ -75,26 +94,11 @@ const routes: Routes = [
       { path: 'form-ltc-claim', component: FormLtcClaimComponent, canActivate: [AuthGuard], data: { title: 'LTC Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'LTC' } },
       { path: 'form-resettlement-claim', component: FormResettlementClaimComponent, canActivate: [AuthGuard], data: { title: 'Resettlement Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'RS' } },
       { path: 'form-pmt-duty', component: AdvanceFormPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'preview-pmt-duty', component: AdvancePreviewPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
       { path: 'form-ty-duty', component: AdvanceFormTyDutyComponent, canActivate: [AuthGuard], data: { title: 'TY Duty Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'preview-ty-duty', component: AdvancePreviewTyDutyComponent, canActivate: [AuthGuard], data: { title: 'TY Duty Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
       { path: 'form-fte-advance', component: AdvanceFormFteComponent, canActivate: [AuthGuard], data: { title: 'FTE Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'preview-fte-advance', component: AdvancePreviewFteComponent, canActivate: [AuthGuard], data: { title: 'FTE Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
       { path: 'form-ltc-advance', component: AdvanceFormLtcComponent, canActivate: [AuthGuard], data: { title: 'LTC Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'preview-ltc-advance', component: AdvancePreviewLtcComponent, canActivate: [AuthGuard], data: { title: 'LTC Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
       { path: 'form-manual-adv', component: AdvanceFormManualComponent, canActivate: [AuthGuard], data: { title: 'Manual Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'preview-manual-adv', component: AdvancePreviewManualComponent, canActivate: [AuthGuard], data: { title: 'Manual Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
       { path: 'form-ltc-availed-history', component: AdvanceFormLtcHistoryComponent, canActivate: [AuthGuard], data: { title: 'LTC Availed History Review', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'preview-ltc-availed-history', component: AdvancePreviewLtcHistoryComponent, canActivate: [AuthGuard], data: { title: 'LTC Availed History Preview', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'preview-voucher', component: ClaimPreviewVoucherComponent, canActivate: [AuthGuard], data: { title: 'Voucher Preview', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'movement-update-claim', component: ClaimMovementUpdateComponent, canActivate: [AuthGuard], data: { title: 'Movement Update Claim', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'preview-pmt-duty-claim', component: ClaimPreviewPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Claim Preview', roles: ['VE1', 'VE2', 'AP'], subFormId: 'PMT' } },
-      { path: 'preview-ty-duty-claim', component: ClaimPreviewTyDutyComponent, canActivate: [AuthGuard], data: { title: 'TY Duty Claim Preview', roles: ['VE1', 'VE2', 'AP'], subFormId: 'TYD' } },
-      { path: 'preview-fte-claim', component: ClaimPreviewFteComponent, canActivate: [AuthGuard], data: { title: 'FTE Claim Preview', roles: ['VE1', 'VE2', 'AP'], subFormId: 'FTE' } },
-      { path: 'preview-ltc-claim', component: ClaimPreviewLtcComponent, canActivate: [AuthGuard], data: { title: 'LTC Claim Preview', roles: ['VE1', 'VE2', 'AP'], subFormId: 'LTC' } },
-      { path: 'preview-resettlement-claim', component: ClaimPreviewResettlementComponent, canActivate: [AuthGuard], data: { title: 'Resettlement Claim Preview', roles: ['VE1', 'VE2', 'AP'], subFormId: 'RS' } },
-      { path: 'preview-resettlement', component: ClaimPreviewResettlementComponent, canActivate: [AuthGuard], data: { title: 'Resettlement Preview', roles: ['VE1', 'VE2', 'AP'], subFormId: 'RS' } },
-      { path: 'preview-pm-resettlementaim', component: ClaimPreviewResettlementComponent, canActivate: [AuthGuard], data: { title: 'Resettlement Preview (Legacy Alias)', roles: ['VE1', 'VE2', 'AP'], subFormId: 'RS' } },
       { path: 'inbox', component: InboxComponent, canActivate: [AuthGuard], data: { title: 'Inbox', roles: ['VE1', 'VE2', 'AP'], queueModule: 'ADV', queueState: 'IB' } },
       { path: 'claim/inbox', component: ClaimInboxComponent, canActivate: [AuthGuard], data: { title: 'Claim Inbox', roles: ['VE1', 'VE2', 'AP'], queueModule: 'CLM', queueState: 'IB' } },
       { path: 'inbox-claim', redirectTo: 'claim/inbox', pathMatch: 'full' },

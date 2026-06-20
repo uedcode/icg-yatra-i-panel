@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 
 @Component({
   selector: 'app-common-preview-ltc-claim',
@@ -32,7 +33,8 @@ export class CommonPreviewLtcClaimComponent implements OnInit {
     private datePipe: DatePipe,
     private $common: CommonService,
     public $auth: AuthService,
-    private $claimApi: ClaimApiService
+    private $claimApi: ClaimApiService,
+    private previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -173,14 +175,14 @@ export class CommonPreviewLtcClaimComponent implements OnInit {
   }
 
   goBack(): void {
-    this.location.back();
+    this.previewWindow.closeOrBack(this.location);
   }
 
   openRelatedPreview(route: string, claimId: any): void {
     if (!route) return;
     if (!claimId) return;
     const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '/creator';
-    window.open(`${moduleUrl}/${route}?id=${claimId}`, '_blank');
+    this.previewWindow.open(moduleUrl, route, { id: claimId });
   }
 
   hasRelatedClaims(): boolean {

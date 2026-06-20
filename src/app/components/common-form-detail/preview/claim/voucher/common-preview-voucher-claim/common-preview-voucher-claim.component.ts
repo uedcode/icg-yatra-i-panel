@@ -1,8 +1,10 @@
 ﻿import { DatePipe } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 
 @Component({
   selector: 'app-common-preview-voucher-claim',
@@ -15,10 +17,12 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
   yatClaimVoucher: any = null;
 
   constructor(
+    private location: Location,
     private route: ActivatedRoute,
     private datePipe: DatePipe,
     private $claimApi: ClaimApiService,
-    private $common: CommonService
+    private $common: CommonService,
+    private previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -66,6 +70,10 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
   asDate(value: any): string {
     if (!value) return '-';
     return this.datePipe.transform(value, 'dd-MMM-yyyy') ?? '-';
+  }
+
+  goBack(): void {
+    this.previewWindow.closeOrBack(this.location);
   }
 
   private unwrapVoucher(object: any): any {

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { YatPayDetailsApiService } from 'src/app/service/api/payment/yat-pay-details-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 
 @Component({
   selector: 'app-form-pay-details-detail',
@@ -15,11 +16,13 @@ export class FormPayDetailsDetailComponent implements OnInit {
   payDetails: any = {};
 
   constructor(
+    private location: Location,
     private route: ActivatedRoute,
     private $auth: AuthService,
     private $payDetailsApi: YatPayDetailsApiService,
     private $common: CommonService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -55,6 +58,10 @@ export class FormPayDetailsDetailComponent implements OnInit {
       ? new Date(Number(value))
       : new Date(value);
     return Number.isNaN(date.getTime()) ? `${value}` : (this.datePipe.transform(date, 'dd/MM/yyyy') || '-');
+  }
+
+  goBack(): void {
+    this.previewWindow.closeOrBack(this.location);
   }
 }
 

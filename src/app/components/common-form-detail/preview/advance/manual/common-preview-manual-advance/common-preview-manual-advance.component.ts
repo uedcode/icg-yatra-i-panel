@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 
 @Component({
   selector: 'app-common-preview-manual-advance',
@@ -16,21 +18,18 @@ export class CommonPreviewManualAdvanceComponent implements OnInit {
   userIdDetails: any;
 
   constructor(
+    private location: Location,
     private route: ActivatedRoute,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
-    private $common: CommonService
+    private $common: CommonService,
+    private previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.route.queryParamMap.subscribe((params) => {
-      const claimId =
-        params.get('id') ||
-        params.get('claimId') ||
-        params.get('formId') ||
-        params.get('supId') ||
-        '';
+      const claimId = params.get('id') || '';
       if (!claimId) return;
       const config = {
         headers: {
@@ -74,6 +73,10 @@ export class CommonPreviewManualAdvanceComponent implements OnInit {
       return value[0] || {};
     }
     return value || {};
+  }
+
+  goBack(): void {
+    this.previewWindow.closeOrBack(this.location);
   }
 }
 

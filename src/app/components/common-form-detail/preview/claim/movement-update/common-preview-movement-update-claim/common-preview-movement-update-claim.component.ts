@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 
 @Component({
   selector: 'app-common-preview-movement-update-claim',
@@ -31,7 +32,8 @@ export class CommonPreviewMovementUpdateClaimComponent implements OnInit {
     private datePipe: DatePipe,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
-    private $common: CommonService
+    private $common: CommonService,
+    private previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -79,15 +81,14 @@ export class CommonPreviewMovementUpdateClaimComponent implements OnInit {
       return;
     }
 
-    const query = [`id=${encodeURIComponent(this.claimId)}`];
-    if (this.subFormId) {
-      query.push(`subFormId=${encodeURIComponent(this.subFormId)}`);
-    }
-    window.open(`${this.$auth.getModuleName()}/preview-voucher?${query.join('&')}`, '_blank');
+    this.previewWindow.open(this.$auth.getModuleName(), 'preview-voucher', {
+      id: this.claimId,
+      subFormId: this.subFormId,
+    });
   }
 
   goBack(): void {
-    this.location.back();
+    this.previewWindow.closeOrBack(this.location);
   }
 
   display(value: any): string {
