@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { UserService } from 'src/app/service/admin/user.service';
+import { UserApiService } from 'src/app/service/api/user/user-api.service';
 import { HttpParams } from '@angular/common/http';
 import * as crypto from 'crypto-js';
 
@@ -16,7 +16,7 @@ declare var $: any;
 })
 export class CommonChangePasswordComponent implements OnInit {
 
-  constructor(private $user: UserService, private $common: CommonService, public $auth: AuthService) { }
+  constructor(private $user: UserApiService, private $common: CommonService, public $auth: AuthService) { }
   @ViewChild('f', { static: true }) changepasswordform: NgForm;
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();

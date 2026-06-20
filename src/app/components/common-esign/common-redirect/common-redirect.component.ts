@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { FormService } from 'src/app/service/form/form.service';
+import { FormApiService } from 'src/app/service/api/form/form-api.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -18,7 +18,7 @@ export class CommonRedirectComponent implements OnInit {
     private router: Router,
     private $common: CommonService,
     public $auth: AuthService,
-    private $form: FormService,
+    private $form: FormApiService,
   ) { }
 
   fileUrl = environment.fileUrl;

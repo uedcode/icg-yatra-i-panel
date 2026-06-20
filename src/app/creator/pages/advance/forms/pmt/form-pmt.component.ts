@@ -4,12 +4,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UtilService } from 'src/app/service/core/util.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
-import { DropdownManageService } from 'src/app/service/form/dropdown-manage.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { EsignApiService } from 'src/app/service/api/esign/esign-api.service';
+import { BankIfscApiService } from 'src/app/service/api/bank-ifsc/bank-ifsc-api.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
 import { map, take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
+import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
+import { PayLevelApiService } from 'src/app/service/api/pay-level/pay-level-api.service';
 import {
   clearLegacyInvalidFromEvent,
   validateLegacyRequiredSection,
@@ -251,11 +255,15 @@ export class FormPmtDutyComponent implements OnInit {
     private datePipe: DatePipe,
     public $auth: AuthService,
     private $common: CommonService,
-    private $claim: ClaimService,
-    private $dropdownManage: DropdownManageService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
+    private $esignApi: EsignApiService,
+    private $bankIfscApi: BankIfscApiService,
     private $formManage: FormManageService,
     private http: HttpClient,
-    private $codeDocInfo: CodeDocInfoService
+    private $codeDocInfo: CodeDocInfoApiService,
+    private $codeUnitApi: CodeUnitApiService,
+    private $payLevelApi: PayLevelApiService
   ) {}
 
   ngOnInit(): void {
@@ -498,8 +506,8 @@ export class FormPmtDutyComponent implements OnInit {
     const payload = this.buildClaimRemarkPayload(status, claimId);
     const isESignSubmit = this.claims?.signWith === this.codeSignType.eSign;
     const statusRequest = isESignSubmit
-      ? this.$claim.prepareForESign(payload)
-      : this.$claim.changeClaimStatusById(payload);
+      ? this.$esignApi.prepareForESign(payload)
+      : this.$claimStateApi.changeStatusById(payload);
 
     statusRequest.subscribe(
       (res: any) => {
@@ -513,7 +521,7 @@ export class FormPmtDutyComponent implements OnInit {
           return;
         }
 
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
         if (isESignSubmit) {
           this.eSignTempFormObj = {
             id: claimId,
@@ -565,7 +573,7 @@ export class FormPmtDutyComponent implements OnInit {
 
       this.config = { headers };
 
-      this.$claim.getSingleClaim(this.config).subscribe(
+      this.$claimApi.getSingleClaim(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
 
@@ -666,7 +674,7 @@ export class FormPmtDutyComponent implements OnInit {
     try {
       this.$common.showLoader();
       const config = { headers: {} };
-      this.$claim.getUnits(config).subscribe(
+      this.$codeUnitApi.getAllUnits(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response?.status === true) {
@@ -1384,7 +1392,7 @@ export class FormPmtDutyComponent implements OnInit {
       const formData = new FormData();
       formData.append('yatClaimDTO', JSON.stringify(tempClaim));
 
-      this.$claim.createOrUpdateAdvance(formData, null).subscribe(
+      this.$claimApi.createOrUpdateAdvance(formData, null).subscribe(
         (res: any) => {
           const obj = Array.isArray(res?.object)
             ? res.object[0]
@@ -1778,7 +1786,7 @@ export class FormPmtDutyComponent implements OnInit {
       },
     };
 
-    this.$claim.checkEsignAvailability(config).subscribe({
+    this.$esignApi.checkEsignAvailability(config).subscribe({
       next: (response: any) => {
         if (response?.status === false) {
           this.claims.signWith = this.codeSignType.inkSign;
@@ -2000,7 +2008,7 @@ export class FormPmtDutyComponent implements OnInit {
   }
 
   loadPayLevels(): void {
-    this.$claim.getPayLevels().subscribe((res: any) => {
+    this.$payLevelApi.get().subscribe((res: any) => {
       if (res?.status === true) {
         this.payLevels = res.object || [];
         this.updateEntitlement(this.activeSubFormId);
@@ -2125,7 +2133,7 @@ export class FormPmtDutyComponent implements OnInit {
       config.headers.claimId = this.claimId;
     }
 
-    this.$claim.createOrUpdateIfsc(bankObj, config).subscribe({
+    this.$bankIfscApi.createOrUpdate(bankObj, config).subscribe({
       next: (response: any) => {
         const data: any = this.$common.parseResponse(response);
 
@@ -2169,4 +2177,5 @@ export class FormPmtDutyComponent implements OnInit {
     });
   }
 }
+
 

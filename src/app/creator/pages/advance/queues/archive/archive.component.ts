@@ -2,7 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 
@@ -27,7 +28,8 @@ export class ArchiveComponent implements OnInit {
   constructor(
     private location: Location,
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
     private $common: CommonService,
     private router: Router
   ) {}
@@ -54,7 +56,7 @@ this.getState();
         searchedName: '',
       }),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -85,7 +87,7 @@ this.getState();
       },
     };
 
-    this.$claim.changeClaimStatusArchive(config).subscribe({
+    this.$claimStateApi.changeStatusArchive(config).subscribe({
       next: (res: any) => {
         this.restoreLoadingMap[listKey] = false;
         if (!res?.status) {
@@ -118,5 +120,6 @@ this.getState();
     }
   }
 }
+
 
 

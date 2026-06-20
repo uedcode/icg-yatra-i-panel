@@ -4,8 +4,12 @@ import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Router } from '@angular/router';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { ClaimObservationApiService } from 'src/app/service/api/claim-observation/claim-observation-api.service';
+import { DebitCreditNoteApiService } from 'src/app/service/api/debit-credit-note/debit-credit-note-api.service';
+import { RecoveryAdjustedApiService } from 'src/app/service/api/recovery-adjusted/recovery-adjusted-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -23,9 +27,13 @@ export class ClaimPassedComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    public $formManage: FormManageService,
+    private $formManage: FormManageService,
     private router: Router,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
+    private $claimObservationApi: ClaimObservationApiService,
+    private $debitCreditNoteApi: DebitCreditNoteApiService,
+    private $recoveryAdjustedApi: RecoveryAdjustedApiService,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -65,7 +73,7 @@ this.getState();
         searchedName: searchHeaders.searchedName,
       }),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -139,7 +147,7 @@ this.getState();
       },
     };
 
-    this.$claim.changeClaimStatusArchive(config).subscribe({
+    this.$claimStateApi.changeStatusArchive(config).subscribe({
       next: (res: any) => {
         this.archiveLoadingMap[listKey] = false;
         if (!res?.status) {
@@ -148,7 +156,7 @@ this.getState();
         }
 
         this.dataList = this.dataList.filter((item: any) => item?.claimStateId != claimStateId);
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
         this.$common.showMessage(res?.message || 'Claim archived successfully.', 'success');
       },
       error: () => {
@@ -182,7 +190,7 @@ this.getState();
       return;
     }
 
-    this.$claim.generateDebitCreditNote({ headers: { claimId } }).subscribe({
+    this.$debitCreditNoteApi.generateDebitCreditNote({ headers: { claimId } }).subscribe({
       next: (res: any) => {
         const responseObject = Array.isArray(res?.object) ? res.object[0] : res?.object;
         const fileUrl =
@@ -207,7 +215,7 @@ this.getState();
       return;
     }
 
-    this.$claim.fileClaimDailySlip({ headers: { claimId } }).subscribe({
+    this.$claimApi.fileClaimDailySlip({ headers: { claimId } }).subscribe({
       next: (res: any) => {
         const claimObj = Array.isArray(res?.object) ? res.object[0] : res?.object;
         const fileUrl = claimObj?.debitCreditNoteFileUrl || data?.yatClaimDTO?.debitCreditNoteFileUrl;
@@ -240,7 +248,7 @@ this.getState();
     }
 
     this.claimObservations = [];
-    this.$claim.getClaimObservations({ headers: { claimId: String(claimId) } }).subscribe({
+    this.$claimObservationApi.getAll({ headers: { claimId: String(claimId) } }).subscribe({
       next: (res: any) => {
         this.claimObservations = Array.isArray(res?.object) ? res.object : [];
         setTimeout(() => $('#claimObservationModal').modal('show'), 0);
@@ -259,7 +267,7 @@ this.getState();
     }
 
     this.recoveryAdjustedObj = null;
-    this.$claim.getRecoveryAdjustedList({ headers: { claimId } }).subscribe({
+    this.$recoveryAdjustedApi.getAll({ headers: { claimId } }).subscribe({
       next: (res: any) => {
         this.recoveryAdjustedObj = Array.isArray(res?.object) ? res.object[0] || null : res?.object || null;
         setTimeout(() => $('#recAdjModal').modal('show'), 0);
@@ -288,5 +296,6 @@ this.getState();
   }
 
 }
+
 
 

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { BusinessRuleService } from 'src/app/service/master/business-rule.service';
+import { BusinessRuleApiService } from 'src/app/service/api/business-rule/business-rule-api.service';
 
 declare var $: any;
 
@@ -13,7 +13,7 @@ declare var $: any;
 export class BusinessRuleComponent implements OnInit {
   constructor(
     private $common: CommonService,
-    private $businessRule: BusinessRuleService
+    private $businessRule: BusinessRuleApiService
   ) {}
 
   @Input() dataList: Array<any> = [];

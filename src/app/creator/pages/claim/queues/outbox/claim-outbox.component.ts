@@ -5,10 +5,12 @@ import { Location } from '@angular/common';
 import { DatePipe } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Router } from '@angular/router';
-import { FormService } from 'src/app/service/form/form.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { FormApiService } from 'src/app/service/api/form/form-api.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { CodeSubFormApiService } from 'src/app/service/api/code-sub-form/code-sub-form-api.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { ClaimRemarkApiService } from 'src/app/service/api/claim-remark/claim-remark-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -30,12 +32,13 @@ export class ClaimOutboxComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $form: FormService,
+    private $form: FormApiService,
     private router: Router,
     private datePipe: DatePipe,
-    public $formManage: FormManageService,
-    private $codeSubForm: CodeSubFormService,
-    private $claim: ClaimService,
+    private $formManage: FormManageService,
+    private $codeSubForm: CodeSubFormApiService,
+    private $claimApi: ClaimApiService, private $claimStateApi: ClaimStateApiService,
+    private $claimRemarkApi: ClaimRemarkApiService,
   ) {}
 
   @Input() dataList: Array<any> = [];
@@ -106,7 +109,7 @@ export class ClaimOutboxComponent implements OnInit {
         searchedName: searchHeaders.searchedName,
       }),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       const claimStates = Array.isArray(res?.object) ? res.object : [];
       this.dataList = claimStates.filter((item: any) => this.matchesDateFilter(item));
     });
@@ -207,7 +210,7 @@ export class ClaimOutboxComponent implements OnInit {
       return;
     }
     this.unitRemarks = [];
-    this.$claim.getClaimRemarks({ headers: { claimId: String(claimId) } }).subscribe({
+    this.$claimRemarkApi.getAll({ headers: { claimId: String(claimId) } }).subscribe({
       next: (res: any) => {
         this.unitRemarks = Array.isArray(res?.object) ? res.object : [];
         setTimeout(() => $('#unitRemarksModal').modal('show'), 0);
@@ -237,4 +240,5 @@ export class ClaimOutboxComponent implements OnInit {
     this.reverse = !this.reverse;
   }
 }
+
 

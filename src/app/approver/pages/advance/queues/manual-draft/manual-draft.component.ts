@@ -3,7 +3,8 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 
@@ -30,7 +31,7 @@ export class ManualDraftComponent implements OnInit {
   constructor(
     private location: Location,
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService, private $claimStateApi: ClaimStateApiService,
     private $common: CommonService,
     private router: Router
   ) {}
@@ -61,7 +62,7 @@ export class ManualDraftComponent implements OnInit {
       }, codeRoleList),
     };
 
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -120,7 +121,7 @@ export class ManualDraftComponent implements OnInit {
       return;
     }
 
-    this.$claim.deleteClaim({ headers: { ids: [String(claimId)] } }).subscribe({
+    this.$claimApi.deleteClaim({ headers: { ids: [String(claimId)] } }).subscribe({
       next: (res: any) => {
         if (!res?.status) {
           this.$common.showMessage(res?.message || 'Delete failed.', 'danger');
@@ -152,4 +153,5 @@ export class ManualDraftComponent implements OnInit {
     }
   }
 }
+
 

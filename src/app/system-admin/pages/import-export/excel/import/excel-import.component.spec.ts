@@ -7,7 +7,7 @@ describe('SysAdminExcelImportComponent', () => {
 
   beforeEach(() => {
     commonService = jasmine.createSpyObj('CommonService', ['showMessage', 'showLoader', 'hideLoader']);
-    excelImportService = jasmine.createSpyObj('ExcelImportService', ['importExcel']);
+    excelImportService = jasmine.createSpyObj('ImportExportApiService', ['importExcel']);
     component = new SysAdminExcelImportComponent(commonService, excelImportService);
   });
 

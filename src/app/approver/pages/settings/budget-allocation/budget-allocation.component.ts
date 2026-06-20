@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { ClaimBudgetApiService } from 'src/app/service/api/claim-budget/claim-budget-api.service';
+import { CodeDirApiService } from 'src/app/service/api/code-dir/code-dir-api.service';
 
 @Component({
   selector: 'app-budget-allocation',
@@ -39,7 +40,8 @@ export class BudgetAllocationComponent implements OnInit {
   constructor(
     private location: Location,
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimBudgetApi: ClaimBudgetApiService,
+    private $codeDirApi: CodeDirApiService,
     private $common: CommonService,
     private router: Router
   ) {}
@@ -66,7 +68,7 @@ export class BudgetAllocationComponent implements OnInit {
         financialYear: this.formObj?.financialYear || '',
       },
     };
-    this.$claim.getClaimBudgets(config).subscribe((res: any) => {
+    this.$claimBudgetApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -79,7 +81,7 @@ export class BudgetAllocationComponent implements OnInit {
         unitId: this.userIdDetails?.unitId || '',
       },
     };
-    this.$claim.getRemainingClaimBudget(config).subscribe((res: any) => {
+    this.$claimBudgetApi.getRemaining(config).subscribe((res: any) => {
       this.budgets = Array.isArray(res?.object) ? res.object : [];
       if (this.budgets.length && !this.budgets[0]?.balancePostBudgeted) {
         this.budgets[0].balancePostBudgeted = this.budgets[0]?.cumulativeAllotment;
@@ -138,7 +140,7 @@ export class BudgetAllocationComponent implements OnInit {
   }
 
   loadDirectorates(): void {
-    this.$claim.getDirectorates().subscribe((res: any) => {
+    this.$codeDirApi.getAll().subscribe((res: any) => {
       this.directorates = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -187,7 +189,7 @@ export class BudgetAllocationComponent implements OnInit {
       },
     };
 
-    this.$claim.createOrUpdateClaimBudget(payload).subscribe({
+    this.$claimBudgetApi.createOrUpdate(payload).subscribe({
       next: (res: any) => {
         if (!res?.status) {
           this.$common.showMessage(res?.message || 'Budget allocation save failed.', 'danger');
@@ -226,7 +228,7 @@ export class BudgetAllocationComponent implements OnInit {
         ids: [String(claimBudgetId)],
       },
     };
-    this.$claim.deleteClaimBudget(config).subscribe({
+    this.$claimBudgetApi.delete(config).subscribe({
       next: (res: any) => {
         if (!res?.status) {
           this.$common.showMessage(res?.message || 'Delete failed.', 'danger');
@@ -273,4 +275,5 @@ export class BudgetAllocationComponent implements OnInit {
     }
   }
 }
+
 

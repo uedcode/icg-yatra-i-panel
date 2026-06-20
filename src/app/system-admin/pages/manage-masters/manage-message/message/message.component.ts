@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { MessageService } from 'src/app/service/master/message.service';
+import { UtilMessageApiService } from 'src/app/service/api/util-message/util-message-api.service';
 
 declare var $: any;
 
@@ -13,7 +13,7 @@ declare var $: any;
 export class MessageComponent implements OnInit {
   constructor(
     private $common: CommonService,
-    private $message: MessageService
+    private $message: UtilMessageApiService
   ) {}
 
   @Input() dataList: Array<any> = [];
@@ -98,4 +98,3 @@ export class MessageComponent implements OnInit {
     this.reverse = !this.reverse;
   }
 }
-

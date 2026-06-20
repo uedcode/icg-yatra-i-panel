@@ -2,8 +2,10 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
+import { CodeGxTypeApiService } from 'src/app/service/api/code-gx-type/code-gx-type-api.service';
 
 interface MovementGxDetail {
   gxType?: string | null;
@@ -99,7 +101,9 @@ export class MovementUpdateClaimComponent implements OnInit {
     private router: Router,
     private datePipe: DatePipe,
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $codeUnitApi: CodeUnitApiService,
+    private $codeGxTypeApi: CodeGxTypeApiService,
     private $common: CommonService
   ) {}
 
@@ -167,7 +171,7 @@ export class MovementUpdateClaimComponent implements OnInit {
       },
     };
     this.$common.showLoader();
-    this.$claim.getSingleMovement(config).subscribe(
+    this.$claimApi.getSingleMovement(config).subscribe(
       (res: any) => {
         this.$common.hideLoader();
         const row = Array.isArray(res?.object) && res.object.length ? res.object[0] : null;
@@ -215,13 +219,13 @@ export class MovementUpdateClaimComponent implements OnInit {
         ...(subFormId ? { subFormId } : {}),
       },
     };
-    this.$claim.getAdvanceVoucher(config).subscribe((res: any) => {
+    this.$claimApi.getAdvanceVoucher(config).subscribe((res: any) => {
       this.voucherList = Array.isArray(res?.object) ? res.object : [];
     });
   }
 
   loadUnits(): void {
-    this.$claim.getUnits().subscribe((res: any) => {
+    this.$codeUnitApi.getAllUnits().subscribe((res: any) => {
       this.allUnits = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -242,14 +246,14 @@ export class MovementUpdateClaimComponent implements OnInit {
       },
     };
 
-    this.$claim.getGxTypes(config).subscribe((res: any) => {
+    this.$codeGxTypeApi.getAll(config).subscribe((res: any) => {
       this.gxTypes = Array.isArray(res?.object) ? res.object : [];
     });
   }
 
   validateMovement(openAfterValidate = false): void {
     const config = { headers: { claimId: this.claimId } };
-    this.$claim.validateMovement(config).subscribe((res: any) => {
+    this.$claimApi.validateMovement(config).subscribe((res: any) => {
       this.validationResult = Array.isArray(res?.object) ? res.object[0] || null : res?.object || null;
       if (res?.status) {
         this.$common.showMessage(res?.message || 'Movement validated successfully.');
@@ -447,7 +451,7 @@ export class MovementUpdateClaimComponent implements OnInit {
     const payload = this.buildSavePayload();
     this.isSaving = true;
     this.$common.showLoader();
-    this.$claim
+    this.$claimApi
       .createOrUpdateClaim(payload, {
         headers: {
           claimStateId: this.codeClaimState.draft,
@@ -801,4 +805,5 @@ export class MovementUpdateClaimComponent implements OnInit {
     return Number.isFinite(num) ? num : null;
   }
 }
+
 

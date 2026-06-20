@@ -4,8 +4,8 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
-import { UserService } from 'src/app/service/admin/user.service';
+import { RoleApiService } from 'src/app/service/api/role/role-api.service';
+import { UserApiService } from 'src/app/service/api/user/user-api.service';
 
 @Component({
   selector: 'app-unit-admin-role',
@@ -18,8 +18,8 @@ export class UnitAdminRoleComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     public $common: CommonService,
-    private $systemAdmin: SystemAdminService,
-    private $user: UserService
+    private $roleApi: RoleApiService,
+    private $user: UserApiService
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -178,7 +178,7 @@ export class UnitAdminRoleComponent implements OnInit {
       };
 
       const formData = this.buildRoleFormData(req);
-      this.$systemAdmin.createOrUpdate(formData).subscribe(
+      this.$roleApi.createOrUpdateRole(formData).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -210,7 +210,7 @@ export class UnitAdminRoleComponent implements OnInit {
           isArchive: '0'
         },
       };
-      this.$systemAdmin.getAll(this.config).subscribe(
+      this.$roleApi.getAllRoles(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -241,7 +241,7 @@ export class UnitAdminRoleComponent implements OnInit {
           statusId: tempObj.currentStatus,
         }
       };
-      this.$systemAdmin.changeStatus(config).subscribe((response: any) => {
+      this.$roleApi.changeRoleStatus(config).subscribe((response: any) => {
         if (response.status === true) {
           this.updateRowStatus(tempObj);
           this.$common.showMessage(`${response.message}`);

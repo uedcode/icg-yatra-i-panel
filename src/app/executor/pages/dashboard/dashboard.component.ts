@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { buildLegacyStateCountHeaders } from 'src/app/shared/utils/legacy-api.util';
 
@@ -18,7 +18,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimStateApi: ClaimStateApiService,
     private $common: CommonService
   ) {}
 
@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit {
       this.config = {
         headers: buildLegacyStateCountHeaders(this.userIdDetails, this.codeRoleList),
       };
-      this.$claim.getStatusCount(this.config).subscribe(
+      this.$claimStateApi.getStatusCount(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -51,3 +51,4 @@ export class DashboardComponent implements OnInit {
     }
   }
 }
+

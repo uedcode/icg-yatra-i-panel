@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { YatPayDetailsApiService } from 'src/app/service/api/yat-pay-details/yat-pay-details-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({
@@ -17,7 +17,7 @@ export class FormPayDetailsDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private $auth: AuthService,
-    private $claim: ClaimService,
+    private $payDetailsApi: YatPayDetailsApiService,
     private $common: CommonService,
     private datePipe: DatePipe
   ) {}
@@ -28,7 +28,7 @@ export class FormPayDetailsDetailComponent implements OnInit {
       if (!id) return;
       const config = { headers: { id } };
       this.$common.showLoader();
-      this.$claim.getPayDetails(config).subscribe(
+      this.$payDetailsApi.getAll(config).subscribe(
         (res: any) => {
           this.$common.hideLoader();
           if (res?.status && Array.isArray(res.object) && res.object.length) {
@@ -57,5 +57,6 @@ export class FormPayDetailsDetailComponent implements OnInit {
     return Number.isNaN(date.getTime()) ? `${value}` : (this.datePipe.transform(date, 'dd/MM/yyyy') || '-');
   }
 }
+
 
 

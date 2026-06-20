@@ -1,9 +1,9 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { LegendPosition } from '@swimlane/ngx-charts';
+import { CodeMiscApiService } from 'src/app/service/api/code-misc/code-misc-api.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ReportAnalyticsService } from 'src/app/service/master/report-analytics.service';
 
 type ChartKind = 'total' | 'advance' | 'claim';
 
@@ -43,7 +43,7 @@ export class StatisticsComponent implements OnInit {
 
   constructor(
     private $common: CommonService,
-    private $report: ReportAnalyticsService,
+    private $codeMiscApi: CodeMiscApiService,
     private $auth: AuthService,
     @Inject(DOCUMENT) private document: Document
   ) {}
@@ -185,7 +185,7 @@ export class StatisticsComponent implements OnInit {
   private fetchPieChartData(config: any, assign: (objects: any[]) => void): void {
     try {
       this.$common.showLoader();
-      this.$report.getPieChartData(config).subscribe(
+      this.$codeMiscApi.getPieChartData(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response?.status === true) {

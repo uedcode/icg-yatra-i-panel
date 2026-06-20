@@ -5,9 +5,10 @@ import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormService } from 'src/app/service/form/form.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { FormApiService } from 'src/app/service/api/form/form-api.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -26,10 +27,11 @@ export class InboxComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $form: FormService,
-    public $formManage: FormManageService,
+    private $form: FormApiService,
+    private $formManage: FormManageService,
     private router: Router,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
     private route: ActivatedRoute
   ) {}
 
@@ -102,7 +104,7 @@ export class InboxComponent implements OnInit {
         formId: 'ADV',
       }, codeRoleList),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -138,7 +140,7 @@ export class InboxComponent implements OnInit {
     };
 
     this.$common.showLoader();
-    this.$claim.changeClaimStatusById(payload).subscribe({
+    this.$claimStateApi.changeStatusById(payload).subscribe({
       next: (response: any) => {
         this.$common.hideLoader();
         if (response?.status === true) {
@@ -237,4 +239,5 @@ export class InboxComponent implements OnInit {
     return `${this.$auth.getModuleName()}/${String(formUrl).replace(/^\/+/, '')}?id=${encodeURIComponent(claimId)}`;
   }
 }
+
 

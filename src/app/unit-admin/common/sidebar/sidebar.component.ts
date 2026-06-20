@@ -1,6 +1,6 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
+import { RoleApiService } from 'src/app/service/api/role/role-api.service';
 
 declare var $: any;
 
@@ -12,7 +12,7 @@ declare var $: any;
 })
 export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   submenuShow: boolean = false;
-  constructor(public $auth: AuthService, private $systemAdmin: SystemAdminService) {}
+  constructor(public $auth: AuthService, private $roleApi: RoleApiService) {}
 
   userIdDetails;
   codeRoleList;
@@ -68,7 +68,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     };
 
-    this.$systemAdmin.getUnitAdminRoles(config).subscribe(
+    this.$roleApi.getAllRoles(config).subscribe(
       (response: any) => {
         this.archiveCount = response?.status === true ? (response.object || []).length : 0;
       },

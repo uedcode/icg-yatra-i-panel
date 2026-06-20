@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { CodeMiscApiService } from 'src/app/service/api/code-misc/code-misc-api.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ReportAnalyticsService } from 'src/app/service/master/report-analytics.service';
 
 @Component({
   selector: 'app-executor-pie-chart',
@@ -18,7 +18,7 @@ export class PieChartComponent implements OnInit {
   claimList: any[] = [];
   user: any;
 
-  constructor(private reportService: ReportAnalyticsService, private $auth: AuthService) {}
+  constructor(private codeMiscApi: CodeMiscApiService, private $auth: AuthService) {}
 
   ngOnInit(): void {
     this.user = this.$auth.getUserDetails();
@@ -51,7 +51,7 @@ export class PieChartComponent implements OnInit {
         ...this.getFilterHeaders(),
       },
     };
-    this.reportService.getPieChartData(config).subscribe({
+    this.codeMiscApi.getPieChartData(config).subscribe({
       next: (res: any) => {
         if (res?.status && Array.isArray(res.object) && res.object[0]) {
           const obj = res.object[0];
@@ -76,7 +76,7 @@ export class PieChartComponent implements OnInit {
         mode,
       },
     };
-    this.reportService.viewReport(config).subscribe({
+    this.codeMiscApi.viewReport(config).subscribe({
       next: (res: any) => {
         if (!res?.status) return;
         const obj = res.object || {};

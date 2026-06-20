@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -15,8 +15,8 @@ export class CommonDocumentDetailComponent implements OnInit {
   constructor(
     private $common: CommonService,
     public $auth: AuthService,
-    public $formManage: FormManageService,
-    public $codeDocInfo: CodeDocInfoService
+    private $formManage: FormManageService,
+    public $codeDocInfo: CodeDocInfoApiService
   ) {}
 
   fileUrl = environment.fileUrl;

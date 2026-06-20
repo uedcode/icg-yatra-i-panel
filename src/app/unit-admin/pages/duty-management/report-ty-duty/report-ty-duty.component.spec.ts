@@ -6,13 +6,13 @@ import { of } from 'rxjs';
 import { ReportTyDutyComponent } from './report-ty-duty.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
+import { MarkTyApiService } from 'src/app/service/api/mark-ty/mark-ty-api.service';
 import { PipeModule } from 'src/app/app-pipe.module';
 
 describe('ReportTyDutyComponent', () => {
   let component: ReportTyDutyComponent;
   let fixture: ComponentFixture<ReportTyDutyComponent>;
-  let systemAdmin: jasmine.SpyObj<SystemAdminService>;
+  let markTyApi: jasmine.SpyObj<MarkTyApiService>;
 
   beforeEach(async () => {
     const auth = jasmine.createSpyObj<AuthService>('AuthService', ['getUserDetails']);
@@ -21,18 +21,18 @@ describe('ReportTyDutyComponent', () => {
       'hideLoader',
       'showMessage'
     ]);
-    systemAdmin = jasmine.createSpyObj<SystemAdminService>('SystemAdminService', [
+    markTyApi = jasmine.createSpyObj<MarkTyApiService>('MarkTyApiService', [
       'getPnoList',
-      'getMarkedTyDuty',
-      'createMarkedTyDuty',
+      'getAllMarkedTyDuty',
+      'createOrUpdateMarkedTyDuty',
       'changeMarkedTyDutyFlag'
     ]);
 
     auth.getUserDetails.and.returnValue({ gxUnitId: 'GX-1', unitId: 'UNIT-1' } as any);
-    systemAdmin.getPnoList.and.returnValue(of({ status: true, object: [] }) as any);
-    systemAdmin.getMarkedTyDuty.and.returnValue(of({ status: true, object: [] }) as any);
-    systemAdmin.createMarkedTyDuty.and.returnValue(of({ status: true, object: [{}], message: 'Saved' }) as any);
-    systemAdmin.changeMarkedTyDutyFlag.and.returnValue(of({ status: true, object: [{ id: 'TY-1' }], message: 'Updated' }) as any);
+    markTyApi.getPnoList.and.returnValue(of({ status: true, object: [] }) as any);
+    markTyApi.getAllMarkedTyDuty.and.returnValue(of({ status: true, object: [] }) as any);
+    markTyApi.createOrUpdateMarkedTyDuty.and.returnValue(of({ status: true, object: [{}], message: 'Saved' }) as any);
+    markTyApi.changeMarkedTyDutyFlag.and.returnValue(of({ status: true, object: [{ id: 'TY-1' }], message: 'Updated' }) as any);
 
     await TestBed.configureTestingModule({
       declarations: [ReportTyDutyComponent],
@@ -40,7 +40,7 @@ describe('ReportTyDutyComponent', () => {
       providers: [
         { provide: AuthService, useValue: auth },
         { provide: CommonService, useValue: common },
-        { provide: SystemAdminService, useValue: systemAdmin }
+        { provide: MarkTyApiService, useValue: markTyApi }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -51,7 +51,7 @@ describe('ReportTyDutyComponent', () => {
   });
 
   it('loads PNO list with legacy gxUnit and empty unit headers', () => {
-    expect(systemAdmin.getPnoList).toHaveBeenCalledWith({
+    expect(markTyApi.getPnoList).toHaveBeenCalledWith({
       headers: {
         gxUnit: 'GX-1',
         unit: ''
@@ -67,7 +67,7 @@ describe('ReportTyDutyComponent', () => {
 
     component.saveRecord();
 
-    expect(systemAdmin.createMarkedTyDuty).toHaveBeenCalledWith({
+    expect(markTyApi.createOrUpdateMarkedTyDuty).toHaveBeenCalledWith({
       codeHrDataDTO: { pid: 'PID-1', pno: '01361-T' },
       status: '1'
     });
@@ -76,7 +76,7 @@ describe('ReportTyDutyComponent', () => {
   it('changes mark TY duty flag with id and status headers', () => {
     component.changeStatus({ id: 'TY-1', currentStatus: '0' });
 
-    expect(systemAdmin.changeMarkedTyDutyFlag).toHaveBeenCalledWith({
+    expect(markTyApi.changeMarkedTyDutyFlag).toHaveBeenCalledWith({
       headers: {
         id: 'TY-1',
         status: '0'

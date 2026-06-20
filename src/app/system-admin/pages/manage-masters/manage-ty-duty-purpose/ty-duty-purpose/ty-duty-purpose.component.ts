@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { TyDutyPurposeService } from 'src/app/service/master/ty-duty-purpose.service';
+import { TyDutyPurposeApiService } from 'src/app/service/api/ty-duty-purpose/ty-duty-purpose-api.service';
 
 declare var $: any;
 
@@ -13,7 +13,7 @@ declare var $: any;
 export class TyDutyPurposeComponent implements OnInit {
   constructor(
     private $common: CommonService,
-    private $tyDutyPurpose: TyDutyPurposeService
+    private $tyDutyPurpose: TyDutyPurposeApiService
   ) {}
 
   @Input() dataList: Array<any> = [];
@@ -98,4 +98,3 @@ export class TyDutyPurposeComponent implements OnInit {
     this.reverse = !this.reverse;
   }
 }
-

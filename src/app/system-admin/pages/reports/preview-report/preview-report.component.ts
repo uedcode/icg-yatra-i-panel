@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { CodeMiscApiService } from 'src/app/service/api/code-misc/code-misc-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ReportAnalyticsService } from 'src/app/service/master/report-analytics.service';
 
 @Component({
   selector: 'app-preview-report',
@@ -15,7 +15,7 @@ export class PreviewReportComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private $common: CommonService,
-    private $report: ReportAnalyticsService
+    private $codeMiscApi: CodeMiscApiService
   ) {}
 
   ngOnInit(): void {
@@ -35,7 +35,7 @@ export class PreviewReportComponent implements OnInit {
         }
       };
 
-      this.$report.viewReport(config).subscribe(
+      this.$codeMiscApi.viewReport(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response?.status === true) {

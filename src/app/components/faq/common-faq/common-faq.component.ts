@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { FaqService } from 'src/app/service/admin/faq.service';
+import { FaqApiService } from 'src/app/service/api/faq/faq-api.service';
 declare var $: any;
 
 @Component({
@@ -12,7 +12,7 @@ declare var $: any;
 })
 export class CommonFaqComponent implements OnInit {
 
-  constructor(private $common: CommonService, private $auth: AuthService, private $faq: FaqService) { }
+  constructor(private $common: CommonService, private $auth: AuthService, private $faq: FaqApiService) { }
 
   dataList: any = [];
   dashboardRoute = '/login';

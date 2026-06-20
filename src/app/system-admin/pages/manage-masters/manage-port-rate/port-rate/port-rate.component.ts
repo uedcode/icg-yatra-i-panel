@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { MasterPortRateService } from 'src/app/service/master/master-port-rate.service';
+import { PortRateApiService } from 'src/app/service/api/port-rate/port-rate-api.service';
 declare var $: any;
 
 @Component({
@@ -14,7 +14,7 @@ export class PortRateComponent implements OnInit {
 
   constructor(
       private $common: CommonService,
-      private $portRate: MasterPortRateService,
+      private $portRate: PortRateApiService,
       public $auth: AuthService
     ) {}
   

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 
 @Component({
   selector: 'app-search-by-pno',
@@ -15,7 +16,7 @@ export class SearchByPnoComponent implements OnInit {
   rows: any[] = [];
   user: any;
 
-  constructor(private $auth: AuthService, private $claim: ClaimService, private router: Router) {}
+  constructor(private $auth: AuthService, private $claimApi: ClaimApiService, private $claimStateApi: ClaimStateApiService, private router: Router) {}
 
   ngOnInit(): void {
     this.user = this.$auth.getUserDetails();
@@ -36,7 +37,7 @@ export class SearchByPnoComponent implements OnInit {
       },
     };
 
-    this.$claim.getClaimStates(config).subscribe({
+    this.$claimStateApi.getAll(config).subscribe({
       next: (res: any) => {
         this.rows = Array.isArray(res?.object) ? res.object : [];
       },
@@ -68,4 +69,5 @@ export class SearchByPnoComponent implements OnInit {
     return 'form-claim-detail';
   }
 }
+
 

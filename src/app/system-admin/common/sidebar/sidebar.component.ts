@@ -1,6 +1,6 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { Subscription } from 'rxjs';
 
 declare var $: any;
@@ -14,13 +14,13 @@ declare var $: any;
 export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   private statusCountRefreshSub?: Subscription;
 
-  constructor(public $auth: AuthService, private $claim: ClaimService) { }
+  constructor(public $auth: AuthService, private $claimStateApi: ClaimStateApiService) { }
 
   ngOnInit(): void {
     
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeRoleList = this.$auth.codeRoleType();
-    this.statusCountRefreshSub = this.$claim.statusCountRefresh$.subscribe(() => {
+    this.statusCountRefreshSub = this.$claimStateApi.statusCountRefresh$.subscribe(() => {
       this.getStateCount();
     });
     this.getStateCount();
@@ -46,7 +46,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
         roleTypeId: this.userIdDetails?.roleTypeId,
       }
     };
-    this.$claim.getStatusCount(config).subscribe(
+    this.$claimStateApi.getStatusCount(config).subscribe(
       (response: any) => {
         if (response.status) {
           this.stateCount = response.object?.[0] || {};
@@ -73,4 +73,5 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     $("#user_manual_modal").modal('show');
   }
 }
+
 

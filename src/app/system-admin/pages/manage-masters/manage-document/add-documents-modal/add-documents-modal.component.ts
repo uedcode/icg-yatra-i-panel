@@ -10,8 +10,8 @@ import {
 import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
 import { NgForm } from '@angular/forms';
-import { DocumentService } from 'src/app/service/form/document.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
 
 @Component({
     selector: 'app-add-documents-modal',
@@ -35,7 +35,7 @@ export class AddDocumentsModalComponent implements OnInit {
 
   constructor(
     private $common: CommonService,
-    private $document: DocumentService,
+    private $codeDocInfoApi: CodeDocInfoApiService,
     public $auth: AuthService
   ) { }
 
@@ -52,7 +52,7 @@ export class AddDocumentsModalComponent implements OnInit {
     try {
       this.$common.showLoader();
       this.disableBtn = true;
-      this.$document.createOrUpdate(obj).subscribe(
+      this.$codeDocInfoApi.createOrUpdate(obj).subscribe(
         (response) => {
           this.$common.hideLoader();
           this.disableBtn = false;

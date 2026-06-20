@@ -5,10 +5,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UtilService } from 'src/app/service/core/util.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
-import { DropdownManageService } from 'src/app/service/form/dropdown-manage.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { EsignApiService } from 'src/app/service/api/esign/esign-api.service';
+import { BankIfscApiService } from 'src/app/service/api/bank-ifsc/bank-ifsc-api.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
+import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
+import { CodeLtcTypeApiService } from 'src/app/service/api/code-ltc-type/code-ltc-type-api.service';
+import { LtcAdvApiService } from 'src/app/service/api/ltc-adv/ltc-adv-api.service';
+import { LtcAvailedHistApiService } from 'src/app/service/api/ltc-availed-hist/ltc-availed-hist-api.service';
 import { take } from 'rxjs/operators';
 import {
   clearLegacyInvalidFromEvent,
@@ -251,10 +257,16 @@ export class FormLtcAdvanceComponent implements OnInit {
     private datePipe: DatePipe,
     public $auth: AuthService,
     private $common: CommonService,
-    private $claim: ClaimService,
-    private $dropdownManage: DropdownManageService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
+    private $esignApi: EsignApiService,
+    private $bankIfscApi: BankIfscApiService,
     private $formManage: FormManageService,
-    private $codeDocInfo: CodeDocInfoService
+    private $codeUnitApi: CodeUnitApiService,
+    private $codeLtcTypeApi: CodeLtcTypeApiService,
+    private $ltcAdvApi: LtcAdvApiService,
+    private $ltcAvailedHistApi: LtcAvailedHistApiService,
+    private $codeDocInfo: CodeDocInfoApiService
   ) {}
 
   ngOnInit(): void {
@@ -784,7 +796,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       },
     };
 
-    this.$claim.getPresentUnitStatus(config).subscribe(
+    this.$codeUnitApi.getPresentUnitStatus(config).subscribe(
       (response: any) => {
         if (response?.status === true) {
           this.presentUnitStatus = response.object;
@@ -816,7 +828,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       },
     };
 
-    this.$claim.validateAdditionalLtc(config).subscribe(
+    this.$ltcAdvApi.validateAdditionalLtc(config).subscribe(
       () => {},
       (error: any) => {
         console.error('Error while validating additional LTC.', error);
@@ -831,7 +843,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       },
     };
 
-    this.$claim.getLtcFamilyDetails(config).subscribe(
+    this.$ltcAvailedHistApi.getFamilyDetails(config).subscribe(
       (response: any) => {
         if (response?.status && Array.isArray(response.object)) {
           this.claims.yatFamilyDetailDTOs = response.object;
@@ -850,7 +862,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       },
     };
 
-    this.$claim.getLtcDoeDifference(config).subscribe(
+    this.$ltcAvailedHistApi.getDoeDifference(config).subscribe(
       (response: any) => {
         if (response?.status) {
           this.doe = this.toNumber(response.object);
@@ -876,7 +888,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       },
     };
 
-    this.$claim.getLtcBlockYears(config).subscribe(
+    this.$ltcAdvApi.getBlockYears(config).subscribe(
       (response: any) => {
         if (response?.status && Array.isArray(response.object)) {
           this.blockYears = response.object;
@@ -895,7 +907,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       },
     };
 
-    this.$claim.getLtcTypes(config).subscribe(
+    this.$codeLtcTypeApi.getAll(config).subscribe(
       (response: any) => {
         if (response?.status && Array.isArray(response.object)) {
           this.allCodeLtcType = response.object;
@@ -922,7 +934,7 @@ export class FormLtcAdvanceComponent implements OnInit {
         headers.supCLaimId = this.supplementaryId;
       }
 
-      this.$claim.getSingleClaim({ headers }).subscribe(
+      this.$claimApi.getSingleClaim({ headers }).subscribe(
         (response: any) => {
           this.$common.hideLoader();
 
@@ -1089,7 +1101,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       },
     };
 
-    this.$claim.checkEsignAvailability(config).subscribe({
+    this.$esignApi.checkEsignAvailability(config).subscribe({
       next: (response: any) => {
         if (response?.status !== true) {
           this.claims.signWith = this.codeSignType.inkSign;
@@ -1123,7 +1135,7 @@ export class FormLtcAdvanceComponent implements OnInit {
     };
 
     this.$common.showLoader();
-    this.$claim.getLtcEntitled(config).subscribe({
+    this.$ltcAvailedHistApi.getLtcEntitled(config).subscribe({
       next: (response: any) => {
         this.$common.hideLoader();
         if (response?.status === true) {
@@ -1169,7 +1181,7 @@ export class FormLtcAdvanceComponent implements OnInit {
     };
 
     this.$common.showLoader();
-    this.$claim.getLtcAvailedEntitledHistory(config).subscribe({
+    this.$ltcAvailedHistApi.getLtcAvailedEntitledHistory(config).subscribe({
       next: (response: any) => {
         this.$common.hideLoader();
         if (response?.status === true) {
@@ -1236,7 +1248,7 @@ export class FormLtcAdvanceComponent implements OnInit {
     }
 
     this.$common.showLoader();
-    this.$claim.createOrUpdateIfsc(bankObj, config).subscribe({
+    this.$bankIfscApi.createOrUpdate(bankObj, config).subscribe({
       next: (response: any) => {
         const data: any = this.$common.parseResponse(response);
         this.$common.hideLoader();
@@ -1352,8 +1364,8 @@ export class FormLtcAdvanceComponent implements OnInit {
     const payload = this.buildClaimRemarkPayload(this.codeClaimState.outbox, claimId);
     const isESign = this.claims.signWith === this.codeSignType.eSign;
     const statusRequest$ = isESign
-      ? this.$claim.prepareForESign(payload)
-      : this.$claim.changeClaimStatusById(payload);
+      ? this.$esignApi.prepareForESign(payload)
+      : this.$claimStateApi.changeStatusById(payload);
 
     statusRequest$.subscribe(
       (response: any) => {
@@ -1368,7 +1380,7 @@ export class FormLtcAdvanceComponent implements OnInit {
           return;
         }
 
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
 
         if (isESign) {
           this.eSignTempFormObj = response.object || payload;
@@ -1697,7 +1709,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       const formData = new FormData();
       formData.append('yatClaimDTO', JSON.stringify(tempClaim));
 
-      this.$claim.createOrUpdateAdvance(formData, null).subscribe(
+      this.$claimApi.createOrUpdateAdvance(formData, null).subscribe(
         (res: any) => {
           const obj = Array.isArray(res?.object)
             ? res.object[0]
@@ -1826,4 +1838,5 @@ export class FormLtcAdvanceComponent implements OnInit {
     return this.activeFormKind === 'claim' ? 'LTC claim' : 'LTC advance';
   }
 }
+
 

@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
+import { PayLevelApiService } from 'src/app/service/api/pay-level/pay-level-api.service';
+import { ReasonApiService } from 'src/app/service/api/reason/reason-api.service';
 
 @Component({
   selector: 'app-form-manual-adv',
@@ -50,7 +53,10 @@ export class FormManualAdvComponent implements OnInit {
 
   constructor(
     private $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $codeUnitApi: CodeUnitApiService,
+    private $reasonApi: ReasonApiService,
+    private $payLevelApi: PayLevelApiService,
     private $common: CommonService,
     private route: ActivatedRoute,
     private router: Router
@@ -76,13 +82,13 @@ export class FormManualAdvComponent implements OnInit {
   }
 
   private loadDropdowns() {
-    this.$claim.getUnits({ headers: {} }).subscribe((r: any) => {
+    this.$codeUnitApi.getAllUnits({ headers: {} }).subscribe((r: any) => {
       if (r?.status) this.units = r.object || [];
     });
-    this.$claim.getReasons({ headers: {} }).subscribe((r: any) => {
+    this.$reasonApi.get({ headers: {} }).subscribe((r: any) => {
       if (r?.status) this.reasons = r.object || [];
     });
-    this.$claim.getPayLevels({ headers: {} }).subscribe((r: any) => {
+    this.$payLevelApi.get({ headers: {} }).subscribe((r: any) => {
       if (r?.status) this.payLevels = r.object || [];
     });
   }
@@ -95,7 +101,7 @@ export class FormManualAdvComponent implements OnInit {
         isFetch: '1',
       },
     };
-    this.$claim.getSingleClaim(config).subscribe((res: any) => {
+    this.$claimApi.getSingleClaim(config).subscribe((res: any) => {
       if (!res?.status || !res.object?.length) return;
       const claim = res.object[0];
       const manual = claim?.yatManualAdvDTOs?.[0] || {};
@@ -143,7 +149,7 @@ export class FormManualAdvComponent implements OnInit {
     if (this.manualFormFile) formData.append('manualForm', this.manualFormFile);
     if (this.gxFormFile) formData.append('gxForm', this.gxFormFile);
 
-    this.$claim.createOrUpdateAdvance(formData).subscribe(
+    this.$claimApi.createOrUpdateAdvance(formData).subscribe(
       (res: any) => {
         this.$common.hideLoader();
         this.disableBtn = false;
@@ -176,4 +182,5 @@ export class FormManualAdvComponent implements OnInit {
     });
   }
 }
+
 

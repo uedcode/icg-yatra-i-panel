@@ -5,9 +5,11 @@ import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormService } from 'src/app/service/form/form.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { FormApiService } from 'src/app/service/api/form/form-api.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { ClaimObservationApiService } from 'src/app/service/api/claim-observation/claim-observation-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -25,10 +27,12 @@ export class ClaimNotPassedComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $form: FormService,
-    public $formManage: FormManageService,
+    private $form: FormApiService,
+    private $formManage: FormManageService,
     private router: Router,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
+    private $claimObservationApi: ClaimObservationApiService,
     private route: ActivatedRoute,
   ) { }
 
@@ -64,7 +68,7 @@ export class ClaimNotPassedComponent implements OnInit {
         formId: this.resolveQueueFormId(),
       }, codeRoleList),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -103,7 +107,7 @@ export class ClaimNotPassedComponent implements OnInit {
     }
 
     this.claimObservations = [];
-    this.$claim.getClaimObservations({ headers: { claimId: String(claimId) } }).subscribe({
+    this.$claimObservationApi.getAll({ headers: { claimId: String(claimId) } }).subscribe({
       next: (res: any) => {
         this.claimObservations = Array.isArray(res?.object) ? res.object : [];
         setTimeout(() => $('#claimObservationModal').modal('show'), 0);
@@ -133,7 +137,7 @@ export class ClaimNotPassedComponent implements OnInit {
       },
     };
 
-    this.$claim.changeClaimStatusArchive(config).subscribe({
+    this.$claimStateApi.changeStatusArchive(config).subscribe({
       next: (res: any) => {
         this.archiveLoadingMap[listKey] = false;
         if (!res?.status) {
@@ -149,7 +153,7 @@ export class ClaimNotPassedComponent implements OnInit {
               item?.id) != claimStateId
         );
         this.$common.showMessage(res?.message || 'Claim archived successfully.', 'success');
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
       },
       error: () => {
         this.archiveLoadingMap[listKey] = false;
@@ -185,3 +189,4 @@ export class ClaimNotPassedComponent implements OnInit {
   }
 
 }
+

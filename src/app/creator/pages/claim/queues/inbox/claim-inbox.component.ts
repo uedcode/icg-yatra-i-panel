@@ -4,8 +4,9 @@ import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -27,10 +28,11 @@ export class ClaimInboxComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    public $formManage: FormManageService,
+    private $formManage: FormManageService,
     private router: Router,
     private route: ActivatedRoute,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -109,7 +111,7 @@ export class ClaimInboxComponent implements OnInit {
         searchedName: searchHeaders.searchedName,
       }, codeRoleList),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -156,7 +158,7 @@ export class ClaimInboxComponent implements OnInit {
       moduleId: this.userIdDetails?.moduleId,
     };
 
-    this.$claim.changeClaimStatusById(payload).subscribe({
+    this.$claimStateApi.changeStatusById(payload).subscribe({
       next: (response: any) => {
         if (!response?.status) {
           this.$common.showMessage(response?.message || 'Unable to move claim to draft.', 'danger');
@@ -164,7 +166,7 @@ export class ClaimInboxComponent implements OnInit {
         }
 
         this.$common.showMessage(response?.message || 'Claim moved to draft successfully.', 'success');
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
         this.dataList = this.dataList.filter((elem: any) => this.getClaimId(elem) != claimId);
         setTimeout(() => {
           this.router.navigateByUrl(this.$auth.getModuleName() + '/draft-claim');
@@ -183,7 +185,7 @@ export class ClaimInboxComponent implements OnInit {
       return;
     }
 
-    this.$claim.editClaim({ headers: { id: claimId } }).subscribe({
+    this.$claimApi.editClaim({ headers: { id: claimId } }).subscribe({
       next: (response: any) => {
         if (!response?.status) {
           this.$common.showMessage(response?.message || 'Unable to edit claim.', 'danger');
@@ -191,7 +193,7 @@ export class ClaimInboxComponent implements OnInit {
         }
 
         this.$common.showMessage(response?.message || 'Claim moved to draft for editing.', 'success');
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
         this.dataList = this.dataList.filter((elem: any) => this.getClaimId(elem) != claimId);
       },
       error: () => {
@@ -255,7 +257,7 @@ export class ClaimInboxComponent implements OnInit {
       },
     };
 
-    this.$claim.fileDownloadedForInkSign(config).subscribe({
+    this.$claimApi.fileDownloadedForInkSign(config).subscribe({
       next: (res: any) => {
         if (!res?.status) {
           this.$common.showMessage(res?.message || 'Download failed.', 'danger');
@@ -321,7 +323,7 @@ export class ClaimInboxComponent implements OnInit {
     formData.append('financialYear', String(this.userIdDetails?.financialYear || this.uploadTarget?.yatClaimDTO?.financialYear || ''));
     formData.append('roleTypeId', String(this.userIdDetails?.roleTypeId || ''));
 
-    this.$claim.uploadInkSignedFile(formData).subscribe({
+    this.$claimApi.uploadInkSignedFile(formData).subscribe({
       next: (res: any) => {
         this.uploadLoadingMap[listKey] = false;
         input.value = '';
@@ -333,7 +335,7 @@ export class ClaimInboxComponent implements OnInit {
         const uploadedClaim = Array.isArray(res?.object) ? res.object[0] : res?.object;
         this.dataList = this.dataList.filter((item: any) => this.getClaimId(item) != claimId);
         this.$common.showMessage(res?.message || 'File uploaded successfully.', 'success');
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
         if (uploadedClaim?.isReady === 'DW') {
           this.changeStatusToUploaded(claimId);
         }
@@ -348,7 +350,7 @@ export class ClaimInboxComponent implements OnInit {
   }
 
   private changeStatusToUploaded(claimId: any): void {
-    this.$claim.changeStatusToUploaded({ headers: { claimId: String(claimId) } }).subscribe();
+    this.$claimApi.changeStatusToUploaded({ headers: { claimId: String(claimId) } }).subscribe();
   }
 
   private getClaimId(data: any): any {
@@ -372,7 +374,7 @@ export class ClaimInboxComponent implements OnInit {
         isApproved: '0',
       },
     };
-    this.$claim.deleteClaim(config).subscribe({
+    this.$claimApi.deleteClaim(config).subscribe({
       next: (res: any) => {
         if (!res?.status) {
           this.$common.showMessage(res?.message || 'Delete failed.', 'danger');
@@ -380,7 +382,7 @@ export class ClaimInboxComponent implements OnInit {
         }
         this.dataList = this.dataList.filter((item: any) => item?.yatClaimDTO?.claimId != claimId);
         this.$common.showMessage(res?.message || 'Claim deleted successfully.', 'success');
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
       },
       error: () => {
         this.$common.showMessage('Something went wrong while deleting claim.', 'danger');
@@ -415,5 +417,6 @@ export class ClaimInboxComponent implements OnInit {
   }
 
 }
+
 
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 
@@ -24,7 +24,7 @@ export class PreviewVoucherComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
     private $common: CommonService
   ) {}
 
@@ -45,7 +45,7 @@ export class PreviewVoucherComponent implements OnInit {
       },
     };
     this.$common.showLoader();
-      this.$claim.getAdvanceVoucher(config).subscribe(
+      this.$claimApi.getAdvanceVoucher(config).subscribe(
       (res: any) => {
         this.$common.hideLoader();
         this.voucherList = Array.isArray(res?.object) ? res.object : [];
@@ -77,7 +77,7 @@ export class PreviewVoucherComponent implements OnInit {
       },
     };
     this.downloading = true;
-    this.$claim.fileDownloadedVoucher(config).subscribe(
+    this.$claimApi.fileDownloadedVoucher(config).subscribe(
       (res: any) => {
         this.downloading = false;
         if (!res?.status) {
@@ -133,4 +133,5 @@ export class PreviewVoucherComponent implements OnInit {
     return id;
   }
 }
+
 

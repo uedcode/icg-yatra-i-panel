@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CommonService } from 'src/app/service/core/common.service';
-import { VersionhistoryService } from 'src/app/service/master/versionhistory.service';
+import { VersionHistoryApiService } from 'src/app/service/api/version-history/version-history-api.service';
 
 declare var $: any;
 
@@ -29,7 +29,7 @@ export class AddVersionHistoryModalComponent implements OnInit {
 
   constructor(
     private $common: CommonService,
-    private $versionhistory: VersionhistoryService
+    private $versionhistory: VersionHistoryApiService
   ) {}
 
   ngOnInit() {}

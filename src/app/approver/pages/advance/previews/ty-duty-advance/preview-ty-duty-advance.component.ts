@@ -2,7 +2,9 @@ import { DatePipe, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { LtcAvailedHistApiService } from 'src/app/service/api/ltc-availed-hist/ltc-availed-hist-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
 
@@ -63,7 +65,9 @@ export class AdvancePreviewTyDutyComponent implements OnInit {
     private location: Location,
     private datePipe: DatePipe,
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
+    private $ltcAvailedHistApi: LtcAvailedHistApiService,
     private $common: CommonService
   ) {}
 
@@ -230,7 +234,7 @@ export class AdvancePreviewTyDutyComponent implements OnInit {
     };
 
     this.$common.showLoader();
-    this.$claim.getSingleClaim(config).subscribe({
+    this.$claimApi.getSingleClaim(config).subscribe({
       next: (response: any) => {
         this.$common.hideLoader();
         if (response?.status !== true) {
@@ -267,7 +271,7 @@ export class AdvancePreviewTyDutyComponent implements OnInit {
     };
 
     this.$common.showLoader();
-    this.$claim.getLtcAvailedHistory(config).subscribe({
+    this.$ltcAvailedHistApi.getAll(config).subscribe({
       next: (response: any) => {
         this.$common.hideLoader();
         if (response?.status !== true || !Array.isArray(response?.object) || !response.object.length) {
@@ -335,7 +339,7 @@ export class AdvancePreviewTyDutyComponent implements OnInit {
       },
     };
 
-    this.$claim.getClaimStates(config).subscribe({
+    this.$claimStateApi.getAll(config).subscribe({
       next: (response: any) => {
         this.stateHistory = Array.isArray(response?.object) ? response.object : [];
       },
@@ -352,7 +356,7 @@ export class AdvancePreviewTyDutyComponent implements OnInit {
       },
     };
 
-    this.$claim.getClaimRemarkSummary(config).subscribe({
+    this.$claimApi.getClaimRemarkSummary(config).subscribe({
       next: (response: any) => {
         const remarks = Array.isArray(response?.object) ? response.object : [];
         this.claimRemarkSummary = remarks[0] || null;
@@ -646,7 +650,7 @@ export class AdvancePreviewTyDutyComponent implements OnInit {
     };
 
     return new Promise((resolve) => {
-      this.$claim.validateClaimState(config).subscribe({
+      this.$claimApi.validateClaimState(config).subscribe({
         next: (response: any) => {
           if (response?.status === false) {
             this.$common.showMessage(
@@ -708,7 +712,7 @@ export class AdvancePreviewTyDutyComponent implements OnInit {
 
     this.actionLoading = true;
     this.$common.showLoader();
-    this.$claim.changeClaimStatusById(payload).subscribe({
+    this.$claimStateApi.changeStatusById(payload).subscribe({
       next: (response: any) => {
         this.actionLoading = false;
         this.$common.hideLoader();
@@ -717,7 +721,7 @@ export class AdvancePreviewTyDutyComponent implements OnInit {
             response?.message || 'Advance status updated successfully.',
             'success'
           );
-          this.$claim.notifyStatusCountRefresh();
+          this.$claimStateApi.notifyStatusCountRefresh();
           this.router.navigateByUrl(this.$auth.getModuleName() + '/inbox');
           return;
         }
@@ -928,5 +932,6 @@ export class AdvancePreviewTyDutyComponent implements OnInit {
     $('#esign_modal').modal('show');
   }
 }
+
 
 

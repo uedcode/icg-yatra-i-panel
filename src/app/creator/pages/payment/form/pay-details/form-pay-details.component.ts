@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PayStateApiService } from 'src/app/service/api/pay-state/pay-state-api.service';
+import { YatPayDetailsApiService } from 'src/app/service/api/yat-pay-details/yat-pay-details-api.service';
+import { TempDocInfoApiService } from 'src/app/service/api/temp-doc-info/temp-doc-info-api.service';
 declare var $: any;
 
 @Component({
@@ -53,7 +57,11 @@ export class FormPayDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
+    private $payStateApi: PayStateApiService,
+    private $payDetailsApi: YatPayDetailsApiService,
+    private $tempDocInfoApi: TempDocInfoApiService,
     private $common: CommonService
   ) {}
 
@@ -79,7 +87,7 @@ export class FormPayDetailsComponent implements OnInit {
     }
 
     this.$common.showLoader();
-    this.$claim.getPayDetails(config).subscribe(
+    this.$payDetailsApi.getAll(config).subscribe(
       (res: any) => {
         this.$common.hideLoader();
         const row = res?.status && Array.isArray(res.object) ? res.object[0] : null;
@@ -122,7 +130,7 @@ export class FormPayDetailsComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('tempDocInfoDTO', '{}');
-    this.$claim.uploadTempPayDocument(formData).subscribe(
+    this.$tempDocInfoApi.createOrUpdate(formData).subscribe(
       (res: any) => {
         this.docUploading = false;
         const url = res?.status && Array.isArray(res.object) ? res.object[0]?.fileUrl : '';
@@ -192,7 +200,7 @@ export class FormPayDetailsComponent implements OnInit {
     };
 
     this.$common.showLoader();
-    this.$claim.getVerifierUnit(config).subscribe(
+    this.$claimApi.getVerifierUnit(config).subscribe(
       (res: any) => {
         this.$common.hideLoader();
         this.appliedUnit = res?.status && res?.object
@@ -251,7 +259,7 @@ export class FormPayDetailsComponent implements OnInit {
     }
 
     this.$common.showLoader();
-    this.$claim.createOrUpdatePayDetails(payload).subscribe(
+    this.$payDetailsApi.createOrUpdate(payload).subscribe(
       (res: any) => {
         if (res?.status && Array.isArray(res.object) && res.object[0]?.id) {
           const savedRow = res.object[0];
@@ -281,13 +289,13 @@ export class FormPayDetailsComponent implements OnInit {
       status: this.codeClaimState.outbox,
       remark: '',
     };
-    this.$claim.changePayStatusById(payload).subscribe(
+    this.$payStateApi.changeStatusById(payload).subscribe(
       (res: any) => {
         this.$common.hideLoader();
         this.submitBtn = false;
         if (res?.status) {
           this.$common.showMessage(res?.message || 'Pay details submitted successfully.');
-          this.$claim.notifyStatusCountRefresh();
+          this.$claimStateApi.notifyStatusCountRefresh();
           this.resetToFreshForm();
           setTimeout(() => {
             this.router.navigateByUrl(`${this.$auth.getModuleName()}/form-pay-details`);
@@ -383,5 +391,6 @@ export class FormPayDetailsComponent implements OnInit {
     return Number.isNaN(timestamp) ? value : timestamp;
   }
 }
+
 
 

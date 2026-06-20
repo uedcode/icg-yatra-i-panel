@@ -2,8 +2,8 @@ import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
-import { FormStateService } from 'src/app/service/form/formState.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { FormStateApiService } from 'src/app/service/api/form-state/form-state-api.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 
 declare var $: any;
@@ -18,8 +18,8 @@ export class CommonViewFormHistoryModalComponent implements OnInit {
 
    constructor(
     private $common: CommonService,
-    private $formState: FormStateService,
-    private $claim: ClaimService,
+    private $formState: FormStateApiService,
+    private $claimApi: ClaimApiService,
     private $auth: AuthService
   ) { }
 
@@ -57,7 +57,7 @@ export class CommonViewFormHistoryModalComponent implements OnInit {
             claimId: this.claimId,
           },
         };
-        this.$claim.getClaimHistory(this.config).subscribe(
+        this.$claimApi.getClaimHistory(this.config).subscribe(
           (response: any) => {
             this.$common.hideLoader();
             this.stateList = response?.status === true && Array.isArray(response?.object)
@@ -159,4 +159,5 @@ export class CommonViewFormHistoryModalComponent implements OnInit {
   }
   // data shorting end
 }
+
 

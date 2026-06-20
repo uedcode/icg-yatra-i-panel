@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
+import { RoleApiService } from 'src/app/service/api/role/role-api.service';
 
 @Component({
   selector: 'app-unit-admin-archive',
@@ -25,7 +25,7 @@ export class ArchiveComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     public $common: CommonService,
-    private $systemAdmin: SystemAdminService
+    private $roleApi: RoleApiService
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +44,7 @@ export class ArchiveComponent implements OnInit {
           isArchive: '1',
         },
       };
-      this.$systemAdmin.getUnitAdminRoles(config).subscribe(
+      this.$roleApi.getAllRoles(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           this.dataList = response?.status === true && Array.isArray(response?.object) ? response.object : [];
@@ -73,7 +73,7 @@ export class ArchiveComponent implements OnInit {
           isArchive: tempObj?.isArchive || '0',
         },
       };
-      this.$systemAdmin.changeStatusArchive(config).subscribe(
+      this.$roleApi.changeRoleArchiveStatus(config).subscribe(
         (response: any) => {
           if (response?.status === true) {
             this.$common.showMessage(`${response.message}`);

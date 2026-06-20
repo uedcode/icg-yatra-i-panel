@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { LtcAvailedHistApiService } from 'src/app/service/api/ltc-availed-hist/ltc-availed-hist-api.service';
 
 @Component({
   selector: 'app-form-ltc-availed-history',
@@ -32,7 +32,7 @@ export class FormLtcAvailedHistoryComponent implements OnInit {
 
   constructor(
     private $auth: AuthService,
-    private $claim: ClaimService,
+    private $ltcAvailedHistApi: LtcAvailedHistApiService,
     private $common: CommonService,
     private route: ActivatedRoute,
     private router: Router
@@ -57,7 +57,7 @@ export class FormLtcAvailedHistoryComponent implements OnInit {
       },
     };
     this.$common.showLoader();
-    this.$claim.getLtcAvailedHistory(config).subscribe(
+    this.$ltcAvailedHistApi.getAll(config).subscribe(
       (res: any) => {
         this.$common.hideLoader();
         if (res?.status && Array.isArray(res.object) && res.object.length) {
@@ -82,7 +82,7 @@ export class FormLtcAvailedHistoryComponent implements OnInit {
         unitId: this.unitId || '',
       },
     };
-    this.$claim.getLtcAvailedEntitledHistory(config).subscribe(
+    this.$ltcAvailedHistApi.getLtcAvailedEntitledHistory(config).subscribe(
       (res: any) => {
         if (res?.status) {
           this.entitledData = res?.object || null;
@@ -186,7 +186,7 @@ export class FormLtcAvailedHistoryComponent implements OnInit {
     const payload = this.buildTransferPayload();
     this.disableBtn = true;
     this.$common.showLoader();
-    this.$claim.createOrUpdateLtcAvailedHistory(payload).subscribe(
+    this.$ltcAvailedHistApi.createOrUpdate(payload).subscribe(
       (res: any) => {
         this.$common.hideLoader();
         this.disableBtn = false;
@@ -215,5 +215,6 @@ export class FormLtcAvailedHistoryComponent implements OnInit {
     });
   }
 }
+
 
 

@@ -6,8 +6,10 @@ import { of } from 'rxjs';
 import { NewComponent } from './new.component';
 import { CommonService } from 'src/app/service/core/common.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { CodeSubFormApiService } from 'src/app/service/api/code-sub-form/code-sub-form-api.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { HometownApiService } from 'src/app/service/api/hometown/hometown-api.service';
+import { LtcAvailedHistApiService } from 'src/app/service/api/ltc-availed-hist/ltc-availed-hist-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -15,16 +17,21 @@ describe('NewComponent', () => {
   let component: NewComponent;
   let fixture: ComponentFixture<NewComponent>;
   let router: jasmine.SpyObj<Router>;
-  let claimService: jasmine.SpyObj<ClaimService>;
+  let claimApiService: jasmine.SpyObj<ClaimApiService>;
+  let hometownApiService: jasmine.SpyObj<HometownApiService>;
+  let ltcAvailedHistApiService: jasmine.SpyObj<LtcAvailedHistApiService>;
 
   beforeEach(() => {
     router = jasmine.createSpyObj<Router>('Router', ['navigate', 'navigateByUrl']);
-    claimService = jasmine.createSpyObj<ClaimService>('ClaimService', [
-      'getLtcDoeDifference',
-      'checkLtcAvailedHistory',
-      'getLtcFamilyDetails',
-      'initHomeTown',
-      'saveHomeTown',
+    claimApiService = jasmine.createSpyObj<ClaimApiService>('ClaimApiService', []);
+    hometownApiService = jasmine.createSpyObj<HometownApiService>('HometownApiService', [
+      'init',
+      'createOrUpdate',
+    ]);
+    ltcAvailedHistApiService = jasmine.createSpyObj<LtcAvailedHistApiService>('LtcAvailedHistApiService', [
+      'getDoeDifference',
+      'checkAvailedHistory',
+      'getFamilyDetails',
     ]);
 
     return TestBed.configureTestingModule({
@@ -56,10 +63,12 @@ describe('NewComponent', () => {
           ]),
         },
         {
-          provide: CodeSubFormService,
-          useValue: jasmine.createSpyObj<CodeSubFormService>('CodeSubFormService', ['get']),
+          provide: CodeSubFormApiService,
+          useValue: jasmine.createSpyObj<CodeSubFormApiService>('CodeSubFormApiService', ['get']),
         },
-        { provide: ClaimService, useValue: claimService },
+        { provide: ClaimApiService, useValue: claimApiService },
+        { provide: HometownApiService, useValue: hometownApiService },
+        { provide: LtcAvailedHistApiService, useValue: ltcAvailedHistApiService },
       ],
     })
     .compileComponents();
@@ -76,22 +85,24 @@ describe('NewComponent', () => {
 
   it('opens legacy LTC family modal when availed history is missing', () => {
     component.userIdDetails = { userId: 'U-LTC' };
-    claimService.getLtcDoeDifference.and.returnValue(of({ status: true, object: 2 }) as any);
-    claimService.checkLtcAvailedHistory.and.returnValue(of({ status: true, object: 0 }) as any);
-    claimService.getLtcFamilyDetails.and.returnValue(of({
+    ltcAvailedHistApiService.getDoeDifference.and.returnValue(of({ status: true, object: 2 }) as any);
+    ltcAvailedHistApiService.checkAvailedHistory.and.returnValue(of({ status: true, object: 0 }) as any);
+    ltcAvailedHistApiService.getFamilyDetails.and.returnValue(of({
       status: true,
       object: [{ memberName: 'V Natarajan', age: '-', relation: 'Self', occupation: '-' }],
     }) as any);
-    claimService.initHomeTown.and.returnValue(of({ status: true, object: 'Sonipat' }) as any);
+    hometownApiService.init.and.returnValue(of({ status: true, object: 'Sonipat' }) as any);
 
     component.actionPage({ subFormId: 'L', formUrl: 'form-ltc-advance' });
 
-    expect(claimService.getLtcDoeDifference).toHaveBeenCalledWith({ headers: { userId: 'U-LTC' } });
-    expect(claimService.checkLtcAvailedHistory).toHaveBeenCalledWith({ headers: { userId: 'U-LTC' } });
+    expect(ltcAvailedHistApiService.getDoeDifference).toHaveBeenCalledWith({ headers: { userId: 'U-LTC' } });
+    expect(ltcAvailedHistApiService.checkAvailedHistory).toHaveBeenCalledWith({ headers: { userId: 'U-LTC' } });
     expect(component.ltcFamilyDetails.length).toBe(1);
     expect(component.ltcHomeTown).toBe('Sonipat');
     expect(component.showLtcFamilyModal).toBeTrue();
     expect(router.navigateByUrl).not.toHaveBeenCalled();
   });
 });
+
+
 

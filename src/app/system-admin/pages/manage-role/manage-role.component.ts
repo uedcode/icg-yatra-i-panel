@@ -4,9 +4,10 @@ import { NgForm } from '@angular/forms';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { DropdownService } from 'src/app/service/form/dropdown.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
-import { UserService } from 'src/app/service/admin/user.service';
+import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
+import { DesignationApiService } from 'src/app/service/api/designation/designation-api.service';
+import { RoleApiService } from 'src/app/service/api/role/role-api.service';
+import { UserApiService } from 'src/app/service/api/user/user-api.service';
 
 @Component({
   selector: 'app-manage-role',
@@ -25,9 +26,10 @@ export class ManageRoleComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $systemAdmin: SystemAdminService,
-    private $dropdown: DropdownService,
-    private $user: UserService
+    private $roleApi: RoleApiService,
+    private $codeUnitApi: CodeUnitApiService,
+    private $designationApi: DesignationApiService,
+    private $user: UserApiService
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -144,7 +146,7 @@ export class ManageRoleComponent implements OnInit {
         pno: this.userObj?.pno + '-' + this.userObj?.suf,
       };
 
-      this.$systemAdmin.createOrUpdate(req).subscribe(
+      this.$roleApi.createOrUpdateRole(req).subscribe(
         (response) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -179,7 +181,7 @@ export class ManageRoleComponent implements OnInit {
           unitId: this.formObj?.unitId,
         },
       };
-      this.$systemAdmin.getUnitAdminRoles(this.config).subscribe(
+      this.$roleApi.getAllRoles(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -211,7 +213,7 @@ export class ManageRoleComponent implements OnInit {
           statusId: tempObj.currentStatus
         }
       };
-      this.$systemAdmin.changeStatus(config).subscribe(response => {
+      this.$roleApi.changeRoleStatus(config).subscribe(response => {
         if (response.status === true) {
           tempObj.aclCodeStatusDTO.statusId = tempObj.currentStatus;
           this.$common.showMessage(`${response.message}`);
@@ -228,7 +230,7 @@ export class ManageRoleComponent implements OnInit {
   getUnitList() {
     try {
       this.$common.showLoader();
-      this.$systemAdmin.getCodeUnits({ headers: {} }).subscribe(
+      this.$codeUnitApi.getAllUnits({ headers: {} }).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -292,7 +294,7 @@ export class ManageRoleComponent implements OnInit {
           roleTypeId: this.formObj?.role
         },
       };
-      this.$dropdown.getCodeDesignation(this.config).subscribe(
+      this.$designationApi.getAll(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {

@@ -3,14 +3,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { SidebarComponent } from './sidebar.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
+import { RoleApiService } from 'src/app/service/api/role/role-api.service';
 import { of } from 'rxjs';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
   let authService: jasmine.SpyObj<AuthService>;
-  let systemAdmin: jasmine.SpyObj<SystemAdminService>;
+  let roleApi: jasmine.SpyObj<RoleApiService>;
 
   beforeEach(async () => {
     authService = jasmine.createSpyObj<AuthService>('AuthService', [
@@ -18,8 +18,8 @@ describe('SidebarComponent', () => {
       'getUserDetails',
       'codeRoleType'
     ]);
-    systemAdmin = jasmine.createSpyObj<SystemAdminService>('SystemAdminService', [
-      'getUnitAdminRoles'
+    roleApi = jasmine.createSpyObj<RoleApiService>('RoleApiService', [
+      'getAllRoles'
     ]);
     authService.getUserDetails.and.returnValue({
       formId: 'UNIT-ADMIN',
@@ -29,7 +29,7 @@ describe('SidebarComponent', () => {
       roleTypeId: 'UN'
     } as any);
     authService.codeRoleType.and.returnValue({ unitAdmin: 'UN' } as any);
-    systemAdmin.getUnitAdminRoles.and.returnValue(of({
+    roleApi.getAllRoles.and.returnValue(of({
       status: true,
       object: [{ roleId: 'ROLE-1' }, { roleId: 'ROLE-2' }]
     }) as any);
@@ -39,7 +39,7 @@ describe('SidebarComponent', () => {
       imports: [RouterTestingModule],
       providers: [
         { provide: AuthService, useValue: authService },
-        { provide: SystemAdminService, useValue: systemAdmin }
+        { provide: RoleApiService, useValue: roleApi }
       ]
     })
     .compileComponents();
@@ -70,7 +70,7 @@ describe('SidebarComponent', () => {
   it('loads and renders legacy archive count badge', () => {
     fixture.detectChanges();
 
-    expect(systemAdmin.getUnitAdminRoles).toHaveBeenCalledWith({
+    expect(roleApi.getAllRoles).toHaveBeenCalledWith({
       headers: {
         unitId: 'GX-1',
         verAppIndicator: '1',

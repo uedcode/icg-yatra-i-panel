@@ -4,13 +4,13 @@ import { of, Subject } from 'rxjs';
 
 import { SidebarComponent } from './sidebar.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
   let authService: jasmine.SpyObj<AuthService>;
-  let claimService: jasmine.SpyObj<ClaimService>;
+  let claimApiService: jasmine.SpyObj<ClaimStateApiService>;
   let statusCountRefresh$: Subject<void>;
 
   beforeEach(async () => {
@@ -19,10 +19,10 @@ describe('SidebarComponent', () => {
       'getUserDetails',
       'codeRoleType'
     ]);
-    claimService = jasmine.createSpyObj<ClaimService>('ClaimService', ['getStatusCount']);
+    claimApiService = jasmine.createSpyObj<ClaimStateApiService>('ClaimStateApiService', ['getStatusCount']);
     statusCountRefresh$ = new Subject<void>();
-    (claimService as any).statusCountRefresh$ = statusCountRefresh$;
-    claimService.getStatusCount.and.returnValue(of({
+    (claimApiService as any).statusCountRefresh$ = statusCountRefresh$;
+    claimApiService.getStatusCount.and.returnValue(of({
       status: true,
       object: [{ inbox: 3, exported: 2 }]
     }) as any);
@@ -38,7 +38,7 @@ describe('SidebarComponent', () => {
       declarations: [SidebarComponent],
       providers: [
         { provide: AuthService, useValue: authService },
-        { provide: ClaimService, useValue: claimService }
+        { provide: ClaimStateApiService, useValue: claimApiService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -62,11 +62,11 @@ describe('SidebarComponent', () => {
   });
 
   it('should refresh state counts when the shared count refresh event emits', () => {
-    expect(claimService.getStatusCount).toHaveBeenCalledTimes(1);
+    expect(claimApiService.getStatusCount).toHaveBeenCalledTimes(1);
 
     statusCountRefresh$.next();
 
-    expect(claimService.getStatusCount).toHaveBeenCalledTimes(2);
+    expect(claimApiService.getStatusCount).toHaveBeenCalledTimes(2);
     expect(component.stateCount).toEqual(jasmine.objectContaining({ inbox: 3, exported: 2 }));
   });
 
@@ -75,7 +75,7 @@ describe('SidebarComponent', () => {
 
     statusCountRefresh$.next();
 
-    expect(claimService.getStatusCount).toHaveBeenCalledTimes(1);
+    expect(claimApiService.getStatusCount).toHaveBeenCalledTimes(1);
   });
 
   it('should render key system admin menu entries', () => {
@@ -135,4 +135,6 @@ describe('SidebarComponent', () => {
     }
   });
 });
+
+
 

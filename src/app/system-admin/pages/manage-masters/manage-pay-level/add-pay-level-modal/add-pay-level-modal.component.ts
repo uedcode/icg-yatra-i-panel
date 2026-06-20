@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CommonService } from 'src/app/service/core/common.service';
-import { PayLevelService } from 'src/app/service/master/pay-level.service';
+import { PayLevelApiService } from 'src/app/service/api/pay-level/pay-level-api.service';
 
 declare var $: any;
 
@@ -37,7 +37,7 @@ export class AddPayLevelModalComponent implements OnInit {
 
   constructor(
     private $common: CommonService,
-    private $payLevel: PayLevelService
+    private $payLevel: PayLevelApiService
   ) {}
 
   ngOnInit() {}

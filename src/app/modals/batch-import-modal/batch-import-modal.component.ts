@@ -1,8 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { DiaryBatchService } from 'src/app/service/admin/diary-batch.service';
-import { ImportExportBatchService } from 'src/app/service/admin/import-export-batch.service';
+import { BatchDiaryApiService } from 'src/app/service/api/batch-diary/batch-diary-api.service';
+import { ImportExportApiService } from 'src/app/service/api/import-export/import-export-api.service';
 import { Router } from '@angular/router';
 declare var $: any;
 @Component({
@@ -16,8 +16,8 @@ export class BatchImportModalComponent implements OnInit {
   constructor(
     public $auth: AuthService,
     private $common: CommonService,
-    public $importExportBatch: ImportExportBatchService,
-    public $diaryBatch: DiaryBatchService,
+    public $importExportBatch: ImportExportApiService,
+    public $diaryBatch: BatchDiaryApiService,
     private router: Router,
   ) { }
   @Output() batchImported = new EventEmitter();

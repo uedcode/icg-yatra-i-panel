@@ -4,16 +4,16 @@ import { Subject } from 'rxjs';
 
 import { CommonDocumentComponent } from './common-document.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
 
 describe('CommonDocumentComponent', () => {
   let component: CommonDocumentComponent;
   let fixture: ComponentFixture<CommonDocumentComponent>;
   let commonService: jasmine.SpyObj<CommonService>;
   let authService: jasmine.SpyObj<AuthService>;
-  let codeDocInfoService: jasmine.SpyObj<CodeDocInfoService>;
+  let codeDocInfoService: jasmine.SpyObj<CodeDocInfoApiService>;
   let routeQueryParams: Subject<any>;
   let formDetail$: Subject<any>;
   let documentList$: Subject<any>;
@@ -37,7 +37,7 @@ describe('CommonDocumentComponent', () => {
       'showMessage'
     ]);
     authService = jasmine.createSpyObj<AuthService>('AuthService', ['viewFile']);
-    codeDocInfoService = jasmine.createSpyObj<CodeDocInfoService>('CodeDocInfoService', [
+    codeDocInfoService = jasmine.createSpyObj<CodeDocInfoApiService>('CodeDocInfoApiService', [
       'setDocument'
     ]);
     formManageService = {
@@ -58,7 +58,7 @@ describe('CommonDocumentComponent', () => {
       providers: [
         { provide: ActivatedRoute, useValue: { queryParams: routeQueryParams } },
         { provide: AuthService, useValue: authService },
-        { provide: CodeDocInfoService, useValue: codeDocInfoService },
+        { provide: CodeDocInfoApiService, useValue: codeDocInfoService },
         { provide: CommonService, useValue: commonService },
         { provide: FormManageService, useValue: formManageService }
       ]

@@ -4,8 +4,9 @@ import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Router } from '@angular/router';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -24,9 +25,10 @@ export class ClaimNotApprovedComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    public $formManage: FormManageService,
+    private $formManage: FormManageService,
     private router: Router,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -63,7 +65,7 @@ filterDataObj
         searchedName: searchHeaders.searchedName,
       }),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -110,14 +112,14 @@ filterDataObj
       moduleId: this.userIdDetails?.moduleId,
     };
 
-    this.$claim.changeClaimStatusById(payload).subscribe((response: any) => {
+    this.$claimStateApi.changeStatusById(payload).subscribe((response: any) => {
       if (!response?.status) {
         this.$common.showMessage(response?.message || 'Unable to resubmit claim.', 'danger');
         return;
       }
 
       this.$common.showMessage(response?.message || 'Claim resubmitted successfully.', 'success');
-      this.$claim.notifyStatusCountRefresh();
+      this.$claimStateApi.notifyStatusCountRefresh();
       this.dataList = this.dataList.filter((item: any) => item?.yatClaimDTO?.claimId != claimId);
       setTimeout(() => {
         this.router.navigateByUrl(this.$auth.getModuleName() + '/draft-claim');
@@ -162,5 +164,6 @@ filterDataObj
   }
 
 }
+
 
 

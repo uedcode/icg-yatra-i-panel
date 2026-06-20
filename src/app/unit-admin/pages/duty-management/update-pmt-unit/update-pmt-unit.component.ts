@@ -3,7 +3,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
+import { MarkTyApiService } from 'src/app/service/api/mark-ty/mark-ty-api.service';
+import { UpdatePmtApiService } from 'src/app/service/api/update-pmt/update-pmt-api.service';
 
 @Component({
   selector: 'app-update-pmt-unit',
@@ -31,7 +32,8 @@ export class UpdatePmtUnitComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $systemAdmin: SystemAdminService
+    private $updatePmtApi: UpdatePmtApiService,
+    private $markTyApi: MarkTyApiService
   ) {}
 
   ngOnInit(): void {
@@ -45,7 +47,7 @@ export class UpdatePmtUnitComponent implements OnInit {
   getAll(): void {
     try {
       this.$common.showLoader();
-      this.$systemAdmin.getUpdatePmtRecords({ headers: {} }).subscribe(
+      this.$updatePmtApi.getAllRecords({ headers: {} }).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           this.dataList = Array.isArray(response?.object) ? response.object : [];
@@ -62,7 +64,7 @@ export class UpdatePmtUnitComponent implements OnInit {
   }
 
   getUnits(): void {
-    this.$systemAdmin.getUpdatePmtAllUnits({ headers: {} }).subscribe(
+    this.$updatePmtApi.getAllUnits({ headers: {} }).subscribe(
       (response: any) => {
         this.allUnits = Array.isArray(response?.object) ? response.object : [];
       },
@@ -74,7 +76,7 @@ export class UpdatePmtUnitComponent implements OnInit {
 
   getToUnits(): void {
     const gxUnitId = this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId || '';
-    this.$systemAdmin.getUpdatePmtAllUnits({ headers: { gxUnitId } }).subscribe(
+    this.$updatePmtApi.getAllUnits({ headers: { gxUnitId } }).subscribe(
       (response: any) => {
         this.allToUnits = Array.isArray(response?.object) ? response.object : [];
       },
@@ -93,7 +95,7 @@ export class UpdatePmtUnitComponent implements OnInit {
     if (!selectedUnit?.unit) {
       return;
     }
-    this.$systemAdmin.getPnoList({ headers: { gxUnit: '', unit: selectedUnit.unit } }).subscribe(
+    this.$markTyApi.getPnoList({ headers: { gxUnit: '', unit: selectedUnit.unit } }).subscribe(
       (response: any) => {
         this.pnoList = Array.isArray(response?.object) ? response.object : [];
       },
@@ -132,7 +134,7 @@ export class UpdatePmtUnitComponent implements OnInit {
       };
 
       this.$common.showLoader();
-      this.$systemAdmin.createOrUpdatePmtUnit(payload).subscribe(
+      this.$updatePmtApi.createOrUpdate(payload).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response?.status === true) {
@@ -178,7 +180,7 @@ export class UpdatePmtUnitComponent implements OnInit {
           status: tempObj.currentStatus,
         },
       };
-      this.$systemAdmin.changePmtFlag(config).subscribe(
+      this.$updatePmtApi.changeFlag(config).subscribe(
         (response: any) => {
           if (response?.status === true) {
             this.$common.showMessage(`${response.message}`);

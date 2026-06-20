@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CommonService } from 'src/app/service/core/common.service';
-import { MessageService } from 'src/app/service/master/message.service';
+import { UtilMessageApiService } from 'src/app/service/api/util-message/util-message-api.service';
 
 declare var $: any;
 
@@ -30,7 +30,7 @@ export class AddMessageModalComponent implements OnInit {
 
   constructor(
     private $common: CommonService,
-    private $message: MessageService
+    private $message: UtilMessageApiService
   ) {}
 
   ngOnInit() {}

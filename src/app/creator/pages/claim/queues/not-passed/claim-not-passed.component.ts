@@ -4,8 +4,10 @@ import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Router } from '@angular/router';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { ClaimObservationApiService } from 'src/app/service/api/claim-observation/claim-observation-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -23,8 +25,10 @@ export class ClaimNotPassedComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    public $formManage: FormManageService,
-    private $claim: ClaimService,
+    private $formManage: FormManageService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
+    private $claimObservationApi: ClaimObservationApiService,
     private router: Router,
   ) { }
 
@@ -65,7 +69,7 @@ filterDataObj;
         searchedName: searchHeaders.searchedName,
       }),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -141,7 +145,7 @@ filterDataObj;
 
     this.resubmitLoadingMap[claimId] = true;
 
-    this.$claim.cloneClaim({ headers: { claimId: String(claimId) } }).subscribe({
+    this.$claimApi.cloneClaim({ headers: { claimId: String(claimId) } }).subscribe({
       next: (cloneRes: any) => {
         const clonedClaim = Array.isArray(cloneRes?.object) ? cloneRes.object[0] : cloneRes?.object;
         const clonedClaimId = clonedClaim?.claimId;
@@ -161,7 +165,7 @@ filterDataObj;
           moduleId: this.userIdDetails?.moduleId,
         };
 
-        this.$claim.changeClaimStatusById(payload).subscribe({
+        this.$claimStateApi.changeStatusById(payload).subscribe({
           next: (statusRes: any) => {
             this.resubmitLoadingMap[claimId] = false;
             if (!statusRes?.status) {
@@ -171,7 +175,7 @@ filterDataObj;
 
             this.dataList = this.dataList.filter((elem: any) => elem?.yatClaimDTO?.claimId != claimId);
             this.$common.showMessage(statusRes?.message || 'Claim resubmitted successfully.', 'success');
-            this.$claim.notifyStatusCountRefresh();
+            this.$claimStateApi.notifyStatusCountRefresh();
             setTimeout(() => {
               this.router.navigateByUrl(this.$auth.getModuleName() + '/draft-claim');
             }, 1000);
@@ -205,7 +209,7 @@ filterDataObj;
       },
     };
 
-    this.$claim.changeClaimStatusArchive(config).subscribe({
+    this.$claimStateApi.changeStatusArchive(config).subscribe({
       next: (res: any) => {
         this.archiveLoadingMap[listKey] = false;
         if (!res?.status) {
@@ -214,7 +218,7 @@ filterDataObj;
         }
 
         this.dataList = this.dataList.filter((item: any) => item?.claimStateId != claimStateId);
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
         this.$common.showMessage(res?.message || 'Claim archived successfully.', 'success');
       },
       error: () => {
@@ -245,7 +249,7 @@ filterDataObj;
     }
 
     this.claimObservations = [];
-    this.$claim.getClaimObservations({ headers: { claimId: String(claimId) } }).subscribe({
+    this.$claimObservationApi.getAll({ headers: { claimId: String(claimId) } }).subscribe({
       next: (res: any) => {
         this.claimObservations = Array.isArray(res?.object) ? res.object : [];
         setTimeout(() => $('#claimObservationModal').modal('show'), 0);
@@ -257,5 +261,6 @@ filterDataObj;
   }
 
 }
+
 
 

@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { FormStateService } from 'src/app/service/form/formState.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
+import { FormStateApiService } from 'src/app/service/api/form-state/form-state-api.service';
+import { RoleApiService } from 'src/app/service/api/role/role-api.service';
 declare var $: any;
 
 @Component({
@@ -18,9 +18,9 @@ export class CommonChangeStatusActionComponent implements OnInit {
   constructor(
     private $common: CommonService,
     public $auth: AuthService,
-    public $formState: FormStateService,
+    public $formState: FormStateApiService,
     private route: ActivatedRoute,
-    private $systemAdminService: SystemAdminService,
+    private $roleApi: RoleApiService,
     private router: Router
   ) { }
 
@@ -255,7 +255,7 @@ export class CommonChangeStatusActionComponent implements OnInit {
           userId: this.userIdDetails.userId
         },
       };
-      this.$systemAdminService.getForwardTo(config).subscribe(
+      this.$roleApi.getRolesByUser(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {

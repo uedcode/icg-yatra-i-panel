@@ -26,26 +26,29 @@ describe('FormFteComponent', () => {
     component.$common = jasmine.createSpyObj('CommonService', ['showMessage', 'parseResponse', 'checkForValidFile', 'showLoader', 'hideLoader']);
     component.$common.parseResponse.and.callFake((r: any) => r);
     component.$common.checkForValidFile.and.returnValue(true);
-    component.$claim = jasmine.createSpyObj('ClaimService', [
+    component.$claimApi = jasmine.createSpyObj('ClaimApiService', [
       'checkEsignAvailability',
-      'createOrUpdateIfsc',
       'createOrUpdateAdvance',
       'getSingleClaim',
       'changeClaimStatusById',
       'prepareForESign',
       'notifyStatusCountRefresh',
     ]);
-    component.$claim.checkEsignAvailability.and.returnValue(of({ status: true }));
-    component.$claim.createOrUpdateIfsc.and.returnValue(of({ status: true, object: [{ ifscCode: 'SBIN0001' }] }));
-    component.$claim.createOrUpdateAdvance.and.returnValue(of({ object: [{ claimId: 9001 }] }));
-    component.$claim.getSingleClaim.and.returnValue(of({ status: true, object: [] }));
-    component.$claim.changeClaimStatusById.and.returnValue(of({ status: true }));
-    component.$claim.prepareForESign.and.returnValue(of({ status: true }));
+    component.$claimApi.checkEsignAvailability.and.returnValue(of({ status: true }));
+    component.$claimApi.createOrUpdateAdvance.and.returnValue(of({ object: [{ claimId: 9001 }] }));
+    component.$claimApi.getSingleClaim.and.returnValue(of({ status: true, object: [] }));
+    component.$bankIfscApi = jasmine.createSpyObj('BankIfscApiService', ['createOrUpdate']);
+    component.$bankIfscApi.createOrUpdate.and.returnValue(of({ status: true, object: [{ ifscCode: 'SBIN0001' }] }));
+    component.$claimStateApi = jasmine.createSpyObj('ClaimStateApiService', ['changeStatusById', 'notifyStatusCountRefresh']);
+    component.$claimStateApi.changeStatusById.and.returnValue(of({ status: true }));
+    component.$esignApi = jasmine.createSpyObj('EsignApiService', ['checkEsignAvailability', 'prepareForESign']);
+    component.$esignApi.checkEsignAvailability.and.returnValue(of({ status: true }));
+    component.$esignApi.prepareForESign.and.returnValue(of({ status: true }));
     component.$formManage = jasmine.createSpyObj('FormManageService', ['uploadImg', 'deleteByUrl']);
     component.$formManage.docFileUrl = new Subject<string>();
     component.$formManage.docFileUrlDeleted = new Subject<boolean>();
-    component.$dropdownManage = jasmine.createSpyObj('DropdownManageService', ['getPurposeTypes']);
-    component.$dropdownManage.getPurposeTypes.and.returnValue(of({
+    component.$tyDutyPurposeApi = jasmine.createSpyObj('TyDutyPurposeApiService', ['getAll']);
+    component.$tyDutyPurposeApi.getAll.and.returnValue(of({
       status: true,
       object: [
         { descr: 'Other' },
@@ -152,7 +155,7 @@ describe('FormFteComponent', () => {
     const component = createComponent();
     component.newIfscCode = '   ';
     component.submitIFSCUpdate();
-    expect(component.$claim.createOrUpdateIfsc).not.toHaveBeenCalled();
+    expect(component.$bankIfscApi.createOrUpdate).not.toHaveBeenCalled();
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please enter IFSC code.', 'danger');
   });
 
@@ -161,7 +164,7 @@ describe('FormFteComponent', () => {
     component.showIfscModal = true;
     component.newIfscCode = 'SBIN1234';
     component.submitIFSCUpdate();
-    expect(component.$claim.createOrUpdateIfsc).toHaveBeenCalled();
+    expect(component.$bankIfscApi.createOrUpdate).toHaveBeenCalled();
     expect(component.claims.yatClaimBankDetailDTO.ifscCode).toBe('SBIN0001');
     expect(component.showIfscModal).toBeFalse();
   });
@@ -169,7 +172,7 @@ describe('FormFteComponent', () => {
   it('falls back to ink sign when eSign check fails', () => {
     const component = createComponent();
     component.claims.signWith = 'ES';
-    component.$claim.checkEsignAvailability.and.returnValue(of({ status: false, message: 'down' }));
+    component.$esignApi.checkEsignAvailability.and.returnValue(of({ status: false, message: 'down' }));
     component.checkEsignAvailability();
     expect(component.claims.signWith).toBe('IS');
     expect(component.$common.showMessage).toHaveBeenCalledWith('down', 'danger');
@@ -178,7 +181,7 @@ describe('FormFteComponent', () => {
   it('falls back to ink sign when eSign check throws error', () => {
     const component = createComponent();
     component.claims.signWith = 'ES';
-    component.$claim.checkEsignAvailability.and.returnValue(throwError(() => new Error('err')));
+    component.$esignApi.checkEsignAvailability.and.returnValue(throwError(() => new Error('err')));
     component.checkEsignAvailability();
     expect(component.claims.signWith).toBe('IS');
   });
@@ -248,7 +251,7 @@ describe('FormFteComponent', () => {
     const component = createComponent();
     component.claimIdParam = 'C_ID_FTE_1';
     component.supplementaryId = 'SUP-FTE-1';
-    component.$claim.getSingleClaim.and.returnValue(
+    component.$claimApi.getSingleClaim.and.returnValue(
       of({
         status: true,
         object: [{
@@ -293,7 +296,7 @@ describe('FormFteComponent', () => {
 
     component.getFormDetails();
 
-    const config = component.$claim.getSingleClaim.calls.mostRecent().args[0];
+    const config = component.$claimApi.getSingleClaim.calls.mostRecent().args[0];
     expect(config.headers).toEqual(jasmine.objectContaining({
       claimId: 'C_ID_FTE_1',
       subFormId: 'F',
@@ -323,7 +326,7 @@ describe('FormFteComponent', () => {
 
   it('normalizes saved string and empty FTE travel amounts from legacy response', () => {
     const component = createComponent();
-    component.$claim.getSingleClaim.and.returnValue(
+    component.$claimApi.getSingleClaim.and.returnValue(
       of({
         status: true,
         object: [{
@@ -384,7 +387,7 @@ describe('FormFteComponent', () => {
       amount: '1,250',
       ltcTravelPrimaryKey: 'UI-ONLY',
     }];
-    component.$claim.createOrUpdateAdvance.and.returnValue(
+    component.$claimApi.createOrUpdateAdvance.and.returnValue(
       of({
         status: true,
         message: 'Saved',
@@ -401,8 +404,8 @@ describe('FormFteComponent', () => {
 
     component.saveClaim('F', 'DR');
 
-    expect(component.$claim.createOrUpdateAdvance).toHaveBeenCalled();
-    const formData = component.$claim.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
+    expect(component.$claimApi.createOrUpdateAdvance).toHaveBeenCalled();
+    const formData = component.$claimApi.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.claimAmt).toBe(payload.yatForeignDutyAdvDTOs[0].advAmt);
     expect(payload.yatDtsDetailDTOs[0].amount).toBe(350);
@@ -419,8 +422,8 @@ describe('FormFteComponent', () => {
     expect(component.claims.yatClaimBankDetailDTO.bankAccNo).toBe('00131150000656');
     expect(component.claims.yatForeignTravelDetailDTOs[0].id).toBe('DB-ROW');
     expect((component.claims as any).deleteGxFileUrl).toBeUndefined();
-    expect(component.$claim.changeClaimStatusById).toHaveBeenCalled();
-    expect(component.$claim.notifyStatusCountRefresh).toHaveBeenCalled();
+    expect(component.$claimStateApi.changeStatusById).toHaveBeenCalled();
+    expect(component.$claimStateApi.notifyStatusCountRefresh).toHaveBeenCalled();
     expect(component.$common.hideLoader).toHaveBeenCalled();
     expect(component.disableBtn).toBeFalse();
   });
@@ -433,7 +436,7 @@ describe('FormFteComponent', () => {
       financialYear: '2026',
       moduleId: 'ADV',
     };
-    component.$claim.createOrUpdateAdvance.and.returnValue(
+    component.$claimApi.createOrUpdateAdvance.and.returnValue(
       of({
         status: true,
         message: 'Submitted',
@@ -449,11 +452,11 @@ describe('FormFteComponent', () => {
 
     component.saveClaim('F', 'OB');
 
-    const formData = component.$claim.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
+    const formData = component.$claimApi.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.claimState).toBe('OB');
 
-    expect(component.$claim.prepareForESign).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.$esignApi.prepareForESign).toHaveBeenCalledWith(jasmine.objectContaining({
       claimId: 'C_ID_SUBMIT_FTE',
       status: 'OB',
       userId: 42,
@@ -461,7 +464,7 @@ describe('FormFteComponent', () => {
       financialYear: '2026',
       moduleId: 'ADV',
     }));
-    expect(component.$claim.changeClaimStatusById).not.toHaveBeenCalled();
+    expect(component.$claimStateApi.changeStatusById).not.toHaveBeenCalled();
     expect(component.eSignTempFormObj).toEqual(jasmine.objectContaining({
       id: 'C_ID_SUBMIT_FTE',
       claimId: 'C_ID_SUBMIT_FTE',
@@ -469,7 +472,7 @@ describe('FormFteComponent', () => {
       userId: 42,
       roleTypeId: 'CR',
     }));
-    expect(component.$claim.notifyStatusCountRefresh).toHaveBeenCalled();
+    expect(component.$claimStateApi.notifyStatusCountRefresh).toHaveBeenCalled();
     expect(component.$common.hideLoader).toHaveBeenCalled();
     expect(component.disableBtn).toBeFalse();
   });
@@ -502,4 +505,5 @@ describe('FormFteComponent', () => {
     expect(component.router.navigate).not.toHaveBeenCalled();
   });
 });
+
 

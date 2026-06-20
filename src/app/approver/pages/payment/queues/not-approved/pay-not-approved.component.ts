@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { PayStateApiService } from 'src/app/service/api/pay-state/pay-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class PayNotApprovedComponent implements OnInit {
 
   constructor(
     private $auth: AuthService,
-    private $claim: ClaimService,
+    private $payStateApi: PayStateApiService,
     private $common: CommonService,
     private router: Router
   ) {}
@@ -48,7 +48,7 @@ export class PayNotApprovedComponent implements OnInit {
         searchedName: '',
       },
     };
-    this.$claim.getPayStates(config).subscribe((res: any) => {
+    this.$payStateApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -70,4 +70,5 @@ export class PayNotApprovedComponent implements OnInit {
     this.$common.download(docUrl);
   }
 }
+
 

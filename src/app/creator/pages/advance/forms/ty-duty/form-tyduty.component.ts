@@ -1,16 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TyDutyPurposeApiService } from 'src/app/service/api/ty-duty-purpose/ty-duty-purpose-api.service';
 import { UtilService } from 'src/app/service/core/util.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { DropdownManageService } from 'src/app/service/form/dropdown-manage.service';
-import { FormService } from 'src/app/service/form/form.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { FormStateService } from 'src/app/service/form/formState.service';
+import { FormApiService } from 'src/app/service/api/form/form-api.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { FormStateApiService } from 'src/app/service/api/form-state/form-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { EsignApiService } from 'src/app/service/api/esign/esign-api.service';
+import { ValidationApiService } from 'src/app/service/api/validation/validation-api.service';
+import { BankIfscApiService } from 'src/app/service/api/bank-ifsc/bank-ifsc-api.service';
 import { ClaimUtilService } from 'src/app/service/claim/claim-util.service';
-import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
+import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
+import { CodeStationApiService } from 'src/app/service/api/code-station/code-station-api.service';
 import {
   clearLegacyInvalidFromEvent,
   validateLegacyRequiredSection,
@@ -318,14 +324,20 @@ export class FormTydutyComponent implements OnInit {
     private UtilService: UtilService,
     private datePipe: DatePipe,
     public $auth: AuthService,
-    public $form: FormService,
-    public $formState: FormStateService,
-    public $formManage: FormManageService,
-    private $dropdownManage: DropdownManageService,
+    public $form: FormApiService,
+    public $formState: FormStateApiService,
+    private $formManage: FormManageService,
+    private $tyDutyPurposeApi: TyDutyPurposeApiService,
     private $common: CommonService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
+    private $esignApi: EsignApiService,
+    private $validationApi: ValidationApiService,
+    private $bankIfscApi: BankIfscApiService,
     private $util: ClaimUtilService,
-    private $codeDocInfo: CodeDocInfoService
+    private $codeDocInfo: CodeDocInfoApiService,
+    private $codeUnitApi: CodeUnitApiService,
+    private $codeStationApi: CodeStationApiService
   ) {}
 
   userIdDetails: any;
@@ -1251,7 +1263,7 @@ export class FormTydutyComponent implements OnInit {
 
       const config = { headers };
 
-      this.$claim.getSingleClaim(config).subscribe(
+      this.$claimApi.getSingleClaim(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
 
@@ -1385,7 +1397,7 @@ export class FormTydutyComponent implements OnInit {
       this.config = {
         headers: {},
       };
-      this.$claim.getUnits(this.config).subscribe(
+      this.$codeUnitApi.getAllUnits(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -1418,7 +1430,7 @@ export class FormTydutyComponent implements OnInit {
       this.config = {
         headers: {},
       };
-      this.$claim.getStations(this.config).subscribe(
+      this.$codeStationApi.getAll(this.config).subscribe(
         (response: any) => {
           if (response.status === true) {
             this.allStations = Array.isArray(response.object)
@@ -1488,7 +1500,7 @@ export class FormTydutyComponent implements OnInit {
       },
     };
 
-    this.$claim.checkValidSignType(config).subscribe(
+    this.$validationApi.checkValidSignType(config).subscribe(
       (response: any) => {
         if (response?.status === true && response.object && response.object !== selectedSign) {
           this.claims.signWith = response.object;
@@ -1606,8 +1618,8 @@ export class FormTydutyComponent implements OnInit {
       status === this.codeClaimState.outbox &&
       this.claims?.signWith === this.codeSignType.eSign;
     const statusRequest = isESignSubmit
-      ? this.$claim.prepareForESign(payload)
-      : this.$claim.changeClaimStatusById(payload);
+      ? this.$esignApi.prepareForESign(payload)
+      : this.$claimStateApi.changeStatusById(payload);
 
     statusRequest.subscribe(
       (res: any) => {
@@ -1624,7 +1636,7 @@ export class FormTydutyComponent implements OnInit {
           return;
         }
 
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
         if (isESignSubmit) {
           this.eSignTempFormObj = {
             id: claimId,
@@ -1681,7 +1693,7 @@ export class FormTydutyComponent implements OnInit {
       },
     };
 
-    this.$claim.checkEsignAvailability(config).subscribe({
+    this.$esignApi.checkEsignAvailability(config).subscribe({
       next: (response: any) => {
         if (response?.status === false) {
           this.claims.signWith = this.codeSignType.inkSign;
@@ -1928,7 +1940,7 @@ export class FormTydutyComponent implements OnInit {
       const formData = new FormData();
       formData.append('yatClaimDTO', JSON.stringify(tempClaim));
 
-      this.$claim.createOrUpdateAdvance(formData, null).subscribe(
+      this.$claimApi.createOrUpdateAdvance(formData, null).subscribe(
         (res: any) => {
           if (!res || res?.status === false) {
             this.$common.showMessage(
@@ -2180,9 +2192,7 @@ export class FormTydutyComponent implements OnInit {
 
       const config = { headers: {} };
 
-      // You must have a method in DropdownManageService like:
-      // getPurposeTypes(config): Observable<any>
-      this.$dropdownManage.getPurposeTypes(config).subscribe(
+      this.$tyDutyPurposeApi.getAll(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
 
@@ -2294,7 +2304,7 @@ export class FormTydutyComponent implements OnInit {
     }
 
     this.$common.showLoader();
-    this.$claim.createOrUpdateIfsc(bankObj, config).subscribe({
+    this.$bankIfscApi.createOrUpdate(bankObj, config).subscribe({
       next: (response: any) => {
         const data: any = this.$common.parseResponse(response);
         this.$common.hideLoader();
@@ -2358,7 +2368,7 @@ export class FormTydutyComponent implements OnInit {
     const validationPayload = this.buildTySavePayload(status);
     this.$common.showLoader();
 
-    this.$claim.validateClaims(validationPayload).subscribe(
+    this.$validationApi.validateClaims(validationPayload).subscribe(
       (response: any) => {
         this.$common.hideLoader();
         if (!response || response.status === false) {
@@ -2630,4 +2640,5 @@ export class FormTydutyComponent implements OnInit {
     });
   }
 }
+
 

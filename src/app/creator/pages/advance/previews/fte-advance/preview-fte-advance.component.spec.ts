@@ -12,8 +12,8 @@ describe('PreviewFteAdvanceComponent', () => {
     component.datePipe = jasmine.createSpyObj('DatePipe', ['transform']);
     component.datePipe.transform.and.returnValue('2026-02-01');
     component.$common = jasmine.createSpyObj('CommonService', ['showLoader', 'hideLoader', 'showMessage']);
-    component.$claim = jasmine.createSpyObj('ClaimService', ['getSingleClaim']);
-    component.$claim.getSingleClaim.and.returnValue(of({ status: true, object: [{ claimId: '301', yatDocsDTOs: [{ id: 1 }] }] }));
+    component.$claimApi = jasmine.createSpyObj('ClaimApiService', ['getSingleClaim']);
+    component.$claimApi.getSingleClaim.and.returnValue(of({ status: true, object: [{ claimId: '301', yatDocsDTOs: [{ id: 1 }] }] }));
     component.$auth = {} as any;
     return component;
   };
@@ -31,7 +31,7 @@ describe('PreviewFteAdvanceComponent', () => {
     const component = createComponent();
     component.claimId = null;
     component.getClaimDetails();
-    expect(component.$claim.getSingleClaim).not.toHaveBeenCalled();
+    expect(component.$claimApi.getSingleClaim).not.toHaveBeenCalled();
     expect(component.$common.showMessage).toHaveBeenCalledWith('Missing claim id for FTE preview.', 'danger');
   });
 
@@ -46,7 +46,7 @@ describe('PreviewFteAdvanceComponent', () => {
   it('shows danger message when API returns status false', () => {
     const component = createComponent();
     component.claimId = '301';
-    component.$claim.getSingleClaim.and.returnValue(of({ status: false, message: 'not found' }));
+    component.$claimApi.getSingleClaim.and.returnValue(of({ status: false, message: 'not found' }));
     component.getClaimDetails();
     expect(component.$common.showMessage).toHaveBeenCalledWith('not found', 'danger');
   });
@@ -54,7 +54,7 @@ describe('PreviewFteAdvanceComponent', () => {
   it('handles API error branch', () => {
     const component = createComponent();
     component.claimId = '301';
-    component.$claim.getSingleClaim.and.returnValue(throwError(() => new Error('err')));
+    component.$claimApi.getSingleClaim.and.returnValue(throwError(() => new Error('err')));
     component.getClaimDetails();
     expect(component.$common.hideLoader).toHaveBeenCalled();
   });
@@ -76,4 +76,5 @@ describe('PreviewFteAdvanceComponent', () => {
     expect(component.detailHeading).toBe('FTE Claim Details');
   });
 });
+
 

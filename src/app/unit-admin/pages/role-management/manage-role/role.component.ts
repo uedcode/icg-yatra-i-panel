@@ -4,9 +4,10 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
-import { UserService } from 'src/app/service/admin/user.service';
-import { DropdownService } from 'src/app/service/form/dropdown.service';
+import { DesignationApiService } from 'src/app/service/api/designation/designation-api.service';
+import { RoleApiService } from 'src/app/service/api/role/role-api.service';
+import { RoleTypeApiService } from 'src/app/service/api/role-type/role-type-api.service';
+import { UserApiService } from 'src/app/service/api/user/user-api.service';
 
 @Component({
   selector: 'app-role',
@@ -19,9 +20,10 @@ export class RoleComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     public $common: CommonService,
-    private $systemAdmin: SystemAdminService,
-    private $dropdown: DropdownService,
-    private $user: UserService
+    private $roleApi: RoleApiService,
+    private $roleTypeApi: RoleTypeApiService,
+    private $designationApi: DesignationApiService,
+    private $user: UserApiService
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -166,7 +168,7 @@ export class RoleComponent implements OnInit {
       };
 
       const formData = this.buildRoleFormData(req);
-      this.$systemAdmin.createOrUpdate(formData).subscribe(
+      this.$roleApi.createOrUpdateRole(formData).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -196,7 +198,7 @@ export class RoleComponent implements OnInit {
           verAppIndicator: '1'
         },
       };
-      this.$systemAdmin.getUnitAdminRoles(this.config).subscribe(
+      this.$roleApi.getAllRoles(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -234,7 +236,7 @@ export class RoleComponent implements OnInit {
           statusId: tempObj.currentStatus
         }
       };
-      this.$systemAdmin.changeStatus(config).subscribe((response: any) => {
+      this.$roleApi.changeRoleStatus(config).subscribe((response: any) => {
         if (response.status === true) {
           this.updateRowStatus(tempObj);
           this.$common.showMessage(`${response.message}`);
@@ -261,7 +263,7 @@ export class RoleComponent implements OnInit {
           isArchive: tempObj?.isArchive || '1'
         }
       };
-      this.$systemAdmin.changeStatusArchive(config).subscribe((response: any) => {
+      this.$roleApi.changeRoleArchiveStatus(config).subscribe((response: any) => {
         if (response.status === true) {
           this.$common.showMessage(`${response.message}`);
           this.dataList = this.dataList.filter((row: any) => this.getRoleId(row) !== roleId);
@@ -285,7 +287,7 @@ export class RoleComponent implements OnInit {
           moduleId: this.userIdDetails?.moduleId || ''
         },
       };
-      this.$dropdown.getCodeRoleType(this.config).subscribe(
+      this.$roleTypeApi.getAll(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -318,7 +320,7 @@ export class RoleComponent implements OnInit {
           moduleId: this.userIdDetails?.moduleId || ''
         },
       };
-      this.$dropdown.getCodeDesignation(this.config).subscribe(
+      this.$designationApi.getAll(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {

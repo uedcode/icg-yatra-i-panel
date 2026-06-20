@@ -2,7 +2,7 @@ import { DatePipe, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({
@@ -31,7 +31,7 @@ export class CommonPreviewLtcAdvanceComponent implements OnInit {
     private location: Location,
     private datePipe: DatePipe,
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
     private $common: CommonService
   ) {}
 
@@ -66,7 +66,7 @@ export class CommonPreviewLtcAdvanceComponent implements OnInit {
       (config.headers as any).supCLaimId = this.supplementaryId;
     }
 
-    this.$claim.getSingleClaim(config).subscribe({
+    this.$claimApi.getSingleClaim(config).subscribe({
       next: (response: any) => {
         this.$common.hideLoader();
         this.parsePreviewResponse(response);
@@ -152,4 +152,5 @@ export class CommonPreviewLtcAdvanceComponent implements OnInit {
     return Array.isArray(value) ? value : [];
   }
 }
+
 

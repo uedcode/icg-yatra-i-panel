@@ -5,11 +5,13 @@ import { HttpClient } from '@angular/common/http';
 import { of, Subject, throwError } from 'rxjs';
 
 import { AuthService } from '../../../../service/auth.service';
-import { ClaimService } from '../../../../service/claim.service';
+import { ClaimApiService } from '../../../../service/api/claim/claim-api.service';
+import { ClaimStateApiService } from '../../../../service/api/claim-state/claim-state-api.service';
+import { EsignApiService } from '../../../../service/api/esign/esign-api.service';
+import { BankIfscApiService } from 'src/app/service/api/bank-ifsc/bank-ifsc-api.service';
 import { CommonService } from '../../../../service/common.service';
-import { DropdownManageService } from '../../../../service/dropdown-manage.service';
 import { FormManageService } from '../../../../service/form-manage.service';
-import { CodeDocInfoService } from '../../../../service/master/codeDocInfo.service';
+import { CodeDocInfoApiService } from '../../../../service/api/code-doc-info/code-doc-info-api.service';
 import { UtilService } from '../../../../service/util.service';
 import { FormPmtDutyComponent } from './form-pmt.component';
 
@@ -20,12 +22,15 @@ describe('FormPmtDutyComponent', () => {
   let router: jasmine.SpyObj<Router>;
   let authService: jasmine.SpyObj<AuthService>;
   let commonService: jasmine.SpyObj<CommonService>;
-  let claimService: jasmine.SpyObj<ClaimService>;
+  let claimApiService: jasmine.SpyObj<ClaimApiService>;
+  let claimStateApiService: jasmine.SpyObj<ClaimStateApiService>;
+  let esignApiService: jasmine.SpyObj<EsignApiService>;
+  let bankIfscApiService: jasmine.SpyObj<BankIfscApiService>;
   let formManageService: jasmine.SpyObj<FormManageService> & {
     docFileUrl: Subject<string>;
     docFileUrlDeleted: Subject<boolean>;
   };
-  let codeDocInfoService: jasmine.SpyObj<CodeDocInfoService> & { documentDtos: Subject<any> };
+  let codeDocInfoService: jasmine.SpyObj<CodeDocInfoApiService> & { documentDtos: Subject<any> };
 
   const userDetails = {
     userId: 42,
@@ -80,17 +85,21 @@ describe('FormPmtDutyComponent', () => {
       'parseResponse',
       'checkForValidFile'
     ]);
-    claimService = jasmine.createSpyObj<ClaimService>('ClaimService', [
+    claimApiService = jasmine.createSpyObj<ClaimApiService>('ClaimApiService', [
       'getSingleClaim',
       'getUnits',
       'getPayLevels',
       'createOrUpdateAdvance',
-      'checkEsignAvailability',
-      'createOrUpdateIfsc',
-      'prepareForESign',
-      'changeClaimStatusById',
+    ]);
+    claimStateApiService = jasmine.createSpyObj<ClaimStateApiService>('ClaimStateApiService', [
+      'changeStatusById',
       'notifyStatusCountRefresh'
     ]);
+    esignApiService = jasmine.createSpyObj<EsignApiService>('EsignApiService', [
+      'checkEsignAvailability',
+      'prepareForESign'
+    ]);
+    bankIfscApiService = jasmine.createSpyObj<BankIfscApiService>('BankIfscApiService', ['createOrUpdate']);
     formManageService = jasmine.createSpyObj<FormManageService>('FormManageService', [
       'uploadImg',
       'deleteByUrl'
@@ -101,16 +110,16 @@ describe('FormPmtDutyComponent', () => {
     formManageService.docFileUrl = new Subject<string>();
     formManageService.docFileUrlDeleted = new Subject<boolean>();
 
-    codeDocInfoService = jasmine.createSpyObj<CodeDocInfoService>('CodeDocInfoService', [
+    codeDocInfoService = jasmine.createSpyObj<CodeDocInfoApiService>('CodeDocInfoApiService', [
       'setDocument'
-    ]) as jasmine.SpyObj<CodeDocInfoService> & { documentDtos: Subject<any> };
+    ]) as jasmine.SpyObj<CodeDocInfoApiService> & { documentDtos: Subject<any> };
     codeDocInfoService.documentDtos = new Subject<any>();
 
     authService.getUserDetails.and.returnValue(userDetails as any);
     authService.getModuleName.and.returnValue('/creator');
     commonService.checkForValidFile.and.returnValue(true);
     commonService.parseResponse.and.callFake((response: unknown) => response as any);
-    claimService.getSingleClaim.and.returnValue(of({
+    claimApiService.getSingleClaim.and.returnValue(of({
       status: true,
       object: [{
         claimId: 101,
@@ -132,16 +141,16 @@ describe('FormPmtDutyComponent', () => {
         }
       }]
     }) as any);
-    claimService.getUnits.and.returnValue(of({ status: true, object: [{ unit: 'U1' }] }) as any);
-    claimService.getPayLevels.and.returnValue(of({ status: true, object: [{ payLevel: '10' }] }) as any);
-    claimService.createOrUpdateAdvance.and.returnValue(of({
+    claimApiService.getUnits.and.returnValue(of({ status: true, object: [{ unit: 'U1' }] }) as any);
+    claimApiService.getPayLevels.and.returnValue(of({ status: true, object: [{ payLevel: '10' }] }) as any);
+    claimApiService.createOrUpdateAdvance.and.returnValue(of({
       status: true,
       object: [{ claimId: 202 }]
     }) as any);
-    claimService.checkEsignAvailability.and.returnValue(of({ status: true }) as any);
-    claimService.prepareForESign.and.returnValue(of({ status: true }) as any);
-    claimService.changeClaimStatusById.and.returnValue(of({ status: true }) as any);
-    claimService.createOrUpdateIfsc.and.returnValue(of({
+    esignApiService.checkEsignAvailability.and.returnValue(of({ status: true }) as any);
+    esignApiService.prepareForESign.and.returnValue(of({ status: true }) as any);
+    claimStateApiService.changeStatusById.and.returnValue(of({ status: true }) as any);
+    bankIfscApiService.createOrUpdate.and.returnValue(of({
       status: true,
       object: [{ ifscCode: 'SBIN0001234' }]
     }) as any);
@@ -160,10 +169,12 @@ describe('FormPmtDutyComponent', () => {
         },
         { provide: AuthService, useValue: authService },
         { provide: CommonService, useValue: commonService },
-        { provide: ClaimService, useValue: claimService },
-        { provide: DropdownManageService, useValue: {} },
+        { provide: ClaimApiService, useValue: claimApiService },
+        { provide: ClaimStateApiService, useValue: claimStateApiService },
+        { provide: EsignApiService, useValue: esignApiService },
+        { provide: BankIfscApiService, useValue: bankIfscApiService },
         { provide: FormManageService, useValue: formManageService },
-        { provide: CodeDocInfoService, useValue: codeDocInfoService },
+        { provide: CodeDocInfoApiService, useValue: codeDocInfoService },
         { provide: HttpClient, useValue: jasmine.createSpyObj<HttpClient>('HttpClient', ['get']) }
       ]
     }).compileComponents();
@@ -209,10 +220,10 @@ describe('FormPmtDutyComponent', () => {
     expect(component.claimIdParam).toBe('101');
     expect(component.supplementaryId).toBe('501');
     expect(component.gxUnitId).toBe(2);
-    expect(claimService.getUnits).toHaveBeenCalled();
-    expect(claimService.getPayLevels).toHaveBeenCalled();
-    expect(claimService.getSingleClaim).toHaveBeenCalled();
-    const config = claimService.getSingleClaim.calls.mostRecent().args[0] as any;
+    expect(claimApiService.getUnits).toHaveBeenCalled();
+    expect(claimApiService.getPayLevels).toHaveBeenCalled();
+    expect(claimApiService.getSingleClaim).toHaveBeenCalled();
+    const config = claimApiService.getSingleClaim.calls.mostRecent().args[0] as any;
     expect(config.headers.claimId).toBe('101');
     expect(config.headers.supCLaimId).toBe('501');
     expect(component.claims.claimId).toBe(101);
@@ -240,7 +251,7 @@ describe('FormPmtDutyComponent', () => {
   });
 
   it('should normalize saved PMT DTS string, comma, and blank amount values', () => {
-    claimService.getSingleClaim.and.returnValue(of({
+    claimApiService.getSingleClaim.and.returnValue(of({
       status: true,
       object: [{
         claimId: 909,
@@ -429,7 +440,7 @@ describe('FormPmtDutyComponent', () => {
       otherDocName: 'Uploaded GX',
       fileUrl: 'gx-doc.pdf'
     } as any];
-    claimService.createOrUpdateAdvance.and.returnValue(of({
+    claimApiService.createOrUpdateAdvance.and.returnValue(of({
       status: true,
       object: [{
         claimId: 303,
@@ -446,8 +457,8 @@ describe('FormPmtDutyComponent', () => {
 
     component.saveDraft();
 
-    expect(claimService.createOrUpdateAdvance).toHaveBeenCalled();
-    const formData = claimService.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
+    expect(claimApiService.createOrUpdateAdvance).toHaveBeenCalled();
+    const formData = claimApiService.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.claimState).toBe('DR');
     expect(payload.roleTypeId).toBe('CR');
@@ -481,14 +492,14 @@ describe('FormPmtDutyComponent', () => {
       amount: '1,600',
       tempAmount: ''
     } as any];
-    claimService.createOrUpdateAdvance.and.returnValue(of({
+    claimApiService.createOrUpdateAdvance.and.returnValue(of({
       status: true,
       object: [{ claimId: 404, yatDtsDetailDTOs: [{ modeOfTravel: 'Train', isDts: 'Yes', amount: 1600 }] }]
     }) as any);
 
     component.saveDraft();
 
-    const formData = claimService.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
+    const formData = claimApiService.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.yatDtsDetailDTOs[0].amount).toBe(1600);
     expect((payload.yatDtsDetailDTOs[0] as any).tempAmount).toBeUndefined();
@@ -502,7 +513,7 @@ describe('FormPmtDutyComponent', () => {
 
     component.submitPmt();
 
-    expect(claimService.createOrUpdateAdvance).not.toHaveBeenCalled();
+    expect(claimApiService.createOrUpdateAdvance).not.toHaveBeenCalled();
     expect(commonService.showMessage).toHaveBeenCalledWith('Please upload Gx Form (PDF).', 'danger');
   });
 
@@ -515,7 +526,7 @@ describe('FormPmtDutyComponent', () => {
 
     expect(sectionSpy).toHaveBeenCalled();
     expect(businessSpy).not.toHaveBeenCalled();
-    expect(claimService.createOrUpdateAdvance).not.toHaveBeenCalled();
+    expect(claimApiService.createOrUpdateAdvance).not.toHaveBeenCalled();
   });
 
   it('should stop submit when business validation fails', () => {
@@ -526,7 +537,7 @@ describe('FormPmtDutyComponent', () => {
     component.submitPmt();
 
     expect(businessSpy).toHaveBeenCalled();
-    expect(claimService.createOrUpdateAdvance).not.toHaveBeenCalled();
+    expect(claimApiService.createOrUpdateAdvance).not.toHaveBeenCalled();
   });
 
   it('should submit a valid PMT claim to outbox and navigate to new list', () => {
@@ -537,16 +548,16 @@ describe('FormPmtDutyComponent', () => {
 
     component.submitPmt();
 
-    const formData = claimService.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
+    const formData = claimApiService.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.claimState).toBe('OB');
-    expect(claimService.changeClaimStatusById).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(claimStateApiService.changeStatusById).toHaveBeenCalledWith(jasmine.objectContaining({
       claimId: 202,
       status: 'OB',
       userId: 42,
       roleTypeId: 'CR'
     }));
-    expect(claimService.notifyStatusCountRefresh).toHaveBeenCalled();
+    expect(claimStateApiService.notifyStatusCountRefresh).toHaveBeenCalled();
     expect(router.navigateByUrl).toHaveBeenCalledWith('/creator/new');
   });
 
@@ -560,14 +571,14 @@ describe('FormPmtDutyComponent', () => {
       financialYear: '2026',
       moduleId: 'ADV'
     };
-    claimService.createOrUpdateAdvance.and.returnValue(of({
+    claimApiService.createOrUpdateAdvance.and.returnValue(of({
       status: true,
       object: [{ claimId: 404 }]
     }) as any);
 
     component.submitPmt();
 
-    expect(claimService.prepareForESign).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(esignApiService.prepareForESign).toHaveBeenCalledWith(jasmine.objectContaining({
       claimId: 404,
       status: 'OB',
       userId: 42,
@@ -575,7 +586,7 @@ describe('FormPmtDutyComponent', () => {
       financialYear: '2026',
       moduleId: 'ADV'
     }));
-    expect(claimService.changeClaimStatusById).not.toHaveBeenCalled();
+    expect(claimStateApiService.changeStatusById).not.toHaveBeenCalled();
     expect(component.eSignTempFormObj).toEqual(jasmine.objectContaining({
       id: 404,
       claimId: 404,
@@ -583,14 +594,14 @@ describe('FormPmtDutyComponent', () => {
       userId: 42,
       roleTypeId: 'CR'
     }));
-    expect(claimService.notifyStatusCountRefresh).toHaveBeenCalled();
+    expect(claimStateApiService.notifyStatusCountRefresh).toHaveBeenCalled();
     expect(commonService.hideLoader).toHaveBeenCalled();
     expect(component.disableBtn).toBeFalse();
   });
 
   it('should fall back to ink sign when eSign availability fails', () => {
     component.gxUnitId = 2;
-    claimService.checkEsignAvailability.and.returnValue(of({
+    esignApiService.checkEsignAvailability.and.returnValue(of({
       status: false,
       message: 'eSign unavailable'
     }) as any);
@@ -601,7 +612,7 @@ describe('FormPmtDutyComponent', () => {
     expect(commonService.showMessage).toHaveBeenCalledWith('eSign unavailable', 'danger');
 
     component.claims.signWith = 'ES';
-    claimService.checkEsignAvailability.and.returnValue(
+    esignApiService.checkEsignAvailability.and.returnValue(
       throwError(() => new Error('service down')) as any
     );
     component.checkEsignAvailability();
@@ -616,7 +627,7 @@ describe('FormPmtDutyComponent', () => {
   it('should keep eSign selected when availability check succeeds', () => {
     component.gxUnitId = 2;
     component.claims.signWith = 'ES';
-    claimService.checkEsignAvailability.and.returnValue(of({ status: true }) as any);
+    esignApiService.checkEsignAvailability.and.returnValue(of({ status: true }) as any);
 
     component.checkEsignAvailability();
 
@@ -743,7 +754,7 @@ describe('FormPmtDutyComponent', () => {
     component.newIfscCode = '   ';
     component.submitIFSCUpdate();
 
-    expect(claimService.createOrUpdateIfsc).not.toHaveBeenCalled();
+    expect(bankIfscApiService.createOrUpdate).not.toHaveBeenCalled();
     expect(commonService.showMessage).toHaveBeenCalledWith('Please enter IFSC code.', 'danger');
 
     component.newIfscCode = ' SBIN0001234 ';
@@ -751,7 +762,7 @@ describe('FormPmtDutyComponent', () => {
     component.claims.yatClaimBankDetailDTO = {} as any;
     component.submitIFSCUpdate();
 
-    expect(claimService.createOrUpdateIfsc).toHaveBeenCalledWith(
+    expect(bankIfscApiService.createOrUpdate).toHaveBeenCalledWith(
       { ifscCode: 'SBIN0001234', userId: 84 },
       { headers: {} }
     );
@@ -762,7 +773,7 @@ describe('FormPmtDutyComponent', () => {
 
   it('should recover UI state when save claim API fails', () => {
     seedValidClaim();
-    claimService.createOrUpdateAdvance.and.returnValue(
+    claimApiService.createOrUpdateAdvance.and.returnValue(
       throwError(() => ({ status: 500 })) as any
     );
 
@@ -835,7 +846,7 @@ describe('FormPmtDutyComponent', () => {
   it('should preserve supplementary context in draft navigation after save', () => {
     seedValidClaim();
     component.supplementaryId = 'SUP-1';
-    claimService.createOrUpdateAdvance.and.returnValue(
+    claimApiService.createOrUpdateAdvance.and.returnValue(
       of({ status: true, object: [{ claimId: 909 }] }) as any
     );
 
@@ -889,4 +900,6 @@ describe('FormPmtDutyComponent', () => {
     expect(row._reasonForNoDtsError).toBeTrue();
   });
 });
+
+
 

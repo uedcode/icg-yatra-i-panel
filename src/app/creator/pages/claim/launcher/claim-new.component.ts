@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({
@@ -20,7 +21,8 @@ export class ClaimNewComponent implements OnInit {
 
   constructor(
     private $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
     private router: Router,
     private $common: CommonService
   ) {}
@@ -36,7 +38,7 @@ export class ClaimNewComponent implements OnInit {
         userId: this.userIdDetails?.userId || '',
       },
     };
-    this.$claim.getReadyForClaim(config).subscribe((res: any) => {
+    this.$claimApi.getReadyForClaim(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -66,7 +68,7 @@ export class ClaimNewComponent implements OnInit {
     }
 
     const config = { headers: { claimId: String(claimId) } };
-    this.$claim.validateMovement(config).subscribe((res: any) => {
+    this.$claimApi.validateMovement(config).subscribe((res: any) => {
       if (!res?.status) {
         this.$common.showMessage(res?.message || 'Unable to validate movement.', 'danger');
         return;
@@ -120,7 +122,7 @@ export class ClaimNewComponent implements OnInit {
     }
 
     this.deleteLoadingMap[claimId] = true;
-    this.$claim.deleteClaim({ headers: { ids: [String(claimId)] } }).subscribe({
+    this.$claimApi.deleteClaim({ headers: { ids: [String(claimId)] } }).subscribe({
       next: (res: any) => {
         this.deleteLoadingMap[claimId] = false;
         if (!res?.status) {
@@ -131,7 +133,7 @@ export class ClaimNewComponent implements OnInit {
         this.dataList = this.dataList.filter(
           (item: any) => (item?.claimId || item?.yatClaimDTO?.claimId || item?.id) != claimId
         );
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
         this.$common.showMessage(res?.message || 'Claim deleted successfully.', 'success');
       },
       error: () => {
@@ -165,4 +167,5 @@ export class ClaimNewComponent implements OnInit {
     return null;
   }
 }
+
 

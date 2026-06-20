@@ -5,10 +5,11 @@ import { Location } from '@angular/common';
 import { DatePipe } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormService } from 'src/app/service/form/form.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { FormApiService } from 'src/app/service/api/form/form-api.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { CodeSubFormApiService } from 'src/app/service/api/code-sub-form/code-sub-form-api.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -26,12 +27,12 @@ export class OutboxComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $form: FormService,
+    private $form: FormApiService,
     private router: Router,
     private datePipe: DatePipe,
-    public $formManage: FormManageService,
-    private $codeSubForm: CodeSubFormService,
-    private $claim: ClaimService,
+    private $formManage: FormManageService,
+    private $codeSubForm: CodeSubFormApiService,
+    private $claimApi: ClaimApiService, private $claimStateApi: ClaimStateApiService,
     private route: ActivatedRoute
   ) {}
 
@@ -101,7 +102,7 @@ getForm() {
         searchedName: searchHeaders.searchedName,
       }),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       const claimStates = Array.isArray(res?.object) ? res.object : [];
       this.dataList = claimStates.filter((item: any) => this.matchesDateFilter(item));
     });
@@ -210,5 +211,6 @@ getForm() {
     this.reverse = !this.reverse;
   }
 }
+
 
 

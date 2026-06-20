@@ -2,17 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { TyDutyPurposeApiService } from 'src/app/service/api/ty-duty-purpose/ty-duty-purpose-api.service';
 import { UtilService } from 'src/app/service/core/util.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { DropdownManageService } from 'src/app/service/form/dropdown-manage.service';
-import { FormService } from 'src/app/service/form/form.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { FormStateService } from 'src/app/service/form/formState.service';
-import { MasterShipService } from 'src/app/service/master/master-ship.service';
-import { UserService } from 'src/app/service/admin/user.service';
+import { FormApiService } from 'src/app/service/api/form/form-api.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { FormStateApiService } from 'src/app/service/api/form-state/form-state-api.service';
+import { MasterShipApiService } from 'src/app/service/api/master-ship/master-ship-api.service';
+import { UserApiService } from 'src/app/service/api/user/user-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { EsignApiService } from 'src/app/service/api/esign/esign-api.service';
+import { BankIfscApiService } from 'src/app/service/api/bank-ifsc/bank-ifsc-api.service';
 import { ClaimUtilService } from 'src/app/service/claim/claim-util.service';
+import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
 import {
   clearLegacyInvalidFromEvent,
   validateLegacyRequiredSection,
@@ -378,7 +382,7 @@ export class FormFteComponent implements OnInit {
 
     const config = { headers: { subFormId: 'F' } };
 
-    this.$dropdownManage.getPurposeTypes(config).subscribe({
+    this.$tyDutyPurposeApi.getAll(config).subscribe({
       next: (res: any) => {
         this.$common.hideLoader();
         if (res?.status !== true) {
@@ -413,7 +417,7 @@ export class FormFteComponent implements OnInit {
       },
     };
 
-    this.$dropdownManage.getPurposeTypes(config).subscribe({
+    this.$tyDutyPurposeApi.getAll(config).subscribe({
       next: (res: any) => {
         this.purposeTypes = this.normalizeFtePurposeTypes(
           Array.isArray(res?.object) ? res.object : []
@@ -483,8 +487,8 @@ export class FormFteComponent implements OnInit {
       status === this.codeClaimState.outbox &&
       this.claims?.signWith === this.codeSignType.eSign;
     const statusRequest = isESignSubmit
-      ? this.$claim.prepareForESign(payload)
-      : this.$claim.changeClaimStatusById(payload);
+      ? this.$esignApi.prepareForESign(payload)
+      : this.$claimStateApi.changeStatusById(payload);
 
     statusRequest.subscribe(
       (res: any) => {
@@ -498,7 +502,7 @@ export class FormFteComponent implements OnInit {
           return;
         }
 
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
         if (isESignSubmit) {
           this.eSignTempFormObj = {
             id: claimId,
@@ -556,7 +560,7 @@ export class FormFteComponent implements OnInit {
       },
     };
 
-    this.$claim.checkEsignAvailability(config).subscribe({
+    this.$esignApi.checkEsignAvailability(config).subscribe({
       next: (response: any) => {
         if (response?.status === false) {
           this.claims.signWith = this.codeSignType.inkSign;
@@ -633,15 +637,19 @@ export class FormFteComponent implements OnInit {
     private UtilService: UtilService,
     private datePipe: DatePipe,
     public $auth: AuthService,
-    public $form: FormService,
-    public $formState: FormStateService,
-    public $formManage: FormManageService,
-    private $dropdownManage: DropdownManageService,
-    private $ship: MasterShipService,
-    private $user: UserService,
+    public $form: FormApiService,
+    public $formState: FormStateApiService,
+    private $formManage: FormManageService,
+    private $tyDutyPurposeApi: TyDutyPurposeApiService,
+    private $ship: MasterShipApiService,
+    private $user: UserApiService,
     private $common: CommonService,
-    private $claim: ClaimService,
-    private $util: ClaimUtilService
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
+    private $esignApi: EsignApiService,
+    private $bankIfscApi: BankIfscApiService,
+    private $util: ClaimUtilService,
+    private $codeUnitApi: CodeUnitApiService
   ) {}
 
   ngOnInit(): void {
@@ -780,7 +788,7 @@ export class FormFteComponent implements OnInit {
 
       const config = { headers };
 
-      this.$claim.getSingleClaim(config).subscribe(
+      this.$claimApi.getSingleClaim(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
 
@@ -1087,7 +1095,7 @@ export class FormFteComponent implements OnInit {
       const formData = new FormData();
       formData.append('yatClaimDTO', JSON.stringify(tempClaim));
 
-      this.$claim.createOrUpdateAdvance(formData, null).subscribe(
+      this.$claimApi.createOrUpdateAdvance(formData, null).subscribe(
         (res: any) => {
           if (!res || res?.status === false) {
             this.$common.showMessage(
@@ -1283,7 +1291,7 @@ export class FormFteComponent implements OnInit {
     if (this.claims?.claimId) config.headers.claimId = this.claims.claimId;
 
     this.$common.showLoader();
-    this.$claim.createOrUpdateIfsc(bankObj, config).subscribe({
+    this.$bankIfscApi.createOrUpdate(bankObj, config).subscribe({
       next: (response: any) => {
         const data: any = this.$common.parseResponse(response);
         this.$common.hideLoader();
@@ -1319,7 +1327,7 @@ export class FormFteComponent implements OnInit {
     try {
       this.$common.showLoader();
       const config = { headers: {} };
-      this.$claim.getUnits(config).subscribe(
+      this.$codeUnitApi.getAllUnits(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response?.status === true) this.allUnits = response.object || [];
@@ -1815,4 +1823,5 @@ export class FormFteComponent implements OnInit {
   }
 
 }
+
 

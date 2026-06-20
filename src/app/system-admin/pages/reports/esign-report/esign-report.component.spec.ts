@@ -4,28 +4,32 @@ import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 
 import { EsignReportComponent } from './esign-report.component';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ReportAnalyticsService } from 'src/app/service/master/report-analytics.service';
 import { PipeModule } from 'src/app/app-pipe.module';
 
 describe('EsignReportComponent', () => {
   let component: EsignReportComponent;
   let fixture: ComponentFixture<EsignReportComponent>;
-  let report: jasmine.SpyObj<ReportAnalyticsService>;
+  let claimStateApi: jasmine.SpyObj<ClaimStateApiService>;
+  let codeUnitApi: jasmine.SpyObj<CodeUnitApiService>;
 
   beforeEach(async () => {
     const common = jasmine.createSpyObj<CommonService>('CommonService', ['showLoader', 'hideLoader']);
-    report = jasmine.createSpyObj<ReportAnalyticsService>('ReportAnalyticsService', ['getGxUnits', 'getEsignReportData']);
+    claimStateApi = jasmine.createSpyObj<ClaimStateApiService>('ClaimStateApiService', ['getEsignReportData']);
+    codeUnitApi = jasmine.createSpyObj<CodeUnitApiService>('CodeUnitApiService', ['getGxUnits']);
 
-    report.getGxUnits.and.returnValue(of({ status: true, object: [{ unit: '000226', descr: 'ICGS Delhi' }] }) as any);
-    report.getEsignReportData.and.returnValue(of({ status: true, object: [] }) as any);
+    codeUnitApi.getGxUnits.and.returnValue(of({ status: true, object: [{ unit: '000226', descr: 'ICGS Delhi' }] }) as any);
+    claimStateApi.getEsignReportData.and.returnValue(of({ status: true, object: [] }) as any);
 
     await TestBed.configureTestingModule({
       declarations: [EsignReportComponent],
       imports: [FormsModule, PipeModule],
       providers: [
         { provide: CommonService, useValue: common },
-        { provide: ReportAnalyticsService, useValue: report }
+        { provide: ClaimStateApiService, useValue: claimStateApi },
+        { provide: CodeUnitApiService, useValue: codeUnitApi }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -36,9 +40,9 @@ describe('EsignReportComponent', () => {
   });
 
   it('loads legacy gx units and defaults report to ICGS Delhi unit', () => {
-    expect(report.getGxUnits).toHaveBeenCalled();
+    expect(codeUnitApi.getGxUnits).toHaveBeenCalled();
     expect(component.selectedGxUnitId).toBe('000226');
-    expect(report.getEsignReportData).toHaveBeenCalledWith({
+    expect(claimStateApi.getEsignReportData).toHaveBeenCalledWith({
       headers: { gxUnitId: '000226' }
     });
   });
@@ -48,7 +52,7 @@ describe('EsignReportComponent', () => {
 
     component.getReportData();
 
-    expect(report.getEsignReportData).toHaveBeenCalledWith({
+    expect(claimStateApi.getEsignReportData).toHaveBeenCalledWith({
       headers: { gxUnitId: '000999' }
     });
   });

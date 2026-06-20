@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { LtcAvailedHistApiService } from 'src/app/service/api/ltc-availed-hist/ltc-availed-hist-api.service';
 
 @Component({
   selector: 'app-common-preview-ltc-availed-history',
@@ -18,7 +18,7 @@ export class CommonPreviewLtcAvailedHistoryComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $ltcAvailedHistApi: LtcAvailedHistApiService,
     private $common: CommonService
   ) {}
 
@@ -45,7 +45,7 @@ export class CommonPreviewLtcAvailedHistoryComponent implements OnInit {
       },
     };
     this.$common.showLoader();
-    this.$claim.getLtcAvailedHistory(config).subscribe(
+    this.$ltcAvailedHistApi.getAll(config).subscribe(
       (res: any) => {
         this.$common.hideLoader();
         if (res?.status && Array.isArray(res.object) && res.object.length) {
@@ -79,5 +79,6 @@ export class CommonPreviewLtcAvailedHistoryComponent implements OnInit {
     );
   }
 }
+
 
 

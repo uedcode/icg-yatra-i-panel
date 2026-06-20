@@ -5,7 +5,8 @@ import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Router } from '@angular/router';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -25,7 +26,7 @@ export class ReturnedComponent implements OnInit {
     public $auth: AuthService,
     private $common: CommonService,
     private router: Router,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService, private $claimStateApi: ClaimStateApiService,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -65,7 +66,7 @@ filterDataObj
         searchedName: searchHeaders.searchedName,
       }),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -167,5 +168,6 @@ filterDataObj
   }
 
 }
+
 
 

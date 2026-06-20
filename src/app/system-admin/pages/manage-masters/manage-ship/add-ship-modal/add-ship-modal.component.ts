@@ -10,10 +10,8 @@ import {
 import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
 import { NgForm } from '@angular/forms';
-import { DocumentService } from 'src/app/service/form/document.service';
-import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { MasterShipService } from 'src/app/service/master/master-ship.service';
+import { MasterShipApiService } from 'src/app/service/api/master-ship/master-ship-api.service';
 
 @Component({
     selector: 'app-add-ship-modal',
@@ -35,7 +33,7 @@ export class AddShipModalComponent implements OnInit {
 
   constructor(
     private $common: CommonService,
-    private $ship: MasterShipService,
+    private $ship: MasterShipApiService,
     public $auth: AuthService
   ) { }
 

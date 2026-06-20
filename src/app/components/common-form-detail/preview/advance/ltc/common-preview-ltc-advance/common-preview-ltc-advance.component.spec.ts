@@ -16,8 +16,8 @@ describe('PreviewLtcAdvanceComponent', () => {
     component.datePipe = jasmine.createSpyObj('DatePipe', ['transform']);
     component.datePipe.transform.and.returnValue('10-Jan-2026');
     component.$common = jasmine.createSpyObj('CommonService', ['showLoader', 'hideLoader', 'showMessage']);
-    component.$claim = jasmine.createSpyObj('ClaimService', ['getSingleClaim']);
-    component.$claim.getSingleClaim.and.returnValue(of({ object: [{ claimId: '501', yatDocsDTOs: [{ id: 1 }] }] }));
+    component.$claimApi = jasmine.createSpyObj('ClaimApiService', ['getSingleClaim']);
+    component.$claimApi.getSingleClaim.and.returnValue(of({ object: [{ claimId: '501', yatDocsDTOs: [{ id: 1 }] }] }));
     component.$auth = {} as any;
     return component;
   };
@@ -43,7 +43,7 @@ describe('PreviewLtcAdvanceComponent', () => {
   it('shows danger message on claim API error', () => {
     const component = createComponent();
     component.claimId = '501';
-    component.$claim.getSingleClaim.and.returnValue(throwError(() => new Error('err')));
+    component.$claimApi.getSingleClaim.and.returnValue(throwError(() => new Error('err')));
     component.getClaimDetails();
     expect(component.$common.showMessage).toHaveBeenCalledWith('Unable to load LTC preview details.', 'danger');
   });
@@ -69,4 +69,5 @@ describe('PreviewLtcAdvanceComponent', () => {
     expect(component.previewHeading).toBe('LTC Claim Preview');
   });
 });
+
 

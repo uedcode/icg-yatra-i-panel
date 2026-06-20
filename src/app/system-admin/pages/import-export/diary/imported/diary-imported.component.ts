@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { DiaryBatchService } from 'src/app/service/admin/diary-batch.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { BatchDiaryApiService } from 'src/app/service/api/batch-diary/batch-diary-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 declare var $: any;
 
 @Component({
@@ -30,8 +30,8 @@ export class DiaryImportedComponent implements OnInit {
   constructor(
     public $auth: AuthService,
     private $common: CommonService,
-    public $diaryBatch: DiaryBatchService,
-    private $claim: ClaimService,
+    public $diaryBatch: BatchDiaryApiService,
+    private $claimStateApi: ClaimStateApiService,
   ) {}
 
   ngOnInit() {
@@ -75,9 +75,10 @@ export class DiaryImportedComponent implements OnInit {
       if (response.status === true) {
         this.batchList.splice(this.index, 1);
         $('#changeBatchStatusModal').modal('hide');
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
       }
       this.$common.hideLoader();
     }, () => this.$common.hideLoader());
   }
 }
+

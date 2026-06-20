@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({
@@ -18,7 +18,7 @@ export class CommonPreviewManualAdvanceComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
     private $common: CommonService
   ) {}
 
@@ -42,7 +42,7 @@ export class CommonPreviewManualAdvanceComponent implements OnInit {
         },
       };
       this.$common.showLoader();
-      this.$claim.getSingleClaim(config).subscribe(
+      this.$claimApi.getSingleClaim(config).subscribe(
         (res: any) => {
           this.$common.hideLoader();
           if (res?.status) {
@@ -76,5 +76,6 @@ export class CommonPreviewManualAdvanceComponent implements OnInit {
     return value || {};
   }
 }
+
 
 

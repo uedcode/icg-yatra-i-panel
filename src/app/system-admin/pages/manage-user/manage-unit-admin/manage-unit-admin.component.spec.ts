@@ -6,8 +6,9 @@ import { of } from 'rxjs';
 import { ManageUnitAdminComponent } from './manage-unit-admin.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
-import { UserService } from 'src/app/service/admin/user.service';
+import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
+import { RoleApiService } from 'src/app/service/api/role/role-api.service';
+import { UserApiService } from 'src/app/service/api/user/user-api.service';
 
 @Pipe({ name: 'filterComplex', standalone: false })
 class FilterComplexPipeMock implements PipeTransform {
@@ -49,8 +50,9 @@ describe('ManageUnitAdminComponent', () => {
   let fixture: ComponentFixture<ManageUnitAdminComponent>;
   let authService: jasmine.SpyObj<AuthService>;
   let commonService: jasmine.SpyObj<CommonService>;
-  let systemAdminService: jasmine.SpyObj<SystemAdminService>;
-  let userService: jasmine.SpyObj<UserService>;
+  let roleApi: jasmine.SpyObj<RoleApiService>;
+  let codeUnitApi: jasmine.SpyObj<CodeUnitApiService>;
+  let userService: jasmine.SpyObj<UserApiService>;
 
   beforeEach(() => {
     authService = jasmine.createSpyObj<AuthService>('AuthService', [
@@ -64,13 +66,15 @@ describe('ManageUnitAdminComponent', () => {
       'hideLoader',
       'showMessage'
     ]);
-    systemAdminService = jasmine.createSpyObj<SystemAdminService>('SystemAdminService', [
-      'getGxUnits',
-      'getAll',
-      'createOrUpdate',
-      'changeStatus'
+    roleApi = jasmine.createSpyObj<RoleApiService>('RoleApiService', [
+      'getAllRoles',
+      'createOrUpdateRole',
+      'changeRoleStatus'
     ]);
-    userService = jasmine.createSpyObj<UserService>('UserService', [
+    codeUnitApi = jasmine.createSpyObj<CodeUnitApiService>('CodeUnitApiService', [
+      'getGxUnits'
+    ]);
+    userService = jasmine.createSpyObj<UserApiService>('UserApiService', [
       'getAll',
       'getSingle'
     ]);
@@ -78,10 +82,10 @@ describe('ManageUnitAdminComponent', () => {
     authService.codeRoleType.and.returnValue({ unitAdmin: 'UN' } as any);
     authService.codeStatus.and.returnValue({ activate: 'AC', deactivate: 'DA' } as any);
     authService.getUserDetails.and.returnValue({ userId: 'SYS1' } as any);
-    systemAdminService.getGxUnits.and.returnValue(of({ status: true, object: [{ unit: '000226', descr: 'ICGS Delhi' }] }));
-    systemAdminService.getAll.and.returnValue(of({ status: true, object: [] }));
-    systemAdminService.createOrUpdate.and.returnValue(of({ status: true, message: 'Saved', object: [] }));
-    systemAdminService.changeStatus.and.returnValue(of({ status: true, message: 'Updated' }));
+    codeUnitApi.getGxUnits.and.returnValue(of({ status: true, object: [{ unit: '000226', descr: 'ICGS Delhi' }] }));
+    roleApi.getAllRoles.and.returnValue(of({ status: true, object: [] }));
+    roleApi.createOrUpdateRole.and.returnValue(of({ status: true, message: 'Saved', object: [] }));
+    roleApi.changeRoleStatus.and.returnValue(of({ status: true, message: 'Updated' }));
     userService.getAll.and.returnValue(of({ status: true, object: [] }));
     userService.getSingle.and.returnValue(of({ status: true, object: [] }));
 
@@ -98,8 +102,9 @@ describe('ManageUnitAdminComponent', () => {
       providers: [
         { provide: AuthService, useValue: authService },
         { provide: CommonService, useValue: commonService },
-        { provide: SystemAdminService, useValue: systemAdminService },
-        { provide: UserService, useValue: userService },
+        { provide: RoleApiService, useValue: roleApi },
+        { provide: CodeUnitApiService, useValue: codeUnitApi },
+        { provide: UserApiService, useValue: userService },
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -112,8 +117,8 @@ describe('ManageUnitAdminComponent', () => {
   });
 
   it('loads GX units and Unit Admin roles with legacy headers on init', () => {
-    expect(systemAdminService.getGxUnits).toHaveBeenCalled();
-    expect(systemAdminService.getAll).toHaveBeenCalledWith({
+    expect(codeUnitApi.getGxUnits).toHaveBeenCalled();
+    expect(roleApi.getAllRoles).toHaveBeenCalledWith({
       headers: {
         userId: '',
         roleTypeId: 'UN',
@@ -162,11 +167,11 @@ describe('ManageUnitAdminComponent', () => {
       fromDateTime: '2026-06-17T10:30'
     };
     component.authDocFile = new File(['pdf'], 'auth.pdf', { type: 'application/pdf' });
-    systemAdminService.createOrUpdate.calls.reset();
+    roleApi.createOrUpdateRole.calls.reset();
 
     component.saveRecord();
 
-    const formData = systemAdminService.createOrUpdate.calls.mostRecent().args[0] as FormData;
+    const formData = roleApi.createOrUpdateRole.calls.mostRecent().args[0] as FormData;
     const rolePayload = JSON.parse(formData.get('aclRoleDTO') as string);
     expect(formData.get('authDocUrl')).toEqual(component.authDocFile);
     expect(rolePayload.aclCodeRoleTypeDTO.roleTypeId).toBe('UN');
@@ -190,12 +195,12 @@ describe('ManageUnitAdminComponent', () => {
     };
     component.authDocFile = new File(['pdf'], 'auth.pdf', { type: 'application/pdf' });
     component.dataList = [{ aclUserDTO: { userId: '08UD' } }];
-    systemAdminService.createOrUpdate.calls.reset();
+    roleApi.createOrUpdateRole.calls.reset();
 
     component.saveRecord();
 
     expect(commonService.showMessage).toHaveBeenCalledWith('User already exist as Unit Admin', 'danger');
-    expect(systemAdminService.createOrUpdate).not.toHaveBeenCalled();
+    expect(roleApi.createOrUpdateRole).not.toHaveBeenCalled();
   });
 
   it('calls role changeStatus with roleId and target status', () => {
@@ -205,7 +210,7 @@ describe('ManageUnitAdminComponent', () => {
       aclCodeStatusDTO: { statusId: 'AC' }
     });
 
-    expect(systemAdminService.changeStatus).toHaveBeenCalledWith({
+    expect(roleApi.changeRoleStatus).toHaveBeenCalledWith({
       headers: {
         roleId: 'R1',
         statusId: 'DA'

@@ -1,6 +1,7 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Component, Inject, OnInit, DOCUMENT } from '@angular/core';
-import { UserService } from 'src/app/service/admin/user.service';
+import { RoleApiService } from 'src/app/service/api/role/role-api.service';
+import { UserApiService } from 'src/app/service/api/user/user-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -17,7 +18,15 @@ import { HttpParams } from '@angular/common/http';
 export class HeaderComponent implements OnInit {
   private readonly storageKeys = environment.authConfig.storageKeys;
 
-  constructor(private $common: CommonService, public $auth: AuthService, private $user: UserService, private route: Router, private router: Router, @Inject(DOCUMENT) document: any) { }
+  constructor(
+    private $common: CommonService,
+    public $auth: AuthService,
+    private $user: UserApiService,
+    private $roleApi: RoleApiService,
+    private route: Router,
+    private router: Router,
+    @Inject(DOCUMENT) document: any
+  ) { }
 
   userIdDetails;
   ngOnInit(): void {
@@ -45,7 +54,7 @@ export class HeaderComponent implements OnInit {
         this.config.headers.roleId = this.userIdDetails?.roleId;
       }
       this.config.headers.moduleId = this.$auth.getRuntimeModuleId();
-      this.$user.roles(this.config).subscribe((response: any) => {
+      this.$roleApi.getRolesByUser(this.config).subscribe((response: any) => {
         this.$common.hideLoader();
         if (response.status === true) {
           

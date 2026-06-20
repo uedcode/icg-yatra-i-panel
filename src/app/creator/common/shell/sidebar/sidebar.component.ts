@@ -1,7 +1,7 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { Subscription } from 'rxjs';
 import { buildLegacyStateCountHeaders } from 'src/app/shared/utils/legacy-api.util';
 
@@ -19,7 +19,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public $auth: AuthService,
     private $common: CommonService,
-    private $claim: ClaimService
+    private $claimStateApi: ClaimStateApiService
   ) {}
 
   userIdDetails;
@@ -30,7 +30,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeRoleList = this.$auth.codeRoleType();
-    this.statusCountRefreshSub = this.$claim.statusCountRefresh$.subscribe(() => {
+    this.statusCountRefreshSub = this.$claimStateApi.statusCountRefresh$.subscribe(() => {
       this.getCount();
     });
     this.getCount();
@@ -51,7 +51,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
       this.config = {
         headers: buildLegacyStateCountHeaders(this.userIdDetails, this.codeRoleList),
       };
-      this.$claim.getStatusCount(this.config).subscribe(
+      this.$claimStateApi.getStatusCount(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -93,3 +93,4 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.$auth.isRuntimeClm() ? 'Claim' : 'Advance';
   }
 }
+

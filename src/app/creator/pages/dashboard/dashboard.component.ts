@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { buildLegacyStateCountHeaders } from 'src/app/shared/utils/legacy-api.util';
 
 declare var $: any;
@@ -14,7 +14,7 @@ declare var $: any;
 })
 export class DashboardComponent implements OnInit {
 
-    constructor(private $common: CommonService, public $auth: AuthService, private $claim: ClaimService,
+    constructor(private $common: CommonService, public $auth: AuthService, private $claimStateApi: ClaimStateApiService,
         private route: Router) { }
 
     /**Contants */
@@ -85,7 +85,7 @@ export class DashboardComponent implements OnInit {
             this.config = {
                 headers: buildLegacyStateCountHeaders(this.userIdDetails, this.codeRoleList),
             };
-            this.$claim.getStatusCount(this.config).subscribe((response: any) => {
+            this.$claimStateApi.getStatusCount(this.config).subscribe((response: any) => {
                 this.$common.hideLoader();
                 if (response.status === true) {
                     this.countObj = Array.isArray(response.object) ? response.object[0] || {} : response.object || {};
@@ -99,3 +99,4 @@ export class DashboardComponent implements OnInit {
         }
     }
 }
+

@@ -12,8 +12,8 @@ describe('PreviewPmtDutyComponent', () => {
     component.datePipe = jasmine.createSpyObj('DatePipe', ['transform']);
     component.datePipe.transform.and.returnValue('2026-01-01');
     component.$common = jasmine.createSpyObj('CommonService', ['showLoader', 'hideLoader', 'showMessage']);
-    component.$claim = jasmine.createSpyObj('ClaimService', ['getSingleClaim']);
-    component.$claim.getSingleClaim.and.returnValue(of({ status: true, object: [{ claimId: '101', yatDocsDTOs: [{ id: 1 }] }] }));
+    component.$claimApi = jasmine.createSpyObj('ClaimApiService', ['getSingleClaim']);
+    component.$claimApi.getSingleClaim.and.returnValue(of({ status: true, object: [{ claimId: '101', yatDocsDTOs: [{ id: 1 }] }] }));
     component.$auth = jasmine.createSpyObj('AuthService', ['getUserDetails']);
     component.$auth.getUserDetails.and.returnValue({ userId: '501' });
     return component;
@@ -24,8 +24,8 @@ describe('PreviewPmtDutyComponent', () => {
     component.ngOnInit();
     expect(component.claimId).toBe('101');
     expect(component.subFormId).toBe('P');
-    expect(component.$claim.getSingleClaim).toHaveBeenCalled();
-    expect(component.$claim.getSingleClaim.calls.mostRecent().args[0].headers).toEqual(
+    expect(component.$claimApi.getSingleClaim).toHaveBeenCalled();
+    expect(component.$claimApi.getSingleClaim.calls.mostRecent().args[0].headers).toEqual(
       jasmine.objectContaining({
         claimId: '101',
         subFormId: 'P',
@@ -41,7 +41,7 @@ describe('PreviewPmtDutyComponent', () => {
     component.ngOnInit();
     expect(component.claimId).toBe('101');
     expect(component.subFormId).toBe('RS');
-    expect(component.$claim.getSingleClaim.calls.mostRecent().args[0].headers).toEqual(
+    expect(component.$claimApi.getSingleClaim.calls.mostRecent().args[0].headers).toEqual(
       jasmine.objectContaining({
         claimId: '101',
         subFormId: 'RS',
@@ -55,7 +55,7 @@ describe('PreviewPmtDutyComponent', () => {
     const component = createComponent();
     component.claimId = null;
     component.getClaimDetails();
-    expect(component.$claim.getSingleClaim).not.toHaveBeenCalled();
+    expect(component.$claimApi.getSingleClaim).not.toHaveBeenCalled();
     expect(component.$common.showMessage).toHaveBeenCalled();
   });
 
@@ -70,7 +70,7 @@ describe('PreviewPmtDutyComponent', () => {
   it('handles failed status response', () => {
     const component = createComponent();
     component.claimId = '101';
-    component.$claim.getSingleClaim.and.returnValue(of({ status: false, message: 'nope' }));
+    component.$claimApi.getSingleClaim.and.returnValue(of({ status: false, message: 'nope' }));
     component.getClaimDetails();
     expect(component.$common.showMessage).toHaveBeenCalledWith('nope', 'danger');
   });
@@ -78,7 +78,7 @@ describe('PreviewPmtDutyComponent', () => {
   it('handles API error response', () => {
     const component = createComponent();
     component.claimId = '101';
-    component.$claim.getSingleClaim.and.returnValue(throwError(() => new Error('err')));
+    component.$claimApi.getSingleClaim.and.returnValue(throwError(() => new Error('err')));
     component.getClaimDetails();
     expect(component.$common.hideLoader).toHaveBeenCalled();
   });
@@ -112,4 +112,5 @@ describe('PreviewPmtDutyComponent', () => {
     expect(component.location.back).toHaveBeenCalled();
   });
 });
+
 

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ExcelImportService } from 'src/app/service/admin/excel-import.service';
+import { ImportExportApiService } from 'src/app/service/api/import-export/import-export-api.service';
 import { finalize } from 'rxjs';
 
 declare var $: any;
@@ -29,7 +29,7 @@ export class SysAdminExcelImportComponent {
   submitBtn = false;
   fileError = '';
 
-  constructor(private $common: CommonService, private $excelImport: ExcelImportService) {}
+  constructor(private $common: CommonService, private $excelImport: ImportExportApiService) {}
 
   openExcelModal() {
     this.resetFileSelection();

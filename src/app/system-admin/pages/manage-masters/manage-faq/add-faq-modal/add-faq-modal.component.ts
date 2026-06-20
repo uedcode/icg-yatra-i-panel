@@ -3,7 +3,7 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { Component, Input, OnInit, Output, ViewChild, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
-import { FaqService } from 'src/app/service/admin/faq.service';
+import { FaqApiService } from 'src/app/service/api/faq/faq-api.service';
 
 declare var $: any;
 
@@ -15,7 +15,7 @@ declare var $: any;
 })
 export class AddFaqModalComponent implements OnInit {
 
-  constructor(private $common: CommonService, private $faq: FaqService, private $auth: AuthService,) { }
+  constructor(private $common: CommonService, private $faq: FaqApiService, private $auth: AuthService,) { }
 
   @ViewChild('recordForm', { static: true }) recordForm: NgForm;
   @Input() dataList: Array<any> = [];

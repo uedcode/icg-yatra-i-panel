@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ReportAnalyticsService } from 'src/app/service/master/report-analytics.service';
 
 @Component({
   selector: 'app-executor-esign-report',
@@ -12,7 +12,7 @@ export class EsignReportComponent implements OnInit {
   rows: any[] = [];
   user: any;
 
-  constructor(private reportService: ReportAnalyticsService, private $auth: AuthService) {}
+  constructor(private claimStateApi: ClaimStateApiService, private $auth: AuthService) {}
 
   ngOnInit(): void {
     this.user = this.$auth.getUserDetails();
@@ -27,7 +27,7 @@ export class EsignReportComponent implements OnInit {
         userId: this.user?.userId,
       },
     };
-    this.reportService.getEsignReportData(config).subscribe({
+    this.claimStateApi.getEsignReportData(config).subscribe({
       next: (res: any) => {
         this.rows = Array.isArray(res?.object) ? res.object : [];
       },

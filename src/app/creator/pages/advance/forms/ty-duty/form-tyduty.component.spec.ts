@@ -49,9 +49,8 @@ describe('FormTydutyComponent', () => {
     component.$common = jasmine.createSpyObj('CommonService', ['showMessage', 'parseResponse', 'checkForValidFile', 'showLoader', 'hideLoader']);
     component.$common.parseResponse.and.callFake((r: any) => r);
     component.$common.checkForValidFile.and.returnValue(true);
-    component.$claim = jasmine.createSpyObj('ClaimService', [
+    component.$claimApi = jasmine.createSpyObj('ClaimApiService', [
       'checkEsignAvailability',
-      'createOrUpdateIfsc',
       'createOrUpdateAdvance',
       'getSingleClaim',
       'validateClaims',
@@ -60,15 +59,20 @@ describe('FormTydutyComponent', () => {
       'prepareForESign',
       'notifyStatusCountRefresh',
     ]);
-    component.$claim.checkEsignAvailability.and.returnValue(of({ status: true }));
-    component.$claim.createOrUpdateIfsc.and.returnValue(of({ status: true, object: [{ ifscCode: 'SBIN0099' }] }));
-    component.$claim.createOrUpdateAdvance.and.returnValue(of({ object: [{ claimId: 321 }] }));
-    component.$claim.getSingleClaim.and.returnValue(of({ status: false }));
-    component.$claim.validateClaims.and.returnValue(of({ status: true, object: [] }));
-    component.$claim.checkValidSignType.and.returnValue(of({ status: true, object: 'ES' }));
-    component.$claim.changeClaimStatusById.and.returnValue(of({ status: true }));
-    component.$claim.prepareForESign.and.returnValue(of({ status: true }));
-    component.$codeDocInfo = jasmine.createSpyObj('CodeDocInfoService', ['setDocument']);
+    component.$claimApi.checkEsignAvailability.and.returnValue(of({ status: true }));
+    component.$claimApi.createOrUpdateAdvance.and.returnValue(of({ object: [{ claimId: 321 }] }));
+    component.$claimApi.getSingleClaim.and.returnValue(of({ status: false }));
+    component.$bankIfscApi = jasmine.createSpyObj('BankIfscApiService', ['createOrUpdate']);
+    component.$bankIfscApi.createOrUpdate.and.returnValue(of({ status: true, object: [{ ifscCode: 'SBIN0099' }] }));
+    component.$validationApi = jasmine.createSpyObj('ValidationApiService', ['validateClaims', 'checkValidSignType']);
+    component.$validationApi.validateClaims.and.returnValue(of({ status: true, object: [] }));
+    component.$validationApi.checkValidSignType.and.returnValue(of({ status: true, object: 'ES' }));
+    component.$claimStateApi = jasmine.createSpyObj('ClaimStateApiService', ['changeStatusById', 'notifyStatusCountRefresh']);
+    component.$claimStateApi.changeStatusById.and.returnValue(of({ status: true }));
+    component.$esignApi = jasmine.createSpyObj('EsignApiService', ['checkEsignAvailability', 'prepareForESign']);
+    component.$esignApi.checkEsignAvailability.and.returnValue(of({ status: true }));
+    component.$esignApi.prepareForESign.and.returnValue(of({ status: true }));
+    component.$codeDocInfo = jasmine.createSpyObj('CodeDocInfoApiService', ['setDocument']);
     component.$formManage = jasmine.createSpyObj('FormManageService', ['uploadImg', 'deleteByUrl']);
     component.$formManage.docFileUrl = new Subject<string>();
     component.$formManage.docFileUrlDeleted = new Subject<boolean>();
@@ -150,7 +154,7 @@ describe('FormTydutyComponent', () => {
   it('falls back to ink sign when eSign is unavailable', () => {
     const component = createComponent();
     component.claims.signWith = 'ES';
-    component.$claim.checkEsignAvailability.and.returnValue(of({ status: false, message: 'disabled' }));
+    component.$esignApi.checkEsignAvailability.and.returnValue(of({ status: false, message: 'disabled' }));
     component.checkEsignAvailability();
     expect(component.claims.signWith).toBe('IS');
     expect(component.$common.showMessage).toHaveBeenCalledWith('disabled', 'danger');
@@ -159,7 +163,7 @@ describe('FormTydutyComponent', () => {
   it('falls back to ink sign when eSign check errors', () => {
     const component = createComponent();
     component.claims.signWith = 'ES';
-    component.$claim.checkEsignAvailability.and.returnValue(throwError(() => new Error('down')));
+    component.$esignApi.checkEsignAvailability.and.returnValue(throwError(() => new Error('down')));
     component.checkEsignAvailability();
     expect(component.claims.signWith).toBe('IS');
   });
@@ -168,7 +172,7 @@ describe('FormTydutyComponent', () => {
     const component = createComponent();
     component.newIfscCode = ' ';
     component.submitIFSCUpdate();
-    expect(component.$claim.createOrUpdateIfsc).not.toHaveBeenCalled();
+    expect(component.$bankIfscApi.createOrUpdate).not.toHaveBeenCalled();
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please enter IFSC code.', 'danger');
   });
 
@@ -176,7 +180,7 @@ describe('FormTydutyComponent', () => {
     const component = createComponent();
     component.newIfscCode = 'SBIN7777';
     component.submitIFSCUpdate();
-    expect(component.$claim.createOrUpdateIfsc).toHaveBeenCalled();
+    expect(component.$bankIfscApi.createOrUpdate).toHaveBeenCalled();
     expect(component.claims.yatClaimBankDetailDTO.ifscCode).toBe('SBIN0099');
   });
 
@@ -199,7 +203,7 @@ describe('FormTydutyComponent', () => {
     const component = createComponent();
     component.validateSection.and.returnValues(true, false, true, true);
     component.submitTy();
-    expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
+    expect(component.$claimApi.createOrUpdateAdvance).not.toHaveBeenCalled();
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please fill required fields.', 'danger');
   });
 
@@ -207,7 +211,7 @@ describe('FormTydutyComponent', () => {
     const component = createComponent();
     component.claims.codeUnitDTO = { unit: '', descr: '' };
     component.submitTy();
-    expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
+    expect(component.$claimApi.createOrUpdateAdvance).not.toHaveBeenCalled();
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please select the applied to unit.', 'danger');
   });
 
@@ -232,8 +236,8 @@ describe('FormTydutyComponent', () => {
     component.validate('T', 'OB');
 
     expect(saveSpy).not.toHaveBeenCalled();
-    expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
-    expect(component.$claim.validateClaims).toHaveBeenCalled();
+    expect(component.$claimApi.createOrUpdateAdvance).not.toHaveBeenCalled();
+    expect(component.$validationApi.validateClaims).toHaveBeenCalled();
     expect(component.$common.showMessage).toHaveBeenCalledWith('No Error', 'success');
   });
 
@@ -284,7 +288,7 @@ describe('FormTydutyComponent', () => {
 
     component.saveClaim('T', 'DR', false);
 
-    const formData = component.$claim.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
+    const formData = component.$claimApi.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.yatDtsDetailDTOs[0].amount).toBe(1200);
     expect(payload.yatDtsDetailDTOs[0].tempAmount).toBeUndefined();
@@ -298,7 +302,7 @@ describe('FormTydutyComponent', () => {
 
     component.saveClaim('T', 'OB', true);
 
-    expect(component.$claim.prepareForESign).toHaveBeenCalled();
+    expect(component.$esignApi.prepareForESign).toHaveBeenCalled();
     expect(component.eSignTempFormObj).toEqual(jasmine.objectContaining({
       id: 321,
       claimId: 321,
@@ -327,7 +331,7 @@ describe('FormTydutyComponent', () => {
     const component = createComponent();
     component.getFormDetails();
 
-    expect(component.$claim.getSingleClaim).toHaveBeenCalledWith({
+    expect(component.$claimApi.getSingleClaim).toHaveBeenCalledWith({
       headers: jasmine.objectContaining({
         claimId: '',
         userId: 42,
@@ -337,7 +341,7 @@ describe('FormTydutyComponent', () => {
         budgetDate: '2026-04-01',
       }),
     });
-    const headers = component.$claim.getSingleClaim.calls.mostRecent().args[0].headers;
+    const headers = component.$claimApi.getSingleClaim.calls.mostRecent().args[0].headers;
     expect(headers.gxUnitId).toBeUndefined();
   });
 
@@ -347,7 +351,7 @@ describe('FormTydutyComponent', () => {
 
     component.getFormDetails();
 
-    expect(component.$claim.getSingleClaim).toHaveBeenCalledWith({
+    expect(component.$claimApi.getSingleClaim).toHaveBeenCalledWith({
       headers: jasmine.objectContaining({
         gxUnitId: '226',
       }),
@@ -435,7 +439,7 @@ describe('FormTydutyComponent', () => {
 
   it('maps new TY form personal and bank details from claim/single response', () => {
     const component = createComponent();
-    component.$claim.getSingleClaim.and.returnValue(of({
+    component.$claimApi.getSingleClaim.and.returnValue(of({
       status: true,
       object: [{
         yatTempDutyAdvDTOs: [{
@@ -487,11 +491,11 @@ describe('FormTydutyComponent', () => {
   it('updates sign type from legacy validation endpoint', () => {
     const component = createComponent();
     component.claims.signWith = 'ES';
-    component.$claim.checkValidSignType.and.returnValue(of({ status: true, object: 'IS', message: 'Ink Sign required' }));
+    component.$validationApi.checkValidSignType.and.returnValue(of({ status: true, object: 'IS', message: 'Ink Sign required' }));
 
     component.checkValidSignType('ES', 'ICGS Delhi');
 
-    expect(component.$claim.checkValidSignType).toHaveBeenCalledWith({
+    expect(component.$validationApi.checkValidSignType).toHaveBeenCalledWith({
       headers: jasmine.objectContaining({
         unitName: 'ICGS Delhi',
         userId: 42,
@@ -506,7 +510,7 @@ describe('FormTydutyComponent', () => {
     component.claims.yatTempDutyAdvDTOs[0].name = null;
     component.claims.yatTempDutyAdvDTOs[0].rank = null;
     component.claims.yatTempDutyAdvDTOs[0].pno = null;
-    component.$claim.getSingleClaim.and.returnValue(of({
+    component.$claimApi.getSingleClaim.and.returnValue(of({
       status: true,
       object: [{
         name: 'Flattened User',
@@ -535,7 +539,7 @@ describe('FormTydutyComponent', () => {
 
   it('does not set fake claim id when new TY response is false', () => {
     const component = createComponent();
-    component.$claim.getSingleClaim.and.returnValue(of({ status: false, message: 'No Record' }));
+    component.$claimApi.getSingleClaim.and.returnValue(of({ status: false, message: 'No Record' }));
 
     component.getFormDetails();
 
@@ -543,4 +547,5 @@ describe('FormTydutyComponent', () => {
     expect(component.isPreviewDisabled).toBeTrue();
   });
 });
+
 

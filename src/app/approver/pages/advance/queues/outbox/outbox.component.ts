@@ -5,10 +5,11 @@ import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormService } from 'src/app/service/form/form.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { FormApiService } from 'src/app/service/api/form/form-api.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { CodeSubFormApiService } from 'src/app/service/api/code-sub-form/code-sub-form-api.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -28,11 +29,12 @@ export class OutboxComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $form: FormService,
+    private $form: FormApiService,
     private router: Router,
-    public $formManage: FormManageService,
-    private $codeSubForm: CodeSubFormService,
-    private $claim: ClaimService,
+    private $formManage: FormManageService,
+    private $codeSubForm: CodeSubFormApiService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
     private route: ActivatedRoute
 
   ) {}
@@ -76,7 +78,7 @@ export class OutboxComponent implements OnInit {
         formId: 'ADV',
       }, codeRoleList),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       if (res?.object) {
         this.dataList = Array.isArray(res.object) ? res.object : [];
       }
@@ -145,7 +147,7 @@ export class OutboxComponent implements OnInit {
     if (data?.yatClaimDTO) {
       data.yatClaimDTO.isReady = 'DWA';
     }
-    this.$claim
+    this.$claimApi
       .fileDownloadedForInkSign({
         headers: {
           claimId: String(claimId),
@@ -199,7 +201,7 @@ export class OutboxComponent implements OnInit {
     formData.append('financialYear', String(this.userIdDetails?.financialYear || this.uploadTarget?.yatClaimDTO?.financialYear || ''));
     formData.append('roleTypeId', String(this.userIdDetails?.roleTypeId || ''));
 
-    this.$claim.uploadInkSignedFile(formData).subscribe({
+    this.$claimApi.uploadInkSignedFile(formData).subscribe({
       next: (res: any) => {
         this.uploadLoadingMap[listKey] = false;
         input.value = '';
@@ -211,7 +213,7 @@ export class OutboxComponent implements OnInit {
         const uploadedClaim = Array.isArray(res?.object) ? res.object[0] : res?.object;
         this.dataList = this.dataList.filter((item: any) => this.getClaimId(item) != claimId);
         this.$common.showMessage(res?.message || 'File uploaded successfully.', 'success');
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
         if (uploadedClaim?.isReady === 'DW') {
           this.changeStatusToUploaded(claimId);
         }
@@ -226,7 +228,7 @@ export class OutboxComponent implements OnInit {
   }
 
   private changeStatusToUploaded(claimId: any): void {
-    this.$claim.changeStatusToUploaded({ headers: { claimId: String(claimId) } }).subscribe();
+    this.$claimApi.changeStatusToUploaded({ headers: { claimId: String(claimId) } }).subscribe();
   }
 
   private isVerifier2Role(): boolean {
@@ -254,7 +256,7 @@ export class OutboxComponent implements OnInit {
         ids: [String(claimId)],
       },
     };
-    this.$claim.deleteClaim(config).subscribe({
+    this.$claimApi.deleteClaim(config).subscribe({
       next: (res: any) => {
         if (!res?.status) {
           this.$common.showMessage(res?.message || 'Delete failed.', 'danger');
@@ -264,7 +266,7 @@ export class OutboxComponent implements OnInit {
           (item: any) => this.getClaimId(item) != claimId
         );
         this.$common.showMessage(res?.message || 'Claim deleted successfully.', 'success');
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
       },
       error: () => {
         this.$common.showMessage('Something went wrong while deleting claim.', 'danger');
@@ -310,3 +312,4 @@ export class OutboxComponent implements OnInit {
     return `${this.$auth.getModuleName()}/${String(viewUrl).replace(/^\/+/, '')}?id=${encodeURIComponent(claimId)}`;
   }
 }
+

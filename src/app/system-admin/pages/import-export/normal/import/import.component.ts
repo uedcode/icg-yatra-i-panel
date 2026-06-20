@@ -3,8 +3,8 @@ import { CommonService } from 'src/app/service/core/common.service';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ImportExportBatchService } from 'src/app/service/admin/import-export-batch.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ImportExportApiService } from 'src/app/service/api/import-export/import-export-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 declare var $: any;
 
 @Component({
@@ -22,8 +22,8 @@ export class ImportComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    public $importExportBatch: ImportExportBatchService,
-    private $claim: ClaimService,
+    public $importExportBatch: ImportExportApiService,
+    private $claimStateApi: ClaimStateApiService,
   ) { }
 
   id: any;
@@ -131,7 +131,7 @@ export class ImportComponent implements OnInit {
       }
       this.$importExportBatch.importBatch({}, config).subscribe((response: any) => {
         if (response.status == true) {
-          this.$claim.notifyStatusCountRefresh();
+          this.$claimStateApi.notifyStatusCountRefresh();
           this.batchList.splice(this.index, 1);
           if (this.viewingImportExportId == this.importExportId) {
             this.showBatchChilds = false;
@@ -165,7 +165,7 @@ export class ImportComponent implements OnInit {
             this.showBatchChilds = false;
           }
 
-          this.$claim.notifyStatusCountRefresh();
+          this.$claimStateApi.notifyStatusCountRefresh();
           $("#stagingDeleteModal").modal('hide');
         }
         this.$common.hideLoader();
@@ -180,7 +180,7 @@ export class ImportComponent implements OnInit {
   updateData(Object) {
     if (Object?.length) {
       this.batchList.splice(0, 0, Object[0]);
-      this.$claim.notifyStatusCountRefresh();
+      this.$claimStateApi.notifyStatusCountRefresh();
     }
   }
 
@@ -201,3 +201,4 @@ export class ImportComponent implements OnInit {
   }
 
 }
+

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ImportExportBatchService } from 'src/app/service/admin/import-export-batch.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ImportExportApiService } from 'src/app/service/api/import-export/import-export-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 declare var $: any;
 
 @Component({
@@ -32,8 +32,8 @@ export class BackupImportComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    public $importExportBatch: ImportExportBatchService,
-    private $claim: ClaimService,
+    public $importExportBatch: ImportExportApiService,
+    private $claimStateApi: ClaimStateApiService,
   ) {}
 
   ngOnInit() {
@@ -88,7 +88,7 @@ export class BackupImportComponent implements OnInit {
       if (response.status === true) {
         this.batchList.splice(this.index, 1);
         $('#changeBatchStatusModal').modal('hide');
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
       }
       this.$common.hideLoader();
     }, () => this.$common.hideLoader());
@@ -102,3 +102,4 @@ export class BackupImportComponent implements OnInit {
     }
   }
 }
+

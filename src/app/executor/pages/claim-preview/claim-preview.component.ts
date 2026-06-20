@@ -2,7 +2,8 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({
@@ -23,7 +24,7 @@ export class ClaimPreviewComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService, private $claimStateApi: ClaimStateApiService,
     private $common: CommonService
   ) {}
 
@@ -47,7 +48,7 @@ export class ClaimPreviewComponent implements OnInit {
         isPreview: 'true',
       },
     };
-    this.$claim.getSingleClaimPreview(config).subscribe({
+    this.$claimApi.getSingleClaimPreview(config).subscribe({
       next: (response: any) => {
         let obj = response?.object;
         if (Array.isArray(obj)) obj = obj[0] || null;
@@ -71,7 +72,7 @@ export class ClaimPreviewComponent implements OnInit {
       },
     };
 
-    this.$claim.getClaimStates(config).subscribe({
+    this.$claimStateApi.getAll(config).subscribe({
       next: (response: any) => {
         this.stateHistory = Array.isArray(response?.object) ? response.object : [];
       },
@@ -102,4 +103,5 @@ export class ClaimPreviewComponent implements OnInit {
     });
   }
 }
+
 

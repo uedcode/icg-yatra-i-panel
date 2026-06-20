@@ -14,7 +14,7 @@ import { OrderModule } from 'ngx-order-pipe';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { AuthGuard } from '../auth.guard';
 import { HeaderInterceptor } from '../HeaderInterceptor';
-import { FileExcelService } from 'src/app/service/form/file-excel.service';
+import { FileExcelService } from 'src/app/service/core/file-excel.service';
 
 import { ApproverRoutingModule } from './approver-routing.module';
 import { ApproverComponent } from './approver.component';

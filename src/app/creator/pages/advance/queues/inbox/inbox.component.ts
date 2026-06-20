@@ -5,9 +5,11 @@ import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormService } from 'src/app/service/form/form.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { FormApiService } from 'src/app/service/api/form/form-api.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { EsignApiService } from 'src/app/service/api/esign/esign-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -29,10 +31,12 @@ export class InboxComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $form: FormService,
-    public $formManage: FormManageService,
+    private $form: FormApiService,
+    private $formManage: FormManageService,
     private router: Router,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
+    private $esignApi: EsignApiService,
     private route: ActivatedRoute,
   ) { }
 
@@ -117,7 +121,7 @@ this.handleEsignFeedback();
         searchedName: searchHeaders.searchedName,
       }, codeRoleList),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -214,7 +218,7 @@ this.handleEsignFeedback();
       moduleId: this.userIdDetails?.moduleId,
     };
 
-    this.$claim.prepareForESign(payload).subscribe({
+    this.$esignApi.prepareForESign(payload).subscribe({
       next: (res: any) => {
         const responseObject = Array.isArray(res?.object) ? res.object[0] : res?.object;
         const redirectUrl = responseObject?.redirectUrl || responseObject?.url || responseObject?.esignUrl;
@@ -246,7 +250,7 @@ this.handleEsignFeedback();
       },
     };
 
-    this.$claim.fileDownloadedForInkSign(config).subscribe({
+    this.$claimApi.fileDownloadedForInkSign(config).subscribe({
       next: (res: any) => {
         if (!res?.status) {
           this.$common.showMessage(res?.message || 'Download failed.', 'danger');
@@ -314,7 +318,7 @@ this.handleEsignFeedback();
     formData.append('financialYear', String(this.userIdDetails?.financialYear || this.uploadTarget?.yatClaimDTO?.financialYear || ''));
     formData.append('roleTypeId', String(this.userIdDetails?.roleTypeId || ''));
 
-    this.$claim.uploadInkSignedFile(formData).subscribe({
+    this.$claimApi.uploadInkSignedFile(formData).subscribe({
       next: (res: any) => {
         this.uploadLoadingMap[listKey] = false;
         input.value = '';
@@ -328,9 +332,9 @@ this.handleEsignFeedback();
           (item: any) => item?.yatClaimDTO?.claimId != claimId
         );
         this.$common.showMessage(res?.message || 'File uploaded successfully.', 'success');
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
         if (uploadedClaim?.isReady === 'DW') {
-          this.$claim.changeStatusToUploaded({ headers: { claimId: String(claimId) } }).subscribe();
+          this.$claimApi.changeStatusToUploaded({ headers: { claimId: String(claimId) } }).subscribe();
         }
         this.uploadTarget = null;
       },
@@ -349,13 +353,13 @@ this.handleEsignFeedback();
       return;
     }
     const config = { headers: { ids: [claimId] } };
-    this.$claim.deleteClaim(config).subscribe((response: any) => {
+    this.$claimApi.deleteClaim(config).subscribe((response: any) => {
       if (response?.status === true) {
         this.$common.showMessage(`${response.message}`);
         this.dataList = this.dataList.filter(
           (elem: any) => elem?.yatClaimDTO?.claimId !== claimId
         );
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
       }
     });
   }
@@ -387,14 +391,14 @@ this.handleEsignFeedback();
           moduleId: this.userIdDetails?.moduleId,
         };
 
-        this.$claim.changeClaimStatusById(payload).subscribe(
+        this.$claimStateApi.changeStatusById(payload).subscribe(
           (response: any) => {
             if (response.status === true) {
               this.$common.showMessage(`${response.message}`);
               this.dataList = this.dataList.filter(
                 (elem: any) => elem?.yatClaimDTO?.claimId != claimId
               );
-              this.$claim.notifyStatusCountRefresh();
+              this.$claimStateApi.notifyStatusCountRefresh();
               setTimeout(() => {
                 let moduleUrl = this.$auth.getModuleName();
                 this.router.navigateByUrl(moduleUrl + `/draft`);
@@ -442,5 +446,6 @@ this.handleEsignFeedback();
   }
 
 }
+
 
 

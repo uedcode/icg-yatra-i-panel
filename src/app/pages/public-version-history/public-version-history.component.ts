@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { VersionhistoryService } from 'src/app/service/master/versionhistory.service';
+import { VersionHistoryApiService } from 'src/app/service/api/version-history/version-history-api.service';
 
 @Component({
   selector: 'app-public-version-history',
@@ -13,7 +13,7 @@ export class PublicVersionHistoryComponent implements OnInit {
 
   constructor(
     private $common: CommonService,
-    private $versionhistory: VersionhistoryService
+    private $versionhistory: VersionHistoryApiService
   ) {}
 
   ngOnInit(): void {
@@ -36,4 +36,3 @@ export class PublicVersionHistoryComponent implements OnInit {
     );
   }
 }
-

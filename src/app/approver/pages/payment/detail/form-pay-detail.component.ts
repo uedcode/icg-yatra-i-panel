@@ -2,7 +2,9 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { PayStateApiService } from 'src/app/service/api/pay-state/pay-state-api.service';
+import { YatPayDetailsApiService } from 'src/app/service/api/yat-pay-details/yat-pay-details-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
 
@@ -30,7 +32,9 @@ export class FormPayDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimStateApi: ClaimStateApiService,
+    private $payStateApi: PayStateApiService,
+    private $payDetailsApi: YatPayDetailsApiService,
     private $common: CommonService,
     private datePipe: DatePipe
   ) {}
@@ -55,7 +59,7 @@ export class FormPayDetailComponent implements OnInit {
       },
     };
     this.$common.showLoader();
-    this.$claim.getPayDetails(config).subscribe(
+    this.$payDetailsApi.getAll(config).subscribe(
       (res: any) => {
         this.$common.hideLoader();
         if (res?.status && Array.isArray(res.object) && res.object.length) {
@@ -163,11 +167,11 @@ export class FormPayDetailComponent implements OnInit {
       status,
       remark,
     };
-    this.$claim.changePayStatusById(payload).subscribe((res: any) => {
+    this.$payStateApi.changeStatusById(payload).subscribe((res: any) => {
       if (res?.status) {
         this.$common.showMessage(res?.message || 'Status updated successfully.');
         $('#payRemarkModal').modal('hide');
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
         this.router.navigateByUrl(`${this.$auth.getModuleName()}/pay-inbox`);
       }
     });
@@ -199,4 +203,5 @@ export class FormPayDetailComponent implements OnInit {
     return '';
   }
 }
+
 

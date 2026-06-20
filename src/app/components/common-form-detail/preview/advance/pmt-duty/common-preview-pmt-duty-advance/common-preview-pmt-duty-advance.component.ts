@@ -2,7 +2,7 @@ import { DatePipe, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class CommonPreviewPmtDutyAdvanceComponent implements OnInit {
     private route: ActivatedRoute,
     private datePipe: DatePipe,
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
     private $common: CommonService
   ) {}
 
@@ -86,7 +86,7 @@ export class CommonPreviewPmtDutyAdvanceComponent implements OnInit {
     }
 
     this.$common.showLoader();
-    this.$claim.getSingleClaim({
+    this.$claimApi.getSingleClaim({
       headers: {
         claimId: this.claimId,
         subFormId: 'P',
@@ -110,3 +110,4 @@ export class CommonPreviewPmtDutyAdvanceComponent implements OnInit {
     });
   }
 }
+

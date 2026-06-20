@@ -1,7 +1,7 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { FaqService } from 'src/app/service/admin/faq.service';
+import { FaqApiService } from 'src/app/service/api/faq/faq-api.service';
 declare var $: any;
 
 @Component({
@@ -15,7 +15,7 @@ export class FaqComponent implements OnInit {
 
   constructor(
     private $common: CommonService,
-    private $faq: FaqService,
+    private $faq: FaqApiService,
     public $auth: AuthService
   ) {}
   @Output() setRecordData = new EventEmitter();

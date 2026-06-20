@@ -5,14 +5,14 @@ import { of } from 'rxjs';
 import { DashboardComponent } from './dashboard.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
   let authService: jasmine.SpyObj<AuthService>;
   let commonService: jasmine.SpyObj<CommonService>;
-  let claimService: jasmine.SpyObj<ClaimService>;
+  let claimApiService: jasmine.SpyObj<ClaimStateApiService>;
 
   beforeEach(async () => {
     authService = jasmine.createSpyObj<AuthService>('AuthService', [
@@ -24,7 +24,7 @@ describe('DashboardComponent', () => {
       'showLoader',
       'hideLoader'
     ]);
-    claimService = jasmine.createSpyObj<ClaimService>('ClaimService', ['getStatusCount']);
+    claimApiService = jasmine.createSpyObj<ClaimStateApiService>('ClaimStateApiService', ['getStatusCount']);
     authService.getUserDetails.and.returnValue({
       desigId: 'D-1',
       unitId: 'U-1',
@@ -32,14 +32,14 @@ describe('DashboardComponent', () => {
       userId: 'USR-1'
     } as any);
     authService.codeRoleType.and.returnValue({ creator: 'CR' } as any);
-    claimService.getStatusCount.and.returnValue(of({ status: true, object: {} }) as any);
+    claimApiService.getStatusCount.and.returnValue(of({ status: true, object: {} }) as any);
 
     await TestBed.configureTestingModule({
       declarations: [DashboardComponent],
       providers: [
         { provide: AuthService, useValue: authService },
         { provide: CommonService, useValue: commonService },
-        { provide: ClaimService, useValue: claimService }
+        { provide: ClaimStateApiService, useValue: claimApiService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -58,7 +58,9 @@ describe('DashboardComponent', () => {
   it('should run ngOnInit and load dashboard count setup', () => {
     component.ngOnInit();
     expect(commonService.showLoader).toHaveBeenCalled();
-    expect(claimService.getStatusCount).toHaveBeenCalled();
+    expect(claimApiService.getStatusCount).toHaveBeenCalled();
   });
 });
+
+
 

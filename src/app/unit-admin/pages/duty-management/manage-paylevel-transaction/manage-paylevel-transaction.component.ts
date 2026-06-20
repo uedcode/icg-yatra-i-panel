@@ -2,8 +2,8 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
-import { UserService } from 'src/app/service/admin/user.service';
+import { CodeHrPayApiService } from 'src/app/service/api/code-hr-pay/code-hr-pay-api.service';
+import { UserApiService } from 'src/app/service/api/user/user-api.service';
 
 @Component({
   selector: 'app-manage-paylevel-transaction',
@@ -32,8 +32,8 @@ export class ManagePaylevelTransactionComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $systemAdmin: SystemAdminService,
-    private $user: UserService
+    private $codeHrPayApi: CodeHrPayApiService,
+    private $user: UserApiService
   ) {}
 
   ngOnInit(): void {
@@ -45,7 +45,7 @@ export class ManagePaylevelTransactionComponent implements OnInit {
   getAll(): void {
     try {
       this.$common.showLoader();
-      this.$systemAdmin.getPayLevelTransactions({ headers: {} }).subscribe(
+      this.$codeHrPayApi.getAll({ headers: {} }).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           this.dataList = Array.isArray(response?.object) ? response.object : [];
@@ -124,7 +124,7 @@ export class ManagePaylevelTransactionComponent implements OnInit {
       };
 
       this.$common.showLoader();
-      this.$systemAdmin.createOrUpdatePayLevelTransaction(payload).subscribe(
+      this.$codeHrPayApi.createOrUpdate(payload).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response?.status === true) {

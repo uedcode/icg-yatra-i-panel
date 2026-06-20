@@ -2,7 +2,7 @@ import { DatePipe, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({
@@ -30,7 +30,7 @@ export class ClaimMovementUpdateComponent implements OnInit {
     private location: Location,
     private datePipe: DatePipe,
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
     private $common: CommonService
   ) {}
 
@@ -58,7 +58,7 @@ export class ClaimMovementUpdateComponent implements OnInit {
     };
 
     this.$common.showLoader();
-    this.$claim.getSingleMovement(config).subscribe({
+    this.$claimApi.getSingleMovement(config).subscribe({
       next: (response: any) => {
         this.$common.hideLoader();
         const row = Array.isArray(response?.object) ? response.object[0] || null : response?.object || null;
@@ -150,3 +150,4 @@ export class ClaimMovementUpdateComponent implements OnInit {
     return this.normalizeSubFormId(subFormId);
   }
 }
+

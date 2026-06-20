@@ -3,18 +3,18 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
 import { PreviewReportComponent } from './preview-report.component';
+import { CodeMiscApiService } from 'src/app/service/api/code-misc/code-misc-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ReportAnalyticsService } from 'src/app/service/master/report-analytics.service';
 import { PipeModule } from 'src/app/app-pipe.module';
 
 describe('PreviewReportComponent', () => {
   let fixture: ComponentFixture<PreviewReportComponent>;
-  let report: jasmine.SpyObj<ReportAnalyticsService>;
+  let codeMiscApi: jasmine.SpyObj<CodeMiscApiService>;
 
   beforeEach(async () => {
     const common = jasmine.createSpyObj<CommonService>('CommonService', ['showLoader', 'hideLoader']);
-    report = jasmine.createSpyObj<ReportAnalyticsService>('ReportAnalyticsService', ['viewReport']);
-    report.viewReport.and.returnValue(of({
+    codeMiscApi = jasmine.createSpyObj<CodeMiscApiService>('CodeMiscApiService', ['viewReport']);
+    codeMiscApi.viewReport.and.returnValue(of({
       status: true,
       object: {
         dashboardList: [],
@@ -28,7 +28,7 @@ describe('PreviewReportComponent', () => {
       imports: [PipeModule],
       providers: [
         { provide: CommonService, useValue: common },
-        { provide: ReportAnalyticsService, useValue: report },
+        { provide: CodeMiscApiService, useValue: codeMiscApi },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -47,7 +47,7 @@ describe('PreviewReportComponent', () => {
   });
 
   it('calls legacy viewReport endpoint headers with mode view', () => {
-    expect(report.viewReport).toHaveBeenCalledWith({
+    expect(codeMiscApi.viewReport).toHaveBeenCalledWith({
       headers: {
         filterType: 'custom',
         customFromDate: '2026-06-01',

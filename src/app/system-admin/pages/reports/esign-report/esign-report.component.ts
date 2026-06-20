@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ReportAnalyticsService } from 'src/app/service/master/report-analytics.service';
 
 @Component({
   selector: 'app-esign-report',
@@ -20,7 +21,8 @@ export class EsignReportComponent implements OnInit {
 
   constructor(
     private $common: CommonService,
-    private $report: ReportAnalyticsService
+    private $claimStateApi: ClaimStateApiService,
+    private $codeUnitApi: CodeUnitApiService
   ) {}
 
   ngOnInit(): void {
@@ -29,7 +31,7 @@ export class EsignReportComponent implements OnInit {
   }
 
   loadUnits(): void {
-    this.$report.getGxUnits().subscribe(
+    this.$codeUnitApi.getGxUnits({ headers: {} }).subscribe(
       (response: any) => {
         if (response?.status) {
           this.units = this.normalizeUnits(response.object || []);
@@ -52,7 +54,7 @@ export class EsignReportComponent implements OnInit {
           gxUnitId: this.selectedGxUnitId || '',
         },
       };
-      this.$report.getEsignReportData(config).subscribe(
+      this.$claimStateApi.getEsignReportData(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response?.status) {

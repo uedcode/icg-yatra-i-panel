@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
-import { PayLevelService } from 'src/app/service/master/pay-level.service';
+import { PayLevelApiService } from 'src/app/service/api/pay-level/pay-level-api.service';
 
 declare var $: any;
 
@@ -13,7 +13,7 @@ declare var $: any;
 export class PayLevelComponent implements OnInit {
   constructor(
     private $common: CommonService,
-    private $payLevel: PayLevelService
+    private $payLevel: PayLevelApiService
   ) {}
 
   @Input() dataList: Array<any> = [];

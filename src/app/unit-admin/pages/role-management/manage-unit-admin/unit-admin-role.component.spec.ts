@@ -7,15 +7,15 @@ import { of } from 'rxjs';
 import { UnitAdminRoleComponent } from './unit-admin-role.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
-import { UserService } from 'src/app/service/admin/user.service';
+import { RoleApiService } from 'src/app/service/api/role/role-api.service';
+import { UserApiService } from 'src/app/service/api/user/user-api.service';
 import { PipeModule } from 'src/app/app-pipe.module';
 
 describe('UnitAdminRoleComponent', () => {
   let component: UnitAdminRoleComponent;
   let fixture: ComponentFixture<UnitAdminRoleComponent>;
-  let systemAdmin: jasmine.SpyObj<SystemAdminService>;
-  let user: jasmine.SpyObj<UserService>;
+  let roleApi: jasmine.SpyObj<RoleApiService>;
+  let user: jasmine.SpyObj<UserApiService>;
 
   beforeEach(async () => {
     const auth = jasmine.createSpyObj<AuthService>('AuthService', [
@@ -29,19 +29,19 @@ describe('UnitAdminRoleComponent', () => {
       'hideLoader',
       'showMessage'
     ]);
-    systemAdmin = jasmine.createSpyObj<SystemAdminService>('SystemAdminService', [
-      'getAll',
-      'createOrUpdate',
-      'changeStatus'
+    roleApi = jasmine.createSpyObj<RoleApiService>('RoleApiService', [
+      'getAllRoles',
+      'createOrUpdateRole',
+      'changeRoleStatus'
     ]);
-    user = jasmine.createSpyObj<UserService>('UserService', ['getAll', 'getSingle']);
+    user = jasmine.createSpyObj<UserApiService>('UserApiService', ['getAll', 'getSingle']);
 
     auth.codeRoleType.and.returnValue({ unitAdmin: 'UN' } as any);
     auth.codeStatus.and.returnValue({ activate: 'AC', deactivate: 'DA' } as any);
     auth.getUserDetails.and.returnValue({ unitId: 'UNIT-1', roleTypeId: 'UN' } as any);
-    systemAdmin.getAll.and.returnValue(of({ status: true, object: [] }) as any);
-    systemAdmin.createOrUpdate.and.returnValue(of({ status: true, object: [{}], message: 'Saved' }) as any);
-    systemAdmin.changeStatus.and.returnValue(of({ status: true, object: [{}], message: 'Updated' }) as any);
+    roleApi.getAllRoles.and.returnValue(of({ status: true, object: [] }) as any);
+    roleApi.createOrUpdateRole.and.returnValue(of({ status: true, object: [{}], message: 'Saved' }) as any);
+    roleApi.changeRoleStatus.and.returnValue(of({ status: true, object: [{}], message: 'Updated' }) as any);
     user.getAll.and.returnValue(of({ status: true, object: [] }) as any);
     user.getSingle.and.returnValue(of({ status: true, object: [] }) as any);
 
@@ -51,8 +51,8 @@ describe('UnitAdminRoleComponent', () => {
       providers: [
         { provide: AuthService, useValue: auth },
         { provide: CommonService, useValue: common },
-        { provide: SystemAdminService, useValue: systemAdmin },
-        { provide: UserService, useValue: user }
+        { provide: RoleApiService, useValue: roleApi },
+        { provide: UserApiService, useValue: user }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -88,7 +88,7 @@ describe('UnitAdminRoleComponent', () => {
 
     component.saveRecord();
 
-    const formData = systemAdmin.createOrUpdate.calls.mostRecent().args[0] as FormData;
+    const formData = roleApi.createOrUpdateRole.calls.mostRecent().args[0] as FormData;
     const dto = JSON.parse(formData.get('aclRoleDTO') as string);
     expect(dto.aclCodeRoleTypeDTO.roleTypeId).toBe('UN');
     expect(dto.aclUserDTO.userId).toBe('USER-1');

@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
+import { MarkTyApiService } from 'src/app/service/api/mark-ty/mark-ty-api.service';
 
 @Component({
   selector: 'app-report-ty-duty',
@@ -26,7 +26,7 @@ export class ReportTyDutyComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $systemAdmin: SystemAdminService
+    private $markTyApi: MarkTyApiService
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +38,7 @@ export class ReportTyDutyComponent implements OnInit {
 
   getPnoList(): void {
     const gxUnit = this.userIdDetails?.gxUnitId || this.userIdDetails?.unitId || '';
-    this.$systemAdmin.getPnoList({ headers: { gxUnit, unit: '' } }).subscribe(
+    this.$markTyApi.getPnoList({ headers: { gxUnit, unit: '' } }).subscribe(
       (response: any) => {
         this.pnoList = Array.isArray(response?.object) ? response.object : [];
       },
@@ -51,7 +51,7 @@ export class ReportTyDutyComponent implements OnInit {
   getAll(): void {
     try {
       this.$common.showLoader();
-      this.$systemAdmin.getMarkedTyDuty({ headers: { status: '1' } }).subscribe(
+      this.$markTyApi.getAllMarkedTyDuty({ headers: { status: '1' } }).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           this.dataList = Array.isArray(response?.object) ? response.object : [];
@@ -84,7 +84,7 @@ export class ReportTyDutyComponent implements OnInit {
       };
 
       this.$common.showLoader();
-      this.$systemAdmin.createMarkedTyDuty(payload).subscribe(
+      this.$markTyApi.createOrUpdateMarkedTyDuty(payload).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response?.status === true) {
@@ -125,7 +125,7 @@ export class ReportTyDutyComponent implements OnInit {
           status: tempObj.currentStatus,
         },
       };
-      this.$systemAdmin.changeMarkedTyDutyFlag(config).subscribe(
+      this.$markTyApi.changeMarkedTyDutyFlag(config).subscribe(
         (response: any) => {
           if (response?.status === true) {
             this.$common.showMessage(`${response.message}`);

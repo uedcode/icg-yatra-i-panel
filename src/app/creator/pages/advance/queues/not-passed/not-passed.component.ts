@@ -5,7 +5,9 @@ import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Router } from '@angular/router';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
+import { ClaimObservationApiService } from 'src/app/service/api/claim-observation/claim-observation-api.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -23,7 +25,9 @@ export class NotPassedComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
+    private $claimObservationApi: ClaimObservationApiService,
     private router: Router,
   ) { }
 
@@ -67,7 +71,7 @@ filterDataObj;
         searchedName: searchHeaders.searchedName,
       }),
     };
-    this.$claim.getClaimStates(config).subscribe((res: any) => {
+    this.$claimStateApi.getAll(config).subscribe((res: any) => {
       this.dataList = Array.isArray(res?.object) ? res.object : [];
     });
   }
@@ -154,7 +158,7 @@ filterDataObj;
     }
 
     this.claimObservations = [];
-    this.$claim.getClaimObservations({ headers: { claimId: String(claimId) } }).subscribe({
+    this.$claimObservationApi.getAll({ headers: { claimId: String(claimId) } }).subscribe({
       next: (res: any) => {
         this.claimObservations = Array.isArray(res?.object) ? res.object : [];
         setTimeout(() => $('#claimObservationModal').modal('show'), 0);
@@ -209,7 +213,7 @@ filterDataObj;
       },
     };
 
-    this.$claim.changeClaimStatusArchive(config).subscribe({
+    this.$claimStateApi.changeStatusArchive(config).subscribe({
       next: (res: any) => {
         this.archiveLoadingMap[listKey] = false;
         if (!res?.status) {
@@ -221,7 +225,7 @@ filterDataObj;
           (item: any) => item?.claimStateId != claimStateId
         );
         this.$common.showMessage(res?.message || 'Claim archived successfully.', 'success');
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
       },
       error: () => {
         this.archiveLoadingMap[listKey] = false;
@@ -253,5 +257,6 @@ filterDataObj;
   }
 
 }
+
 
 

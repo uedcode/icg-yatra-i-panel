@@ -4,9 +4,10 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { FormService } from 'src/app/service/form/form.service';
-import { ImportExportBatchService } from 'src/app/service/admin/import-export-batch.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { FormApiService } from 'src/app/service/api/form/form-api.service';
+import { ImportExportApiService } from 'src/app/service/api/import-export/import-export-api.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 declare var $: any;
 
 @Component({
@@ -23,9 +24,10 @@ export class InboxComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $form: FormService,
-    public $importExportBatch: ImportExportBatchService,
-    private $claim: ClaimService,
+    private $form: FormApiService,
+    public $importExportBatch: ImportExportApiService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -172,7 +174,7 @@ export class InboxComponent implements OnInit {
           if (response.status == true) {
             let object = response.object;
             if (firstTimeIndicator == 1) {
-              this.$claim.notifyStatusCountRefresh();
+              this.$claimStateApi.notifyStatusCountRefresh();
             }
             if (this.exportType) {
               $('#exportChangeStatusModal').modal('hide');
@@ -231,10 +233,10 @@ export class InboxComponent implements OnInit {
     }
     this.$common.showLoader();
     const config = { headers: { ids: claimIds } };
-    this.$claim.deleteClaim(config).subscribe((response: any) => {
+    this.$claimApi.deleteClaim(config).subscribe((response: any) => {
       if (response.status === true) {
         this.allAdminForm = this.allAdminForm.filter(element => claimIds.indexOf(element.claimId) === -1);
-        this.$claim.notifyStatusCountRefresh();
+        this.$claimStateApi.notifyStatusCountRefresh();
       }
       this.$common.hideLoader();
     }, () => this.$common.hideLoader());
@@ -260,4 +262,5 @@ export class InboxComponent implements OnInit {
   }
 
 }
+
 

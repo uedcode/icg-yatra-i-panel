@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
-import { DocumentService } from 'src/app/service/form/document.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
 declare var $: any;
 
 @Component({
@@ -14,7 +14,7 @@ declare var $: any;
 export class DocumentsComponent implements OnInit {
   constructor(
     private $common: CommonService,
-    private $document: DocumentService,
+    private $codeDocInfoApi: CodeDocInfoApiService,
     public $auth: AuthService
   ) {}
 
@@ -55,7 +55,7 @@ export class DocumentsComponent implements OnInit {
         headers: {},
       };
       
-      this.$document.get(this.config).subscribe(
+      this.$codeDocInfoApi.getAll(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -96,7 +96,7 @@ export class DocumentsComponent implements OnInit {
           ids: id,
         },
       };
-      this.$document.delete(config).subscribe(
+      this.$codeDocInfoApi.delete(config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {

@@ -3,10 +3,12 @@ import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CodeSubFormService } from 'src/app/service/master/codeSubForm.service';
+import { CodeSubFormApiService } from 'src/app/service/api/code-sub-form/code-sub-form-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { HometownApiService } from 'src/app/service/api/hometown/hometown-api.service';
+import { LtcAvailedHistApiService } from 'src/app/service/api/ltc-availed-hist/ltc-availed-hist-api.service';
 declare var $: any;
 
 @Component({
@@ -23,8 +25,10 @@ export class NewComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private $common: CommonService,
-    private $codeSubForm: CodeSubFormService,
-    private $claim: ClaimService,
+    private $codeSubForm: CodeSubFormApiService,
+    private $claimApi: ClaimApiService,
+    private $ltcAvailedHistApi: LtcAvailedHistApiService,
+    private $hometownApi: HometownApiService,
   ) { }
 
   dataList: any = [];
@@ -148,7 +152,7 @@ export class NewComponent implements OnInit {
 
     this.ltcCreateSubForm = subForm;
     this.$common.showLoader();
-    this.$claim.getLtcDoeDifference(config).subscribe({
+    this.$ltcAvailedHistApi.getDoeDifference(config).subscribe({
       next: (response: any) => {
         const doe = Number(response?.object || 0);
         if (!(doe > 1)) {
@@ -166,7 +170,7 @@ export class NewComponent implements OnInit {
   }
 
   private loadLtcAvailedHistory(config: any): void {
-    this.$claim.checkLtcAvailedHistory(config).subscribe({
+    this.$ltcAvailedHistApi.checkAvailedHistory(config).subscribe({
       next: (response: any) => {
         const result = Number(response?.object);
         if (result === 0) {
@@ -188,7 +192,7 @@ export class NewComponent implements OnInit {
   }
 
   private loadLtcFamilyDetails(config: any): void {
-    this.$claim.getLtcFamilyDetails(config).subscribe({
+    this.$ltcAvailedHistApi.getFamilyDetails(config).subscribe({
       next: (response: any) => {
         this.ltcFamilyDetails = Array.isArray(response?.object) ? response.object : [];
         this.loadHomeTown(config);
@@ -201,7 +205,7 @@ export class NewComponent implements OnInit {
   }
 
   private loadHomeTown(config: any): void {
-    this.$claim.initHomeTown(config).subscribe({
+    this.$hometownApi.init(config).subscribe({
       next: (response: any) => {
         this.$common.hideLoader();
         this.ltcHomeTown = response?.object || '';
@@ -230,7 +234,7 @@ export class NewComponent implements OnInit {
 
     const userId = this.userIdDetails?.userId || '';
     this.$common.showLoader();
-    this.$claim.saveHomeTown({ homeTown, userId }).subscribe({
+    this.$hometownApi.createOrUpdate({ homeTown, userId }).subscribe({
       next: () => {
         this.$common.hideLoader();
         this.showLtcFamilyModal = false;
@@ -278,4 +282,5 @@ export class NewComponent implements OnInit {
   }
   // data shorting end
 }
+
 

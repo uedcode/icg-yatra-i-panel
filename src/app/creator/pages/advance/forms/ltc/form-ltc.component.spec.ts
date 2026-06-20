@@ -58,9 +58,8 @@ describe('FormLtcAdvanceComponent', () => {
     ]);
     component.$common.checkForValidFile.and.returnValue(true);
     component.$common.parseResponse.and.callFake((response: any) => response);
-    component.$claim = jasmine.createSpyObj('ClaimService', [
+    component.$claimApi = jasmine.createSpyObj('ClaimApiService', [
       'createOrUpdateAdvance',
-      'createOrUpdateIfsc',
       'checkEsignAvailability',
       'getSingleClaim',
       'changeClaimStatusById',
@@ -75,34 +74,37 @@ describe('FormLtcAdvanceComponent', () => {
       'getPresentUnitStatus',
       'validateAdditionalLtc'
     ]);
-    component.$claim.createOrUpdateAdvance.and.returnValue(of({ object: [{ claimId: 2002 }] }));
-    component.$claim.createOrUpdateIfsc.and.returnValue(of({
+    component.$claimApi.createOrUpdateAdvance.and.returnValue(of({ object: [{ claimId: 2002 }] }));
+    component.$bankIfscApi = jasmine.createSpyObj('BankIfscApiService', ['createOrUpdate']);
+    component.$bankIfscApi.createOrUpdate.and.returnValue(of({
       status: true,
       message: 'IFSC Code updated successfully.',
       object: [{ ifscCode: 'HDFC0000013' }]
     }));
-    component.$claim.checkEsignAvailability.and.returnValue(of({ status: true }));
-    component.$claim.getSingleClaim.and.returnValue(of({ status: true, object: [] }));
-    component.$claim.changeClaimStatusById.and.returnValue(of({ status: true }));
-    component.$claim.prepareForESign.and.returnValue(of({ status: true, object: { transactionId: 'ES-LTC-1' } }));
-    component.$claim.getLtcBlockYears.and.returnValue(of({ status: true, object: ['2026-2027'] }));
-    component.$claim.getLtcTypes.and.returnValue(of({ status: true, object: [{ ltcTypeId: 'PAI', descr: 'Place Anywhere in India' }] }));
-    component.$claim.getLtcDoeDifference.and.returnValue(of({ status: true, object: 2 }));
-    component.$claim.getLtcFamilyDetails.and.returnValue(of({ status: true, object: [] }));
-    component.$claim.getLtcEntitled.and.returnValue(of({
+    component.$claimApi.getSingleClaim.and.returnValue(of({ status: true, object: [] }));
+    component.$claimStateApi = jasmine.createSpyObj('ClaimStateApiService', ['changeStatusById', 'notifyStatusCountRefresh']);
+    component.$claimStateApi.changeStatusById.and.returnValue(of({ status: true }));
+    component.$esignApi = jasmine.createSpyObj('EsignApiService', ['checkEsignAvailability', 'prepareForESign']);
+    component.$esignApi.checkEsignAvailability.and.returnValue(of({ status: true }));
+    component.$esignApi.prepareForESign.and.returnValue(of({ status: true, object: { transactionId: 'ES-LTC-1' } }));
+    component.$claimApi.getLtcBlockYears.and.returnValue(of({ status: true, object: ['2026-2027'] }));
+    component.$claimApi.getLtcTypes.and.returnValue(of({ status: true, object: [{ ltcTypeId: 'PAI', descr: 'Place Anywhere in India' }] }));
+    component.$claimApi.getLtcDoeDifference.and.returnValue(of({ status: true, object: 2 }));
+    component.$claimApi.getLtcFamilyDetails.and.returnValue(of({ status: true, object: [] }));
+    component.$claimApi.getLtcEntitled.and.returnValue(of({
       status: true,
       object: { singleBlockYear: ['2026'], listYearsAvailed: [] }
     }));
-    component.$claim.getLtcAvailedEntitledHistory.and.returnValue(of({
+    component.$claimApi.getLtcAvailedEntitledHistory.and.returnValue(of({
       status: true,
       object: { singleBlockYear: ['2026'], listYearsAvailed: [] }
     }));
-    component.$claim.getPresentUnitStatus.and.returnValue(of({ status: true, object: true }));
-    component.$claim.validateAdditionalLtc.and.returnValue(of({ status: true, object: 'Yes' }));
+    component.$claimApi.getPresentUnitStatus.and.returnValue(of({ status: true, object: true }));
+    component.$claimApi.validateAdditionalLtc.and.returnValue(of({ status: true, object: 'Yes' }));
     component.$formManage = jasmine.createSpyObj('FormManageService', ['uploadImg', 'deleteByUrl']);
     component.$formManage.docFileUrl = new Subject<string>();
     component.$formManage.docFileUrlDeleted = new Subject<boolean>();
-    component.$codeDocInfo = jasmine.createSpyObj('CodeDocInfoService', ['setDocument']);
+    component.$codeDocInfo = jasmine.createSpyObj('CodeDocInfoApiService', ['setDocument']);
     component.$codeDocInfo.documentDtos = new Subject<any>();
     component.UtilService = jasmine.createSpyObj('UtilService', ['toMillis']);
     component.UtilService.toMillis.and.returnValue(1700000000000);
@@ -256,7 +258,7 @@ describe('FormLtcAdvanceComponent', () => {
 
     component.changeLtcType();
 
-    expect(component.$claim.validateAdditionalLtc).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.$claimApi.validateAdditionalLtc).toHaveBeenCalledWith(jasmine.objectContaining({
       headers: jasmine.objectContaining({
         userId: 42,
         blockYear: '2026-2027',
@@ -272,7 +274,7 @@ describe('FormLtcAdvanceComponent', () => {
 
     component.ltcChange('f', true);
 
-    expect(component.$claim.getLtcBlockYears).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.$claimApi.getLtcBlockYears).toHaveBeenCalledWith(jasmine.objectContaining({
       headers: jasmine.objectContaining({
         type: 'f',
         userId: 42,
@@ -281,7 +283,7 @@ describe('FormLtcAdvanceComponent', () => {
         isDropdown: '1',
       })
     }));
-    expect(component.$claim.getLtcTypes).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.$claimApi.getLtcTypes).toHaveBeenCalledWith(jasmine.objectContaining({
       headers: jasmine.objectContaining({ type: 'f' })
     }));
     expect(component.blockYears).toEqual(['2026-2027']);
@@ -292,31 +294,31 @@ describe('FormLtcAdvanceComponent', () => {
 
   it('should load DOE difference during LTC master initialization', () => {
     const component = createComponent();
-    component.$claim.getLtcDoeDifference.and.returnValue(of({ status: true, object: '3' }));
+    component.$claimApi.getLtcDoeDifference.and.returnValue(of({ status: true, object: '3' }));
 
     component.loadInitialMasterData();
 
-    expect(component.$claim.getPresentUnitStatus).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.$claimApi.getPresentUnitStatus).toHaveBeenCalledWith(jasmine.objectContaining({
       headers: jasmine.objectContaining({ presentUnit: 'U1', pid: 42 })
     }));
-    expect(component.$claim.getLtcDoeDifference).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.$claimApi.getLtcDoeDifference).toHaveBeenCalledWith(jasmine.objectContaining({
       headers: jasmine.objectContaining({ userId: 42 })
     }));
     expect(component.doe).toBe(3);
-    expect(component.$claim.getLtcBlockYears).toHaveBeenCalled();
-    expect(component.$claim.getLtcTypes).toHaveBeenCalled();
+    expect(component.$claimApi.getLtcBlockYears).toHaveBeenCalled();
+    expect(component.$claimApi.getLtcTypes).toHaveBeenCalled();
   });
 
   it('should load family details during LTC master initialization', () => {
     const component = createComponent();
-    component.$claim.getLtcFamilyDetails.and.returnValue(of({
+    component.$claimApi.getLtcFamilyDetails.and.returnValue(of({
       status: true,
       object: [{ memberName: 'M Kalai', relation: 'Self' }]
     }));
 
     component.loadInitialMasterData();
 
-    expect(component.$claim.getLtcFamilyDetails).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.$claimApi.getLtcFamilyDetails).toHaveBeenCalledWith(jasmine.objectContaining({
       headers: jasmine.objectContaining({ userId: 42 })
     }));
     expect(component.claims.yatFamilyDetailDTOs).toEqual([
@@ -328,7 +330,7 @@ describe('FormLtcAdvanceComponent', () => {
 
   it('should load LTC entitlement using legacy headers and open entitlement modal', () => {
     const component = createComponent();
-    component.$claim.getLtcEntitled.and.returnValue(of({
+    component.$claimApi.getLtcEntitled.and.returnValue(of({
       status: true,
       object: {
         singleBlockYear: ['2026', '2027'],
@@ -339,7 +341,7 @@ describe('FormLtcAdvanceComponent', () => {
     component.getLtcEntitled();
 
     expect(component.$common.showLoader).toHaveBeenCalled();
-    expect(component.$claim.getLtcEntitled).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.$claimApi.getLtcEntitled).toHaveBeenCalledWith(jasmine.objectContaining({
       headers: jasmine.objectContaining({ userId: 42, unitId: 'U1' })
     }));
     expect(component.$common.hideLoader).toHaveBeenCalled();
@@ -349,7 +351,7 @@ describe('FormLtcAdvanceComponent', () => {
 
   it('should show message and keep LTC entitlement modal closed on false response', () => {
     const component = createComponent();
-    component.$claim.getLtcEntitled.and.returnValue(of({
+    component.$claimApi.getLtcEntitled.and.returnValue(of({
       status: false,
       message: 'No entitlement'
     }));
@@ -363,7 +365,7 @@ describe('FormLtcAdvanceComponent', () => {
 
   it('should hide loader and show message when LTC entitlement API fails', () => {
     const component = createComponent();
-    component.$claim.getLtcEntitled.and.returnValue(throwError(() => new Error('down')));
+    component.$claimApi.getLtcEntitled.and.returnValue(throwError(() => new Error('down')));
 
     component.getLtcEntitled();
 
@@ -395,7 +397,7 @@ describe('FormLtcAdvanceComponent', () => {
 
   it('should load LTC availed history using legacy headers and open availed history modal', () => {
     const component = createComponent();
-    component.$claim.getLtcAvailedEntitledHistory.and.returnValue(of({
+    component.$claimApi.getLtcAvailedEntitledHistory.and.returnValue(of({
       status: true,
       object: {
         singleBlockYear: ['2026', '2027'],
@@ -406,7 +408,7 @@ describe('FormLtcAdvanceComponent', () => {
     component.getLtcAvailedHistory();
 
     expect(component.$common.showLoader).toHaveBeenCalled();
-    expect(component.$claim.getLtcAvailedEntitledHistory).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.$claimApi.getLtcAvailedEntitledHistory).toHaveBeenCalledWith(jasmine.objectContaining({
       headers: jasmine.objectContaining({ userId: 42, unitId: 'U1' })
     }));
     expect(component.$common.hideLoader).toHaveBeenCalled();
@@ -417,7 +419,7 @@ describe('FormLtcAdvanceComponent', () => {
 
   it('should show message and keep LTC availed history modal closed on false response', () => {
     const component = createComponent();
-    component.$claim.getLtcAvailedEntitledHistory.and.returnValue(of({
+    component.$claimApi.getLtcAvailedEntitledHistory.and.returnValue(of({
       status: false,
       message: 'No history'
     }));
@@ -431,7 +433,7 @@ describe('FormLtcAdvanceComponent', () => {
 
   it('should hide loader and show message when LTC availed history API fails', () => {
     const component = createComponent();
-    component.$claim.getLtcAvailedEntitledHistory.and.returnValue(throwError(() => new Error('down')));
+    component.$claimApi.getLtcAvailedEntitledHistory.and.returnValue(throwError(() => new Error('down')));
 
     component.getLtcAvailedHistory();
 
@@ -521,7 +523,7 @@ describe('FormLtcAdvanceComponent', () => {
     const component = createComponent();
     component.submit({ invalid: true } as any);
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please fill all required fields.', 'danger');
-    expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
+    expect(component.$claimApi.createOrUpdateAdvance).not.toHaveBeenCalled();
   });
 
   it('should block submit when gx upload missing', () => {
@@ -531,7 +533,7 @@ describe('FormLtcAdvanceComponent', () => {
     component.gxFile = null;
     component.submit({ invalid: false } as any);
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please upload GX Form PDF.', 'danger');
-    expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
+    expect(component.$claimApi.createOrUpdateAdvance).not.toHaveBeenCalled();
   });
 
   it('should submit valid form to outbox', () => {
@@ -541,16 +543,16 @@ describe('FormLtcAdvanceComponent', () => {
     component.claims.signWith = component.codeSignType.inkSign;
     component.claims.yatDtsDetailDTOs = [{ isDts: 'Yes', tempAmount: '1000', amount: '1000' }];
     component.submit({ invalid: false } as any);
-    const formData = component.$claim.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
+    const formData = component.$claimApi.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.claimState).toBe('OB');
-    expect(component.$claim.changeClaimStatusById).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.$claimStateApi.changeStatusById).toHaveBeenCalledWith(jasmine.objectContaining({
       claimId: 2002,
       status: 'OB',
       userId: 42,
       roleTypeId: 'CR'
     }));
-    expect(component.$claim.notifyStatusCountRefresh).toHaveBeenCalled();
+    expect(component.$claimStateApi.notifyStatusCountRefresh).toHaveBeenCalled();
     expect(component.router.navigateByUrl).toHaveBeenCalledWith('/creator/new');
   });
 
@@ -564,14 +566,14 @@ describe('FormLtcAdvanceComponent', () => {
       financialYear: '2026',
       moduleId: 'ADV',
     };
-    component.$claim.createOrUpdateAdvance.and.returnValue(of({
+    component.$claimApi.createOrUpdateAdvance.and.returnValue(of({
       status: true,
       object: [{ claimId: 404 }],
     }) as any);
 
     component.submit({ invalid: false } as any);
 
-    expect(component.$claim.prepareForESign).toHaveBeenCalledWith(jasmine.objectContaining({
+    expect(component.$esignApi.prepareForESign).toHaveBeenCalledWith(jasmine.objectContaining({
       claimId: 404,
       status: 'OB',
       userId: 42,
@@ -579,8 +581,8 @@ describe('FormLtcAdvanceComponent', () => {
       financialYear: '2026',
       moduleId: 'ADV',
     }));
-    expect(component.$claim.changeClaimStatusById).not.toHaveBeenCalled();
-    expect(component.$claim.notifyStatusCountRefresh).toHaveBeenCalled();
+    expect(component.$claimStateApi.changeStatusById).not.toHaveBeenCalled();
+    expect(component.$claimStateApi.notifyStatusCountRefresh).toHaveBeenCalled();
     expect(component.eSignTempFormObj).toEqual({ transactionId: 'ES-LTC-1' });
     expect(component.disableBtn).toBeFalse();
   });
@@ -598,7 +600,7 @@ describe('FormLtcAdvanceComponent', () => {
     ];
     component.documentDtos = [{ codeDocInfoDTO: { id: 8, docName: 'GX Form' }, otherDocName: 'GX Other' }];
     component.claims.internalRemarks = 'LTC remarks 🚢';
-    component.$claim.createOrUpdateAdvance.and.returnValue(of({
+    component.$claimApi.createOrUpdateAdvance.and.returnValue(of({
       status: true,
       object: [{
         claimId: 303,
@@ -615,7 +617,7 @@ describe('FormLtcAdvanceComponent', () => {
     }) as any);
 
     component.saveDraft();
-    const formData = component.$claim.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
+    const formData = component.$claimApi.createOrUpdateAdvance.calls.mostRecent().args[0] as FormData;
     const payload = JSON.parse(formData.get('yatClaimDTO') as string);
     expect(payload.claimState).toBe('DR');
     expect(payload.roleTypeId).toBe('CR');
@@ -646,7 +648,7 @@ describe('FormLtcAdvanceComponent', () => {
     const component = createComponent();
     component.claimIdParam = 'C_ID_LTC_1';
     component.supplementaryId = 'SUP-LTC-1';
-    component.$claim.getSingleClaim.and.returnValue(of({
+    component.$claimApi.getSingleClaim.and.returnValue(of({
       status: true,
       object: [{
         claimId: 'C_ID_LTC_1',
@@ -685,7 +687,7 @@ describe('FormLtcAdvanceComponent', () => {
 
     component.getFormDetails();
 
-    const config = component.$claim.getSingleClaim.calls.mostRecent().args[0];
+    const config = component.$claimApi.getSingleClaim.calls.mostRecent().args[0];
     expect(config.headers).toEqual(jasmine.objectContaining({
       claimId: 'C_ID_LTC_1',
       subFormId: 'L',
@@ -731,12 +733,12 @@ describe('FormLtcAdvanceComponent', () => {
 
     component.newIfscCode = '   ';
     component.submitIFSCUpdate();
-    expect(component.$claim.createOrUpdateIfsc).not.toHaveBeenCalled();
+    expect(component.$bankIfscApi.createOrUpdate).not.toHaveBeenCalled();
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please enter IFSC code.', 'danger');
 
     component.newIfscCode = 'BADIFSC';
     component.submitIFSCUpdate();
-    expect(component.$claim.createOrUpdateIfsc).not.toHaveBeenCalled();
+    expect(component.$bankIfscApi.createOrUpdate).not.toHaveBeenCalled();
     expect(component.$common.showMessage).toHaveBeenCalledWith('Please enter valid IFSC code.', 'danger');
   });
 
@@ -750,7 +752,7 @@ describe('FormLtcAdvanceComponent', () => {
     component.submitIFSCUpdate();
 
     expect(component.$common.showLoader).toHaveBeenCalled();
-    expect(component.$claim.createOrUpdateIfsc).toHaveBeenCalledWith(
+    expect(component.$bankIfscApi.createOrUpdate).toHaveBeenCalledWith(
       { ifscCode: 'HDFC0000013', userId: 'ACL-1' },
       { headers: { claimId: 303 } }
     );
@@ -767,7 +769,7 @@ describe('FormLtcAdvanceComponent', () => {
     const component = createComponent();
     component.showIfscModal = true;
     component.newIfscCode = 'HDFC0000013';
-    component.$claim.createOrUpdateIfsc.and.returnValue(of({
+    component.$bankIfscApi.createOrUpdate.and.returnValue(of({
       status: false,
       message: 'Invalid branch'
     }));
@@ -782,7 +784,7 @@ describe('FormLtcAdvanceComponent', () => {
   it('should hide loader and show error when IFSC API fails', () => {
     const component = createComponent();
     component.newIfscCode = 'HDFC0000013';
-    component.$claim.createOrUpdateIfsc.and.returnValue(throwError(() => new Error('down')));
+    component.$bankIfscApi.createOrUpdate.and.returnValue(throwError(() => new Error('down')));
 
     component.submitIFSCUpdate();
 
@@ -797,13 +799,13 @@ describe('FormLtcAdvanceComponent', () => {
     const component = createComponent();
     component.claims.claimId = 999;
     component.claims.signWith = component.codeSignType.eSign;
-    component.$claim.checkEsignAvailability.and.returnValue(of({ status: false, message: 'eSign unavailable' }));
+    component.$esignApi.checkEsignAvailability.and.returnValue(of({ status: false, message: 'eSign unavailable' }));
     component.checkEsignAvailability();
     expect(component.claims.signWith).toBe(component.codeSignType.inkSign);
     expect(component.$common.showMessage).toHaveBeenCalledWith('eSign unavailable', 'danger');
 
     component.claims.signWith = component.codeSignType.eSign;
-    component.$claim.checkEsignAvailability.and.returnValue(throwError(() => new Error('down')));
+    component.$esignApi.checkEsignAvailability.and.returnValue(throwError(() => new Error('down')));
     component.checkEsignAvailability();
     expect(component.claims.signWith).toBe(component.codeSignType.inkSign);
     expect(component.$common.showMessage).toHaveBeenCalledWith('Unable to verify eSign availability.', 'danger');
@@ -816,7 +818,7 @@ describe('FormLtcAdvanceComponent', () => {
 
     component.checkEsignAvailability();
 
-    expect(component.$claim.checkEsignAvailability).not.toHaveBeenCalled();
+    expect(component.$esignApi.checkEsignAvailability).not.toHaveBeenCalled();
     expect(component.claims.signWith).toBe(component.codeSignType.inkSign);
     expect(component.$common.showMessage).toHaveBeenCalledWith(
       'Please save the LTC advance before checking eSign availability.',
@@ -832,7 +834,7 @@ describe('FormLtcAdvanceComponent', () => {
 
     component.submit({ invalid: false } as any);
 
-    expect(component.$claim.createOrUpdateAdvance).not.toHaveBeenCalled();
+    expect(component.$claimApi.createOrUpdateAdvance).not.toHaveBeenCalled();
   });
 
   it('runLtcClientValidationOnly should fail when required section validation fails', () => {
@@ -1009,4 +1011,5 @@ describe('FormLtcAdvanceComponent', () => {
     expect(component.pageTitle).toBe('Supplementary LTC Claim');
   });
 });
+
 

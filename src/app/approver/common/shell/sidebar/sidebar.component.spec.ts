@@ -4,7 +4,7 @@ import { of, Subject, throwError } from 'rxjs';
 
 import { SidebarComponent } from './sidebar.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 describe('SidebarComponent', () => {
@@ -12,7 +12,7 @@ describe('SidebarComponent', () => {
   let fixture: ComponentFixture<SidebarComponent>;
   let authService: jasmine.SpyObj<AuthService>;
   let commonService: jasmine.SpyObj<CommonService>;
-  let claimService: jasmine.SpyObj<ClaimService>;
+  let claimApiService: jasmine.SpyObj<ClaimStateApiService>;
 
   const codeRoleList = {
     superAdmin: 'SAD',
@@ -63,14 +63,14 @@ describe('SidebarComponent', () => {
       'hideLoader',
       'showLoader'
     ]);
-    claimService = jasmine.createSpyObj<ClaimService>('ClaimService', ['getStatusCount']);
-    (claimService as any).statusCountRefresh$ = new Subject<void>();
+    claimApiService = jasmine.createSpyObj<ClaimStateApiService>('ClaimStateApiService', ['getStatusCount']);
+    (claimApiService as any).statusCountRefresh$ = new Subject<void>();
 
     authService.codeRoleType.and.returnValue(codeRoleList);
     authService.getUserDetails.and.returnValue(verifierUser);
     authService.isRuntimeAdv.and.returnValue(true);
     authService.isRuntimeClm.and.returnValue(false);
-    claimService.getStatusCount.and.returnValue(
+    claimApiService.getStatusCount.and.returnValue(
       of({
         status: true,
         object: [{
@@ -102,7 +102,7 @@ describe('SidebarComponent', () => {
       providers: [
         { provide: AuthService, useValue: authService },
         { provide: CommonService, useValue: commonService },
-        { provide: ClaimService, useValue: claimService }
+        { provide: ClaimStateApiService, useValue: claimApiService }
       ]
     })
     .compileComponents();
@@ -121,7 +121,7 @@ describe('SidebarComponent', () => {
     component.ngOnInit();
 
     expect(commonService.showLoader).toHaveBeenCalled();
-    expect(claimService.getStatusCount).toHaveBeenCalledOnceWith({
+    expect(claimApiService.getStatusCount).toHaveBeenCalledOnceWith({
       headers: {
         userId: 'VERIFIER-1',
         roleTypeId: 'VE1',
@@ -148,7 +148,7 @@ describe('SidebarComponent', () => {
 
     component.ngOnInit();
 
-    expect(claimService.getStatusCount).toHaveBeenCalledOnceWith({
+    expect(claimApiService.getStatusCount).toHaveBeenCalledOnceWith({
       headers: {
         userId: 'CREATOR-2',
         unitId: 'UNIT-VE',
@@ -166,7 +166,7 @@ describe('SidebarComponent', () => {
 
     component.ngOnInit();
 
-    expect(claimService.getStatusCount).toHaveBeenCalledOnceWith({
+    expect(claimApiService.getStatusCount).toHaveBeenCalledOnceWith({
       headers: {
         userId: 'VERIFIER-1'
       }
@@ -175,7 +175,7 @@ describe('SidebarComponent', () => {
 
   it('hides the loader when count loading fails', () => {
     spyOn(console, 'log');
-    claimService.getStatusCount.and.returnValue(
+    claimApiService.getStatusCount.and.returnValue(
       throwError(() => ({ status: 500 })) as any
     );
 
@@ -188,7 +188,7 @@ describe('SidebarComponent', () => {
 
   it('does not overwrite count object when API returns status false', () => {
     component.countObj.inboxCount = 99;
-    claimService.getStatusCount.and.returnValue(
+    claimApiService.getStatusCount.and.returnValue(
       of({ status: false, object: { inboxCount: 1 } }) as any
     );
 
@@ -200,7 +200,7 @@ describe('SidebarComponent', () => {
 
   it('hides loader when getStatusCount throws synchronously', () => {
     spyOn(console, 'log');
-    claimService.getStatusCount.and.callFake(() => {
+    claimApiService.getStatusCount.and.callFake(() => {
       throw new Error('sync failure');
     });
 
@@ -338,4 +338,6 @@ describe('SidebarComponent', () => {
     }
   });
 });
+
+
 

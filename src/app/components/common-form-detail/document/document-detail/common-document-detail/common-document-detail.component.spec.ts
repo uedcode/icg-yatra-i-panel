@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CommonDocumentDetailComponent } from './common-document-detail.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CodeDocInfoService } from 'src/app/service/master/codeDocInfo.service';
+import { CodeDocInfoApiService } from 'src/app/service/api/code-doc-info/code-doc-info-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { FormManageService } from 'src/app/service/form/form-manage.service';
+import { FormManageService } from 'src/app/service/core/form-manage.service';
 
 describe('CommonDocumentDetailComponent', () => {
   let component: CommonDocumentDetailComponent;
@@ -18,7 +18,7 @@ describe('CommonDocumentDetailComponent', () => {
       declarations: [CommonDocumentDetailComponent],
       providers: [
         { provide: AuthService, useValue: authService },
-        { provide: CodeDocInfoService, useValue: {} },
+        { provide: CodeDocInfoApiService, useValue: {} },
         { provide: CommonService, useValue: {} },
         { provide: FormManageService, useValue: {} }
       ]

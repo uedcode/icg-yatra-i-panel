@@ -3,8 +3,9 @@ import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { SystemAdminService } from 'src/app/service/admin/systemAdmin.service';
-import { UserService } from 'src/app/service/admin/user.service';
+import { CodeUnitApiService } from 'src/app/service/api/code-unit/code-unit-api.service';
+import { RoleApiService } from 'src/app/service/api/role/role-api.service';
+import { UserApiService } from 'src/app/service/api/user/user-api.service';
 
 @Component({
   selector: 'app-manage-unit-admin',
@@ -18,8 +19,9 @@ export class ManageUnitAdminComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    private $systemAdmin: SystemAdminService,
-    private $user: UserService
+    private $roleApi: RoleApiService,
+    private $codeUnitApi: CodeUnitApiService,
+    private $user: UserApiService
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -187,7 +189,7 @@ export class ManageUnitAdminComponent implements OnInit {
         fromDateTime: this.toMillis(this.formObj?.fromDateTime),
       };
 
-      this.$systemAdmin.createOrUpdate(this.buildRoleFormData(req)).subscribe(
+      this.$roleApi.createOrUpdateRole(this.buildRoleFormData(req)).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -220,7 +222,7 @@ export class ManageUnitAdminComponent implements OnInit {
           isArchive: '0'
         },
       };
-      this.$systemAdmin.getAll(this.config).subscribe(
+      this.$roleApi.getAllRoles(this.config).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -241,7 +243,7 @@ export class ManageUnitAdminComponent implements OnInit {
   getUnitList() {
     try {
       this.$common.showLoader();
-      this.$systemAdmin.getGxUnits({ headers: {} }).subscribe(
+      this.$codeUnitApi.getGxUnits({ headers: {} }).subscribe(
         (response: any) => {
           this.$common.hideLoader();
           if (response.status === true) {
@@ -330,7 +332,7 @@ export class ManageUnitAdminComponent implements OnInit {
           statusId: tempObj.currentStatus
         }
       };
-      this.$systemAdmin.changeStatus(config).subscribe((response: any) => {
+      this.$roleApi.changeRoleStatus(config).subscribe((response: any) => {
         if (response.status === true) {
           this.updateRowStatus(tempObj);
           this.$common.showMessage(`${response.message}`);

@@ -2,7 +2,8 @@ import { DatePipe, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
 
@@ -50,7 +51,8 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
     private location: Location,
     private datePipe: DatePipe,
     public $auth: AuthService,
-    private $claim: ClaimService,
+    private $claimApi: ClaimApiService,
+    private $claimStateApi: ClaimStateApiService,
     private $common: CommonService
   ) {}
 
@@ -89,7 +91,7 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
       },
     };
 
-    this.$claim.getAdvanceVoucher(config).subscribe({
+    this.$claimApi.getAdvanceVoucher(config).subscribe({
       next: (response: any) => {
         this.$common.hideLoader();
         let obj = response?.object;
@@ -116,7 +118,7 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
       },
     };
 
-    this.$claim.getClaimStates(config).subscribe({
+    this.$claimStateApi.getAll(config).subscribe({
       next: (response: any) => {
         this.stateHistory = Array.isArray(response?.object) ? response.object : [];
       },
@@ -133,7 +135,7 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
       },
     };
 
-    this.$claim.getClaimRemarkSummary(config).subscribe({
+    this.$claimApi.getClaimRemarkSummary(config).subscribe({
       next: (response: any) => {
         const remarks = Array.isArray(response?.object) ? response.object : [];
         this.claimRemarkSummary = remarks[0] || null;
@@ -262,7 +264,7 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
     };
 
     return new Promise((resolve) => {
-      this.$claim.validateClaimState(config).subscribe({
+      this.$claimApi.validateClaimState(config).subscribe({
         next: (response: any) => {
           if (response?.status === false) {
             this.$common.showMessage(
@@ -325,7 +327,7 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
 
     this.actionLoading = true;
     this.$common.showLoader();
-    this.$claim.changeClaimStatusById(payload).subscribe({
+    this.$claimStateApi.changeStatusById(payload).subscribe({
       next: (response: any) => {
         this.actionLoading = false;
         this.$common.hideLoader();
@@ -334,7 +336,7 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
             response?.message || 'Claim status updated successfully.',
             'success'
           );
-          this.$claim.notifyStatusCountRefresh();
+          this.$claimStateApi.notifyStatusCountRefresh();
           this.router.navigateByUrl(this.$auth.getModuleName() + '/inbox-claim');
           return;
         }
@@ -709,5 +711,6 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
     return this.normalizeSubFormId(subFormId);
   }
 }
+
 
 

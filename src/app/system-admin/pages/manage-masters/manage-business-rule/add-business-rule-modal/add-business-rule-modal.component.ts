@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CommonService } from 'src/app/service/core/common.service';
-import { BusinessRuleService } from 'src/app/service/master/business-rule.service';
+import { BusinessRuleApiService } from 'src/app/service/api/business-rule/business-rule-api.service';
 
 declare var $: any;
 
@@ -30,7 +30,7 @@ export class AddBusinessRuleModalComponent implements OnInit {
 
   constructor(
     private $common: CommonService,
-    private $businessRule: BusinessRuleService
+    private $businessRule: BusinessRuleApiService
   ) {}
 
   ngOnInit() {}

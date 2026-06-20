@@ -5,7 +5,8 @@ import { of, throwError } from 'rxjs';
 import { HeaderComponent } from './header.component';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
-import { UserService } from 'src/app/service/admin/user.service';
+import { RoleApiService } from 'src/app/service/api/role/role-api.service';
+import { UserApiService } from 'src/app/service/api/user/user-api.service';
 import { environment } from 'src/environments/environment';
 
 describe('HeaderComponent', () => {
@@ -13,7 +14,8 @@ describe('HeaderComponent', () => {
   let fixture: ComponentFixture<HeaderComponent>;
   let authService: jasmine.SpyObj<AuthService>;
   let commonService: jasmine.SpyObj<CommonService>;
-  let userService: jasmine.SpyObj<UserService>;
+  let userService: jasmine.SpyObj<UserApiService>;
+  let roleApiService: jasmine.SpyObj<RoleApiService>;
 
   beforeEach(async () => {
     authService = jasmine.createSpyObj<AuthService>('AuthService', [
@@ -28,9 +30,11 @@ describe('HeaderComponent', () => {
       'hideLoader',
       'showMessage'
     ]);
-    userService = jasmine.createSpyObj<UserService>('UserService', [
-      'roles',
+    userService = jasmine.createSpyObj<UserApiService>('UserApiService', [
       'roleSwitch'
+    ]);
+    roleApiService = jasmine.createSpyObj<RoleApiService>('RoleApiService', [
+      'getRolesByUser'
     ]);
 
     authService.getUserDetails.and.returnValue({
@@ -42,7 +46,7 @@ describe('HeaderComponent', () => {
       roleName: 'Creator'
     } as any);
     authService.getRuntimeModuleId = jasmine.createSpy().and.returnValue('ADV');
-    userService.roles.and.returnValue(
+    roleApiService.getRolesByUser.and.returnValue(
       of({ status: true, object: [{ id: 'R1', roleName: 'Approver' }] }) as any
     );
 
@@ -51,7 +55,8 @@ describe('HeaderComponent', () => {
       providers: [
         { provide: AuthService, useValue: authService },
         { provide: CommonService, useValue: commonService },
-        { provide: UserService, useValue: userService }
+        { provide: UserApiService, useValue: userService },
+        { provide: RoleApiService, useValue: roleApiService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
@@ -75,7 +80,7 @@ describe('HeaderComponent', () => {
 
   it('should load user details and role list on init', () => {
     expect(authService.getUserDetails).toHaveBeenCalled();
-    expect(userService.roles).toHaveBeenCalledWith({
+    expect(roleApiService.getRolesByUser).toHaveBeenCalledWith({
       headers: {
         userId: 'USR-1',
         roleId: 'ROLE-1',
@@ -87,7 +92,7 @@ describe('HeaderComponent', () => {
   });
 
   it('should destroy session when role API returns RD action', () => {
-    userService.roles.and.returnValue(
+    roleApiService.getRolesByUser.and.returnValue(
       of({ status: true, action: 'RD', object: [] }) as any
     );
 
@@ -98,7 +103,7 @@ describe('HeaderComponent', () => {
 
   it('should hide loader on role API error', () => {
     spyOn(console, 'log');
-    userService.roles.and.returnValue(throwError(() => ({ status: 500 })) as any);
+    roleApiService.getRolesByUser.and.returnValue(throwError(() => ({ status: 500 })) as any);
 
     component.getRoles();
 

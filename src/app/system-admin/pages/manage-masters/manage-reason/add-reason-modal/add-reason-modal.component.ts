@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CommonService } from 'src/app/service/core/common.service';
-import { ReasonService } from 'src/app/service/master/reason.service';
+import { ReasonApiService } from 'src/app/service/api/reason/reason-api.service';
 
 declare var $: any;
 
@@ -30,7 +30,7 @@ export class AddReasonModalComponent implements OnInit {
 
   constructor(
     private $common: CommonService,
-    private $reason: ReasonService
+    private $reason: ReasonApiService
   ) {}
 
   ngOnInit() {}

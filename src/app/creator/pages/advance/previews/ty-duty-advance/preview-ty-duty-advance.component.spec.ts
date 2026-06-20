@@ -12,8 +12,8 @@ describe('PreviewTyDutyComponent', () => {
     component.datePipe = jasmine.createSpyObj('DatePipe', ['transform']);
     component.datePipe.transform.and.returnValue('2026-03-01');
     component.$common = jasmine.createSpyObj('CommonService', ['showLoader', 'hideLoader', 'showMessage']);
-    component.$claim = jasmine.createSpyObj('ClaimService', ['getSingleClaim']);
-    component.$claim.getSingleClaim.and.returnValue(of({ status: true, object: [{ claimId: '701', yatDocsDTOs: [{ id: 1 }] }] }));
+    component.$claimApi = jasmine.createSpyObj('ClaimApiService', ['getSingleClaim']);
+    component.$claimApi.getSingleClaim.and.returnValue(of({ status: true, object: [{ claimId: '701', yatDocsDTOs: [{ id: 1 }] }] }));
     component.$auth = jasmine.createSpyObj('AuthService', ['viewFile']);
     return component;
   };
@@ -45,11 +45,11 @@ describe('PreviewTyDutyComponent', () => {
   it('handles non-success and error API branches', () => {
     const component = createComponent();
     component.claimId = '701';
-    component.$claim.getSingleClaim.and.returnValue(of({ status: false, message: 'invalid' }));
+    component.$claimApi.getSingleClaim.and.returnValue(of({ status: false, message: 'invalid' }));
     component.getClaimDetails();
     expect(component.$common.showMessage).toHaveBeenCalledWith('invalid', 'danger');
 
-    component.$claim.getSingleClaim.and.returnValue(throwError(() => new Error('err')));
+    component.$claimApi.getSingleClaim.and.returnValue(throwError(() => new Error('err')));
     component.getClaimDetails();
     expect(component.$common.hideLoader).toHaveBeenCalled();
   });
@@ -77,4 +77,5 @@ describe('PreviewTyDutyComponent', () => {
     expect(component.accHToDutyRateLabel).toBe('50 per day(Kms)');
   });
 });
+
 

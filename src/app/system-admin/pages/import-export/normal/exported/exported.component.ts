@@ -3,8 +3,8 @@ import { CommonService } from 'src/app/service/core/common.service';
 import { Location } from '@angular/common';
 
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { ImportExportBatchService } from 'src/app/service/admin/import-export-batch.service';
-import { ClaimService } from 'src/app/service/claim/claim.service';
+import { ImportExportApiService } from 'src/app/service/api/import-export/import-export-api.service';
+import { ClaimStateApiService } from 'src/app/service/api/claim-state/claim-state-api.service';
 declare var $: any;
 
 @Component({
@@ -22,8 +22,8 @@ export class ExportedComponent implements OnInit {
     private location: Location,
     public $auth: AuthService,
     private $common: CommonService,
-    public $importExportBatch: ImportExportBatchService,
-    private $claim: ClaimService,
+    public $importExportBatch: ImportExportApiService,
+    private $claimStateApi: ClaimStateApiService,
   ) { }
 
   id: any;
@@ -107,7 +107,7 @@ export class ExportedComponent implements OnInit {
       this.$importExportBatch.downloadExportBatch(config).subscribe((response: any) => {
         if (response.status == true) {
           if (firstTimeIndicator == 1) {
-            this.$claim.notifyStatusCountRefresh();
+            this.$claimStateApi.notifyStatusCountRefresh();
           }
           var responseObject = response.object[0]
           this.$importExportBatch.downloadBatchFromResponse(responseObject);
@@ -148,7 +148,7 @@ export class ExportedComponent implements OnInit {
 
           this.batchList.splice(this.index, 1);
           $('#changeBatchStatusModal').modal('hide');
-          this.$claim.notifyStatusCountRefresh();
+          this.$claimStateApi.notifyStatusCountRefresh();
         }
         this.$common.hideLoader();
       }, err => {
@@ -177,4 +177,5 @@ export class ExportedComponent implements OnInit {
   }
 
 }
+
 
