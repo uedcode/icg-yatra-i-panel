@@ -17,6 +17,11 @@ import { WebDetailComponent } from './pages/support/web-detail/web-detail.compon
 import { PassedComponent } from './pages/advance/queues/passed/passed.component';
 import { NotPassedComponent } from './pages/advance/queues/not-passed/not-passed.component';
 import { FormClaimDetailComponent } from './pages/claim/detail/form-claim-detail.component';
+import { FormPmtDutyClaimComponent } from './pages/claim/reviews/pmt-duty-claim/form-pmt-duty-claim.component';
+import { FormTyDutyClaimComponent } from './pages/claim/reviews/ty-duty-claim/form-ty-duty-claim.component';
+import { FormFteClaimComponent } from './pages/claim/reviews/fte-claim/form-fte-claim.component';
+import { FormLtcClaimComponent } from './pages/claim/reviews/ltc-claim/form-ltc-claim.component';
+import { FormResettlementClaimComponent } from './pages/claim/reviews/resettlement-claim/form-resettlement-claim.component';
 import { PayInboxComponent } from './pages/payment/queues/inbox/pay-inbox.component';
 import { PayOutboxComponent } from './pages/payment/queues/outbox/pay-outbox.component';
 import { PayApprovedComponent } from './pages/payment/queues/approved/pay-approved.component';
@@ -64,6 +69,11 @@ const routes: Routes = [
       { path: 'dashboard-back', component: DashboardComponent, canActivate: [AuthGuard], data: { title: 'Dashboard' } },
       { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard], data: { title: 'Change Password' } },
       { path: 'form-claim-detail', component: FormClaimDetailComponent, canActivate: [AuthGuard], data: { title: 'Claim Detail', roles: ['VE1', 'VE2', 'AP'] } },
+      { path: 'form-pmt-duty-claim', component: FormPmtDutyClaimComponent, canActivate: [AuthGuard], data: { title: 'PMT Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'PMT' } },
+      { path: 'form-ty-duty-claim', component: FormTyDutyClaimComponent, canActivate: [AuthGuard], data: { title: 'TY Duty Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'TYD' } },
+      { path: 'form-fte-claim', component: FormFteClaimComponent, canActivate: [AuthGuard], data: { title: 'FTE Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'FTE' } },
+      { path: 'form-ltc-claim', component: FormLtcClaimComponent, canActivate: [AuthGuard], data: { title: 'LTC Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'LTC' } },
+      { path: 'form-resettlement-claim', component: FormResettlementClaimComponent, canActivate: [AuthGuard], data: { title: 'Resettlement Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'RS' } },
       { path: 'form-pmt-duty', component: AdvanceFormPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
       { path: 'preview-pmt-duty', component: AdvancePreviewPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
       { path: 'form-ty-duty', component: AdvanceFormTyDutyComponent, canActivate: [AuthGuard], data: { title: 'TY Duty Advance Review', roles: ['VE1', 'VE2', 'AP'] } },

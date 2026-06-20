@@ -1,12 +1,18 @@
 <div class="page-header gov-page-toolbar">
-  <h4 class="page-title">Movement Update</h4>
+  <h4 class="page-title">MOVEMENT UPDATE</h4>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">Yatra</li>
+    <li class="breadcrumb-item active">Movement Update</li>
+  </ol>
 </div>
 
 <div class="card mb-3">
   <div class="card-body">
-    <p class="mb-0">
-      <strong>Note:</strong>
-      If you have taken an advance, please claim it through the linked advance option shown in the claim module.
+    <p class="mb-0 movement-note">
+      <strong>Note :</strong>
+      <span class="text-danger">
+        If you have taken an advance, please claim it through the linked advance option showing in NEW section of the claim module.
+      </span>
     </p>
   </div>
 </div>
@@ -14,11 +20,6 @@
 <div class="card mb-3">
   <div class="card-body">
     <div class="row">
-      <div class="col-md-4 form-group">
-        <label class="control-label">Claim ID</label>
-        <input class="form-control" [value]="claimId || '-'" disabled />
-      </div>
-
       <div class="col-md-4 form-group">
         <label class="control-label">Mode <sup>*</sup></label>
         <select
@@ -87,11 +88,19 @@
 
       <div class="col-md-4 form-group">
         <label class="control-label">Drawn From</label>
+        <input
+          *ngIf="movement.claimMode === yatTravelMode.yatra || isNilOrSupplementary"
+          type="text"
+          class="form-control"
+          [ngModel]="movement.drawnFrom"
+          name="drawnFromReadonly"
+          disabled
+        />
         <select
+          *ngIf="movement.claimMode !== yatTravelMode.yatra && !isNilOrSupplementary"
           class="form-control"
           [(ngModel)]="movement.drawnFrom"
           name="drawnFrom"
-          [disabled]="movement.claimMode === yatTravelMode.yatra || isNilOrSupplementary"
         >
           <option [ngValue]="null">Select Unit</option>
           <option *ngFor="let unit of allUnits" [ngValue]="getUnitLabel(unit)">
@@ -143,7 +152,12 @@
 
       <div class="col-md-2 form-group">
         <label class="control-label">GX Date <sup>*</sup></label>
-        <input type="date" class="form-control" [(ngModel)]="tempGxDetails.gxDate" name="gxDate" />
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="tempGxDetails.gxDate"
+          name="gxDate"
+        />
       </div>
 
       <div class="col-md-2 form-group">
@@ -164,7 +178,7 @@
 
     <div class="mb-3">
       <button type="button" class="btn btn-info mr-2" (click)="addOrUpdateGxDetail()">
-        {{ selectedGxIndex === null ? 'Add GX Detail' : 'Update GX Detail' }}
+        {{ selectedGxIndex === null ? 'Add' : 'Update' }}
       </button>
       <button type="button" class="btn btn-secondary" (click)="resetGxDetails()">Reset</button>
     </div>
@@ -194,7 +208,7 @@
             </td>
           </tr>
           <tr *ngIf="!movement.yatTempDutyClaimGxDTOs?.length">
-            <td colspan="6" class="text-center">No GX details added.</td>
+            <td colspan="6" class="text-center">No Record Found</td>
           </tr>
         </tbody>
       </table>
@@ -202,7 +216,7 @@
   </div>
 </div>
 
-<div class="card mb-3" *ngIf="movement.claimMode === yatTravelMode.yatra || claimSubmitted || claimSettled">
+<div class="card mb-3" *ngIf="claimSubmitted || claimSettled">
   <div class="card-header">
     <strong>Manual Claim Settlement</strong>
   </div>
@@ -337,59 +351,9 @@
   </div>
 </div>
 
-<div class="card mb-3" *ngIf="voucherList?.length">
-  <div class="card-header">
-    <strong>Advance Voucher</strong>
-  </div>
-  <div class="card-body table-responsive">
-    <table class="table table-striped table-bordered">
-      <thead>
-        <tr>
-          <th>Voucher No</th>
-          <th>Voucher Date</th>
-          <th>Voucher Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let row of voucherList">
-          <td>{{ row?.voucherNo || '-' }}</td>
-          <td>{{ row?.voucherDate || '-' }}</td>
-          <td>{{ row?.voucherAmt || '-' }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div class="card mb-3" *ngIf="validationResult">
-  <div class="card-header">
-    <strong>Validation Result</strong>
-  </div>
-  <div class="card-body">
-    <pre class="mb-0">{{ validationResult | json }}</pre>
-  </div>
-</div>
-
 <div class="mb-3">
   <button type="button" class="btn btn-primary mr-2" (click)="saveMovement()" [disabled]="isSaving">
     {{ saveButtonLabel }}
-  </button>
-  <button type="button" class="btn btn-info mr-2" (click)="validateMovement()" [disabled]="!claimId">
-    Validate
-  </button>
-  <button
-    type="button"
-    class="btn btn-secondary mr-2"
-    (click)="validateMovement(true)"
-    [disabled]="!claimId"
-  >
-    Validate & Open Claim Form
-  </button>
-  <button type="button" class="btn btn-secondary mr-2" (click)="openClaimForm()" [disabled]="!canOpenClaimForm">
-    Open Claim Form
-  </button>
-  <button type="button" class="btn btn-outline-primary" (click)="openVoucherPreview()" [disabled]="!claimId">
-    Preview Voucher
   </button>
 </div>
 

@@ -44,24 +44,17 @@ export class ClaimNewComponent implements OnInit {
   }
 
   openMovement(row: any): void {
-    const claimId = row?.claimId || row?.yatClaimDTO?.claimId || row?.id || '';
-    const subFormId = (
-      row?.subFormId ||
-      row?.codeSubFormDTO?.subFormId ||
-      row?.yatClaimDTO?.codeSubFormDTO?.subFormId ||
-      ''
-    ).toUpperCase();
+    const claimId = row?.claimId || '';
     if (!claimId) return;
     this.router.navigate([`${this.$auth.getModuleName()}/movement-update-claim`], {
       queryParams: {
         id: claimId,
-        ...(subFormId ? { subFormId } : {}),
       },
     });
   }
 
   openClaimForm(row: any): void {
-    const claimId = row?.claimId || row?.yatClaimDTO?.claimId || row?.id || '';
+    const claimId = row?.claimId || '';
     if (!claimId) {
       this.$common.showMessage('Claim id is not available.', 'warning');
       return;
@@ -75,48 +68,22 @@ export class ClaimNewComponent implements OnInit {
       }
 
       this.$common.showMessage(res?.message || 'Movement validated successfully.');
-      const validationResult = Array.isArray(res?.object) ? res.object[0] || null : res?.object || null;
-      this.openClaimFormAfterValidation(row, validationResult);
-    });
-  }
-
-  private openClaimFormAfterValidation(row: any, validationResult: any = null): void {
-    const claimId = row?.claimId || row?.yatClaimDTO?.claimId || row?.id || '';
-    const subFormId = (
-      validationResult?.subFormId ||
-      validationResult?.purpose ||
-      validationResult?.codeSubFormDTO?.subFormId ||
-      row?.subFormId ||
-      row?.codeSubFormDTO?.subFormId ||
-      row?.yatClaimDTO?.codeSubFormDTO?.subFormId ||
-      ''
-    ).toUpperCase();
-    const formUrl =
-      validationResult?.formUrl ||
-      validationResult?.url ||
-      validationResult?.codeSubFormDTO?.formUrl ||
-      row?.formUrl ||
-      row?.codeSubFormDTO?.formUrl ||
-      row?.yatClaimDTO?.codeSubFormDTO?.formUrl ||
-      '';
-    const route = this.getClaimFormRoute(subFormId, formUrl);
-    if (!route) {
-      this.$common.showMessage(
-        `Unsupported claim type: ${subFormId || 'UNKNOWN'}. Please contact admin.`,
-        'danger'
-      );
-      return;
-    }
-    this.router.navigate([`${this.$auth.getModuleName()}/${route}`], {
-      queryParams: {
-        id: claimId,
-        subFormId,
-      },
+      const validationResult = Array.isArray(res?.object) ? res.object[0] || null : null;
+      const formUrl = validationResult?.formUrl || '';
+      if (!formUrl) {
+        this.$common.showMessage('Claim form URL is not available.', 'danger');
+        return;
+      }
+      this.router.navigate([`${this.$auth.getModuleName()}/${formUrl}`], {
+        queryParams: {
+          id: claimId,
+        },
+      });
     });
   }
 
   deleteClaim(row: any): void {
-    const claimId = row?.claimId || row?.yatClaimDTO?.claimId || row?.id || '';
+    const claimId = row?.claimId || '';
     if (!claimId || this.deleteLoadingMap[claimId]) {
       return;
     }
@@ -130,9 +97,7 @@ export class ClaimNewComponent implements OnInit {
           return;
         }
 
-        this.dataList = this.dataList.filter(
-          (item: any) => (item?.claimId || item?.yatClaimDTO?.claimId || item?.id) != claimId
-        );
+        this.dataList = this.dataList.filter((item: any) => item?.claimId != claimId);
         this.$claimStateApi.notifyStatusCountRefresh();
         this.$common.showMessage(res?.message || 'Claim deleted successfully.', 'success');
       },
@@ -141,30 +106,6 @@ export class ClaimNewComponent implements OnInit {
         this.$common.showMessage('Something went wrong while deleting claim.', 'danger');
       },
     });
-  }
-
-  private getClaimFormRoute(subFormId: string, formUrl: string = ''): string | null {
-    const normalizedFormUrl = String(formUrl || '').toLowerCase();
-    if (normalizedFormUrl) {
-      if (normalizedFormUrl.includes('form-pmt-duty-claim')) return 'form-pmt-duty-claim';
-      if (normalizedFormUrl.includes('form-ty-duty-claim')) return 'form-ty-duty-claim';
-      if (normalizedFormUrl.includes('form-fte-claim')) return 'form-fte-claim';
-      if (normalizedFormUrl.includes('form-ltc-claim')) return 'form-ltc-claim';
-      if (normalizedFormUrl.includes('form-resettlement-claim')) return 'form-resettlement-claim';
-      if (normalizedFormUrl.includes('form-pmt-duty')) return 'form-pmt-duty-claim';
-      if (normalizedFormUrl.includes('form-ty-duty')) return 'form-ty-duty-claim';
-      if (normalizedFormUrl.includes('form-fte-advance')) return 'form-fte-claim';
-      if (normalizedFormUrl.includes('form-ltc-advance')) return 'form-ltc-claim';
-      if (normalizedFormUrl.includes('resettlement')) return 'form-resettlement-claim';
-    }
-
-    const id = (subFormId || '').toUpperCase();
-    if (id === 'P' || id === 'PMT' || id === 'PMTA' || id === 'PMTCLM') return 'form-pmt-duty-claim';
-    if (id === 'T' || id === 'TY' || id === 'TYA' || id === 'TYD' || id === 'TYCLM') return 'form-ty-duty-claim';
-    if (id === 'F' || id === 'FTE' || id === 'FTEA' || id === 'FTECLM') return 'form-fte-claim';
-    if (id === 'L' || id === 'LTC' || id === 'LTCA' || id === 'LTCCLM') return 'form-ltc-claim';
-    if (id === 'R' || id === 'RS' || id === 'RES' || id === 'RESCLM') return 'form-resettlement-claim';
-    return null;
   }
 }
 

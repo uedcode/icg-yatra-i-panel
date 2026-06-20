@@ -8,41 +8,41 @@
               <img src="assets/images/dad_logo.png" alt="LOGO" class="mb-2" />
               <h4><strong>CGCDA (Delhi)</strong></h4>
               <h4><strong>Payment Receipt Voucher</strong></h4>
-              <h4><strong>{{ display(formObj?.subForm) }}</strong></h4>
+              <h4><strong>{{ display(yatClaimVoucher?.subForm) }}</strong></h4>
             </div>
 
             <div class="row mb-2">
               <div class="col-md-3"><strong>Name</strong></div>
-              <div class="col-md-3">{{ display(formObj?.name) }}</div>
+              <div class="col-md-3">{{ display(yatClaimVoucher?.name) }}</div>
               <div class="col-md-3"><strong>Rank</strong></div>
-              <div class="col-md-3">{{ display(formObj?.rank) }}</div>
+              <div class="col-md-3">{{ display(yatClaimVoucher?.rank) }}</div>
             </div>
 
             <div class="row mb-2">
               <div class="col-md-3"><strong>Personnel Number</strong></div>
-              <div class="col-md-3">{{ display(formObj?.pno) }}</div>
+              <div class="col-md-3">{{ display(yatClaimVoucher?.pno) }}</div>
               <div class="col-md-3"><strong>Form ID</strong></div>
-              <div class="col-md-3">{{ display(formObj?.formId) }}</div>
+              <div class="col-md-3">{{ display(yatClaimVoucher?.formId) }}</div>
             </div>
 
             <div class="row mb-2">
               <div class="col-md-3"><strong>Claimed Amount (In Rs.)</strong></div>
-              <div class="col-md-3">{{ display(formObj?.claimedAmount) }}</div>
+              <div class="col-md-3">{{ display(yatClaimVoucher?.claimedAmount) }}</div>
               <div class="col-md-3"><strong>Passed Amount</strong></div>
-              <div class="col-md-3">{{ display(formObj?.passedAmount) }}</div>
+              <div class="col-md-3">{{ display(yatClaimVoucher?.passedAmount) }}</div>
             </div>
 
             <div class="row mb-2">
               <div class="col-md-3"><strong>Voucher No</strong></div>
-              <div class="col-md-3">{{ display(formObj?.voucherNo) }}</div>
+              <div class="col-md-3">{{ display(yatClaimVoucher?.voucherNo) }}</div>
             </div>
 
             <div class="row mb-2">
               <div class="col-md-3"><strong>Voucher Date</strong></div>
-              <div class="col-md-3">{{ asDate(formObj?.voucherDate) }}</div>
+              <div class="col-md-3">{{ asDate(yatClaimVoucher?.voucherDate) }}</div>
             </div>
 
-            <div class="text-center text-muted py-3" *ngIf="!formObj">
+            <div class="text-center text-muted py-3" *ngIf="!yatClaimVoucher">
               Voucher details are not available.
             </div>
           </div>

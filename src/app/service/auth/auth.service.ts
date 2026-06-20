@@ -667,19 +667,14 @@ export class AuthService {
     return `${moduleUrl}/${formUrl}?${queryParams.join('&')}`;
   }
 
-  getApproverWorkflowDetailUrl(
-    data: any,
-    defaultStatus: string,
-    actionable = false
-  ): string | null {
+  getApproverActionFormUrl(data: any, defaultStatus: string): string | null {
     const moduleUrl = this.getModuleName();
     if (!moduleUrl) {
       return null;
     }
 
     const claim = data?.yatClaimDTO || {};
-    const claimId = claim?.claimId || data?.claimId || data?.formId || data?.id;
-    const formId = data?.formId || claim?.formId || claimId;
+    const claimId = claim?.claimId;
     const resolvedStatus =
       defaultStatus ||
       data?.claimState ||
@@ -688,58 +683,40 @@ export class AuthService {
       claim?.statusId ||
       '';
     const subFormId =
-      claim?.codeSubFormDTO?.subFormId ||
-      data?.subFormId ||
-      data?.codeSubFormDTO?.subFormId ||
-      '';
-    const rawViewUrl =
-      data?.viewUrl ||
-      claim?.codeSubFormDTO?.viewUrl ||
-      data?.codeSubFormDTO?.viewUrl ||
-      '';
-    const viewUrl = String(rawViewUrl).replace(/^\/+/, '');
+      claim?.codeSubFormDTO?.subFormId || '';
+    const formUrl = String(claim?.codeSubFormDTO?.formUrl || '').replace(/^\/+/, '');
 
-    if (this.isApproverAdvanceView(viewUrl)) {
-      const queryParams = [
-        `id=${encodeURIComponent(formId)}`,
-        `claimId=${encodeURIComponent(claimId)}`,
-        `subFormId=${encodeURIComponent(subFormId)}`,
-        `statusId=${encodeURIComponent(resolvedStatus)}`,
-      ];
-      if (actionable) {
-        queryParams.push('actionable=1');
-      }
-      return `${moduleUrl}/${viewUrl}?${queryParams.join('&')}`;
+    if (!claimId || !formUrl) {
+      return null;
     }
 
-    if (claimId && subFormId) {
-      const queryParams = [
-        `claimId=${encodeURIComponent(claimId)}`,
-        `subFormId=${encodeURIComponent(subFormId)}`,
-        `statusId=${encodeURIComponent(resolvedStatus)}`,
-      ];
-      if (actionable) {
-        queryParams.push('actionable=1');
-      }
-      return `${moduleUrl}/form-claim-detail?${queryParams.join('&')}`;
+    const queryParams = [`id=${encodeURIComponent(claimId)}`];
+    if (subFormId) {
+      queryParams.push(`subFormId=${encodeURIComponent(subFormId)}`);
     }
-
-    if (viewUrl && formId) {
-      return `${moduleUrl}/${viewUrl}?id=${encodeURIComponent(formId)}`;
+    if (resolvedStatus) {
+      queryParams.push(`statusId=${encodeURIComponent(resolvedStatus)}`);
     }
+    queryParams.push('actionable=1');
 
-    return null;
+    return `${moduleUrl}/${formUrl}?${queryParams.join('&')}`;
   }
 
-  private isApproverAdvanceView(viewUrl: string): boolean {
-    return [
-      'form-pmt-duty',
-      'form-ty-duty',
-      'form-fte-advance',
-      'form-ltc-advance',
-      'form-manual-adv',
-      'form-ltc-availed-history',
-    ].includes(viewUrl);
+  getApproverPreviewUrl(data: any): string | null {
+    const moduleUrl = this.getModuleName();
+    if (!moduleUrl) {
+      return null;
+    }
+
+    const claim = data?.yatClaimDTO || data || {};
+    const claimId = claim?.claimId;
+    const viewUrl = String(claim?.codeSubFormDTO?.viewUrl || data?.codeSubFormDTO?.viewUrl || '').replace(/^\/+/, '');
+
+    if (!claimId || !viewUrl) {
+      return null;
+    }
+
+    return `${moduleUrl}/${viewUrl}?id=${encodeURIComponent(claimId)}`;
   }
 
   getParameter(param) {
@@ -814,4 +791,3 @@ export class AuthService {
     return `<br> <b>(${operationType} - ${operationTime} Hrs)</b>`;
   }
 }
-

@@ -121,7 +121,7 @@ export class ClaimArchiveComponent implements OnInit {
   }
 
   viewForm(data: any) {
-    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(data, data?.claimState || '');
+    const routeUrl = this.$auth.getApproverPreviewUrl(data);
     if (routeUrl) {
       window.open(routeUrl, '_blank');
     }

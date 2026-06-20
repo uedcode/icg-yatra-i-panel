@@ -64,10 +64,7 @@ export class ClaimPassedComponent implements OnInit {
   }
 
   viewForm(data) {
-    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
-      data,
-      data?.claimState || this.codeStatus?.passed
-    );
+    const routeUrl = this.$auth.getApproverPreviewUrl(data);
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
     }
@@ -148,4 +145,3 @@ export class ClaimPassedComponent implements OnInit {
   }
 
 }
-

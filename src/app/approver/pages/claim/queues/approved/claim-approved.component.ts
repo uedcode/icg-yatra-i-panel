@@ -61,10 +61,7 @@ export class ClaimApprovedComponent implements OnInit {
   }
 
   viewForm(data) {
-    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
-      data,
-      data?.claimState || this.codeStatus?.approved
-    );
+    const routeUrl = this.$auth.getApproverPreviewUrl(data);
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
     }
@@ -99,4 +96,3 @@ export class ClaimApprovedComponent implements OnInit {
   }
 
 }
-

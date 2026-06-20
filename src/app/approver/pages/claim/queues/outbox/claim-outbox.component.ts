@@ -104,10 +104,7 @@ export class ClaimOutboxComponent implements OnInit {
   }
 
   viewForm(data) {
-    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
-      data,
-      data?.claimState || this.codeStatus?.outbox
-    );
+    const routeUrl = this.$auth.getApproverPreviewUrl(data);
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
     }

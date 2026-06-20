@@ -111,7 +111,7 @@ export class ManualDraftComponent implements OnInit {
       return;
     }
     const formUrl = data?.yatClaimDTO?.codeSubFormDTO?.formUrl || 'form-manual-adv';
-    this.router.navigateByUrl(this.$auth.getModuleName() + `/${formUrl}?id=${claimId}&claimId=${claimId}`);
+    this.router.navigateByUrl(this.$auth.getModuleName() + `/${formUrl}?id=${claimId}`);
   }
 
   deleteManualDraft(data: any): void {

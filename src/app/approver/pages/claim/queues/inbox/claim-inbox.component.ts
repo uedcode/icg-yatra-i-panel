@@ -109,10 +109,9 @@ export class ClaimInboxComponent implements OnInit {
     if (!this.canViewRow(data)) {
       return;
     }
-    const routeUrl = this.$auth.getApproverWorkflowDetailUrl(
+    const routeUrl = this.$auth.getApproverActionFormUrl(
       data,
-      data?.claimState || this.codeStatus?.inbox,
-      true
+      data?.claimState || this.codeStatus?.inbox
     );
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
@@ -163,5 +162,4 @@ export class ClaimInboxComponent implements OnInit {
     return this.queueModule === 'CLM' ? 'CLM' : 'ADV';
   }
 }
-
 

@@ -34,13 +34,13 @@
     </section>
     <section class="mt-4">
       <h5><strong>(f) Documents</strong></h5>
-      <table class="table table-bordered table-sm"><thead class="table-primary"><tr><th>Document Name</th><th>Document Type</th><th>Status</th></tr></thead><tbody><tr *ngFor="let doc of documentDtos"><td>{{ display(doc.documentName || doc.docName || doc.name) }}</td><td>{{ display(doc.documentType || doc.docType) }}</td><td>{{ doc.fileUrl || doc.fileName ? 'Attached' : 'Not Attached' }}</td></tr><tr *ngIf="!documentDtos.length"><td colspan="3" class="text-center">No Record Found</td></tr></tbody></table>
+      <table class="table table-bordered table-sm"><thead class="table-primary"><tr><th>Document Name</th><th>Description</th><th>Supporting Document</th></tr></thead><tbody><tr *ngFor="let doc of documentDtos"><td>{{ display(doc.codeDocInfoDTO?.docName) }} <span *ngIf="doc.docNo">({{ doc.docNo }})</span></td><td>{{ display(doc.descr) }}</td><td><button *ngIf="doc.url" type="button" class="btn btn-info btn-sm" (click)="$auth.viewFile(doc.url)">View</button><span *ngIf="!doc.url">-</span></td></tr><tr *ngIf="formObj?.signedFileUrl"><td>Signed Documents</td><td>-</td><td><button type="button" class="btn btn-info btn-sm" (click)="$auth.viewFile(formObj.signedFileUrl)">View</button></td></tr><tr *ngIf="!documentDtos.length"><td colspan="3" class="text-center">No Record Found</td></tr></tbody></table>
     </section>
     <section class="mt-4">
       <h5><strong>(g) Remarks</strong></h5>
-      <p>{{ display(formObj?.internalRemarks || formObj?.remarks || claim?.remarks) }}</p>
+      <p>{{ display(formObj?.internalRemarks) }}</p>
     </section>
-    <section class="mt-4" *ngIf="formObj?.advClaimId || formObj?.supClaimId">
+    <section class="mt-4" *ngIf="hasRelatedClaims()">
       <button type="button" class="btn btn-info me-2" *ngIf="formObj?.advClaimId" (click)="openRelatedPreview('preview-ltc-advance', formObj.advClaimId)">View Advance</button>
       <button type="button" class="btn btn-info" *ngIf="formObj?.supClaimId" (click)="openRelatedPreview('preview-ltc-claim', formObj.supClaimId)">View Supplementary Claim</button>
     </section>

@@ -290,47 +290,49 @@ describe('AuthService', () => {
     expect(service.getFormEditUrl({ formUrl: 'form-pmt-duty' })).toBeNull();
   });
 
-  it('should build approver workflow URLs for advance form views', () => {
+  it('should build approver action form URLs without browser claimId', () => {
     service.createSession(
       { ...sessionPayload, roleTypeId: 'AP', roleName: 'Approver' },
       'NONE'
     );
 
-    const url = service.getApproverWorkflowDetailUrl(
+    const url = service.getApproverActionFormUrl(
       {
-        formId: 'FORM1',
-        claimId: 'CLAIM1',
-        subFormId: 'PMT',
-        viewUrl: '/form-pmt-duty',
+        yatClaimDTO: {
+          claimId: 'CLAIM1',
+          codeSubFormDTO: {
+            subFormId: 'PMT',
+            formUrl: '/form-pmt-duty',
+          },
+        },
       },
-      'IB',
-      true
+      'IB'
     );
 
     expect(url).toBe(
-      '/approver/form-pmt-duty?id=FORM1&claimId=CLAIM1&subFormId=PMT&statusId=IB&actionable=1'
+      '/approver/form-pmt-duty?id=CLAIM1&subFormId=PMT&statusId=IB&actionable=1'
     );
   });
 
-  it('should build approver claim detail URLs when only claim and sub-form data are available', () => {
+  it('should build approver preview URLs from direct legacy viewUrl', () => {
     service.createSession(
       { ...sessionPayload, roleTypeId: 'VE1', roleName: 'Verifier' },
       'NONE'
     );
 
-    const url = service.getApproverWorkflowDetailUrl(
+    const url = service.getApproverPreviewUrl(
       {
         yatClaimDTO: {
           claimId: 'CLAIM1',
-          codeSubFormDTO: { subFormId: 'LTC' },
+          codeSubFormDTO: {
+            subFormId: 'LTC',
+            viewUrl: '/preview-ltc-claim',
+          },
         },
       },
-      'OB'
     );
 
-    expect(url).toBe(
-      '/approver/form-claim-detail?claimId=CLAIM1&subFormId=LTC&statusId=OB'
-    );
+    expect(url).toBe('/approver/preview-ltc-claim?id=CLAIM1');
   });
 
   it('should create user token update headers from login response data', async () => {

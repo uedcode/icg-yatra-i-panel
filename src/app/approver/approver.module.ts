@@ -34,6 +34,11 @@ import { WebDetailComponent } from './pages/support/web-detail/web-detail.compon
 import { NotPassedComponent } from './pages/advance/queues/not-passed/not-passed.component';
 import { PassedComponent } from './pages/advance/queues/passed/passed.component';
 import { FormClaimDetailComponent } from './pages/claim/detail/form-claim-detail.component';
+import { FormPmtDutyClaimComponent } from './pages/claim/reviews/pmt-duty-claim/form-pmt-duty-claim.component';
+import { FormTyDutyClaimComponent } from './pages/claim/reviews/ty-duty-claim/form-ty-duty-claim.component';
+import { FormFteClaimComponent } from './pages/claim/reviews/fte-claim/form-fte-claim.component';
+import { FormLtcClaimComponent } from './pages/claim/reviews/ltc-claim/form-ltc-claim.component';
+import { FormResettlementClaimComponent } from './pages/claim/reviews/resettlement-claim/form-resettlement-claim.component';
 import { PayInboxComponent } from './pages/payment/queues/inbox/pay-inbox.component';
 import { PayOutboxComponent } from './pages/payment/queues/outbox/pay-outbox.component';
 import { PayApprovedComponent } from './pages/payment/queues/approved/pay-approved.component';
@@ -94,6 +99,11 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         PassedComponent,
         NotPassedComponent,
         FormClaimDetailComponent,
+        FormPmtDutyClaimComponent,
+        FormTyDutyClaimComponent,
+        FormFteClaimComponent,
+        FormLtcClaimComponent,
+        FormResettlementClaimComponent,
         PayInboxComponent,
         PayOutboxComponent,
         PayApprovedComponent,

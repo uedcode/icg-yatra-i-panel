@@ -39,10 +39,10 @@ export class CommonPreviewTyDutyClaimComponent implements OnInit {
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.route.queryParams.subscribe((params) => {
-      this.claimId = params?.id || params?.claimId || params?.formId || params?.supId || null;
-      this.supplementaryId = params?.supId || null;
+      this.claimId = params?.id ?? null;
+      this.supplementaryId = params?.supId ?? null;
       this.subFormId = this.normalizeSubFormId(
-        params?.subFormId || this.route.snapshot.data?.['subFormId'] || this.defaultSubFormId
+        params?.subFormId ?? this.route.snapshot.data?.['subFormId'] ?? this.defaultSubFormId
       );
       this.getClaimDetails();
     });
@@ -71,7 +71,7 @@ export class CommonPreviewTyDutyClaimComponent implements OnInit {
       next: (response: any) => {
         this.$common.hideLoader();
         if (response?.status !== true) {
-          this.$common.showMessage(response?.message || 'Unable to load TY Duty claim preview.', 'danger');
+          this.$common.showMessage(response?.message ?? 'Unable to load TY Duty claim preview.', 'danger');
           return;
         }
         this.parseClaimPreviewResponse(response);
@@ -86,11 +86,11 @@ export class CommonPreviewTyDutyClaimComponent implements OnInit {
 
   get summaryFields() {
     return [
-      { label: 'Form ID', value: this.formObj?.formId || this.formObj?.claimId || this.claimId },
+      { label: 'Form ID', value: this.formObj?.formId },
       { label: 'Claim ID', value: this.formObj?.claimId },
       { label: 'Advance Claim ID', value: this.formObj?.advClaimId },
       { label: 'Supplementary Claim ID', value: this.formObj?.supClaimId },
-      { label: 'Claim Status', value: this.formObj?.claimStatus || this.formObj?.status },
+      { label: 'Claim Status', value: this.formObj?.claimStatus },
       { label: 'Sign With', value: this.signLabel(this.formObj?.signWith) },
       { label: 'Occurrence Date', value: this.asDate(this.formObj?.occDate) },
       { label: 'GX Form', value: this.formObj?.gxFormFileUrl ? 'Attached' : 'Not Attached' },
@@ -99,38 +99,41 @@ export class CommonPreviewTyDutyClaimComponent implements OnInit {
 
   get personalFields() {
     return [
-      { label: 'Name', value: this.claim?.name || this.formObj?.name },
-      { label: 'Rank', value: this.claim?.rank || this.formObj?.rank },
-      { label: 'Personnel Number', value: this.claim?.personnelNumber || this.claim?.perNo || this.formObj?.perNo },
-      { label: 'Pay Level', value: this.claim?.payLevel || this.formObj?.payLevel },
-      { label: 'Present Unit', value: this.claim?.presentUnit || this.claim?.videPresentUnit || this.advance?.presentUnit },
-      { label: 'Applied To', value: this.claim?.appliedTo || this.advance?.appliedTo },
-      { label: 'Temporary Duty To', value: this.claim?.tempDutyTo || this.claim?.tempTransTo || this.advance?.tempDutyTo },
-      { label: 'Probable Duration (Days)', value: this.claim?.duration || this.claim?.probableDuration || this.advance?.duration },
+      { label: 'Name', value: this.claim?.name },
+      { label: 'Rank', value: this.claim?.rank },
+      { label: 'Personnel Number', value: this.claim?.pno },
+      { label: 'Pay Level', value: this.claim?.payLevel },
+      { label: 'Basic Pay', value: this.claim?.basicPay },
+      { label: 'Temporary Duty To', value: this.claim?.tempTransferToType },
+      { label: 'Duty Station', value: this.claim?.dutyStation },
+      { label: 'Unit', value: this.claim?.tempDutyTo },
+      { label: 'Applied To', value: this.claim?.appliedTo },
+      { label: 'Station Proceeding To', value: this.claim?.stationProceedingTo },
+      { label: 'Present Unit', value: this.claim?.presentUnit },
+      { label: 'Probable Duration (Days)', value: this.claim?.duration },
     ].filter((field) => !this.isBlank(field.value));
   }
 
   get claimFields() {
     return [
-      { label: 'Purpose Type', value: this.claim?.purposeType },
+      { label: 'Purpose Type', value: this.claim?.purposeType ?? 'Other' },
       { label: 'Purpose', value: this.claim?.purpose },
-      { label: 'GX Unit', value: this.claim?.gxUnit || this.advance?.gxUnit },
-      { label: 'GX Number', value: this.claim?.gxNumber || this.claim?.gxNo || this.advance?.gxNo },
-      { label: 'GX Date', value: this.asDate(this.claim?.gxDate || this.advance?.gxDate) },
-      { label: 'Movement Date', value: this.asDate(this.claim?.movementDate || this.formObj?.occDate) },
-      { label: 'Duty Station', value: this.claim?.dutyStation || this.claim?.stationProceedingTo },
-      { label: 'Place', value: this.claim?.place || this.claim?.currentPlace },
-      { label: 'Advance Amount', value: this.amount(this.claim?.advAmt || this.formObj?.advAmt) },
-      { label: 'Claim Amount', value: this.amount(this.claim?.claimAmt || this.claim?.totalAmt || this.formObj?.claimAmt) },
-      { label: 'DTS Amount', value: this.amount(this.claim?.dtsAmount || this.claim?.travelDetailsDTSAmt) },
-      { label: 'Net Due', value: this.amount(this.claim?.netDueAmt || this.claim?.totalBudgetedAmt) },
+      { label: 'GX Number', value: this.claim?.gxNo },
+      { label: 'GX Date', value: this.asDate(this.claim?.gxDate) },
+      { label: 'Movement Date', value: this.asDate(this.formObj?.occDate) },
+      { label: 'Place', value: this.claim?.currentPlace },
+      { label: 'Travel Details Amount', value: this.amount(this.claim?.travelDetailsAmt) },
+      { label: 'DTS Amount', value: this.amount(this.claim?.travelDetailsDTSAmt) },
+      { label: 'Other Charges', value: this.amount(this.claim?.otherChargeAmt) },
+      { label: 'Grand Total', value: this.amount(this.claim?.grandTotal) },
+      { label: 'Net Amount Due', value: this.amount(this.claim?.netDueAbsoluteAmt) },
     ].filter((field) => !this.isBlank(field.value));
   }
 
   get bankFields() {
     return [
       { label: 'Bank Name', value: this.bankDetails?.bankName },
-      { label: 'Account Number', value: this.bankDetails?.accountNo || this.bankDetails?.accountNumber },
+      { label: 'Account Number', value: this.bankDetails?.bankAccNo },
       { label: 'IFSC Code', value: this.bankDetails?.ifscCode },
       { label: 'MICR Code', value: this.bankDetails?.micrCode },
     ].filter((field) => !this.isBlank(field.value));
@@ -155,42 +158,46 @@ export class CommonPreviewTyDutyClaimComponent implements OnInit {
   }
 
   openRelatedPreview(route: string, claimId: any): void {
-    if (!route || !claimId) return;
+    if (!route) return;
+    if (!claimId) return;
     const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '/creator';
     window.open(`${moduleUrl}/${route}?id=${claimId}`, '_blank');
+  }
+
+  hasRelatedClaims(): boolean {
+    if (!this.isBlank(this.formObj?.advClaimId)) return true;
+    return !this.isBlank(this.formObj?.supClaimId);
   }
 
   private parseClaimPreviewResponse(response: any): void {
     const claims = this.unwrapClaimObject(response?.object);
     this.formObj = claims;
-    this.claim = this.firstItem(
-      claims?.yatTempDutyClaimDTOs || claims?.yatTempDutyClaimDTO || claims?.tempDutyClaimDTOs
-    );
-    this.advance = this.firstItem(claims?.yatTempDutyAdvDTOs || claims?.yatTempDutyAdvDTO);
+    this.claim = this.firstItem(claims?.yatTempDutyClaimDTOs);
+    this.advance = this.firstItem(claims?.yatTempDutyAdvDTOs);
     this.travelRows = this.resolveTravelRows(claims);
-    this.familyRows = this.asArray(claims?.yatFamilyDetailDTOs || claims?.familyDetails);
-    this.documentDtos = this.asArray(claims?.yatDocsDTOs || claims?.documentDtos);
-    this.bankDetails = claims?.yatClaimBankDetailDTO || {};
+    this.familyRows = this.asArray(this.claim?.yatTempDutyClaimFamilyDTOs);
+    this.documentDtos = this.asArray(claims?.yatDocsDTOs);
+    this.bankDetails = claims?.yatClaimBankDetailDTO ?? {};
   }
 
   private resolveTravelRows(claims: any): any[] {
-    return this.asArray(claims?.yatClaimTravelDetailsDTOs || claims?.yatDtsDetailDTOs).map((row) => ({
-      from: row?.fromPlace || row?.from || row?.source || row?.fromStation,
-      to: row?.toPlace || row?.to || row?.destination || row?.toStation,
-      mode: row?.travelMode || row?.modeOfTravel || row?.mode,
-      dts: row?.isDts || row?.dts || row?.dtsTravel,
-      amount: row?.amount || row?.claimAmt || row?.travelAmount,
-      reason: row?.reasonForNotUsingDts || row?.reasonForNotUsingDTS || row?.reason,
+    return this.asArray(claims?.yatDtsDetailDTOs).map((row) => ({
+      from: row?.fromPlace,
+      to: row?.toPlace,
+      mode: row?.travelMode,
+      dts: row?.isDts,
+      amount: row?.amount,
+      reason: row?.reasonForNotUsingDts,
       remarks: row?.remarks,
     }));
   }
 
   private unwrapClaimObject(object: any): any {
-    return Array.isArray(object) ? object[0] || {} : object || {};
+    return Array.isArray(object) ? object[0] ?? {} : object ?? {};
   }
 
   private firstItem(value: any): any {
-    return Array.isArray(value) ? value[0] || {} : value || {};
+    return Array.isArray(value) ? value[0] ?? {} : value ?? {};
   }
 
   private asArray(value: any): any[] {
@@ -198,20 +205,21 @@ export class CommonPreviewTyDutyClaimComponent implements OnInit {
   }
 
   private normalizeSubFormId(subFormId: any): string {
-    const id = String(subFormId || '').toUpperCase();
-    if (id === 'TY' || id === 'T' || id === 'TYA') return 'TYD';
-    return id || this.defaultSubFormId;
+    const id = String(subFormId ?? '').toUpperCase();
+    if (['TY', 'T', 'TYA'].includes(id)) return 'TYD';
+    return id.length ? id : this.defaultSubFormId;
   }
 
   private signLabel(signWith: any): string {
-    const sign = String(signWith || '').toUpperCase();
+    const sign = String(signWith ?? '').toUpperCase();
     if (sign === 'ES') return 'eSign';
-    if (sign === 'IS' || sign === 'IK') return 'Ink Sign';
+    if (['IS', 'IK'].includes(sign)) return 'Ink Sign';
     return signWith;
   }
 
   private isBlank(value: any): boolean {
-    return value === null || value === undefined || value === '';
+    if (value == null) return true;
+    return value === '';
   }
 }
 

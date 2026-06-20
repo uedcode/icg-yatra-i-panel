@@ -146,7 +146,7 @@ export class CommonViewFormHistoryModalComponent implements OnInit {
       roleTypeId === roleCodes?.verifier2 ||
       roleTypeId === roleCodes?.approver
     ) {
-      return this.$auth.getApproverWorkflowDetailUrl(row, row?.claimState || row?.status || '');
+      return this.$auth.getApproverPreviewUrl(row);
     }
 
     const moduleUrl = this.$auth.getModuleName();

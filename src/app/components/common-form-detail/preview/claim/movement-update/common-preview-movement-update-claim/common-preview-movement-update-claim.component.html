@@ -24,8 +24,8 @@
     <div class="card-body">
       <div class="row">
         <div class="col-md-3"><strong>Claim ID:</strong> {{ display(claimId) }}</div>
-        <div class="col-md-3"><strong>Mode:</strong> {{ modeLabel(movement?.claimMode || movement?.advanceMode) }}</div>
-        <div class="col-md-3"><strong>Purpose:</strong> {{ purposeLabel(movement?.purpose || movement?.subFormId || subFormId) }}</div>
+        <div class="col-md-3"><strong>Mode:</strong> {{ modeLabel(movement?.claimMode) }}</div>
+        <div class="col-md-3"><strong>Purpose:</strong> {{ purposeLabel(movement?.subFormId) }}</div>
         <div class="col-md-3"><strong>Voucher Number:</strong> {{ display(movement?.voucherNo) }}</div>
         <div class="col-md-3 mt-2"><strong>Voucher Date:</strong> {{ asDate(movement?.voucherDate) }}</div>
         <div class="col-md-3 mt-2"><strong>Amount (In Rs):</strong> {{ display(movement?.voucherAmt) }}</div>
@@ -66,7 +66,7 @@
               <td>{{ asDate(row?.dateOfTravel) }}</td>
             </tr>
             <tr *ngIf="!gxDetails.length">
-              <td colspan="5" class="text-center">No GX details available.</td>
+              <td colspan="5" class="text-center">No Record Found</td>
             </tr>
           </tbody>
         </table>
@@ -85,7 +85,7 @@
         <div class="col-md-3"><strong>Claim Settled:</strong> {{ display(movement?.isClaimSettle) }}</div>
         <div class="col-md-3"><strong>Credit/Debit Memo No:</strong> {{ display(movement?.creditDebitNo) }}</div>
         <div class="col-md-3 mt-2"><strong>Passed Amount:</strong> {{ display(movement?.claimPassAmt) }}</div>
-        <div class="col-md-3 mt-2"><strong>Unit:</strong> {{ display(movement?.unitId || movement?.unitName) }}</div>
+        <div class="col-md-3 mt-2"><strong>Unit:</strong> {{ display(movement?.unitId) }}</div>
         <div class="col-md-3 mt-2"><strong>Letter No:</strong> {{ display(movement?.letterNo) }}</div>
         <div class="col-md-3 mt-2"><strong>Letter Date:</strong> {{ asDate(movement?.letterNoDated) }}</div>
       </div>

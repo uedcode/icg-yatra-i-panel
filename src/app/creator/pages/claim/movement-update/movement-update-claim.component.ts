@@ -68,12 +68,9 @@ export class MovementUpdateClaimComponent implements OnInit {
   } as const;
 
   claimId = '';
-  routeSubFormId = '';
   userIdDetails: any;
   movement: MovementModel = this.createEmptyMovement();
   tempGxDetails: MovementGxDetail = this.createEmptyGxDetail();
-  voucherList: any[] = [];
-  validationResult: any = null;
   allUnits: any[] = [];
   gxTypes: any[] = [];
   selectedGxIndex: number | null = null;
@@ -112,18 +109,12 @@ export class MovementUpdateClaimComponent implements OnInit {
     this.loadUnits();
 
     this.route.queryParamMap.subscribe((params) => {
-      this.claimId = params.get('id') || params.get('claimId') || '';
-      this.routeSubFormId = this.normalizeSubFormId(params.get('subFormId') || '');
+      this.claimId = params.get('id') ?? '';
       this.resetScreen();
       if (!this.claimId) {
         return;
       }
-      if (this.routeSubFormId) {
-        this.movement.subFormId = this.routeSubFormId;
-        this.movement.purpose = this.routeSubFormId;
-      }
       this.loadMovement();
-      this.loadVoucher();
     });
   }
 
@@ -155,10 +146,6 @@ export class MovementUpdateClaimComponent implements OnInit {
     );
   }
 
-  get canOpenClaimForm(): boolean {
-    return !!this.getClaimFormRoute(this.movement.subFormId || '');
-  }
-
   trackByIndex(index: number): number {
     return index;
   }
@@ -167,14 +154,14 @@ export class MovementUpdateClaimComponent implements OnInit {
     const config = {
       headers: {
         claimId: this.claimId,
-        userId: this.userIdDetails?.userId || '',
+        userId: this.userIdDetails?.userId ?? '',
       },
     };
     this.$common.showLoader();
     this.$claimApi.getSingleMovement(config).subscribe(
       (res: any) => {
         this.$common.hideLoader();
-        const row = Array.isArray(res?.object) && res.object.length ? res.object[0] : null;
+        const row = Array.isArray(res?.object) ? res.object[0] ?? null : null;
         if (!row) {
           this.movement.claimId = this.claimId;
           return;
@@ -184,44 +171,22 @@ export class MovementUpdateClaimComponent implements OnInit {
         this.movement = {
           ...this.createEmptyMovement(),
           ...row,
-          claimId: row?.claimId || this.claimId,
-          claimMode: row?.advanceMode || row?.claimMode || '',
-          advanceMode: row?.advanceMode || row?.claimMode || '',
-          subFormId: this.normalizeSubFormId(
-            row?.purpose || row?.subFormId || row?.codeSubFormDTO?.subFormId || ''
-          ),
-          purpose: this.normalizeSubFormId(
-            row?.purpose || row?.subFormId || row?.codeSubFormDTO?.subFormId || ''
-          ),
+          claimId: row?.claimId ?? this.claimId,
+          claimMode: row?.advanceMode ?? null,
+          advanceMode: row?.advanceMode ?? null,
+          subFormId: row?.purpose ?? null,
+          purpose: row?.purpose ?? null,
           voucherDate: this.toInputDate(row?.voucherDate),
           letterNoDated: this.toInputDate(row?.letterNoDated),
           yatTempDutyClaimGxDTOs: this.normalizeGxDetails(row?.yatTempDutyClaimGxDTOs),
         };
-        if (!this.movement.subFormId && this.routeSubFormId) {
-          this.movement.subFormId = this.routeSubFormId;
-          this.movement.purpose = this.routeSubFormId;
-        }
 
         this.onClaimModeChange(false);
         this.syncManualSettlementFlags();
-        this.loadGxTypes(this.movement.subFormId || '');
-        this.loadVoucher();
+        this.loadGxTypes(this.movement.subFormId ?? '');
       },
       () => this.$common.hideLoader()
     );
-  }
-
-  loadVoucher(): void {
-    const subFormId = this.normalizeSubFormId(this.movement.subFormId || this.routeSubFormId || '');
-    const config = {
-      headers: {
-        claimId: this.claimId,
-        ...(subFormId ? { subFormId } : {}),
-      },
-    };
-    this.$claimApi.getAdvanceVoucher(config).subscribe((res: any) => {
-      this.voucherList = Array.isArray(res?.object) ? res.object : [];
-    });
   }
 
   loadUnits(): void {
@@ -251,19 +216,6 @@ export class MovementUpdateClaimComponent implements OnInit {
     });
   }
 
-  validateMovement(openAfterValidate = false): void {
-    const config = { headers: { claimId: this.claimId } };
-    this.$claimApi.validateMovement(config).subscribe((res: any) => {
-      this.validationResult = Array.isArray(res?.object) ? res.object[0] || null : res?.object || null;
-      if (res?.status) {
-        this.$common.showMessage(res?.message || 'Movement validated successfully.');
-        if (openAfterValidate) {
-          this.openClaimForm(true);
-        }
-      }
-    });
-  }
-
   onClaimModeChange(clearRows = true): void {
     if (this.isNilOrSupplementary) {
       this.movement.voucherNo = null;
@@ -285,14 +237,14 @@ export class MovementUpdateClaimComponent implements OnInit {
       this.movement.yatTempDutyClaimGxDTOs = [];
     }
 
-    this.loadGxTypes(this.movement.subFormId || '');
+    this.loadGxTypes(this.movement.subFormId ?? '');
   }
 
   onPurposeChange(): void {
-    this.movement.purpose = this.movement.subFormId || null;
+    this.movement.purpose = this.movement.subFormId ?? null;
     this.movement.yatTempDutyClaimGxDTOs = [];
     this.resetGxDetails();
-    this.loadGxTypes(this.movement.subFormId || '');
+    this.loadGxTypes(this.movement.subFormId ?? '');
   }
 
   onAlreadySubmittedChange(): void {
@@ -347,7 +299,7 @@ export class MovementUpdateClaimComponent implements OnInit {
       return;
     }
 
-    const currentGxType = (this.tempGxDetails.gxType || '').trim();
+    const currentGxType = (this.tempGxDetails.gxType ?? '').trim();
     const isPmtClaim = this.movement.subFormId === this.codeClaim.pmtAdv;
     const allowsTyDuplicates =
       currentGxType === 'Transfer from Ty Unit' ||
@@ -358,7 +310,7 @@ export class MovementUpdateClaimComponent implements OnInit {
 
     const duplicateExists = existingRows.some(
       (row) =>
-        (row?.gxType || '').trim() === currentGxType &&
+        (row?.gxType ?? '').trim() === currentGxType &&
         !(allowsTyDuplicates || isPmtClaim)
     );
     if (duplicateExists) {
@@ -379,7 +331,7 @@ export class MovementUpdateClaimComponent implements OnInit {
 
     if (cancelCheckToken) {
       const conflictingRow = existingRows.find((row) => {
-        const gxType = (row?.gxType || '').trim();
+        const gxType = (row?.gxType ?? '').trim();
         if (cancelCheckToken === 'R') {
           return gxType.includes('Cancel');
         }
@@ -394,7 +346,7 @@ export class MovementUpdateClaimComponent implements OnInit {
         const conflictLabel =
           cancelCheckToken === 'R'
             ? currentGxType
-            : (conflictingRow?.gxType || '').trim();
+            : (conflictingRow?.gxType ?? '').trim();
         this.$common.showMessage(
           `${conflictLabel} and Cancel Gx can't be availed together`,
           'danger'
@@ -463,24 +415,17 @@ export class MovementUpdateClaimComponent implements OnInit {
           this.$common.hideLoader();
 
           if (!res?.status) {
-            this.$common.showMessage(res?.message || 'Movement update save failed.', 'danger');
+            this.$common.showMessage(res?.message ?? 'Movement update save failed.', 'danger');
             return;
           }
 
-          const saved = Array.isArray(res?.object) ? res.object[0] || {} : res?.object || {};
-          const nextClaimId = String(saved?.claimId || this.claimId || '');
-          this.$common.showMessage(res?.message || 'Movement update saved successfully.', 'success');
+          const saved = Array.isArray(res?.object) ? res.object[0] ?? {} : res?.object ?? {};
+          const nextClaimId = String(saved?.claimId ?? this.claimId ?? '');
+          this.$common.showMessage(res?.message ?? 'Movement update saved successfully.', 'success');
 
           this.claimId = nextClaimId || this.claimId;
           setTimeout(() => {
-            this.router.navigate([`${this.$auth.getModuleName()}/claim-new`], {
-              queryParams: this.claimId
-                ? {
-                    id: this.claimId,
-                    ...(this.movement.subFormId ? { subFormId: this.movement.subFormId } : {}),
-                  }
-                : {},
-            });
+            this.router.navigate([`${this.$auth.getModuleName()}/claim-new`]);
           }, 600);
         },
         () => {
@@ -491,39 +436,13 @@ export class MovementUpdateClaimComponent implements OnInit {
       );
   }
 
-  openVoucherPreview(): void {
-    this.router.navigate([`${this.$auth.getModuleName()}/preview-voucher`], {
-      queryParams: {
-        id: this.claimId,
-        ...(this.movement.subFormId ? { subFormId: this.movement.subFormId } : {}),
-      },
-    });
-  }
-
-  openClaimForm(preferValidationRoute = false): void {
-    const route = this.resolveClaimFormRoute(preferValidationRoute);
-    if (!route) {
-      this.$common.showMessage('Claim form route is not available.', 'danger');
-      return;
-    }
-
-    this.router.navigate([`${this.$auth.getModuleName()}/${route}`], {
-      queryParams: {
-        id: this.claimId,
-        subFormId: this.movement.subFormId,
-      },
-    });
-  }
-
   getUnitLabel(unit: any): string {
-    return unit?.descr || unit?.unitName || unit?.unit || '-';
+    return unit?.descr ?? '-';
   }
 
   private resetScreen(): void {
     this.movement = this.createEmptyMovement();
     this.tempGxDetails = this.createEmptyGxDetail();
-    this.voucherList = [];
-    this.validationResult = null;
     this.gxTypes = [];
     this.selectedGxIndex = null;
     this.saveButtonLabel = 'Save';
@@ -532,53 +451,45 @@ export class MovementUpdateClaimComponent implements OnInit {
   }
 
   private buildSavePayload(): any {
-    const codeUnit = this.movement?.codeUnitDTO?.unit || this.userIdDetails?.unit || this.userIdDetails?.unitId || '';
-    const settlementUnit = this.movement.unitId || null;
+    const codeUnit = this.userIdDetails?.unitId ?? this.userIdDetails?.unit ?? '';
+    const settlementUnit = this.movement.unitId ?? null;
     const drawnFrom =
       this.movement.drawnFrom === 'Others'
-        ? this.movement.drawnFromOther || this.movement.drawnFrom
+        ? this.movement.drawnFromOther ?? this.movement.drawnFrom
         : this.movement.drawnFrom;
 
-    const manualRows = this.hasManualSettlementDetails()
-      ? [
-          {
-            creditDebitMemoNo: this.movement.creditDebitNo || null,
-            isClaimSetteled: this.movement.isClaimSettle || null,
-            claimAmt: this.toNumberOrNull(this.movement.claimAmt),
-            unitName: settlementUnit,
-            unitId: settlementUnit,
-            claimPassAmt: this.toNumberOrNull(this.movement.claimPassAmt),
-            letterNo: this.movement.letterNo || null,
-            letterNoDated: this.toApiDate(this.movement.letterNoDated),
-          },
-        ]
-      : [];
+    const manualRows = [
+      {
+        creditDebitMemoNo: this.movement.creditDebitNo ?? null,
+        isClaimSetteled: this.movement.isClaimSettle ?? null,
+        claimAmt: this.toNumberOrNull(this.movement.claimAmt),
+        unitName: settlementUnit,
+        claimPassAmt: this.toNumberOrNull(this.movement.claimPassAmt),
+        letterNo: this.movement.letterNo ?? null,
+        letterNoDated: this.toApiDate(this.movement.letterNoDated),
+      },
+    ];
 
     return {
-      ...this.movement,
-      claimId: this.movement.claimId || this.claimId || null,
-      claimMode: this.movement.claimMode || null,
-      advanceMode: this.movement.claimMode || null,
-      subFormId: this.movement.subFormId || null,
-      purpose: this.movement.subFormId || null,
+      claimId: this.movement.claimId ?? this.claimId ?? null,
+      claimMode: this.movement.claimMode ?? null,
       voucherDate: this.toApiDate(this.movement.voucherDate),
+      voucherNo: this.movement.voucherNo ?? null,
       voucherAmt: this.toNumberOrNull(this.movement.voucherAmt),
-      drawnFrom: drawnFrom || null,
-      drawnFromOther: this.movement.drawnFrom === 'Others' ? this.movement.drawnFromOther || null : null,
+      drawnFrom: drawnFrom ?? null,
       claimPassAmt: this.toNumberOrNull(this.movement.claimPassAmt),
       claimRecAmt: this.toNumberOrNull(this.movement.claimPassAmt),
       claimAmt: this.toNumberOrNull(this.movement.claimAmt),
       aclUserDTO: {
-        ...(this.movement.aclUserDTO || {}),
-        userId: this.userIdDetails?.userId || '',
+        userId: this.userIdDetails?.userId ?? '',
       },
       codeUnitDTO: {
-        ...(this.movement.codeUnitDTO || {}),
         unit: codeUnit,
       },
       codeSubFormDTO: {
-        subFormId: this.movement.subFormId || null,
+        subFormId: this.movement.subFormId ?? null,
       },
+      isClaimAlreadySubmitted: this.movement.isClaimAlreadySubmitted ?? null,
       yatClaimManualDTOs: manualRows,
       yatClaimGxDetailsDTOs: this.movement.yatTempDutyClaimGxDTOs.map((row) => ({
         ...row,
@@ -586,18 +497,6 @@ export class MovementUpdateClaimComponent implements OnInit {
         dateOfTravel: this.toApiDate(row.dateOfTravel),
       })),
     };
-  }
-
-  private hasManualSettlementDetails(): boolean {
-    return !!(
-      this.movement.creditDebitNo ||
-      this.movement.claimPassAmt ||
-      this.movement.claimAmt ||
-      this.movement.unitId ||
-      this.movement.letterNo ||
-      this.movement.letterNoDated ||
-      this.movement.isClaimSettle
-    );
   }
 
   private validateManualSettlement(): boolean {
@@ -683,50 +582,6 @@ export class MovementUpdateClaimComponent implements OnInit {
     this.claimSettled = this.movement.isClaimSettle === '1';
   }
 
-  private resolveClaimFormRoute(preferValidationRoute = false): string | null {
-    if (preferValidationRoute) {
-      const validatedRoute = this.getClaimFormRouteFromValidation(this.validationResult);
-      if (validatedRoute) {
-        return validatedRoute;
-      }
-    }
-    return this.getClaimFormRoute(this.movement.subFormId || '');
-  }
-
-  private getClaimFormRouteFromValidation(validationResult: any): string | null {
-    const formUrl = String(validationResult?.formUrl || validationResult?.url || '').toLowerCase();
-    if (!formUrl) {
-      return null;
-    }
-    if (formUrl.includes('form-pmt-duty-claim')) return 'form-pmt-duty-claim';
-    if (formUrl.includes('form-ty-duty-claim')) return 'form-ty-duty-claim';
-    if (formUrl.includes('form-fte-claim')) return 'form-fte-claim';
-    if (formUrl.includes('form-ltc-claim')) return 'form-ltc-claim';
-    if (formUrl.includes('form-resettlement-claim')) return 'form-resettlement-claim';
-    if (formUrl.includes('form-pmt-duty')) return 'form-pmt-duty-claim';
-    if (formUrl.includes('form-ty-duty')) return 'form-ty-duty-claim';
-    if (formUrl.includes('form-fte-advance')) return 'form-fte-claim';
-    if (formUrl.includes('form-ltc-advance')) return 'form-ltc-claim';
-    if (formUrl.includes('resettlement')) return 'form-resettlement-claim';
-    return null;
-  }
-
-  private getClaimFormRoute(subFormId: string): string | null {
-    const id = String(subFormId || '').toUpperCase();
-    if (id === this.codeClaim.pmtAdv || id === 'PMT' || id === 'PMTA') return 'form-pmt-duty-claim';
-    if (id === this.codeClaim.tyAdv || id === 'TY' || id === 'TYA' || id === 'TYD') return 'form-ty-duty-claim';
-    if (id === this.codeClaim.fteAdv || id === 'FTE' || id === 'FTEA') return 'form-fte-claim';
-    if (id === this.codeClaim.ltcAdv || id === 'LTC' || id === 'LTCA') return 'form-ltc-claim';
-    if (id === this.codeClaim.resettleClm || id === 'RES' || id === 'RESCLM' || id === 'R') return 'form-resettlement-claim';
-    return null;
-  }
-
-  private normalizeSubFormId(subFormId: string): string {
-    const id = String(subFormId || '').toUpperCase();
-    if (id === 'R' || id === 'RES' || id === 'RESCLM') return this.codeClaim.resettleClm;
-    return id;
-  }
-
   private createEmptyMovement(): MovementModel {
     return {
       claimId: this.claimId || null,
@@ -767,10 +622,10 @@ export class MovementUpdateClaimComponent implements OnInit {
 
   private normalizeSingleGxDetail(row: any): MovementGxDetail {
     return {
-      gxType: row?.gxType || null,
-      unit: row?.unit || null,
+      gxType: row?.gxType ?? null,
+      unit: row?.unit ?? null,
       gxDate: this.toInputDate(row?.gxDate),
-      gxNo: row?.gxNo || null,
+      gxNo: row?.gxNo ?? null,
       dateOfTravel: this.toInputDate(row?.dateOfTravel),
     };
   }
@@ -779,22 +634,52 @@ export class MovementUpdateClaimComponent implements OnInit {
     if (!value && value !== 0) {
       return null;
     }
+    const text = String(value);
+    const ddMmYyyy = /^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/.exec(text);
+    if (ddMmYyyy) {
+      const [, day, month, year] = ddMmYyyy;
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    const yyyyMmDd = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
+    if (yyyyMmDd) {
+      return text;
+    }
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) {
-      const text = String(value);
-      return /^\d{4}-\d{2}-\d{2}$/.test(text) ? text : null;
+      return text ? text : null;
     }
     return this.datePipe.transform(date, 'yyyy-MM-dd');
   }
 
-  private toApiDate(value: any): string | null {
+  private toDisplayDate(value: any): string | null {
+    if (!value && value !== 0) {
+      return null;
+    }
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      const text = String(value);
+      return text ? text : null;
+    }
+    return this.datePipe.transform(date, 'dd-MM-yyyy');
+  }
+
+  private toApiDate(value: any): number | null {
     if (!value) {
       return null;
     }
     const text = String(value);
-    return /^\d{4}-\d{2}-\d{2}$/.test(text)
-      ? text
-      : this.datePipe.transform(new Date(value), 'yyyy-MM-dd');
+    const ddMmYyyy = /^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/.exec(text);
+    if (ddMmYyyy) {
+      const [, day, month, year] = ddMmYyyy;
+      return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
+    }
+    const yyyyMmDd = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
+    if (yyyyMmDd) {
+      const [, year, month, day] = yyyyMmDd;
+      return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
+    }
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date.getTime();
   }
 
   private toNumberOrNull(value: any): number | null {
