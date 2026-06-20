@@ -151,6 +151,15 @@ export class ClaimApiService {
     );
   }
 
+  fileDownloadedTempInkSign(config: any) {
+    return this.http.put<any>(`claim/fileDownloadedTempInkSign`, {}, config).pipe(
+      map((response: any) => {
+        this.$common.parseResponse(response);
+        return response;
+      })
+    );
+  }
+
   /**
    * Get verifier unit for a claim.
    * Old JS: $http.put(url + "/getVerifierUnit", {}, config)

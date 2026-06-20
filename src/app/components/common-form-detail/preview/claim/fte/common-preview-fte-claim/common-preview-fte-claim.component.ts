@@ -1,8 +1,8 @@
 import { DatePipe, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({
@@ -12,16 +12,14 @@ import { CommonService } from 'src/app/service/core/common.service';
   standalone: false,
 })
 export class CommonPreviewFteClaimComponent implements OnInit {
-  readonly previewTitle = 'Requisition for FTE Claim';
   readonly defaultSubFormId = 'FTE';
 
   formObj: any = {};
   claim: any = {};
-  advance: any = {};
   bankDetails: any = {};
   documentDtos: any[] = [];
   travelRows: any[] = [];
-  familyRows: any[] = [];
+  gxRows: any[] = [];
   claimId: string | null = null;
   subFormId = this.defaultSubFormId;
   supplementaryId: string | null = null;
@@ -41,7 +39,7 @@ export class CommonPreviewFteClaimComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.claimId = params?.id ?? null;
       this.supplementaryId = params?.supId ?? null;
-      this.subFormId = String(params?.subFormId ?? this.route.snapshot.data?.['subFormId'] ?? this.defaultSubFormId).toUpperCase();
+      this.subFormId = params?.subFormId ?? this.route.snapshot.data?.['subFormId'] ?? this.defaultSubFormId;
       this.getClaimDetails();
     });
   }
@@ -82,74 +80,117 @@ export class CommonPreviewFteClaimComponent implements OnInit {
     });
   }
 
-  get summaryFields() {
-    return [
-      { label: 'Form ID', value: this.formObj?.formId },
-      { label: 'Claim ID', value: this.formObj?.claimId },
-      { label: 'Advance Claim ID', value: this.formObj?.advClaimId },
-      { label: 'Supplementary Claim ID', value: this.formObj?.supClaimId },
-      { label: 'Claim Status', value: this.formObj?.claimStatus },
-      { label: 'Sign With', value: this.signLabel(this.formObj?.signWith) },
-      { label: 'Occurrence Date', value: this.asDate(this.formObj?.occDate) },
-      { label: 'GX Form', value: this.formObj?.gxFormFileUrl ? 'Attached' : 'Not Attached' },
-    ].filter((field) => !this.isBlank(field.value));
+  get previewTitle(): string {
+    const prefix = this.isBlank(this.formObj?.supClaimId) ? '' : 'Supplementary ';
+    const suffix = this.isBlank(this.formObj?.formId) ? '' : ` - ${this.formObj.formId}`;
+    return `${prefix}FTE Claim${suffix}`;
   }
 
-  get personalFields() {
-    return [
-      { label: 'Name', value: this.claim?.name },
-      { label: 'Rank', value: this.claim?.rank },
-      { label: 'Personnel Number', value: this.claim?.pno },
-      { label: 'Pay Level', value: this.claim?.payLevel },
-      { label: 'Basic Pay', value: this.claim?.basicPay },
-      { label: 'Temporary Duty To', value: this.claim?.tempTransferToType },
-      { label: 'Duty Station', value: this.claim?.dutyStation },
-      { label: 'Unit', value: this.claim?.tempDutyTo },
-      { label: 'Applied To', value: this.claim?.appliedTo },
-      { label: 'Station Proceeding To', value: this.claim?.stationProceedingTo },
-      { label: 'Present Unit', value: this.claim?.presentUnit },
-      { label: 'Probable Duration (Days)', value: this.claim?.duration },
-    ].filter((field) => !this.isBlank(field.value));
+  get isCreatorRole(): boolean {
+    return this.userIdDetails?.roleTypeId === this.$auth.codeRoleType()?.creator;
   }
 
-  get claimFields() {
-    return [
-      { label: 'Purpose Type', value: this.claim?.purposeType ?? 'Other' },
-      { label: 'Purpose', value: this.claim?.purpose },
-      { label: 'GX Number', value: this.claim?.gxNo },
-      { label: 'GX Date', value: this.asDate(this.claim?.gxDate) },
-      { label: 'From Date', value: this.asDate(this.claim?.tyFromDate) },
-      { label: 'To Date', value: this.asDate(this.claim?.tyToDate) },
-      { label: 'Place', value: this.claim?.currentPlace },
-      { label: 'Travel Details Amount', value: this.amount(this.claim?.travelDetailsAmt) },
-      { label: 'DTS Amount', value: this.amount(this.claim?.travelDetailsDTSAmt) },
-      { label: 'FTE Amount', value: this.amount(this.claim?.travelDetailsFTEAmt) },
-      { label: 'Grand Total', value: this.amount(this.claim?.grandTotal) },
-      { label: 'Net Amount Due', value: this.amount(this.claim?.netDueAbsoluteAmt) },
-    ].filter((field) => !this.isBlank(field.value));
+  get isInkSign(): boolean {
+    return ['IS', 'IK', 'INK_SIGN'].includes(String(this.formObj?.signWith ?? '').toUpperCase());
   }
 
-  get bankFields() {
+  get isESign(): boolean {
+    return ['ES', 'E_SIGN'].includes(String(this.formObj?.signWith ?? '').toUpperCase());
+  }
+
+  get hasLinkedAdvance(): boolean {
+    const claimMode = String(this.formObj?.claimMode ?? '').toUpperCase();
+    return ['YT', 'YATRA'].includes(claimMode) && !this.isBlank(this.formObj?.advClaimId);
+  }
+
+  get guestRows(): any[] {
+    if (!this.isBlank(this.claim?.purpose)) {
+      return [];
+    }
     return [
-      { label: 'Bank Name', value: this.bankDetails?.bankName },
-      { label: 'Account Number', value: this.bankDetails?.bankAccNo },
-      { label: 'IFSC Code', value: this.bankDetails?.ifscCode },
-      { label: 'MICR Code', value: this.bankDetails?.micrCode },
-    ].filter((field) => !this.isBlank(field.value));
+      {
+        name: this.claim?.personName,
+        relation: this.claim?.relation,
+        age: this.claim?.age,
+        gender: this.claim?.gender,
+      },
+    ];
+  }
+
+  get roadMileageRows(): any[] {
+    return this.asArray(this.claim?.yatTempDutyClaimRoadMileageDTOs);
+  }
+
+  get leaveRows(): any[] {
+    return this.asArray(this.claim?.yatTempDutyClaimLeaveDTOs);
+  }
+
+  get accommodationRows(): any[] {
+    return this.asArray(this.claim?.yatTempDutyClaimBoarLodDTOs);
+  }
+
+  get foodRows(): any[] {
+    return this.asArray(this.claim?.yatTempDutyClaimFoodDTOs);
+  }
+
+  get cityJourneyRows(): any[] {
+    return this.asArray(this.claim?.yatTempDutyClaimJourneyDTOs);
+  }
+
+  get otherChargeRows(): any[] {
+    return this.asArray(this.formObj?.yatForeignTravelDetailDTOs);
+  }
+
+  get financialRows(): any[] {
+    const rows = [
+      { description: 'Travel Details (All mode of travel excluding DTS Booking)', claimed: null, permitted: this.claim?.travelDetailsAmt },
+      { description: 'Travel details (DTS bookings)', claimed: null, permitted: this.claim?.travelDetailsDTSAmt },
+      { description: 'Foreign Travel Details', claimed: null, permitted: this.claim?.travelDetailsFTEAmt },
+    ];
+    if (this.roadMileageRows.length) {
+      rows.push({ description: 'Road mileage from duty station to Rail/Air/Road and back', claimed: null, permitted: this.claim?.roadMileageAmt });
+    }
+    rows.push(
+      { description: 'Reimbursement of AC/ Non AC taxi (Travel within city) charges', claimed: this.claim?.taxiChargesClaimed, permitted: this.claim?.taxiCharges },
+      { description: 'Reimbursement of hotel accommodation/ guest house', claimed: this.claim?.hotelAmtClaimed, permitted: this.claim?.hotelAmt },
+      { description: 'Reimbursement of food bills', claimed: this.claim?.foodAmtClaimed, permitted: this.claim?.foodAmt },
+      { description: 'Grand Total', claimed: null, permitted: this.claim?.grandTotal },
+      { description: `Amount of advance. If any, drawn vide voucher No. ${this.nil(this.claim?.advVoucherNumber)} dated ${this.nil(this.asDate(this.claim?.lessAmtVoucherDate))}`, claimed: null, permitted: this.claim?.lessAmtVoucherAmt },
+      { description: `Excess TA advance paid through MRO. If any, paid via MRO No. ${this.nil(this.claim?.mroNo)} dated ${this.nil(this.asDate(this.claim?.mroDate))}`, claimed: null, permitted: this.claim?.mroAmt }
+    );
+    if (Number(this.claim?.mroPiAmt) > 0) {
+      rows.push({
+        description: `MRO Penal Interest (from date ${this.nil(this.asDate(this.claim?.mroPiFromDate))} to date ${this.nil(this.asDate(this.claim?.mroPiToDate))}) ${this.nil(this.claim?.mroPiInterestRate)}% Interest Rate`,
+        claimed: null,
+        permitted: this.claim?.mroPiAmt,
+      });
+    }
+    rows.push(
+      { description: `Penal Interest (from date ${this.nil(this.asDate(this.claim?.piFromDate))} to date ${this.nil(this.asDate(this.claim?.piToDate))}) ${this.nil(this.claim?.piInterestRate)}% Interest Rate`, claimed: null, permitted: this.claim?.piAmt },
+      { description: 'DTS Ticket Adjusted', claimed: null, permitted: this.claim?.travelDetailsDTSAmt },
+      { description: 'Net Amount Due', claimed: null, permitted: this.claim?.netDueAbsoluteAmt }
+    );
+    return rows;
   }
 
   asDate(value: any): any {
-    if (!value) return null;
+    if (!value && value !== 0) return null;
     const num = Number(value);
-    return Number.isNaN(num) ? value : this.datePipe.transform(new Date(num), 'dd-MMM-yyyy');
+    return Number.isNaN(num) ? value : this.datePipe.transform(new Date(num), 'dd/MM/yyyy');
   }
 
-  display(value: any): any {
+  asDateTime(value: any): any {
+    if (!value && value !== 0) return null;
+    const num = Number(value);
+    return Number.isNaN(num) ? value : this.datePipe.transform(new Date(num), 'dd/MM/yyyy HH:mm');
+  }
+
+  nil(value: any): any {
+    return this.isBlank(value) ? 'Nil' : value;
+  }
+
+  hyphen(value: any): any {
     return this.isBlank(value) ? '-' : value;
-  }
-
-  amount(value: any): any {
-    return this.isBlank(value) ? null : value;
   }
 
   goBack(): void {
@@ -168,27 +209,39 @@ export class CommonPreviewFteClaimComponent implements OnInit {
     return !this.isBlank(this.formObj?.supClaimId);
   }
 
+  downloadPreview(): void {
+    if (!this.formObj?.claimId) {
+      this.$common.showMessage('Claim id is not available.', 'danger');
+      return;
+    }
+    this.$claimApi
+      .fileDownloadedTempInkSign({
+        headers: {
+          claimId: this.formObj.claimId,
+          signType: true,
+        },
+      })
+      .subscribe({
+        next: (response: any) => {
+          if (!response?.status) {
+            this.$common.showMessage(response?.message ?? 'Unable to download file.', 'danger');
+            return;
+          }
+          const responseObject = Array.isArray(response?.object) ? response.object[0] ?? null : null;
+          this.$common.download(responseObject?.inkSignedFileUrl);
+        },
+        error: () => this.$common.showMessage('Unable to download file.', 'danger'),
+      });
+  }
+
   private parseClaimPreviewResponse(response: any): void {
     const claims = this.unwrapClaimObject(response?.object);
     this.formObj = claims;
     this.claim = this.firstItem(claims?.yatForeignDutyClaimDTOs);
-    this.advance = this.firstItem(claims?.yatForeignDutyAdvDTOs);
-    this.travelRows = this.resolveTravelRows(claims);
-    this.familyRows = this.asArray(this.claim?.yatTempDutyClaimFamilyDTOs);
+    this.travelRows = this.asArray(claims?.yatClaimTravelDetailsDTOs);
+    this.gxRows = this.asArray(claims?.yatClaimGxDetailsDTOs);
     this.documentDtos = this.asArray(claims?.yatDocsDTOs);
     this.bankDetails = claims?.yatClaimBankDetailDTO ?? {};
-  }
-
-  private resolveTravelRows(claims: any): any[] {
-    return this.asArray(claims?.yatDtsDetailDTOs).map((row) => ({
-      from: row?.fromPlace,
-      to: row?.toPlace,
-      mode: row?.travelMode,
-      dts: row?.isDts,
-      amount: row?.amount,
-      reason: row?.reasonForNotUsingDts,
-      remarks: row?.remarks,
-    }));
   }
 
   private unwrapClaimObject(object: any): any {
@@ -201,13 +254,6 @@ export class CommonPreviewFteClaimComponent implements OnInit {
 
   private asArray(value: any): any[] {
     return Array.isArray(value) ? value : [];
-  }
-
-  private signLabel(signWith: any): string {
-    const sign = String(signWith ?? '').toUpperCase();
-    if (sign === 'ES') return 'eSign';
-    if (['IS', 'IK'].includes(sign)) return 'Ink Sign';
-    return signWith;
   }
 
   private isBlank(value: any): boolean {

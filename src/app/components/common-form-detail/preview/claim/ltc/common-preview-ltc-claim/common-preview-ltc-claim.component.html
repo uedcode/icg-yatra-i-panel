@@ -1,48 +1,72 @@
-<div class="wrapper">
-  <div class="container mt-3">
-    <button type="button" class="btn btn-sm btn-warning mb-3" (click)="goBack()">BACK</button>
-    <h4><strong>{{ previewTitle }}</strong></h4>
-    <section class="mt-4">
-      <h5><strong>Claim Summary</strong></h5>
-      <div class="row" *ngFor="let field of summaryFields"><div class="col-md-4 fw-bold">{{ field.label }}</div><div class="col-md-8">{{ display(field.value) }}</div></div>
+<div class="claim-preview-report">
+  <div class="preview-card">
+    <div class="preview-actions text-right">
+      <button type="button" class="btn btn-sm btn-warning mr-2" (click)="goBack()">Back</button>
+      <button type="button" class="btn btn-sm btn-info" *ngIf="isCreatorRole" (click)="downloadPreview()">Download</button>
+    </div>
+
+    <h4 class="head-ing"><strong>{{ previewTitle }}</strong></h4>
+
+    <div class="sign-row">
+      <label><input type="radio" name="ltcClaimSign" [checked]="isInkSign" disabled /> Ink Sign</label>
+      <label><input type="radio" name="ltcClaimSign" [checked]="isESign" disabled /> eSign</label>
+    </div>
+
+    <section>
+      <h4 class="head-ing">(a) <strong>Personal Details</strong></h4>
+      <div class="row preview-row"><div class="col-md-3"><strong>Name</strong></div><div class="col-md-3">{{ nil(claim?.name) }}</div><div class="col-md-3"><strong>Rank</strong></div><div class="col-md-3">{{ nil(claim?.rank) }}</div></div>
+      <div class="row preview-row"><div class="col-md-3"><strong>Personnel Number</strong></div><div class="col-md-3">{{ nil(claim?.pno) }}</div><div class="col-md-3"><strong>Pay Level</strong></div><div class="col-md-3">{{ nil(claim?.payLevel) }}</div></div>
+      <div class="row preview-row"><div class="col-md-3"><strong>Basic Pay (In Rs.)</strong></div><div class="col-md-3">{{ nil(claim?.basicPay) }}</div><div class="col-md-3"><strong>Date of Joining</strong></div><div class="col-md-3">{{ nil(asDate(claim?.dateOfjoining)) }}</div><div class="col-md-3"><strong>Applied To</strong></div><div class="col-md-3">{{ nil(claim?.appliedTo) }}</div></div>
+      <div class="row preview-row">
+        <div class="col-md-3"><strong>Advance Voucher Number</strong></div><div class="col-md-3">{{ nil(claim?.advVoucherNumber) }}</div>
+        <div class="col-md-3" *ngIf="formObj?.supClaimId"><strong>Linked Claim Form</strong></div><div class="col-md-3" *ngIf="formObj?.supClaimId"><button type="button" class="btn btn-info btn-sm" (click)="openRelatedPreview('preview-ltc-claim', formObj.supClaimId)">View</button></div>
+      </div>
+      <div class="row preview-row" *ngIf="formObj?.claimMode === 'M' || formObj?.claimMode === 'MANUAL'"><div class="col-md-3"><strong>Drawn from</strong></div><div class="col-md-3">{{ nil(formObj?.drawnFrom) }}</div><div class="col-md-3"><strong>Voucher Date</strong></div><div class="col-md-3">{{ nil(asDate(formObj?.voucherDate)) }}</div></div>
+
+      <h4 class="head-ing"><strong>Family Details</strong></h4>
+      <div class="row preview-row"><div class="col-md-3"><strong>Family Type</strong></div><div class="col-md-3">{{ nil(claim?.familyType) }}</div></div>
+      <div class="table-responsive"><table class="table table-striped table-bordered table-hover table-sm"><thead><tr><th>Name</th><th>Age</th><th>Relation</th><th>Occupation</th></tr></thead><tbody><tr *ngFor="let family of familyRows"><td>{{ nil(family?.memberName) }}</td><td>{{ nil(family?.age) }}</td><td>{{ nil(family?.relation) }}</td><td>{{ nil(family?.occupation) }}</td></tr><tr *ngIf="!familyRows.length"><td colspan="4" class="text-center">No Records</td></tr></tbody></table></div>
+
+      <div *ngIf="spouseRows.length">
+        <h4 class="head-ing"><strong>Spouse Details</strong></h4>
+        <div class="table-responsive"><table class="table table-striped table-bordered table-hover table-sm"><thead><tr><th>Name</th><th>Age</th><th>Relation</th><th>Occupation</th></tr></thead><tbody><tr *ngFor="let spouse of spouseRows"><td>{{ nil(spouse?.memberName) }}</td><td>{{ nil(spouse?.age) }}</td><td>{{ nil(spouse?.relation) }}</td><td>{{ nil(spouse?.occupation) }}</td></tr></tbody></table></div>
+      </div>
+
+      <h4 class="head-ing"><strong>Genform Details</strong></h4>
+      <div class="table-responsive"><table class="table table-striped table-bordered table-hover table-sm"><thead><tr><th>Gx Type</th><th>Unit</th><th>Gx Number</th><th>Gx Date</th><th>Date of occurrence</th></tr></thead><tbody><tr *ngFor="let row of gxRows"><td>{{ hyphen(row?.gxType) }}</td><td>{{ hyphen(row?.unit) }}</td><td>{{ hyphen(row?.gxNo) }}</td><td>{{ hyphen(asDate(row?.gxDate)) }}</td><td>{{ hyphen(asDate(row?.dateOfTravel)) }}</td></tr><tr *ngIf="!gxRows.length"><td colspan="5" class="text-center">No Record Found</td></tr></tbody></table></div>
     </section>
-    <section class="mt-4">
-      <h5><strong>(a) Personal Details</strong></h5>
-      <div class="row" *ngFor="let field of personalFields"><div class="col-md-4 fw-bold">{{ field.label }}</div><div class="col-md-8">{{ display(field.value) }}</div></div>
+
+    <section>
+      <h4 class="head-ing">(b) <strong>LTC Details</strong></h4>
+      <div class="row preview-row"><div class="col-md-3"><strong>Block year</strong></div><div class="col-md-3">{{ nil(ltcLeave?.blockYear) }}</div><div class="col-md-3"><strong>LTC Type</strong></div><div class="col-md-3">{{ nil(ltcLeave?.ltcType) }}</div></div>
+      <div class="row preview-row"><div class="col-md-3"><strong>Nature of leave</strong></div><div class="col-md-3">{{ nil(ltcLeave?.natureOfleave) }}</div><div class="col-md-3"><strong>Leave (From date)</strong></div><div class="col-md-3">{{ nil(asDate(ltcLeave?.leaveFormDt)) }}</div></div>
+      <div class="row preview-row"><div class="col-md-3"><strong>Leave (To date)</strong></div><div class="col-md-3">{{ nil(asDate(ltcLeave?.leaveToDt)) }}</div><div class="col-md-3"><strong>Leaves (No of days)</strong></div><div class="col-md-3">{{ nil(ltcLeave?.leavesNoOfDay) }}</div></div>
+      <div class="row preview-row"><div class="col-md-3"><strong>Place of visit</strong></div><div class="col-md-3">{{ nil(claim?.placeOfVisit) }}</div><div class="col-md-3"><strong>Journey Performed By</strong></div><div class="col-md-3">{{ nil(claim?.performedBy) }}</div></div>
     </section>
-    <section class="mt-4">
-      <h5><strong>(b) Claim Details</strong></h5>
-      <div class="row" *ngFor="let field of claimFields"><div class="col-md-4 fw-bold">{{ field.label }}</div><div class="col-md-8">{{ display(field.value) }}</div></div>
+
+    <section>
+      <h4 class="head-ing">(c) <strong>Travel Details</strong></h4>
+      <div class="table-responsive"><table class="table table-striped table-bordered table-hover table-sm"><thead><tr><th colspan="2">From</th><th colspan="2">To</th><th rowspan="2">Mode of travel</th><th rowspan="2">DTS</th><th rowspan="2">Reason for not taking DTS</th><th colspan="2">Class of Travel</th><th rowspan="2">Distance in KM</th><th rowspan="2">Amount (in Rs.)</th><th rowspan="2">Remarks</th></tr><tr><th>Place</th><th>Date & time</th><th>Place</th><th>Date & time</th><th>Entitled</th><th>Travelled</th></tr></thead><tbody><tr *ngFor="let row of travelRows"><td>{{ hyphen(row?.fromPlace) }}</td><td>{{ hyphen(asDateTime(row?.fromDate)) }}</td><td>{{ hyphen(row?.toPlace) }}</td><td>{{ hyphen(asDateTime(row?.toDate)) }}</td><td>{{ hyphen(row?.travelMode) }}</td><td>{{ hyphen(row?.isDts) }}</td><td>{{ hyphen(row?.reasonDts) }}</td><td>{{ hyphen(row?.entitledClass) }}</td><td>{{ hyphen(row?.travelClass) }}</td><td>{{ hyphen(row?.distance) }}</td><td>{{ hyphen(row?.amount) }}</td><td>{{ hyphen(row?.remarks) }}</td></tr><tr *ngIf="!travelRows.length"><td colspan="12" class="text-center">No Record Found</td></tr></tbody></table></div>
     </section>
-    <section class="mt-4">
-      <h5><strong>(c) Travel Details</strong></h5>
-      <table class="table table-bordered table-sm">
-        <thead class="table-primary"><tr><th>From</th><th>To</th><th>Travel Mode</th><th>DTS</th><th>Amount (In Rs.)</th><th>Reason for Not Using DTS</th><th>Remarks</th></tr></thead>
-        <tbody>
-          <tr *ngFor="let row of travelRows"><td>{{ display(row.from) }}</td><td>{{ display(row.to) }}</td><td>{{ display(row.mode) }}</td><td>{{ display(row.dts) }}</td><td>{{ display(row.amount) }}</td><td>{{ display(row.reason) }}</td><td>{{ display(row.remarks) }}</td></tr>
-          <tr *ngIf="!travelRows.length"><td colspan="7" class="text-center">No Record Found</td></tr>
-        </tbody>
-      </table>
+
+    <section>
+      <h4 class="head-ing">(d) <strong>Supporting Documents</strong></h4>
+      <div class="table-responsive"><table class="table table-striped table-bordered table-hover table-sm"><thead><tr><th>Document Name</th><th>Description</th><th>Supporting Document</th></tr></thead><tbody><tr *ngFor="let doc of documentDtos"><td>{{ nil(doc?.codeDocInfoDTO?.docName) }} <span *ngIf="doc?.docNo">({{ doc.docNo }})</span></td><td>{{ nil(doc?.descr) }}</td><td><button *ngIf="doc?.url" type="button" class="btn btn-info btn-sm" (click)="$auth.viewFile(doc.url)">View</button></td></tr><tr *ngIf="formObj?.signedFileUrl"><td>Signed Documents</td><td></td><td><button type="button" class="btn btn-info btn-sm" (click)="$auth.viewFile(formObj.signedFileUrl)">View</button></td></tr><tr *ngIf="!documentDtos.length"><td colspan="3" class="text-center">No Record Found</td></tr></tbody></table></div>
     </section>
-    <section class="mt-4" *ngIf="familyRows.length">
-      <h5><strong>(d) Family / Guest Details</strong></h5>
-      <table class="table table-bordered table-sm"><thead class="table-primary"><tr><th>Name</th><th>Relation</th><th>Age</th><th>Gender</th></tr></thead><tbody><tr *ngFor="let row of familyRows"><td>{{ display(row.name) }}</td><td>{{ display(row.relation) }}</td><td>{{ display(row.age) }}</td><td>{{ display(row.gender) }}</td></tr></tbody></table>
+
+    <section>
+      <h4 class="head-ing">(e) <strong>Financial Details</strong></h4>
+      <div class="table-responsive" *ngIf="otherChargeRows.length"><p><strong>Other Charges</strong></p><table class="table table-striped table-bordered table-hover table-sm"><thead><tr><th>Amount (In Rs.)</th><th>Remarks</th></tr></thead><tbody><tr *ngFor="let row of otherChargeRows"><td>{{ hyphen(row?.amount) }}</td><td>{{ hyphen(row?.descr) }}</td></tr></tbody></table></div>
+      <div class="table-responsive"><table class="table table-striped table-bordered table-hover table-sm"><thead><tr><th>Description</th><th>Amount (In Rs.)</th></tr></thead><tbody><tr *ngFor="let row of financialRows"><td>{{ row.description }}</td><td>{{ nil(row.amount) }}</td></tr></tbody></table></div>
+      <div class="table-responsive"><table class="table table-bordered table-sm"><thead><tr><th>S No.</th><th>Description</th><th></th></tr></thead><tbody><tr *ngFor="let row of declarationRows; let i = index"><td>{{ i + 1 }}.</td><td>{{ row.text }}</td><td><input type="checkbox" disabled [checked]="row.checked === 'Yes' || row.checked === true" /></td></tr></tbody></table></div>
+      <div class="row preview-row"><div class="col-md-3"><strong>Place</strong>: {{ nil(claim?.currentPlace) }}</div><div class="col-md-3 offset-md-3"><strong>Date</strong>: {{ nil(asDate(claim?.currentDate)) }}</div></div>
     </section>
-    <section class="mt-4">
-      <h5><strong>(e) Bank Details</strong></h5>
-      <div class="row" *ngFor="let field of bankFields"><div class="col-md-4 fw-bold">{{ field.label }}</div><div class="col-md-8">{{ display(field.value) }}</div></div>
+
+    <section>
+      <h4 class="head-ing">(d) <strong>Bank Details</strong></h4>
+      <div class="row preview-row"><div class="col-md-3"><strong>Bank Name</strong></div><div class="col-md-3">{{ nil(bankDetails?.bankName) }}</div><div class="col-md-3"><strong>IFSC Code</strong></div><div class="col-md-3">{{ nil(bankDetails?.ifscCode) }}</div><div class="col-md-3"><strong>Account Number</strong></div><div class="col-md-3">{{ nil(bankDetails?.bankAccNo) }}</div><div class="col-md-3"><strong>MICR Code</strong></div><div class="col-md-3">{{ nil(bankDetails?.micrCode) }}</div></div>
     </section>
-    <section class="mt-4">
-      <h5><strong>(f) Documents</strong></h5>
-      <table class="table table-bordered table-sm"><thead class="table-primary"><tr><th>Document Name</th><th>Description</th><th>Supporting Document</th></tr></thead><tbody><tr *ngFor="let doc of documentDtos"><td>{{ display(doc.codeDocInfoDTO?.docName) }} <span *ngIf="doc.docNo">({{ doc.docNo }})</span></td><td>{{ display(doc.descr) }}</td><td><button *ngIf="doc.url" type="button" class="btn btn-info btn-sm" (click)="$auth.viewFile(doc.url)">View</button><span *ngIf="!doc.url">-</span></td></tr><tr *ngIf="formObj?.signedFileUrl"><td>Signed Documents</td><td>-</td><td><button type="button" class="btn btn-info btn-sm" (click)="$auth.viewFile(formObj.signedFileUrl)">View</button></td></tr><tr *ngIf="!documentDtos.length"><td colspan="3" class="text-center">No Record Found</td></tr></tbody></table>
-    </section>
-    <section class="mt-4">
-      <h5><strong>(g) Remarks</strong></h5>
-      <p>{{ display(formObj?.internalRemarks) }}</p>
-    </section>
-    <section class="mt-4" *ngIf="hasRelatedClaims()">
-      <button type="button" class="btn btn-info me-2" *ngIf="formObj?.advClaimId" (click)="openRelatedPreview('preview-ltc-advance', formObj.advClaimId)">View Advance</button>
-      <button type="button" class="btn btn-info" *ngIf="formObj?.supClaimId" (click)="openRelatedPreview('preview-ltc-claim', formObj.supClaimId)">View Supplementary Claim</button>
-    </section>
+
+    <section><h4 class="head-ing">(f) <strong>Remarks</strong></h4><p>{{ nil(formObj?.internalRemarks) }}</p></section>
   </div>
 </div>

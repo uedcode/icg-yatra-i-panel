@@ -1,8 +1,8 @@
 import { DatePipe, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
+import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({
@@ -12,16 +12,15 @@ import { CommonService } from 'src/app/service/core/common.service';
   standalone: false,
 })
 export class CommonPreviewLtcClaimComponent implements OnInit {
-  readonly previewTitle = 'Requisition for LTC Claim';
   readonly defaultSubFormId = 'LTC';
 
   formObj: any = {};
   claim: any = {};
-  advance: any = {};
   bankDetails: any = {};
   documentDtos: any[] = [];
   travelRows: any[] = [];
   familyRows: any[] = [];
+  gxRows: any[] = [];
   claimId: string | null = null;
   subFormId = this.defaultSubFormId;
   supplementaryId: string | null = null;
@@ -41,7 +40,7 @@ export class CommonPreviewLtcClaimComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       this.claimId = params?.id ?? null;
       this.supplementaryId = params?.supId ?? null;
-      this.subFormId = String(params?.subFormId ?? this.route.snapshot.data?.['subFormId'] ?? this.defaultSubFormId).toUpperCase();
+      this.subFormId = params?.subFormId ?? this.route.snapshot.data?.['subFormId'] ?? this.defaultSubFormId;
       this.getClaimDetails();
     });
   }
@@ -82,66 +81,95 @@ export class CommonPreviewLtcClaimComponent implements OnInit {
     });
   }
 
-  get summaryFields() {
-    return [
-      { label: 'Form ID', value: this.formObj?.formId },
-      { label: 'Claim ID', value: this.formObj?.claimId },
-      { label: 'Advance Claim ID', value: this.formObj?.advClaimId },
-      { label: 'Supplementary Claim ID', value: this.formObj?.supClaimId },
-      { label: 'Claim Status', value: this.formObj?.claimStatus },
-      { label: 'Sign With', value: this.signLabel(this.formObj?.signWith) },
-      { label: 'Occurrence Date', value: this.asDate(this.formObj?.occDate) },
-      { label: 'GX Form', value: this.formObj?.gxFormFileUrl ? 'Attached' : 'Not Attached' },
-    ].filter((field) => !this.isBlank(field.value));
+  get previewTitle(): string {
+    const prefix = this.isBlank(this.formObj?.supClaimId) ? '' : 'Supplementary ';
+    const suffix = this.isBlank(this.formObj?.formId) ? '' : ` - ${this.formObj.formId}`;
+    return `${prefix}LTC Claim${suffix}`;
   }
 
-  get personalFields() {
-    return [
-      { label: 'Name', value: this.claim?.name },
-      { label: 'Rank', value: this.claim?.rank },
-      { label: 'Personnel Number', value: this.claim?.pno },
-      { label: 'Pay Level', value: this.claim?.payLevel },
-      { label: 'Basic Pay', value: this.claim?.basicPay },
-      { label: 'Present Unit', value: this.claim?.presentUnit },
-      { label: 'Applied To', value: this.claim?.appliedTo },
-      { label: 'Journey Performed By', value: this.claim?.performedBy },
-    ].filter((field) => !this.isBlank(field.value));
+  get isCreatorRole(): boolean {
+    return this.userIdDetails?.roleTypeId === this.$auth.codeRoleType()?.creator;
   }
 
-  get claimFields() {
-    return [
-      { label: 'GX Number', value: this.claim?.gxNo },
-      { label: 'GX Date', value: this.asDate(this.claim?.gxDate) },
-      { label: 'Place of Visit', value: this.claim?.placeOfVisit },
-      { label: 'Place', value: this.claim?.currentPlace },
-      { label: 'Journey Amount', value: this.amount(this.claim?.journeyAmt) },
-      { label: 'DTS Amount', value: this.amount(this.claim?.travelDetailsDTSAmt) },
-      { label: 'Grand Total', value: this.amount(this.claim?.grandTotal) },
-      { label: 'Net Amount Due', value: this.amount(this.claim?.netDueAbsoluteAmt) },
-    ].filter((field) => !this.isBlank(field.value));
+  get isInkSign(): boolean {
+    return ['IS', 'IK', 'INK_SIGN'].includes(String(this.formObj?.signWith ?? '').toUpperCase());
   }
 
-  get bankFields() {
+  get isESign(): boolean {
+    return ['ES', 'E_SIGN'].includes(String(this.formObj?.signWith ?? '').toUpperCase());
+  }
+
+  get ltcLeave(): any {
+    return this.firstItem(this.claim?.yatLtcClaimLeaveDTOs);
+  }
+
+  get spouseRows(): any[] {
+    if (this.claim?.isNewlyMarried !== 'Yes') {
+      return [];
+    }
+    return [this.claim?.yatSpouseDetailDTO ?? {}];
+  }
+
+  get otherChargeRows(): any[] {
+    return this.asArray(this.formObj?.yatForeignTravelDetailDTOs);
+  }
+
+  get declarationRows(): any[] {
     return [
-      { label: 'Bank Name', value: this.bankDetails?.bankName },
-      { label: 'Account Number', value: this.bankDetails?.bankAccNo },
-      { label: 'IFSC Code', value: this.bankDetails?.ifscCode },
-      { label: 'MICR Code', value: this.bankDetails?.micrCode },
-    ].filter((field) => !this.isBlank(field.value));
+      { text: 'The information as given above is true to the best of my knowledge and belief.', checked: this.claim?.certify },
+      { text: `That my ${this.spouseWord()} is not employed in government service.`, checked: this.claim?.secondCertify },
+      { text: `That my ${this.spouseWord()} is employed in government service and the concession has not been availed separately for the concerned block of years ${this.nil(this.claim?.blockYearFrom)} to ${this.nil(this.claim?.blockYearTo)}.`, checked: this.claim?.thirdCertify },
+      { text: `That my ${this.spouseWord()} for whom LTC is claimed is employed in ${this.nil(this.claim?.empIn)} and will not prefer any claim in this behalf.`, checked: this.claim?.fourthCertify },
+      { text: 'That my spouse for whom LTC is claimed is employed in an organisation which provides LTC facilities to its employees and families.', checked: this.claim?.fifthCertify },
+      { text: 'I have not submitted any other claim so far for LTC in respect of myself or my family members for year/block year.', checked: this.claim?.sixthCertify },
+      { text: `Journey has been performed by ${this.nil(this.claim?.performedBy)} to declared place of visit/hometown viz. ${this.nil(this.ltcLeave?.ltcType)} for block year ${this.nil(this.ltcLeave?.blockYear)}.`, checked: this.claim?.seventhCertify },
+    ];
+  }
+
+  get financialRows(): any[] {
+    const rows = [
+      { description: 'Travel Details (All mode of travel excluding DTS Booking)', amount: this.claim?.travelDetailsAmt },
+      { description: 'Travel details (DTS bookings)', amount: this.claim?.travelDetailsDTSAmt },
+    ];
+    if (!this.isBlank(this.claim?.otherChargeAmt)) {
+      rows.push({ description: 'Other Charges', amount: this.claim?.otherChargeAmt });
+    }
+    rows.push(
+      { description: 'Grand Total', amount: this.claim?.total },
+      { description: `Amount of advance. If any, drawn vide voucher No. ${this.nil(this.claim?.advVoucherNumber)} dated ${this.nil(this.asDate(this.claim?.lessAmtVoucherDate))}`, amount: this.claim?.lessAmtVoucherAmt },
+      { description: `Excess TA advance paid through MRO. If any, paid via MRO No. ${this.nil(this.claim?.mroNo)} dated ${this.nil(this.asDate(this.claim?.mroDate))}`, amount: this.claim?.mroAmt }
+    );
+    if (Number(this.claim?.mroPiAmt) > 0) {
+      rows.push({
+        description: `MRO Penal Interest (from date ${this.nil(this.asDate(this.claim?.mroPiFromDate))} to date ${this.nil(this.asDate(this.claim?.mroPiToDate))}) ${this.nil(this.claim?.mroPiInterestRate)}% Interest Rate`,
+        amount: this.claim?.mroPiAmt,
+      });
+    }
+    rows.push(
+      { description: `Penal Interest (from date ${this.nil(this.asDate(this.claim?.piFromDate))} to date ${this.nil(this.asDate(this.claim?.piToDate))}) ${this.nil(this.claim?.piInterestRate)}% Interest Rate`, amount: this.claim?.piAmt },
+      { description: 'Net Amount Due', amount: this.claim?.netDueAbsoluteAmt }
+    );
+    return rows;
   }
 
   asDate(value: any): any {
-    if (!value) return null;
+    if (!value && value !== 0) return null;
     const num = Number(value);
-    return Number.isNaN(num) ? value : this.datePipe.transform(new Date(num), 'dd-MMM-yyyy');
+    return Number.isNaN(num) ? value : this.datePipe.transform(new Date(num), 'dd/MM/yyyy');
   }
 
-  display(value: any): any {
+  asDateTime(value: any): any {
+    if (!value && value !== 0) return null;
+    const num = Number(value);
+    return Number.isNaN(num) ? value : this.datePipe.transform(new Date(num), 'dd/MM/yyyy HH:mm');
+  }
+
+  nil(value: any): any {
+    return this.isBlank(value) ? 'Nil' : value;
+  }
+
+  hyphen(value: any): any {
     return this.isBlank(value) ? '-' : value;
-  }
-
-  amount(value: any): any {
-    return this.isBlank(value) ? null : value;
   }
 
   goBack(): void {
@@ -160,27 +188,40 @@ export class CommonPreviewLtcClaimComponent implements OnInit {
     return !this.isBlank(this.formObj?.supClaimId);
   }
 
+  downloadPreview(): void {
+    if (!this.formObj?.claimId) {
+      this.$common.showMessage('Claim id is not available.', 'danger');
+      return;
+    }
+    this.$claimApi
+      .fileDownloadedTempInkSign({
+        headers: {
+          claimId: this.formObj.claimId,
+          signType: true,
+        },
+      })
+      .subscribe({
+        next: (response: any) => {
+          if (!response?.status) {
+            this.$common.showMessage(response?.message ?? 'Unable to download file.', 'danger');
+            return;
+          }
+          const responseObject = Array.isArray(response?.object) ? response.object[0] ?? null : null;
+          this.$common.download(responseObject?.inkSignedFileUrl);
+        },
+        error: () => this.$common.showMessage('Unable to download file.', 'danger'),
+      });
+  }
+
   private parseClaimPreviewResponse(response: any): void {
     const claims = this.unwrapClaimObject(response?.object);
     this.formObj = claims;
     this.claim = this.firstItem(claims?.yatLtcClaimDTOs);
-    this.advance = this.firstItem(claims?.yatLtcAdvDTOs);
-    this.travelRows = this.resolveTravelRows(claims);
-    this.familyRows = this.asArray(this.claim?.yatFamilyDetailDTOs);
+    this.travelRows = this.asArray(claims?.yatClaimTravelDetailsDTOs);
+    this.familyRows = this.asArray(claims?.yatFamilyDetailDTOs);
+    this.gxRows = this.asArray(claims?.yatClaimGxDetailsDTOs);
     this.documentDtos = this.asArray(claims?.yatDocsDTOs);
     this.bankDetails = claims?.yatClaimBankDetailDTO ?? {};
-  }
-
-  private resolveTravelRows(claims: any): any[] {
-    return this.asArray(claims?.yatDtsDetailDTOs).map((row) => ({
-      from: row?.fromPlace,
-      to: row?.toPlace,
-      mode: row?.travelMode,
-      dts: row?.isDts,
-      amount: row?.amount,
-      reason: row?.reasonForNotUsingDts,
-      remarks: row?.remarks,
-    }));
   }
 
   private unwrapClaimObject(object: any): any {
@@ -195,11 +236,8 @@ export class CommonPreviewLtcClaimComponent implements OnInit {
     return Array.isArray(value) ? value : [];
   }
 
-  private signLabel(signWith: any): string {
-    const sign = String(signWith ?? '').toUpperCase();
-    if (sign === 'ES') return 'eSign';
-    if (['IS', 'IK'].includes(sign)) return 'Ink Sign';
-    return signWith;
+  private spouseWord(): string {
+    return this.claim?.gender === 'F' ? 'husband' : 'wife';
   }
 
   private isBlank(value: any): boolean {
