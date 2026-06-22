@@ -2245,9 +2245,7 @@ ngx-select-ex.legacy-invalid-field .ngx-select__toggle,
    Read-only claim and advance previews render outside the app shell. Keep the
    shell-less page, card, action buttons, headings, and table headers consistent
    from one global contract instead of duplicating per-preview CSS. */
-.advance-preview-page,
-.ty-claim-preview,
-.claim-preview-report {
+.legacy-preview-page {
   min-height: 100vh;
   padding: 16px;
   background: #eef3f7;
@@ -2255,29 +2253,23 @@ ngx-select-ex.legacy-invalid-field .ngx-select__toggle,
   font-size: 13px;
 }
 
-.advance-preview-page .advance-preview-container {
+.legacy-preview-page .legacy-preview-container {
   width: 100%;
   max-width: none;
   padding-right: 8px;
   padding-left: 8px;
 }
 
-.advance-preview-page .aligned,
-.advance-preview-page .preview-actions,
-.ty-claim-preview .preview-actions,
-.claim-preview-report .preview-actions {
+.legacy-preview-page .legacy-preview-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   margin-bottom: 12px;
 }
 
-.advance-preview-page .panel.panel-white,
-.advance-preview-page .advance-preview-card,
-.advance-preview-page .preview-card,
-.advance-preview-page .card,
-.ty-claim-preview .preview-card,
-.claim-preview-report .preview-card {
+.legacy-preview-page .legacy-preview-card,
+.legacy-preview-page .panel.panel-white,
+.legacy-preview-page .card {
   background: #fff;
   color: #4d5570;
   font-size: 13px;
@@ -2286,34 +2278,31 @@ ngx-select-ex.legacy-invalid-field .ngx-select__toggle,
   box-shadow: none;
 }
 
-.advance-preview-page .advance-preview-card.mb-3 {
+.legacy-preview-page .legacy-preview-card.mb-3 {
   margin-bottom: 0 !important;
 }
 
-.advance-preview-page .panel-body,
-.advance-preview-page .advance-preview-card,
-.advance-preview-page .preview-card,
-.advance-preview-page .card-body,
-.ty-claim-preview .preview-card,
-.claim-preview-report .preview-card {
+.legacy-preview-page .legacy-preview-card,
+.legacy-preview-page .panel-body,
+.legacy-preview-page .card-body {
   padding: 18px 24px;
 }
 
-.advance-preview-page .panel.advance-preview-card {
+.legacy-preview-page .panel.legacy-preview-card {
   padding: 0;
 }
 
-.advance-preview-page .card.advance-preview-card .card-body {
+.legacy-preview-page .card.legacy-preview-card .card-body {
   padding: 0;
 }
 
-.advance-preview-page .card-header {
+.legacy-preview-page .card-header {
   padding: 0;
   border: 0;
   background: transparent;
 }
 
-.advance-preview-page .card-header strong {
+.legacy-preview-page .card-header strong {
   display: inline-block;
   margin: 12px 0;
   color: #303857;
@@ -2321,56 +2310,37 @@ ngx-select-ex.legacy-invalid-field .ngx-select__toggle,
   text-decoration: underline;
 }
 
-.advance-preview-page .general-data {
+.legacy-preview-page .general-data {
   background: #fff;
 }
 
-.advance-preview-page .level_1 {
-  margin-top: 14px;
-}
+  .legacy-preview-page .level_1 {
+    margin-top: 14px;
+  }
 
-.advance-preview-page .head_ing,
-.advance-preview-page .head-ing,
-.advance-preview-page .section-heading,
-.ty-claim-preview .head-ing,
-.claim-preview-report .head-ing {
-  margin: 12px 0;
-  color: #303857;
+  .legacy-preview-page .legacy-preview-heading {
+    margin: 12px 0;
+    color: #303857;
   font-size: 16px;
   line-height: 1.25;
 }
 
-.advance-preview-page .head_ing strong,
-.advance-preview-page .head-ing strong,
-.advance-preview-page .section-heading strong,
-.ty-claim-preview .head-ing strong,
-.claim-preview-report .head-ing strong {
+.legacy-preview-page .legacy-preview-heading strong {
   text-decoration: underline;
 }
 
-.advance-preview-page p,
-.ty-claim-preview p,
-.claim-preview-report p {
+.legacy-preview-page p {
   margin-bottom: 8px;
 }
 
-.advance-preview-page .sign-row,
-.ty-claim-preview .sign-row,
-.claim-preview-report .sign-row {
+.legacy-preview-page .sign-row {
   display: flex;
   gap: 12px;
   margin: 20px 0 10px;
 }
 
-.advance-preview-page .preview-row,
-.ty-claim-preview .preview-row,
-.claim-preview-report .preview-row {
-  margin-bottom: 8px;
-}
-
-.advance-preview-page .table,
-.ty-claim-preview .table,
-.claim-preview-report .table {
+.legacy-preview-page .legacy-preview-table,
+.legacy-preview-page .table {
   width: 100%;
   margin-bottom: 12px;
   color: #4d5570;
@@ -2378,20 +2348,17 @@ ngx-select-ex.legacy-invalid-field .ngx-select__toggle,
   border-collapse: collapse;
 }
 
-.advance-preview-page .table th,
-.advance-preview-page .table td,
-.ty-claim-preview .table th,
-.ty-claim-preview .table td,
-.claim-preview-report .table th,
-.claim-preview-report .table td {
+.legacy-preview-page .legacy-preview-table th,
+.legacy-preview-page .legacy-preview-table td,
+.legacy-preview-page .table th,
+.legacy-preview-page .table td {
   padding: 4px 6px !important;
   border: 1px solid #ddd !important;
   vertical-align: middle;
 }
 
-.advance-preview-page .table thead th,
-.ty-claim-preview .table thead th,
-.claim-preview-report .table thead th {
+.legacy-preview-page .legacy-preview-table thead th,
+.legacy-preview-page .table thead th {
   font-weight: 700;
   color: #fff !important;
   background: #155a95 !important;
@@ -2399,23 +2366,14 @@ ngx-select-ex.legacy-invalid-field .ngx-select__toggle,
   text-transform: uppercase;
 }
 
-.advance-preview-page .table-striped tbody tr:nth-of-type(odd),
-.ty-claim-preview .table-striped tbody tr:nth-of-type(odd),
-.claim-preview-report .table-striped tbody tr:nth-of-type(odd) {
+.legacy-preview-page .table-striped tbody tr:nth-of-type(odd) {
   background-color: #f9f9f9;
 }
 
-.advance-preview-page .btn,
-.ty-claim-preview .btn,
-.claim-preview-report .btn {
+.legacy-preview-page .btn {
   border-radius: 3px;
   font-size: 12px;
   line-height: 1.2;
-}
-
-.advance-preview-page .request_view_back {
-  min-width: 60px;
-  text-transform: uppercase;
 }
 
 [data-radio-wrapper].legacy-invalid-field {

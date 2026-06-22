@@ -1,16 +1,17 @@
-<div class="wrapper advance-preview-page">
-  <div class="container advance-preview-container">
+<div class="legacy-preview-page">
+  <div class="legacy-preview-container">
     <div class="main-content">
       <div class="row">
         <div class="col-md-12">
-          <div class="panel panel-white preview-card advance-preview-card">
+          <div class="legacy-preview-card">
             <div class="panel-body">
               <div class="general-data">
-                <div class="preview-actions text-right">
+                <div class="legacy-preview-actions text-right">
                   <button type="button" class="btn btn-sm btn-warning mr-2" (click)="goBack()">Back</button>
-                  <button type="button" class="btn btn-sm btn-info" *ngIf="claims?.inkSignedFileUrl" (click)="$auth.viewFile(claims.inkSignedFileUrl)">View</button>
+                  <button type="button" class="btn btn-sm btn-info" *ngIf="claims?.inkSignedFileUrl"
+                    (click)="$auth.viewFile(claims.inkSignedFileUrl)">View</button>
                 </div>
-                <h4 class="head-ing">
+                <h4 class="legacy-preview-heading">
                   <strong>{{ heading }}</strong>
                   <span *ngIf="claims?.formId"> - {{ claims.formId }}</span>
                 </h4>
@@ -27,72 +28,154 @@
                 </div>
 
                 <div class="level_1">
-                  <h4 class="head-ing">(a)<strong>Personal Details</strong></h4>
+                  <h4 class="legacy-preview-heading">(a)<strong>Personal Details</strong></h4>
 
                   <div class="row">
-                    <div class="col-md-3"><p><strong>Name</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.name) }}</p></div>
-                    <div class="col-md-3"><p><strong>Rank</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.rank) }}</p></div>
+                    <div class="col-md-3">
+                      <p><strong>Name</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.name) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <p><strong>Rank</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.rank) }}</p>
+                    </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-3"><p><strong>Personnel Number</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.pno) }}</p></div>
-                    <div class="col-md-3"><p><strong>Pay Level</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.payLevel) }}</p></div>
+                    <div class="col-md-3">
+                      <p><strong>Personnel Number</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.pno) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <p><strong>Pay Level</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.payLevel) }}</p>
+                    </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-3"><p><strong>Basic Pay (In Rs.)</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.basicPay) }}</p></div>
-                    <div class="col-md-3"><p><strong>Probable duration of Ty duty(In days)</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.duration) }}</p></div>
+                    <div class="col-md-3">
+                      <p><strong>Basic Pay (In Rs.)</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.basicPay) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <p><strong>Probable duration of Ty duty(In days)</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.duration) }}</p>
+                    </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-3"><p><strong>Present Unit</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.videPresentUnit) }}</p></div>
-                    <div class="col-md-3"><p><strong>Temporary Duty to</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.tempTransferToType) }}</p></div>
-                    <div class="col-md-3"><p><strong>Applied To</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.appliedTo) }}</p></div>
+                    <div class="col-md-3">
+                      <p><strong>Present Unit</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.videPresentUnit) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <p><strong>Temporary Duty to</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.tempTransferToType) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <p><strong>Applied To</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.appliedTo) }}</p>
+                    </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-3"><p><strong>Gx Unit</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.gxUnit) }}</p></div>
-                    <div class="col-md-3"><p><strong>{{ gxLabelPrefix }} Number</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.gxNumber) }}</p></div>
-                    <div class="col-md-3"><p><strong>{{ gxLabelPrefix }} Date</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(gxDate) }}</p></div>
+                    <div class="col-md-3">
+                      <p><strong>Gx Unit</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.gxUnit) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <p><strong>{{ gxLabelPrefix }} Number</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.gxNumber) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <p><strong>{{ gxLabelPrefix }} Date</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(gxDate) }}</p>
+                    </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-3"><p><strong>{{ gxFormLabel }}</strong></p></div>
-                    <div class="col-md-3"><p>{{ gxFormStatus }}</p></div>
-                    <div class="col-md-3"><p><strong>Purpose Type</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(purposeType) }}</p></div>
+                    <div class="col-md-3">
+                      <p><strong>{{ gxFormLabel }}</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ gxFormStatus }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <p><strong>Purpose Type</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(purposeType) }}</p>
+                    </div>
                   </div>
                   <div class="row" *ngIf="showPurpose">
-                    <div class="col-md-3"><p><strong>Purpose of Ty duty</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.purpose) }}</p></div>
+                    <div class="col-md-3">
+                      <p><strong>Purpose of Ty duty</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.purpose) }}</p>
+                    </div>
                   </div>
                   <div class="row" *ngIf="showUnitStation">
-                    <div class="col-md-3"><p><strong>Name of Unit</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.tempTransTo) }}</p></div>
-                    <div class="col-md-3"><p><strong>Station proceeding to</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.stationProceedingTo) }}</p></div>
+                    <div class="col-md-3">
+                      <p><strong>Name of Unit</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.tempTransTo) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <p><strong>Station proceeding to</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.stationProceedingTo) }}</p>
+                    </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-3"><p><strong>Occurrence Date (Movement Date)</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(occDate) }}</p></div>
-                    <div class="col-md-3" *ngIf="showDutyStation"><p><strong>Duty Station to</strong></p></div>
-                    <div class="col-md-3" *ngIf="showDutyStation"><p>{{ display(tyDuty?.dutyStation) }}</p></div>
-                    <div class="col-md-3" *ngIf="showExtendedFrom"><p><strong>Extended From</strong></p></div>
+                    <div class="col-md-3">
+                      <p><strong>Occurrence Date (Movement Date)</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(occDate) }}</p>
+                    </div>
+                    <div class="col-md-3" *ngIf="showDutyStation">
+                      <p><strong>Duty Station to</strong></p>
+                    </div>
+                    <div class="col-md-3" *ngIf="showDutyStation">
+                      <p>{{ display(tyDuty?.dutyStation) }}</p>
+                    </div>
                     <div class="col-md-3" *ngIf="showExtendedFrom">
-                      <button type="button" class="btn btn-info btn-sm" (click)="navigatePreview('preview-ty-duty', claims?.extendedAdvId)">View</button>
+                      <p><strong>Extended From</strong></p>
+                    </div>
+                    <div class="col-md-3" *ngIf="showExtendedFrom">
+                      <button type="button" class="btn btn-info btn-sm"
+                        (click)="navigatePreview('preview-ty-duty', claims?.extendedAdvId)">View</button>
                     </div>
                   </div>
                   <div class="row" *ngIf="showExtendedDuty">
-                    <div class="col-md-3"><p><strong>Extended Duty</strong></p></div>
                     <div class="col-md-3">
-                      <button type="button" class="btn btn-info btn-sm" (click)="navigatePreview('preview-ty-duty', claims?.refExtendedAdvId)">View</button>
+                      <p><strong>Extended Duty</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <button type="button" class="btn btn-info btn-sm"
+                        (click)="navigatePreview('preview-ty-duty', claims?.refExtendedAdvId)">View</button>
                     </div>
                   </div>
                 </div>
@@ -122,7 +205,7 @@
                 </div>
 
                 <div class="level_1">
-                  <h4 class="head-ing">(b)<strong>Travel Details</strong></h4>
+                  <h4 class="legacy-preview-heading">(b)<strong>Travel Details</strong></h4>
                   <div class="table-responsive">
                     <table class="table table-striped table-bordered table-hover">
                       <thead>
@@ -155,7 +238,7 @@
                 </div>
 
                 <div class="level_1">
-                  <h4 class="head-ing">(c)<strong>Financial Terms</strong></h4>
+                  <h4 class="legacy-preview-heading">(c)<strong>Financial Terms</strong></h4>
                   <div class="table-responsive">
                     <table class="table table-striped table-bordered table-hover">
                       <tbody>
@@ -191,8 +274,12 @@
                     </table>
                   </div>
                   <div class="row">
-                    <div class="col-md-3"><p><strong>Place</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(tyDuty?.place) }}</p></div>
+                    <div class="col-md-3">
+                      <p><strong>Place</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(tyDuty?.place) }}</p>
+                    </div>
                   </div>
                 </div>
 
@@ -220,21 +307,37 @@
                 </div>
 
                 <div class="level_1">
-                  <h4 class="head-ing">(d)<strong>Bank Details</strong></h4>
+                  <h4 class="legacy-preview-heading">(d)<strong>Bank Details</strong></h4>
                   <div class="row">
-                    <div class="col-md-3"><p><strong>Bank Name</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(bankDetails?.bankName) }}</p></div>
-                    <div class="col-md-3"><p><strong>IFSC Code</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(bankDetails?.ifscCode) }}</p></div>
-                    <div class="col-md-3"><p><strong>Account Number</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(bankDetails?.bankAccNo) }}</p></div>
-                    <div class="col-md-3"><p><strong>MICR Code</strong></p></div>
-                    <div class="col-md-3"><p>{{ display(bankDetails?.micrCode) }}</p></div>
+                    <div class="col-md-3">
+                      <p><strong>Bank Name</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(bankDetails?.bankName) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <p><strong>IFSC Code</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(bankDetails?.ifscCode) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <p><strong>Account Number</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(bankDetails?.bankAccNo) }}</p>
+                    </div>
+                    <div class="col-md-3">
+                      <p><strong>MICR Code</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ display(bankDetails?.micrCode) }}</p>
+                    </div>
                   </div>
                 </div>
 
                 <div class="level_1">
-                  <h4 class="head-ing">(e)<strong>Remarks</strong></h4>
+                  <h4 class="legacy-preview-heading">(e)<strong>Remarks</strong></h4>
                   <p>{{ display(claims?.internalRemarks) }}</p>
                 </div>
               </div>

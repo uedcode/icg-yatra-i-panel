@@ -1,52 +1,57 @@
-<div class="wrapper has-footer">
-  <div class="content-wrap">
-    <div class="row justify-content-center">
-      <div class="col-md-10">
-        <div class="card">
-          <div class="card-body">
-            <div class="text-end mb-2">
-              <button type="button" class="btn btn-sm btn-warning" (click)="goBack()">Back</button>
+<div class="legacy-preview-page">
+  <div class="legacy-preview-container">
+    <div class="main-content">
+      <div class="row">
+        <div class="col-md-12">
+        <div class="legacy-preview-card">
+          <div class="panel-body">
+            <div class="general-data">
+            <div class="legacy-preview-actions text-right">
+              <button type="button" class="btn btn-sm btn-warning mr-2" (click)="goBack()">Back</button>
             </div>
-            <div class="text-center mb-3">
+            <div class="level_1 text-center">
               <img src="assets/images/dad_logo.png" alt="LOGO" class="mb-2" />
-              <h4><strong>CGCDA (Delhi)</strong></h4>
-              <h4><strong>Payment Receipt Voucher</strong></h4>
-              <h4><strong>{{ display(yatClaimVoucher?.subForm) }}</strong></h4>
+              <h4 class="legacy-preview-heading"><strong>CGCDA (Delhi)</strong></h4>
+              <h4 class="legacy-preview-heading"><strong>Payment Receipt Voucher</strong></h4>
+              <h4 class="legacy-preview-heading"><strong>{{ display(yatClaimVoucher?.subForm) }}</strong></h4>
+            </div>
+
+            <div class="level_1">
+            <div class="row mb-2">
+              <div class="col-md-3"><p><strong>Name</strong></p></div>
+              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.name) }}</p></div>
+              <div class="col-md-3"><p><strong>Rank</strong></p></div>
+              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.rank) }}</p></div>
             </div>
 
             <div class="row mb-2">
-              <div class="col-md-3"><strong>Name</strong></div>
-              <div class="col-md-3">{{ display(yatClaimVoucher?.name) }}</div>
-              <div class="col-md-3"><strong>Rank</strong></div>
-              <div class="col-md-3">{{ display(yatClaimVoucher?.rank) }}</div>
+              <div class="col-md-3"><p><strong>Personnel Number</strong></p></div>
+              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.pno) }}</p></div>
+              <div class="col-md-3"><p><strong>Form ID</strong></p></div>
+              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.formId) }}</p></div>
             </div>
 
             <div class="row mb-2">
-              <div class="col-md-3"><strong>Personnel Number</strong></div>
-              <div class="col-md-3">{{ display(yatClaimVoucher?.pno) }}</div>
-              <div class="col-md-3"><strong>Form ID</strong></div>
-              <div class="col-md-3">{{ display(yatClaimVoucher?.formId) }}</div>
+              <div class="col-md-3"><p><strong>Claimed Amount (In Rs.)</strong></p></div>
+              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.claimedAmount) }}</p></div>
+              <div class="col-md-3"><p><strong>Passed Amount</strong></p></div>
+              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.passedAmount) }}</p></div>
             </div>
 
             <div class="row mb-2">
-              <div class="col-md-3"><strong>Claimed Amount (In Rs.)</strong></div>
-              <div class="col-md-3">{{ display(yatClaimVoucher?.claimedAmount) }}</div>
-              <div class="col-md-3"><strong>Passed Amount</strong></div>
-              <div class="col-md-3">{{ display(yatClaimVoucher?.passedAmount) }}</div>
+              <div class="col-md-3"><p><strong>Voucher No</strong></p></div>
+              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.voucherNo) }}</p></div>
             </div>
 
             <div class="row mb-2">
-              <div class="col-md-3"><strong>Voucher No</strong></div>
-              <div class="col-md-3">{{ display(yatClaimVoucher?.voucherNo) }}</div>
-            </div>
-
-            <div class="row mb-2">
-              <div class="col-md-3"><strong>Voucher Date</strong></div>
-              <div class="col-md-3">{{ asDate(yatClaimVoucher?.voucherDate) }}</div>
+              <div class="col-md-3"><p><strong>Voucher Date</strong></p></div>
+              <div class="col-md-3"><p>{{ asDate(yatClaimVoucher?.voucherDate) }}</p></div>
             </div>
 
             <div class="text-center text-muted py-3" *ngIf="!yatClaimVoucher">
               Voucher details are not available.
+            </div>
+            </div>
             </div>
           </div>
         </div>
