@@ -19,6 +19,12 @@ const UNIT_ADMIN_ROLES = ['UN'];
 
 export const routes: Routes = [
   {
+    path: 'view-file/:id',
+    component: CommonViewFileComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'View File', roles: UNIT_ADMIN_ROLES },
+  },
+  {
     path: '',
     component: UnitAdminComponent,
     children: [
@@ -94,12 +100,6 @@ export const routes: Routes = [
         component: WebDetailComponent,
         canActivate: [AuthGuard],
         data: { title: 'Web Detail', roles: UNIT_ADMIN_ROLES },
-      },
-      {
-        path: 'view-file/:id',
-        component: CommonViewFileComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'View File', roles: UNIT_ADMIN_ROLES },
       },
       {
         path: 'instructions',

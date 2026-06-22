@@ -18,7 +18,6 @@ import { CreatorProfileComponent } from './pages/support/profile/creator-profile
 import { ProfileSettingComponent } from './pages/support/profile-setting/profile-setting.component';
 import { EsignComponent } from './pages/support/esign/esign/esign.component';
 import { RedirectComponent } from './pages/support/esign/redirect/redirect.component';
-import { ViewFileComponent } from './pages/support/view-file/view-file.component';
 import { FaqComponent } from './pages/support/faq/faq.component';
 import { WebDetailComponent } from './pages/support/web-detail/web-detail.component';
 import { PassedComponent } from './pages/advance/queues/passed/passed.component';
@@ -64,10 +63,17 @@ import { ClaimPreviewTyDutyComponent } from './pages/claim/previews/ty-duty-clai
 import { ClaimPreviewFteComponent } from './pages/claim/previews/fte-claim/preview-fte-claim.component';
 import { ClaimPreviewLtcComponent } from './pages/claim/previews/ltc-claim/preview-ltc-claim.component';
 import { ClaimPreviewResettlementComponent } from './pages/claim/previews/resettlement-claim/preview-resettlement-claim.component';
+import { CommonViewFileComponent } from '../components/common-view-file/common-view-file.component';
 
 const CREATOR_ROLES = ['CR'];
 
 const CREATOR_PREVIEW_ROUTES: Routes = [
+  {
+    path: 'view-file/:id',
+    component: CommonViewFileComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'View File', roles: CREATOR_ROLES },
+  },
   {
     path: 'preview-voucher',
     component: PreviewVoucherComponent,
@@ -345,12 +351,6 @@ const routes: Routes = [
         component: RedirectComponent,
         canActivate: [AuthGuard],
         data: { title: 'eSign Redirect', roles: CREATOR_ROLES },
-      },
-      {
-        path: 'view-file/:id',
-        component: ViewFileComponent,
-        canActivate: [AuthGuard],
-        data: { title: 'View File', roles: CREATOR_ROLES },
       },
       {
         path: 'faq',

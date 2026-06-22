@@ -13,6 +13,12 @@ const EXECUTOR_ROLES = ['EX'];
 
 const routes: Routes = [
   {
+    path: 'view-file/:id',
+    component: CommonViewFileComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'View File', roles: EXECUTOR_ROLES },
+  },
+  {
     path: '',
     component: ExecutorComponent,
     children: [
@@ -44,12 +50,6 @@ const routes: Routes = [
     component: PieChartComponent,
     canActivate: [AuthGuard],
     data: { title: 'Pie Chart', roles: EXECUTOR_ROLES },
-  },
-  {
-    path: 'view-file/:id',
-    component: CommonViewFileComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'View File', roles: EXECUTOR_ROLES },
   },
   {
     path: 'form-claim-detail',

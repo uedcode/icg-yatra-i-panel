@@ -54,6 +54,12 @@ describe('AuthService', () => {
     return `${base64Url({ alg: 'none', typ: 'JWT' })}.${base64Url(payload)}.`;
   };
 
+  const toRouteSafeBase64 = (value: string) =>
+    btoa(value)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/g, '');
+
   beforeEach(() => {
     spyOn(console, 'log');
 
@@ -470,7 +476,7 @@ describe('AuthService', () => {
 
     const expectedUrl = `${environment.fileUrl.replace(/\/$/, '')}/claim/178/support_doc/file.pdf?t=1782115442078`;
     expect(window.open).toHaveBeenCalledWith(
-      `/adv/creator/view-file/${btoa(expectedUrl)}`,
+      `/adv/creator/view-file/${toRouteSafeBase64(expectedUrl)}`,
       '_blank'
     );
   });
@@ -485,7 +491,7 @@ describe('AuthService', () => {
 
     const expectedUrl = `${environment.fileUrl.replace(/\/$/, '')}/claim/178/support_doc/file.pdf?t=1782115442078`;
     expect(window.open).toHaveBeenCalledWith(
-      `/claim/creator/view-file/${btoa(expectedUrl)}`,
+      `/claim/creator/view-file/${toRouteSafeBase64(expectedUrl)}`,
       '_blank'
     );
   });
@@ -503,7 +509,7 @@ describe('AuthService', () => {
 
     const expectedUrl = `${environment.fileUrl.replace(/\/$/, '')}/claim/178/support_doc/file.pdf?t=1782115442078`;
     expect(window.open).toHaveBeenCalledWith(
-      `/adv/approver/view-file/${btoa(expectedUrl)}`,
+      `/adv/approver/view-file/${toRouteSafeBase64(expectedUrl)}`,
       '_blank'
     );
   });
@@ -521,7 +527,7 @@ describe('AuthService', () => {
 
     const expectedUrl = `${environment.fileUrl.replace(/\/$/, '')}/claim/178/support_doc/file.pdf?t=1782115442078`;
     expect(window.open).toHaveBeenCalledWith(
-      `/claim/approver/view-file/${btoa(expectedUrl)}`,
+      `/claim/approver/view-file/${toRouteSafeBase64(expectedUrl)}`,
       '_blank'
     );
   });

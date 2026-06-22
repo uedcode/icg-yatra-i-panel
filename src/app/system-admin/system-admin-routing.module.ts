@@ -44,6 +44,12 @@ const SYSTEM_ADMIN_ROLES = ['SY'];
 
 const routes: Routes = [
   {
+    path: 'view-file/:id',
+    component: CommonViewFileComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'View File', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
     path: '',
     component: SystemAdminComponent,
     children: [
@@ -229,12 +235,6 @@ const routes: Routes = [
     component: WebDetailComponent,
     canActivate: [AuthGuard],
     data: { title: 'Web Detail', roles: SYSTEM_ADMIN_ROLES },
-  },
-  {
-    path: 'view-file/:id',
-    component: CommonViewFileComponent,
-    canActivate: [AuthGuard],
-    data: { title: 'View File', roles: SYSTEM_ADMIN_ROLES },
   },
   {
     path: 'inbox',

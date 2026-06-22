@@ -111,7 +111,6 @@ describe('SidebarComponent', () => {
     expect(commonService.showLoader).toHaveBeenCalled();
     expect(claimApiService.getStatusCount).toHaveBeenCalledOnceWith({
       headers: {
-        unitId: 'UNIT-1',
         roleTypeId: 'CR',
         userId: 'CREATOR-1'
       }

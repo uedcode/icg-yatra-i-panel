@@ -1,16 +1,32 @@
-<!-- <pdf-viewer [src]="docUrl" [render-text]="true" [original-size]="false" *ngIf="docUrl"></pdf-viewer> -->
-<ngx-extended-pdf-viewer [src]="docUrl" *ngIf="docUrl"
-useBrowserLocale="false"
-[showStampEditor]="false"
-[showTextEditor]="false"
-[showDrawEditor]="false"
-[showOpenFileButton]="false"
-[showPrintButton]="false"
-[textLayer]="true"
->
-</ngx-extended-pdf-viewer>
+<div class="view-file-page" *ngIf="url; else noFile">
+  <div class="view-file-actions">
+    <button type="button" class="btn btn-warning" (click)="goBack()">
+      Back
+    </button>
+    <button type="button" class="btn btn-info" (click)="download()">
+      <i class="fa fa-download"></i> Download
+    </button>
+  </div>
 
-<img src="{{imgUrl}}" alt="Image" *ngIf="imgUrl">
-<button type="button" class="btn btn-info" (click)="download()"><i class="fa fa-download"></i> Download</button>
-<!-- <ngx-doc-viewer url="docUrl" viewer="google" style="width:100%;height:99vh;">
-</ngx-doc-viewer> -->
+  <ngx-extended-pdf-viewer
+    *ngIf="docUrl"
+    [src]="docUrl"
+    [height]="pdfViewerHeight"
+    useBrowserLocale="false"
+    [showStampEditor]="false"
+    [showTextEditor]="false"
+    [showDrawEditor]="false"
+    [showOpenFileButton]="false"
+    [showPrintButton]="false"
+    [textLayer]="true">
+  </ngx-extended-pdf-viewer>
+
+  <img [src]="imgUrl" alt="Image" *ngIf="imgUrl">
+</div>
+
+<ng-template #noFile>
+  <div class="view-file-empty">
+    <h4>File URL is not available.</h4>
+    <p>Please reopen the document from the form.</p>
+  </div>
+</ng-template>

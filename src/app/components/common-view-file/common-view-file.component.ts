@@ -1,6 +1,8 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AfterViewInit } from '@angular/core';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -11,20 +13,32 @@ import { environment } from 'src/environments/environment';
 })
 export class CommonViewFileComponent implements OnInit, AfterViewInit  {
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(
+    private route: ActivatedRoute,
+    private location: Location,
+    private previewWindow: PreviewWindowService
+  ) {}
 
-  url;
-  docUrl;
-  imgUrl;
+  url = '';
+  docUrl: string | undefined;
+  imgUrl: string | undefined;
+  readonly pdfViewerHeight = 'calc(100vh - 58px)';
   private readonly fileBaseUrl = environment.fileUrl;
+
   ngOnInit() {
-    let id = this.route.snapshot.params['id'];
+    const id =
+      this.route.snapshot.paramMap?.get('id') ||
+      this.route.snapshot.params?.['id'] ||
+      this.route.snapshot.queryParamMap?.get('file') ||
+      '';
+
     this.url = this.normalizeUrl(this.safeDecode(id));
     if (!this.url) {
       return;
     }
-    if (this.url.includes(".pdf") || this.url.includes(".PDF")) {
-      this.docUrl = this.url
+
+    if (this.isPdf(this.url)) {
+      this.docUrl = this.url;
     } else {
       this.imgUrl = this.url;
     }
@@ -39,12 +53,11 @@ export class CommonViewFileComponent implements OnInit, AfterViewInit  {
   }
 
   download() {
-    let url = "";
-    if (this.url.includes(".pdf") || this.url.includes(".PDF")) {
-      url = this.docUrl
-    } else {
-      url = this.imgUrl;
+    const url = this.docUrl || this.imgUrl;
+    if (!url) {
+      return;
     }
+
     fetch(url).then(response => response.blob())
       .then(blob => {
         const blobUrl = URL.createObjectURL(blob);
@@ -57,16 +70,42 @@ export class CommonViewFileComponent implements OnInit, AfterViewInit  {
         a.click();
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
+      })
+      .catch(() => {
+        this.openFile();
       });
+  }
 
+  goBack(): void {
+    this.previewWindow.closeOrBack(this.location);
+  }
 
+  private openFile() {
+    if (this.url) {
+      window.open(this.url, '_blank');
+    }
   }
 
   private safeDecode(value: string): string {
+    const encodedValue = this.safeDecodeURIComponent(value || '');
+    const legacyCompatibleBase64 = encodedValue
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+    const paddingLength = (4 - (legacyCompatibleBase64.length % 4)) % 4;
+    const paddedValue = `${legacyCompatibleBase64}${'='.repeat(paddingLength)}`;
+
     try {
-      return atob(value || '');
+      return atob(paddedValue);
     } catch {
       return '';
+    }
+  }
+
+  private safeDecodeURIComponent(value: string): string {
+    try {
+      return decodeURIComponent(value);
+    } catch {
+      return value;
     }
   }
 
@@ -81,6 +120,10 @@ export class CommonViewFileComponent implements OnInit, AfterViewInit  {
 
     const baseUrl = this.fileBaseUrl.endsWith('/') ? this.fileBaseUrl : `${this.fileBaseUrl}/`;
     return new URL(url.replace(/^\/+/, ''), baseUrl).toString();
+  }
+
+  private isPdf(url: string): boolean {
+    return /\.pdf(?:$|[?#])/i.test(url);
   }
 
   ngAfterViewInit(): void {

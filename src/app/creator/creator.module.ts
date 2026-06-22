@@ -37,7 +37,6 @@ import { CreatorProfileComponent } from './pages/support/profile/creator-profile
 import { ProfileSettingComponent } from './pages/support/profile-setting/profile-setting.component';
 import { EsignComponent } from './pages/support/esign/esign/esign.component';
 import { RedirectComponent } from './pages/support/esign/redirect/redirect.component';
-import { ViewFileComponent } from './pages/support/view-file/view-file.component';
 import { FaqComponent } from './pages/support/faq/faq.component';
 import { WebDetailComponent } from './pages/support/web-detail/web-detail.component';
 
@@ -110,7 +109,6 @@ const CustomSelectOptions: INgxSelectOptions = {
     ProfileSettingComponent,
     EsignComponent,
     RedirectComponent,
-    ViewFileComponent,
     FaqComponent,
     WebDetailComponent,
     PassedComponent,

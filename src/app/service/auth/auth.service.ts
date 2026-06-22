@@ -750,9 +750,16 @@ export class AuthService {
 
     const modulePath = this.getViewFileModulePath();
     const viewerPath = this.route.serializeUrl(
-      this.route.createUrlTree([modulePath, btoa(normalizedUrl)])
+      this.route.createUrlTree([modulePath, this.encodeFileViewerParam(normalizedUrl)])
     );
     window.open(viewerPath, '_blank');
+  }
+
+  private encodeFileViewerParam(url: string): string {
+    return btoa(url)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/g, '');
   }
 
   private getViewFileModulePath(): string {

@@ -43,8 +43,6 @@ export function buildLegacyStateCountHeaders(
 
   if (isVerifierFlow) {
     headers.gxUnitId = String(user?.gxUnitId || user?.unitId || '');
-  } else if (user?.unitId) {
-    headers.unitId = String(user.unitId);
   }
 
   return headers;
@@ -75,7 +73,7 @@ export function buildLegacyClaimStateHeaders(
     headers.formId = String(input.formId);
   }
   if (input?.isArchive !== undefined) {
-    headers.isArchive = String(input.isArchive || '');
+    headers.isArchive = String(input.isArchive);
   }
   if (input?.searchFormId !== undefined) {
     headers.searchFormId = String(input.searchFormId || '');

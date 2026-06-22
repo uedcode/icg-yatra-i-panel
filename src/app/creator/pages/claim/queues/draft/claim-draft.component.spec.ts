@@ -1,9 +1,9 @@
 import { of } from 'rxjs';
 
-import { DraftComponent } from './draft.component';
+import { ClaimDraftComponent } from './claim-draft.component';
 
-describe('Creator Advance DraftComponent', () => {
-  let component: DraftComponent;
+describe('Creator Claim DraftComponent', () => {
+  let component: ClaimDraftComponent;
   let authService: any;
   let claimStateApi: any;
 
@@ -21,18 +21,18 @@ describe('Creator Advance DraftComponent', () => {
       getAll: jasmine.createSpy('getAll').and.returnValue(of({ object: [] })),
     };
 
-    component = new DraftComponent(
+    component = new ClaimDraftComponent(
       {} as any,
       authService,
       {} as any,
       {} as any,
       {} as any,
-      {} as any,
-      claimStateApi
+      claimStateApi,
+      {} as any
     );
   });
 
-  it('loads draft records with legacy creator headers', () => {
+  it('loads draft records with legacy creator claim headers', () => {
     component.ngOnInit();
 
     expect(claimStateApi.getAll).toHaveBeenCalledOnceWith({
@@ -41,7 +41,7 @@ describe('Creator Advance DraftComponent', () => {
         roleTypeId: 'CR',
         claimState: 'DR',
         isArchive: '0',
-        formId: 'ADV',
+        formId: 'CLM',
         searchFormId: '',
         pno: '',
         searchedName: '',

@@ -1,17 +1,50 @@
-pdf-viewer {
-    top: 15px;
-    width: 100%;
-    height: 100vh;
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.view-file-page {
+  min-height: 100vh;
+  background: #eef3f8;
+  padding-top: 58px;
+}
+
+.view-file-actions {
+  align-items: center;
+  background: #ffffff;
+  border-bottom: 1px solid #d7e1eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  left: 0;
+  padding: 10px 16px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 10;
+}
+
+ngx-extended-pdf-viewer {
+  display: block;
+  width: 100%;
 }
 
 img {
-    top: 15px;
-    width: 100%;
-    height: 100vh;
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  min-height: calc(100vh - 58px);
+  object-fit: contain;
 }
 
-button {
-    position: fixed;
-    top: 5%;
-    right: 30px;
+.view-file-empty {
+  align-items: center;
+  color: #27395c;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
 }
