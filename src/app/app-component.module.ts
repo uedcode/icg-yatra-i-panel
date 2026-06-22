@@ -69,6 +69,7 @@ import { CommonPreviewLtcClaimComponent } from './components/common-form-detail/
 import { CommonPreviewResettlementClaimComponent } from './components/common-form-detail/preview/claim/resettlement/common-preview-resettlement-claim/common-preview-resettlement-claim.component';
 import { CommonPreviewVoucherClaimComponent } from './components/common-form-detail/preview/claim/voucher/common-preview-voucher-claim/common-preview-voucher-claim.component';
 import { CommonPreviewMovementUpdateClaimComponent } from './components/common-form-detail/preview/claim/movement-update/common-preview-movement-update-claim/common-preview-movement-update-claim.component';
+import { CommonDialogHostComponent } from './modals/common-dialog/common-dialog-host.component';
 
 const CustomSelectOptions: INgxSelectOptions = {
   // Check the interface for more options
@@ -153,6 +154,7 @@ const CustomSelectOptions: INgxSelectOptions = {
     DeleteStagingModalComponent,
 
     CommonViewFormHistoryModalComponent,
+    CommonDialogHostComponent,
   ],
   exports: [
     HeaderComponent,
@@ -213,6 +215,7 @@ const CustomSelectOptions: INgxSelectOptions = {
     DeleteStagingModalComponent,
 
     CommonViewFormHistoryModalComponent,
+    CommonDialogHostComponent,
   ],
   providers: [[DatePipe], [ShowZeroPipe], [FileExcelService]],
 })

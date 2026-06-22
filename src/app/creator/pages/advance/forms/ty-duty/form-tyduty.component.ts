@@ -16,6 +16,7 @@ import { BankIfscApiService } from 'src/app/service/api/code/bank-ifsc-api.servi
 import { CodeDocInfoApiService } from 'src/app/service/api/code/code-doc-info-api.service';
 import { CodeUnitApiService } from 'src/app/service/api/code/code-unit-api.service';
 import { CodeStationApiService } from 'src/app/service/api/code/code-station-api.service';
+import { CommonDialogService } from 'src/app/service/core/common-dialog.service';
 import { clearLegacyInvalidFromEvent, validateLegacyRequiredSection } from '../shared/helpers/legacy-form-validation.helper';
 
 declare var $: any;
@@ -332,7 +333,8 @@ export class FormTydutyComponent implements OnInit {
     private $bankIfscApi: BankIfscApiService,
     private $codeDocInfo: CodeDocInfoApiService,
     private $codeUnitApi: CodeUnitApiService,
-    private $codeStationApi: CodeStationApiService
+    private $codeStationApi: CodeStationApiService,
+    private $dialog: CommonDialogService
   ) {}
 
   userIdDetails: any;
@@ -1106,7 +1108,7 @@ export class FormTydutyComponent implements OnInit {
     );
   }
 
-  openTravelDeleteModel(index: number, type: string): void {
+  async openTravelDeleteModel(index: number, type: string): Promise<void> {
     if (type !== this.codeClaim.tyAdv) {
       return;
     }
@@ -1115,9 +1117,10 @@ export class FormTydutyComponent implements OnInit {
       return;
     }
 
-    const confirmDelete = window.confirm(
-      'Do you really want to delete this row?'
-    );
+    const confirmDelete = await this.$dialog.confirm({
+      message: 'Do you really want to delete this row?',
+      type: 'delete',
+    });
     if (confirmDelete) {
       this.claims.yatDtsDetailDTOs.splice(index, 1);
       this.calculateAmount(this.codeClaim.tyAdv);
@@ -2171,13 +2174,15 @@ export class FormTydutyComponent implements OnInit {
     );
   }
 
-  deleteGxForm(): void {
+  async deleteGxForm(): Promise<void> {
     if (!this.claims?.gxFormFileUrl) {
       return;
     }
 
-    // optional confirm – keep or remove as you like
-    const ok = window.confirm('Do you really want to delete this GX Form?');
+    const ok = await this.$dialog.confirm({
+      message: 'Do you really want to delete this GX Form?',
+      type: 'delete',
+    });
     if (!ok) {
       return;
     }
@@ -2642,4 +2647,3 @@ export class FormTydutyComponent implements OnInit {
     });
   }
 }
-

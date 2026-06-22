@@ -60,7 +60,6 @@ export class FileExcelService {
     reader.readAsBinaryString(file);
     return new Promise((resolve, reject) => {
       reader.onload = function(){
-        //  alert(reader.result);
         let data = reader.result;
          workbookkk=read(data,{type: 'binary'});
          //console.log(workbookkk);

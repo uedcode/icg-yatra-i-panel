@@ -14,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { CodeDocInfoApiService } from 'src/app/service/api/code/code-doc-info-api.service';
 import { CodeUnitApiService } from 'src/app/service/api/code/code-unit-api.service';
 import { PayLevelApiService } from 'src/app/service/api/masters/pay-level-api.service';
+import { CommonDialogService } from 'src/app/service/core/common-dialog.service';
 import {
   clearLegacyInvalidFromEvent,
   validateLegacyRequiredSection,
@@ -263,7 +264,8 @@ export class FormPmtDutyComponent implements OnInit {
     private http: HttpClient,
     private $codeDocInfo: CodeDocInfoApiService,
     private $codeUnitApi: CodeUnitApiService,
-    private $payLevelApi: PayLevelApiService
+    private $payLevelApi: PayLevelApiService,
+    private $dialog: CommonDialogService
   ) {}
 
   ngOnInit(): void {
@@ -1255,8 +1257,11 @@ export class FormPmtDutyComponent implements OnInit {
     this.travelBtnName = 'Update';
   }
 
-  deleteTravel(index: number): void {
-    const ok = window.confirm('Do you really want to delete this row?');
+  async deleteTravel(index: number): Promise<void> {
+    const ok = await this.$dialog.confirm({
+      message: 'Do you really want to delete this row?',
+      type: 'delete',
+    });
     if (!ok) return;
     this.claims.yatDtsDetailDTOs.splice(index, 1);
     this.calculateAmount(this.codeClaim.pmtAdv);
@@ -1316,9 +1321,12 @@ export class FormPmtDutyComponent implements OnInit {
     );
   }
 
-  deleteGxForm(): void {
+  async deleteGxForm(): Promise<void> {
     if (!this.claims?.gxFormFileUrl) return;
-    const ok = window.confirm('Do you really want to delete this GX Form?');
+    const ok = await this.$dialog.confirm({
+      message: 'Do you really want to delete this GX Form?',
+      type: 'delete',
+    });
     if (!ok) return;
 
     this.claims.deleteGxFileUrl = this.claims.gxFormFileUrl;

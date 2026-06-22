@@ -1,0 +1,33 @@
+<div class="common-dialog-backdrop" *ngIf="dialog">
+  <div class="common-dialog-modal" role="dialog" aria-modal="true">
+    <button type="button" class="common-dialog-close" aria-label="Close" (click)="cancel()">
+      &times;
+    </button>
+
+    <div class="common-dialog-body">
+      <div class="common-dialog-icon" [ngClass]="dialog.type || 'default'">
+        <i [class]="iconClass" aria-hidden="true"></i>
+      </div>
+
+      <h4>{{ dialog.title }}</h4>
+      <p>{{ dialog.message }}</p>
+
+      <div class="common-dialog-actions" *ngIf="dialog.mode === 'confirm'; else messageActions">
+        <button type="button" class="btn btn-info btn-sm mr-2" (click)="confirm()">
+          {{ dialog.confirmText || 'Yes' }}
+        </button>
+        <button type="button" class="btn btn-light btn-sm" (click)="cancel()">
+          {{ dialog.cancelText || 'No' }}
+        </button>
+      </div>
+
+      <ng-template #messageActions>
+        <div class="common-dialog-actions">
+          <button type="button" class="btn btn-info btn-sm" (click)="confirm()">
+            {{ dialog.okText || 'OK' }}
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

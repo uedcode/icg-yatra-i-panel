@@ -1,0 +1,90 @@
+.common-dialog-backdrop {
+  align-items: flex-start;
+  background: rgba(0, 0, 0, 0.55);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  padding-top: 86px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 20000;
+}
+
+.common-dialog-modal {
+  background: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.32);
+  min-height: 190px;
+  position: relative;
+  width: min(740px, calc(100vw - 40px));
+}
+
+.common-dialog-close {
+  background: transparent;
+  border: 0;
+  color: #111111;
+  cursor: pointer;
+  font-size: 26px;
+  line-height: 1;
+  padding: 8px 12px;
+  position: absolute;
+  right: 4px;
+  top: 2px;
+}
+
+.common-dialog-body {
+  padding: 44px 32px 28px;
+  text-align: center;
+}
+
+.common-dialog-icon {
+  align-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  display: inline-flex;
+  font-size: 34px;
+  height: 58px;
+  justify-content: center;
+  margin-bottom: 18px;
+  width: 58px;
+}
+
+.common-dialog-icon.default,
+.common-dialog-icon.warning {
+  background: #f0ad4e;
+}
+
+.common-dialog-icon.delete,
+.common-dialog-icon.danger {
+  background: #19bfd2;
+}
+
+.common-dialog-icon.success {
+  background: #21a67a;
+}
+
+.common-dialog-body h4 {
+  color: #27395a;
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+
+.common-dialog-body p {
+  color: #111b3d;
+  font-size: 14px;
+  margin: 0 auto 16px;
+  max-width: 620px;
+  white-space: pre-wrap;
+}
+
+.common-dialog-actions {
+  margin-top: 8px;
+}
+
+.common-dialog-actions .btn {
+  min-width: 42px;
+  text-transform: none;
+}

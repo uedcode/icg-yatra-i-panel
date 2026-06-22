@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { of, Observable, config } from 'rxjs';
 import { catchError, mapTo, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { CommonDialogService } from '../core/common-dialog.service';
 
 @Injectable({
     providedIn: 'root'
@@ -15,7 +16,7 @@ export class AuthTokenService {
     private readonly REFRESH_TOKEN = this.storageKeys.refreshToken;
     private loggedUser: string;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private dialog: CommonDialogService) { }
 
     login(user: { username: string, password: string }): Observable<boolean> {
         return this.http.post<any>(`oauth/token`, user)
@@ -23,7 +24,11 @@ export class AuthTokenService {
                 tap(tokens => this.doLoginUser(user.username, tokens)),
                 mapTo(true),
                 catchError(error => {
-                    alert(error.error);
+                    this.dialog.message({
+                        title: 'Alert',
+                        message: error?.error || 'Login failed.',
+                        type: 'danger',
+                    });
                     return of(false);
                 }));
     }
@@ -35,7 +40,11 @@ export class AuthTokenService {
             tap(() => this.doLogoutUser()),
             mapTo(true),
             catchError(error => {
-                alert(error.error);
+                this.dialog.message({
+                    title: 'Alert',
+                    message: error?.error || 'Logout failed.',
+                    type: 'danger',
+                });
                 return of(false);
             }));
     }

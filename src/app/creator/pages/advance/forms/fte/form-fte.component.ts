@@ -13,6 +13,7 @@ import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.
 import { EsignApiService } from 'src/app/service/api/security/esign-api.service';
 import { BankIfscApiService } from 'src/app/service/api/code/bank-ifsc-api.service';
 import { CodeUnitApiService } from 'src/app/service/api/code/code-unit-api.service';
+import { CommonDialogService } from 'src/app/service/core/common-dialog.service';
 import { clearLegacyInvalidFromEvent, validateLegacyRequiredSection } from '../shared/helpers/legacy-form-validation.helper';
 
 declare var $: any;
@@ -639,7 +640,8 @@ export class FormFteComponent implements OnInit {
     private $claimStateApi: ClaimStateApiService,
     private $esignApi: EsignApiService,
     private $bankIfscApi: BankIfscApiService,
-    private $codeUnitApi: CodeUnitApiService
+    private $codeUnitApi: CodeUnitApiService,
+    private $dialog: CommonDialogService
   ) {}
 
   ngOnInit(): void {
@@ -1453,13 +1455,15 @@ export class FormFteComponent implements OnInit {
     );
   }
 
-  deleteGxForm(): void {
+  async deleteGxForm(): Promise<void> {
     if (!this.claims?.gxFormFileUrl) {
       return;
     }
 
-    // optional confirm – keep or remove as you like
-    const ok = window.confirm('Do you really want to delete this GX Form?');
+    const ok = await this.$dialog.confirm({
+      message: 'Do you really want to delete this GX Form?',
+      type: 'delete',
+    });
     if (!ok) {
       return;
     }
@@ -1820,4 +1824,3 @@ export class FormFteComponent implements OnInit {
   }
 
 }
-

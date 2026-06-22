@@ -15,6 +15,7 @@ import { CodeUnitApiService } from 'src/app/service/api/code/code-unit-api.servi
 import { CodeLtcTypeApiService } from 'src/app/service/api/code/code-ltc-type-api.service';
 import { LtcAdvApiService } from 'src/app/service/api/claim/ltc-adv-api.service';
 import { LtcAvailedHistApiService } from 'src/app/service/api/claim/ltc-availed-hist-api.service';
+import { CommonDialogService } from 'src/app/service/core/common-dialog.service';
 import {
   clearLegacyInvalidFromEvent,
   validateLegacyRequiredSection,
@@ -265,7 +266,8 @@ export class FormLtcAdvanceComponent implements OnInit {
     private $codeLtcTypeApi: CodeLtcTypeApiService,
     private $ltcAdvApi: LtcAdvApiService,
     private $ltcAvailedHistApi: LtcAvailedHistApiService,
-    private $codeDocInfo: CodeDocInfoApiService
+    private $codeDocInfo: CodeDocInfoApiService,
+    private $dialog: CommonDialogService
   ) {}
 
   ngOnInit(): void {
@@ -522,14 +524,22 @@ export class FormLtcAdvanceComponent implements OnInit {
     if (!file) return;
 
     if (file.type !== 'application/pdf') {
-      alert('Only PDF allowed.');
+      this.$dialog.message({
+        title: 'Alert',
+        message: 'Only PDF allowed.',
+        type: 'danger',
+      });
       input.value = '';
       return;
     }
 
     const max = 512 * 1024;
     if (file.size > max) {
-      alert('PDF must be upto 512 KB.');
+      this.$dialog.message({
+        title: 'Alert',
+        message: 'PDF must be upto 512 KB.',
+        type: 'danger',
+      });
       input.value = '';
       return;
     }
@@ -702,10 +712,11 @@ export class FormLtcAdvanceComponent implements OnInit {
     this.setTab('ship2');
   }
 
-  deleteLtcTravelDetails(index: number): void {
-    const confirmDelete = window.confirm(
-      'Do you really want to delete this row?'
-    );
+  async deleteLtcTravelDetails(index: number): Promise<void> {
+    const confirmDelete = await this.$dialog.confirm({
+      message: 'Do you really want to delete this row?',
+      type: 'delete',
+    });
     if (!confirmDelete) {
       return;
     }
@@ -1075,7 +1086,11 @@ export class FormLtcAdvanceComponent implements OnInit {
       this.claims.signWith === this.codeSignType.eSign &&
       !this.claims.yatLtcAdvDTOs[0].appliedTo
     ) {
-      alert('Please select Applied To before choosing eSign.');
+      this.$dialog.message({
+        title: 'Alert',
+        message: 'Please select Applied To before choosing eSign.',
+        type: 'danger',
+      });
       this.claims.signWith = this.codeSignType.inkSign;
     }
   }
@@ -1527,9 +1542,12 @@ export class FormLtcAdvanceComponent implements OnInit {
     );
   }
 
-  deleteGxForm(): void {
+  async deleteGxForm(): Promise<void> {
     if (!this.claims?.gxFormFileUrl) return;
-    const ok = window.confirm('Do you really want to delete this GX Form?');
+    const ok = await this.$dialog.confirm({
+      message: 'Do you really want to delete this GX Form?',
+      type: 'delete',
+    });
     if (!ok) return;
 
     this.claims.deleteGxFileUrl = this.claims.gxFormFileUrl;
