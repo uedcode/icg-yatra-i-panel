@@ -172,6 +172,7 @@ interface Claims {
   standalone: false,
 })
 export class FormPmtDutyComponent implements OnInit {
+  activeTab: 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5' | 'ship6' = 'ship';
   payLevels: any[] = [];
   isDutyLessTwenty = false;
   selectClaim: any = null;
@@ -1529,11 +1530,14 @@ export class FormPmtDutyComponent implements OnInit {
     clearLegacyInvalidFromEvent(event);
   }
 
+  setTab(tab: 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5' | 'ship6'): void {
+    if (this.getTabOrder().includes(tab)) {
+      this.activeTab = tab;
+    }
+  }
+
   private activateTab(sectionId: string): void {
-    const tabLink = document.querySelector<HTMLAnchorElement>(
-      `a[href="#${sectionId}"]`
-    );
-    if (tabLink) tabLink.click();
+    this.setTab(sectionId as 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5' | 'ship6');
   }
 
   validatePmt(type?: string): void {
@@ -1821,66 +1825,33 @@ export class FormPmtDutyComponent implements OnInit {
   checkValidSignType(signWith: string | null, appliedTo: string | null): void {}
 
   goToTab(tabId: 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5' | 'ship6'): void {
-    const link = document.querySelector<HTMLAnchorElement>(
-      `a[href="#${tabId}"]`
-    );
-    if (link) link.click();
+    this.setTab(tabId);
   }
 
-  private tabIds: string[] = ['ship', 'ship2', 'ship3', 'ship4', 'ship5', 'ship6'];
-
-  private getActiveTabId(): string {
-    const activeLink = document.querySelector<HTMLAnchorElement>(
-      'ul.nav-tabs li.active a'
-    );
-    if (activeLink) {
-      const href = activeLink.getAttribute('href') || '';
-      if (href.startsWith('#')) return href.substring(1);
-    }
-
-    for (const id of this.tabIds) {
-      const el = document.getElementById(id);
-      if (el?.classList.contains('active')) return id;
-    }
-
-    return 'ship';
+  private getTabOrder(): Array<'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5' | 'ship6'> {
+    return this.activeFormKind === 'claim'
+      ? ['ship', 'ship2', 'ship3', 'ship4', 'ship5', 'ship6']
+      : ['ship', 'ship2', 'ship3', 'ship4', 'ship5'];
   }
 
   openTab(tabId: string): void {
-    const tabLink = document.querySelector<HTMLAnchorElement>(
-      `a[href="#${tabId}"]`
-    );
-    if (tabLink) {
-      tabLink.click();
-      return;
-    }
-
-    this.tabIds.forEach((id) => {
-      const pane = document.getElementById(id);
-      if (pane) {
-        pane.classList.remove('active', 'show');
-        pane.classList.add('fade');
-      }
-    });
-    const target = document.getElementById(tabId);
-    if (target) {
-      target.classList.add('active', 'show');
-      target.classList.remove('fade');
-    }
+    this.setTab(tabId as 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5' | 'ship6');
   }
 
   nextTabActive(): void {
-    const current = this.getActiveTabId();
-    const idx = this.tabIds.indexOf(current);
-    const nextId = this.tabIds[Math.min(idx + 1, this.tabIds.length - 1)];
-    this.openTab(nextId);
+    const tabOrder = this.getTabOrder();
+    const idx = tabOrder.indexOf(this.activeTab);
+    if (idx >= 0 && idx < tabOrder.length - 1) {
+      this.activeTab = tabOrder[idx + 1];
+    }
   }
 
   previousTabActive(): void {
-    const current = this.getActiveTabId();
-    const idx = this.tabIds.indexOf(current);
-    const prevId = this.tabIds[Math.max(idx - 1, 0)];
-    this.openTab(prevId);
+    const tabOrder = this.getTabOrder();
+    const idx = tabOrder.indexOf(this.activeTab);
+    if (idx > 0) {
+      this.activeTab = tabOrder[idx - 1];
+    }
   }
 
   isSelfRow(f: any): boolean {

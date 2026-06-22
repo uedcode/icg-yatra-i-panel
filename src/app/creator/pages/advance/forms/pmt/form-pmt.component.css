@@ -139,11 +139,8 @@
 
 /* active tab – support both BS3 (li.active a) and BS4/5 (a.active) */
 .custom-tabs > li.active > a,
-.custom-tabs > li > a.active,
 .custom-tabs > li.active > a:focus,
-.custom-tabs > li > a.active:focus,
-.custom-tabs > li.active > a:hover,
-.custom-tabs > li > a.active:hover {
+.custom-tabs > li.active > a:hover {
   background: #005eb8 !important; /* blue */
   color: #fff !important; /* white text */
   border: 1px solid #005eb8 !important;

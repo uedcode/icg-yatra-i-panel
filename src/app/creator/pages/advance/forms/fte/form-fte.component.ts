@@ -124,6 +124,14 @@ interface ClaimsFteAdv {
   standalone: false,
 })
 export class FormFteComponent implements OnInit {
+  activeTab: 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5' = 'ship';
+  private readonly fteTabOrder: Array<'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5'> = [
+    'ship',
+    'ship2',
+    'ship3',
+    'ship4',
+    'ship5',
+  ];
   fteEditTravelIndex: number | null = null;
   fteOtherMode = false;
   fteBoolIsDts = false;
@@ -1003,11 +1011,14 @@ export class FormFteComponent implements OnInit {
     clearLegacyInvalidFromEvent(event);
   }
 
+  setTab(tab: 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5'): void {
+    this.activeTab = tab;
+  }
+
   private activateTab(sectionId: string): void {
-    const tabLink = document.querySelector<HTMLAnchorElement>(
-      `a[href="#${sectionId}"]`
-    );
-    if (tabLink) tabLink.click();
+    if (this.fteTabOrder.includes(sectionId as any)) {
+      this.setTab(sectionId as 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5');
+    }
   }
 
   /* ======================
@@ -1343,33 +1354,18 @@ export class FormFteComponent implements OnInit {
     else window.close();
   }
 
-  // tabs next/prev (same as your TY)
-  private getTabLinks(): HTMLAnchorElement[] {
-    return Array.from(
-      document.querySelectorAll<HTMLAnchorElement>('.nav-tabs.custom-tabs li a')
-    );
-  }
-
-  private getActiveTabIndex(tabLinks: HTMLAnchorElement[]): number {
-    return tabLinks.findIndex((a) =>
-      a.parentElement?.classList.contains('active')
-    );
-  }
-
   nextTabActive(): void {
-    const tabLinks = this.getTabLinks();
-    if (!tabLinks.length) return;
-    const activeIndex = this.getActiveTabIndex(tabLinks);
-    if (activeIndex === -1 || activeIndex >= tabLinks.length - 1) return;
-    tabLinks[activeIndex + 1].click();
+    const activeIndex = this.fteTabOrder.indexOf(this.activeTab);
+    if (activeIndex >= 0 && activeIndex < this.fteTabOrder.length - 1) {
+      this.activeTab = this.fteTabOrder[activeIndex + 1];
+    }
   }
 
   previousTabActive(): void {
-    const tabLinks = this.getTabLinks();
-    if (!tabLinks.length) return;
-    const activeIndex = this.getActiveTabIndex(tabLinks);
-    if (activeIndex <= 0) return;
-    tabLinks[activeIndex - 1].click();
+    const activeIndex = this.fteTabOrder.indexOf(this.activeTab);
+    if (activeIndex > 0) {
+      this.activeTab = this.fteTabOrder[activeIndex - 1];
+    }
   }
 
   removeEmoji(): void {

@@ -50,20 +50,20 @@
                       <div class="panel-body panel_head">
                         <!-- TABS -->
                         <ul class="nav nav-tabs custom-tabs" role="tablist">
-                          <li role="presentation" class="active">
-                            <a href="#ship" aria-controls="ship" role="tab" data-toggle="tab">Personal Details</a>
+                          <li role="presentation" [class.active]="activeTab === 'ship'">
+                            <a href="javascript:void(0)" role="tab" (click)="setTab('ship')">Personal Details</a>
                           </li>
-                          <li role="presentation">
-                            <a href="#ship2" aria-controls="ship2" role="tab" data-toggle="tab">Travel Details</a>
+                          <li role="presentation" [class.active]="activeTab === 'ship2'">
+                            <a href="javascript:void(0)" role="tab" (click)="setTab('ship2')">Travel Details</a>
                           </li>
-                          <li role="presentation">
-                            <a href="#ship3" aria-controls="ship3" role="tab" data-toggle="tab">Financial Terms</a>
+                          <li role="presentation" [class.active]="activeTab === 'ship3'">
+                            <a href="javascript:void(0)" role="tab" (click)="setTab('ship3')">Financial Terms</a>
                           </li>
-                          <li role="presentation">
-                            <a href="#ship4" aria-controls="ship4" role="tab" data-toggle="tab">Bank Details</a>
+                          <li role="presentation" [class.active]="activeTab === 'ship4'">
+                            <a href="javascript:void(0)" role="tab" (click)="setTab('ship4')">Bank Details</a>
                           </li>
-                          <li role="presentation">
-                            <a href="#ship5" aria-controls="ship5" role="tab" data-toggle="tab">Remarks</a>
+                          <li role="presentation" [class.active]="activeTab === 'ship5'">
+                            <a href="javascript:void(0)" role="tab" (click)="setTab('ship5')">Remarks</a>
                           </li>
                         </ul>
 
@@ -72,7 +72,7 @@
                         <div class="tab-content">
 
                           <!-- ================= TAB 1: PERSONAL DETAILS ================= -->
-                          <div id="ship" class="tab-pane fade active show">
+                          <div id="ship" class="tab-pane active show" *ngIf="activeTab === 'ship'">
 
                             <!-- Sign Type -->
                             <div class="mb-3">
@@ -661,7 +661,7 @@
                           </div>
 
                           <!-- ================= TAB 2: TRAVEL DETAILS ================= -->
-                          <div id="ship2" class="tab-pane fade">
+                          <div id="ship2" class="tab-pane active show" *ngIf="activeTab === 'ship2'">
                             <div class="row">
                               <div class="col-md-12">
                                 <div class="panel_head">
@@ -853,7 +853,7 @@
                           </div>
 
                           <!-- ================= TAB 3: FINANCIAL TERMS ================= -->
-                          <div id="ship3" class="tab-pane fade">
+                          <div id="ship3" class="tab-pane active show" *ngIf="activeTab === 'ship3'">
 
                             <div class="row" *ngIf="isGSTAvailed">
                               <div class="col-md-12 text-right">
@@ -1171,7 +1171,7 @@
                           </div>
 
                           <!-- ================= TAB 4: BANK DETAILS ================= -->
-                          <div id="ship4" class="tab-pane fade">
+                          <div id="ship4" class="tab-pane active show" *ngIf="activeTab === 'ship4'">
                             <div class="form-group">
                               <div class="row">
                                 <div class="col-md-2 padd_5">
@@ -1301,7 +1301,7 @@
                           </div>
 
                           <!-- ================= TAB 5: REMARKS ================= -->
-                          <div id="ship5" class="tab-pane fade">
+                          <div id="ship5" class="tab-pane active show" *ngIf="activeTab === 'ship5'">
                             <app-common-document *ngIf="activeFormKind === 'claim'"
                               [documentDtos]="documentDtos"></app-common-document>
                             <div class="form-group">

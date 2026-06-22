@@ -174,6 +174,14 @@ declare var $: any;
 export class FormTydutyComponent implements OnInit {
   /* ==== CONSTANTS ==== */
   isIfscNull: false;
+  activeTab: 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5' = 'ship';
+  private readonly tyTabOrder: Array<'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5'> = [
+    'ship',
+    'ship2',
+    'ship3',
+    'ship4',
+    'ship5',
+  ];
   codeClaim = {
     tyAdv: 'T', // legacy TY Duty Advance sub-form id
   } as const;
@@ -1224,12 +1232,13 @@ export class FormTydutyComponent implements OnInit {
     clearLegacyInvalidFromEvent(event);
   }
 
+  setTab(tab: 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5'): void {
+    this.activeTab = tab;
+  }
+
   private activateTab(sectionId: string): void {
-    const tabLink = document.querySelector<HTMLAnchorElement>(
-      `a[href="#${sectionId}"]`
-    );
-    if (tabLink) {
-      tabLink.click();
+    if (this.tyTabOrder.includes(sectionId as any)) {
+      this.setTab(sectionId as 'ship' | 'ship2' | 'ship3' | 'ship4' | 'ship5');
     }
   }
 
@@ -2042,77 +2051,6 @@ export class FormTydutyComponent implements OnInit {
     return this.activeFormKind === 'claim' ? 'preview-ty-duty-claim' : 'preview-ty-duty';
   }
 
-  // TAB NAVIGATION (NEXT / PREVIOUS)
-  // private getTabLinks(): HTMLAnchorElement[] {
-  //   return Array.from(
-  //     document.querySelectorAll<HTMLAnchorElement>('.nav-tabs li a')
-  //   );
-  // }
-
-  // private getActiveTabIndex(tabLinks: HTMLAnchorElement[]): number {
-  //   return tabLinks.findIndex((a) =>
-  //     a.parentElement?.classList.contains('active')
-  //   );
-  // }
-
-  // nextTabActive(): void {
-  //   const tabLinks = this.getTabLinks();
-  //   if (!tabLinks.length) return;
-
-  //   const activeIndex = this.getActiveTabIndex(tabLinks);
-  //   if (activeIndex === -1 || activeIndex >= tabLinks.length - 1) return;
-
-  //   this.activateTabByIndex(activeIndex + 1);
-  // }
-
-  // previousTabActive(): void {
-  //   const tabLinks = this.getTabLinks();
-  //   if (!tabLinks.length) return;
-
-  //   const activeIndex = this.getActiveTabIndex(tabLinks);
-  //   if (activeIndex <= 0) return;
-
-  //   this.activateTabByIndex(activeIndex - 1);
-  // }
-
-  // private activateTabByIndex(index: number): void {
-  //   const tabLinks = this.getTabLinks();
-  //   if (!tabLinks.length || index < 0 || index >= tabLinks.length) {
-  //     return;
-  //   }
-
-  //   const targetLink = tabLinks[index];
-
-  //   // Deactivate all tab headers
-  //   tabLinks.forEach((a) => {
-  //     a.classList.remove('active');
-  //     a.parentElement?.classList.remove('active');
-  //   });
-
-  //   // Deactivate all tab panes
-  //   const panes = document.querySelectorAll<HTMLElement>('.tab-pane');
-  //   panes.forEach((p) => p.classList.remove('active', 'in'));
-
-  //   // Activate the header for the target tab
-  //   targetLink.classList.add('active');
-  //   targetLink.parentElement?.classList.add('active');
-
-  //   // Extract only the hash part from href (e.g. "#ship2")
-  //   const rawHref = targetLink.getAttribute('href') || '';
-  //   const hash =
-  //     rawHref.indexOf('#') >= 0
-  //       ? rawHref.substring(rawHref.indexOf('#'))
-  //       : rawHref;
-
-  //   // Activate the corresponding pane
-  //   if (hash) {
-  //     const pane = document.querySelector<HTMLElement>(hash);
-  //     if (pane) {
-  //       pane.classList.add('active', 'in');
-  //     }
-  //   }
-  // }
-
   openExtendedDutyModal(_userId: number | null, _type: string): void {
     // Extended duty modal logic
   }
@@ -2232,49 +2170,18 @@ export class FormTydutyComponent implements OnInit {
       );
     }
   }
-  private getTabLinks(): HTMLAnchorElement[] {
-    return Array.from(
-      document.querySelectorAll<HTMLAnchorElement>('.nav-tabs.custom-tabs li a')
-    );
-  }
-
-  private getActiveTabIndex(tabLinks: HTMLAnchorElement[]): number {
-    // Bootstrap marks the parent <li> as active
-    return tabLinks.findIndex((a) =>
-      a.parentElement?.classList.contains('active')
-    );
-  }
-
   nextTabActive(): void {
-    const tabLinks = this.getTabLinks();
-    if (!tabLinks.length) return;
-
-    const activeIndex = this.getActiveTabIndex(tabLinks);
-    if (activeIndex === -1 || activeIndex >= tabLinks.length - 1) return;
-
-    const targetLink = tabLinks[activeIndex + 1];
-    // Let Bootstrap handle all classes (`active`, `show`, etc.)
-    targetLink.click();
+    const activeIndex = this.tyTabOrder.indexOf(this.activeTab);
+    if (activeIndex >= 0 && activeIndex < this.tyTabOrder.length - 1) {
+      this.activeTab = this.tyTabOrder[activeIndex + 1];
+    }
   }
 
   previousTabActive(): void {
-    const tabLinks = this.getTabLinks();
-    if (!tabLinks.length) return;
-
-    const activeIndex = this.getActiveTabIndex(tabLinks);
-    if (activeIndex <= 0) return;
-
-    const targetLink = tabLinks[activeIndex - 1];
-    targetLink.click();
-  }
-
-  // You can delete this method entirely if you only use next/previous:
-  private activateTabByIndex(index: number): void {
-    const tabLinks = this.getTabLinks();
-    if (!tabLinks.length || index < 0 || index >= tabLinks.length) return;
-
-    const targetLink = tabLinks[index];
-    targetLink.click();
+    const activeIndex = this.tyTabOrder.indexOf(this.activeTab);
+    if (activeIndex > 0) {
+      this.activeTab = this.tyTabOrder[activeIndex - 1];
+    }
   }
 
   openIfscModal() {
