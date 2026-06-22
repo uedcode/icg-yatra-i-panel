@@ -105,7 +105,7 @@
                         <td>{{ (dataObj?.fullName || dataObj?.fullDescr) | showHypen }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.codeSubFormDTO?.descr || dataObj?.yatClaimDTO?.codeSubFormDTO?.subFormName || dataObj?.formName) | showHypen }}</td>
                         <td>{{ (dataObj?.yatClaimDTO?.occDate || dataObj?.yatClaimDTO?.submissionDate || dataObj?.yatClaimDTO?.createdOn || dataObj?.createdOn) | showDate:'mediumDate' }}</td>
-                        <td>{{ (dataObj?.claimState || dataObj?.yatClaimDTO?.status || dataObj?.formState) | showHypen }}</td>
+                        <td>{{ dataObj?.claimState | showHypen }}</td>
                         <td>
                           <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
                         </td>

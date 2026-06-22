@@ -37,8 +37,8 @@ describe('CommonDocumentComponent', () => {
       'setDocument'
     ]);
     formDocumentService = jasmine.createSpyObj<FormDocumentService>('FormDocumentService', [
-      'deleteSupportDocByUrl',
       'loadRequiredDocuments',
+      'uploadTempDocument',
       'uploadSupportDoc'
     ]);
     formWorkflowService = jasmine.createSpyObj<FormWorkflowService>('FormWorkflowService', [
@@ -46,8 +46,8 @@ describe('CommonDocumentComponent', () => {
     ]);
 
     commonService.checkForValidFile.and.returnValue(true);
-    formDocumentService.deleteSupportDocByUrl.and.returnValue(of(true));
     formDocumentService.loadRequiredDocuments.and.returnValue(of({ status: true, object: [] }));
+    formDocumentService.uploadTempDocument.and.returnValue(of('/uploaded/bill.pdf'));
     formDocumentService.uploadSupportDoc.and.returnValue(of('/uploaded/bill.pdf'));
 
     return TestBed.configureTestingModule({
@@ -150,7 +150,7 @@ describe('CommonDocumentComponent', () => {
     component.uploadImg({ currentTarget: { files: [] } }, 'url');
 
     expect(component.documentObj.url).toBeNull();
-    expect(formDocumentService.uploadSupportDoc).not.toHaveBeenCalled();
+    expect(formDocumentService.uploadTempDocument).not.toHaveBeenCalled();
   });
 
   it('uploads a valid file and stores the returned document url', () => {
@@ -159,16 +159,32 @@ describe('CommonDocumentComponent', () => {
 
     component.uploadImg(event, 'url');
 
-    expect(formDocumentService.uploadSupportDoc).toHaveBeenCalledOnceWith(event.currentTarget.files[0]);
+    expect(formDocumentService.uploadTempDocument).toHaveBeenCalledOnceWith(
+      event.currentTarget.files[0],
+      undefined
+    );
+    expect(formDocumentService.uploadSupportDoc).not.toHaveBeenCalled();
     expect(component.documentObj.url).toBe('/uploaded/bill.pdf');
   });
 
-  it('deletes an uploaded file url and clears the pending document url', () => {
+  it('uploads claim supporting documents with the claim folder id when available', () => {
+    const event = { currentTarget: { files: [new File(['x'], 'bill.pdf')] } };
+    component.formId = 'C_ID_1';
+    component.documentObj = {};
+
+    component.uploadImg(event, 'url');
+
+    expect(formDocumentService.uploadTempDocument).toHaveBeenCalledOnceWith(
+      event.currentTarget.files[0],
+      'C_ID_1'
+    );
+  });
+
+  it('clears the pending document url without deleting the temp file from backend', () => {
     component.documentObj = { url: '/uploaded/bill.pdf' };
 
     component.deleteDoc('url');
 
-    expect(formDocumentService.deleteSupportDocByUrl).toHaveBeenCalledOnceWith('/uploaded/bill.pdf');
     expect(component.documentObj.url).toBeNull();
   });
 

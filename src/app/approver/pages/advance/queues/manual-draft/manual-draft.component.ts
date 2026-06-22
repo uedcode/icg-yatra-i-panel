@@ -128,6 +128,7 @@ export class ManualDraftComponent implements OnInit {
           return;
         }
         this.dataList = this.dataList.filter((item: any) => this.getClaimId(item) != claimId);
+        this.$claimStateApi.notifyStatusCountRefresh();
         this.$common.showMessage(res?.message || 'Claim deleted successfully.', 'success');
       },
       error: () => {

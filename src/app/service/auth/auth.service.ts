@@ -748,10 +748,37 @@ export class AuthService {
       return;
     }
 
+    const modulePath = this.getViewFileModulePath();
     const viewerPath = this.route.serializeUrl(
-      this.route.createUrlTree(['/view-file', btoa(normalizedUrl)])
+      this.route.createUrlTree([modulePath, btoa(normalizedUrl)])
     );
     window.open(viewerPath, '_blank');
+  }
+
+  private getViewFileModulePath(): string {
+    const moduleUrl = this.getModuleName();
+    if (!moduleUrl) {
+      return '/view-file';
+    }
+
+    const runtimePrefix = this.getRuntimeUrlPrefix();
+    return `${runtimePrefix}${moduleUrl}/view-file`;
+  }
+
+  private getRuntimeUrlPrefix(): string {
+    const path = String(window.location?.pathname || '').toLowerCase();
+    if (path.startsWith('/claim/')) {
+      return '/claim';
+    }
+    if (path.startsWith('/adv/')) {
+      return '/adv';
+    }
+
+    const configuredBase = (environment.baseHref || '').trim().toLowerCase();
+    if (configuredBase === '/claim/' || configuredBase === '/claim') {
+      return '/claim';
+    }
+    return '/adv';
   }
 
   private normalizeFileUrl(url: any): string {

@@ -26,6 +26,12 @@ const routes: Routes = [
     data: { title: 'Login' },
   },
   {
+    path: 'view-file/:id',
+    component: CommonViewFileComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'View File' },
+  },
+  {
     path: 'view-file',
     component: CommonViewFileComponent,
     canActivate: [AuthGuard],

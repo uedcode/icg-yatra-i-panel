@@ -168,7 +168,7 @@ export class CommonDocumentComponent implements OnInit {
     }
 
     this.$common.showLoader();
-    this.$formDocument.uploadSupportDoc(file).subscribe(
+    this.$formDocument.uploadTempDocument(file, this.formId || this.supplementryId).subscribe(
       (res) => {
         this.$common.hideLoader();
         if (fileName == 'url') this.documentObj.url = res;
@@ -191,19 +191,7 @@ export class CommonDocumentComponent implements OnInit {
       return this.$common.showMessage("Missing file path", 'danger');
     }
 
-    this.$common.showLoader();
-    this.$formDocument.deleteSupportDocByUrl(this.documentObj.url).subscribe(
-      (deleted) => {
-        this.$common.hideLoader();
-        if (deleted) {
-          this.documentObj.url = null;
-        }
-      },
-      (error) => {
-        this.$common.hideLoader();
-        console.log(error);
-      }
-    );
+    this.documentObj.url = null;
   }
   // Image upload and delet end
 

@@ -68,7 +68,7 @@
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ dataObj?.yatClaimDTO?.codeSubFormDTO?.descr | showHypen }}</td>
                         <td>{{ dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-' }}</td>
-                        <td>{{ dataObj?.yatClaimDTO?.status | showHypen }}</td>
+                        <td>{{ dataObj?.claimState | showHypen }}</td>
                         <td>
                           <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
                         </td>

@@ -46,8 +46,7 @@ export class AuthGuard  {
                 returnVal = false;
             }
 
-            let list = ['/view-file', '/common-profile-setting'];
-            if(list.includes(completeUrl)){
+            if (this.isSharedUtilityRoute(completeUrl)) {
                 returnVal = true;
             }
             if (!returnVal) {
@@ -100,6 +99,13 @@ export class AuthGuard  {
         return !this.advanceOnlyTokens.some((token) => normalized.includes(token));
       }
       return true;
+    }
+
+    private isSharedUtilityRoute(routeUrl: string): boolean {
+      const normalized = String(routeUrl || '').toLowerCase();
+      return normalized === '/view-file' ||
+        normalized.startsWith('/view-file/') ||
+        normalized === '/common-profile-setting';
     }
 
 }

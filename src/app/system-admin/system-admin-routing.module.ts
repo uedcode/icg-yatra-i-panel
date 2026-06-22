@@ -38,6 +38,7 @@ import { EsignReportComponent } from './pages/reports/esign-report/esign-report.
 import { StatisticsComponent } from './pages/reports/statistics/statistics.component';
 import { PreviewReportComponent } from './pages/reports/preview-report/preview-report.component';
 import { SettingsLauncherComponent } from './pages/settings/launcher/settings-launcher.component';
+import { CommonViewFileComponent } from '../components/common-view-file/common-view-file.component';
 
 const SYSTEM_ADMIN_ROLES = ['SY'];
 
@@ -228,6 +229,12 @@ const routes: Routes = [
     component: WebDetailComponent,
     canActivate: [AuthGuard],
     data: { title: 'Web Detail', roles: SYSTEM_ADMIN_ROLES },
+  },
+  {
+    path: 'view-file/:id',
+    component: CommonViewFileComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'View File', roles: SYSTEM_ADMIN_ROLES },
   },
   {
     path: 'inbox',

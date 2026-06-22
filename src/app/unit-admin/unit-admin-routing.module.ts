@@ -13,6 +13,7 @@ import { ArchiveComponent } from './pages/role-management/archive/archive.compon
 import { UpdatePmtUnitComponent } from './pages/duty-management/update-pmt-unit/update-pmt-unit.component';
 import { ReportTyDutyComponent } from './pages/duty-management/report-ty-duty/report-ty-duty.component';
 import { ManagePaylevelTransactionComponent } from './pages/duty-management/manage-paylevel-transaction/manage-paylevel-transaction.component';
+import { CommonViewFileComponent } from '../components/common-view-file/common-view-file.component';
 
 const UNIT_ADMIN_ROLES = ['UN'];
 
@@ -93,6 +94,12 @@ export const routes: Routes = [
         component: WebDetailComponent,
         canActivate: [AuthGuard],
         data: { title: 'Web Detail', roles: UNIT_ADMIN_ROLES },
+      },
+      {
+        path: 'view-file/:id',
+        component: CommonViewFileComponent,
+        canActivate: [AuthGuard],
+        data: { title: 'View File', roles: UNIT_ADMIN_ROLES },
       },
       {
         path: 'instructions',

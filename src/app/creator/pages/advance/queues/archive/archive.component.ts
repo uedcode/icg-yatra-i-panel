@@ -96,6 +96,7 @@ this.getState();
         this.dataList = this.dataList.filter(
           (item: any) => item?.claimStateId != claimStateId
         );
+        this.$claimStateApi.notifyStatusCountRefresh();
         this.$common.showMessage(res?.message || 'Claim restored successfully.', 'success');
       },
       error: () => {

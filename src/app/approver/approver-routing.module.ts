@@ -58,6 +58,7 @@ import { AdvanceFormManualComponent } from './pages/advance/reviews/manual/advan
 import { AdvancePreviewManualComponent } from './pages/advance/previews/manual-advance/preview-manual-advance.component';
 import { AdvanceFormLtcHistoryComponent } from './pages/advance/reviews/ltc-history/advance-form-ltc-history.component';
 import { AdvancePreviewLtcHistoryComponent } from './pages/advance/previews/ltc-availed-history/preview-ltc-availed-history.component';
+import { CommonViewFileComponent } from '../components/common-view-file/common-view-file.component';
 
 const APPROVER_PREVIEW_ROUTES: Routes = [
   { path: 'preview-pmt-duty', component: AdvancePreviewPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
@@ -117,6 +118,7 @@ const routes: Routes = [
       { path: 'settings', component: SettingsLauncherComponent, canActivate: [AuthGuard], data: { title: 'Settings', roles: ['VE1', 'VE2'] } },
       { path: 'esign', component: EsignComponent, canActivate: [AuthGuard], data: { title: 'Esign', roles: ['VE1', 'VE2', 'AP'] } },
       { path: 'redirect', component: RedirectComponent, canActivate: [AuthGuard], data: { title: 'eSign Redirect', roles: ['VE1', 'VE2', 'AP'] } },
+      { path: 'view-file/:id', component: CommonViewFileComponent, canActivate: [AuthGuard], data: { title: 'View File', roles: ['VE1', 'VE2', 'AP'] } },
       { path: 'faq', component: FaqComponent, canActivate: [AuthGuard], data: { title: 'FAQ' } },
       { path: 'web-detail', component: WebDetailComponent, canActivate: [AuthGuard], data: { title: 'Web Detail' } },
       { path: 'passed', component: PassedComponent, canActivate: [AuthGuard], data: { title: 'Passed', roles: ['VE1', 'VE2', 'AP'], queueModule: 'ADV', queueState: 'PS' } },

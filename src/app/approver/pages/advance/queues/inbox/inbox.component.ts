@@ -141,6 +141,7 @@ export class InboxComponent implements OnInit {
           this.dataList = this.dataList.filter(
             (item: any) => item?.yatClaimDTO?.claimId != claimId
           );
+          this.$claimStateApi.notifyStatusCountRefresh();
           this.router.navigateByUrl(this.$auth.getModuleName() + '/manual-draft');
           return;
         }
@@ -232,5 +233,4 @@ export class InboxComponent implements OnInit {
     return `${this.$auth.getModuleName()}/${String(formUrl).replace(/^\/+/, '')}?id=${encodeURIComponent(claimId)}`;
   }
 }
-
 

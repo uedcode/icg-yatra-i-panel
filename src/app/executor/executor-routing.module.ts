@@ -7,6 +7,7 @@ import { SearchByPnoComponent } from './pages/search-by-pno/search-by-pno.compon
 import { EsignReportComponent } from './pages/esign-report/esign-report.component';
 import { PieChartComponent } from './pages/pie-chart/pie-chart.component';
 import { ClaimPreviewComponent } from './pages/claim-preview/claim-preview.component';
+import { CommonViewFileComponent } from '../components/common-view-file/common-view-file.component';
 
 const EXECUTOR_ROLES = ['EX'];
 
@@ -43,6 +44,12 @@ const routes: Routes = [
     component: PieChartComponent,
     canActivate: [AuthGuard],
     data: { title: 'Pie Chart', roles: EXECUTOR_ROLES },
+  },
+  {
+    path: 'view-file/:id',
+    component: CommonViewFileComponent,
+    canActivate: [AuthGuard],
+    data: { title: 'View File', roles: EXECUTOR_ROLES },
   },
   {
     path: 'form-claim-detail',

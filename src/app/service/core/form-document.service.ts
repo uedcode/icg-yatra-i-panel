@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CodeDocInfoApiService } from 'src/app/service/api/code/code-doc-info-api.service';
-import { FormSupportDocUrlApiService } from 'src/app/service/api/form/form-support-doc-url-api.service';
+import { TempDocInfoApiService } from 'src/app/service/api/form/temp-doc-info-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FormDocumentService {
   constructor(
-    private $formSupportDocUrl: FormSupportDocUrlApiService,
+    private $tempDocInfoApi: TempDocInfoApiService,
     private $codeDocInfo: CodeDocInfoApiService
   ) {}
 
@@ -20,29 +20,30 @@ export class FormDocumentService {
   }
 
   uploadSupportDoc(file: File): Observable<string | null> {
-    const formData = new FormData();
-    formData.append('docFile', file);
-    formData.append('SupportDocDTO', '{}');
+    return this.uploadTempDocument(file);
+  }
 
-    return this.$formSupportDocUrl.saveFileUrl(formData).pipe(
+  uploadTempDocument(file: File, folderId?: string): Observable<string | null> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append(
+      'tempDocInfoDTO',
+      JSON.stringify(folderId ? { folderId } : {})
+    );
+
+    return this.$tempDocInfoApi.createOrUpdate(formData).pipe(
       map((response: any) =>
-        response?.status === true ? response.object?.[0]?.docFileUrl || null : null
+        response?.status === true ? response.object?.[0]?.fileUrl || null : null
       )
     );
   }
 
-  deleteSupportDocByUrl(docFileUrl: string): Observable<boolean> {
-    if (!docFileUrl || docFileUrl.includes('fakepath')) {
-      return of(true);
-    }
-
-    return this.$formSupportDocUrl
-      .deleteByUrl({
-        headers: {
-          url: docFileUrl,
-        },
-      })
-      .pipe(map((response: any) => response?.status === true));
+  /**
+   * Legacy claim/advance document flow only removes temp document references
+   * from the DTO. The backend moves/copies temp files during claim save.
+   */
+  deleteSupportDocByUrl(_docFileUrl: string): Observable<boolean> {
+    return of(true);
   }
 
   private getDocumentClaimFlags(subFormId: string) {

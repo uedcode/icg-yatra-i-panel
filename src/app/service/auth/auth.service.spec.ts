@@ -101,6 +101,7 @@ describe('AuthService', () => {
     httpMock.verify();
     localStorage.clear();
     sessionStorage.clear();
+    window.history.pushState({}, '', '/');
   });
 
   it('should post login credentials to oauth token and parse the response', () => {
@@ -457,6 +458,84 @@ describe('AuthService', () => {
       '<br> <b>(Approved - 1015 Hrs)</b>'
     );
     expect(service.formatOperation('', '1015')).toBe('');
+  });
+
+  it('should open creator advance file viewer inside active ADV shell route', () => {
+    service.createSession(sessionPayload, 'NONE');
+    spyOn(Date, 'now').and.returnValue(1782115442078);
+    spyOn(window, 'open');
+    window.history.pushState({}, '', '/adv/creator/form-ty-duty');
+
+    service.viewFile('/claim/178/support_doc/file.pdf');
+
+    const expectedUrl = `${environment.fileUrl.replace(/\/$/, '')}/claim/178/support_doc/file.pdf?t=1782115442078`;
+    expect(window.open).toHaveBeenCalledWith(
+      `/adv/creator/view-file/${btoa(expectedUrl)}`,
+      '_blank'
+    );
+  });
+
+  it('should open creator claim file viewer inside active CLM shell route', () => {
+    service.createSession(sessionPayload, 'NONE');
+    spyOn(Date, 'now').and.returnValue(1782115442078);
+    spyOn(window, 'open');
+    window.history.pushState({}, '', '/claim/creator/preview-ty-duty-claim');
+
+    service.viewFile('claim/178/support_doc/file.pdf');
+
+    const expectedUrl = `${environment.fileUrl.replace(/\/$/, '')}/claim/178/support_doc/file.pdf?t=1782115442078`;
+    expect(window.open).toHaveBeenCalledWith(
+      `/claim/creator/view-file/${btoa(expectedUrl)}`,
+      '_blank'
+    );
+  });
+
+  it('should open approver advance file viewer inside active ADV shell route', () => {
+    service.createSession(
+      { ...sessionPayload, roleTypeId: 'AP', roleName: 'Approver' },
+      'NONE'
+    );
+    spyOn(Date, 'now').and.returnValue(1782115442078);
+    spyOn(window, 'open');
+    window.history.pushState({}, '', '/adv/approver/form-ty-duty');
+
+    service.viewFile('/claim/178/support_doc/file.pdf');
+
+    const expectedUrl = `${environment.fileUrl.replace(/\/$/, '')}/claim/178/support_doc/file.pdf?t=1782115442078`;
+    expect(window.open).toHaveBeenCalledWith(
+      `/adv/approver/view-file/${btoa(expectedUrl)}`,
+      '_blank'
+    );
+  });
+
+  it('should open approver claim file viewer inside active CLM shell route', () => {
+    service.createSession(
+      { ...sessionPayload, roleTypeId: 'VE1', roleName: 'Verifier' },
+      'NONE'
+    );
+    spyOn(Date, 'now').and.returnValue(1782115442078);
+    spyOn(window, 'open');
+    window.history.pushState({}, '', '/claim/approver/preview-ty-duty-claim');
+
+    service.viewFile('/claim/178/support_doc/file.pdf');
+
+    const expectedUrl = `${environment.fileUrl.replace(/\/$/, '')}/claim/178/support_doc/file.pdf?t=1782115442078`;
+    expect(window.open).toHaveBeenCalledWith(
+      `/claim/approver/view-file/${btoa(expectedUrl)}`,
+      '_blank'
+    );
+  });
+
+  it('should show a message and not open viewer when file URL is empty', () => {
+    spyOn(window, 'open');
+
+    service.viewFile('');
+
+    expect(commonService.showMessage).toHaveBeenCalledWith(
+      'File URL is not available.',
+      'danger'
+    );
+    expect(window.open).not.toHaveBeenCalled();
   });
 
   it('should identify null, empty, and string-null values as empty', () => {

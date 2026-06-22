@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { AuthGuard } from './auth.guard';
-import { AuthService } from './service/auth.service';
+import { AuthService } from './service/auth/auth.service';
 
 describe('AuthGuard', () => {
   let guard: AuthGuard;
@@ -118,6 +118,7 @@ describe('AuthGuard', () => {
 
     const allowedUrls = [
       '/view-file',
+      '/view-file/encoded-file-url',
       '/common-profile-setting',
     ];
 
