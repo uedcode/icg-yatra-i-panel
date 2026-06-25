@@ -76,9 +76,13 @@ export class AuthGuard  {
 
     private readonly advanceOnlyTokens = [
       '/new',
+      'form-ty-duty',
       'form-tyduty',
+      'form-fte-advance',
       'form-fte',
+      'form-pmt-duty',
       'form-pmt',
+      'form-ltc-advance',
       'form-ltc',
       'form-manual-adv',
       'form-ltc-availed-history',
@@ -93,12 +97,30 @@ export class AuthGuard  {
         return true;
       }
       if (moduleId === 'ADV') {
-        return !this.claimOnlyTokens.some((token) => normalized.includes(token));
+        return !this.claimOnlyTokens.some((token) => this.matchesRouteToken(normalized, token));
       }
       if (moduleId === 'CLM') {
-        return !this.advanceOnlyTokens.some((token) => normalized.includes(token));
+        return !this.advanceOnlyTokens.some((token) => this.matchesRouteToken(normalized, token));
       }
       return true;
+    }
+
+    private matchesRouteToken(routeUrl: string, token: string): boolean {
+      const routePath = String(routeUrl || '').toLowerCase().split('?')[0];
+      const normalizedToken = String(token || '').toLowerCase();
+      const cleanToken = normalizedToken.replace(/^\/+|\/+$/g, '');
+      const segments = routePath.split('/').filter(Boolean);
+
+      if (!cleanToken) {
+        return false;
+      }
+      if (normalizedToken === '-claim') {
+        return segments.some((segment) => segment.includes('-claim'));
+      }
+      if (cleanToken.endsWith('-')) {
+        return segments.some((segment) => segment.startsWith(cleanToken));
+      }
+      return segments.includes(cleanToken);
     }
 
     private isSharedUtilityRoute(routeUrl: string): boolean {

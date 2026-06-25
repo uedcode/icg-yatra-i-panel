@@ -35,11 +35,17 @@ describe('AuthGuard', () => {
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
     authService = jasmine.createSpyObj<AuthService>('AuthService', [
       'destroySession',
+      'getAccessToken',
       'getModuleName',
       'getUserDetails',
       'getRuntimeModuleId',
     ]);
 
+    authService.getAccessToken.and.callFake(() =>
+      localStorage.getItem(storageKeys.accessToken) ||
+      localStorage.getItem('pilotageAccessToken') ||
+      ''
+    );
     authService.getModuleName.and.returnValue('/creator');
     authService.getRuntimeModuleId.and.returnValue('ADV' as any);
     authService.getUserDetails.and.returnValue({
@@ -98,6 +104,86 @@ describe('AuthGuard', () => {
 
     expect(canActivate).toBeFalse();
     expect(authService.destroySession).toHaveBeenCalledWith('2');
+  });
+
+  it('should allow PMT claim review route in CLM runtime', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getModuleName.and.returnValue('/approver');
+    authService.getRuntimeModuleId.and.returnValue('CLM' as any);
+    authService.getUserDetails.and.returnValue({ roleTypeId: 'VE1' });
+
+    const canActivate = guard.canActivate(
+      routeSnapshot('form-pmt-duty-claim', ['VE1', 'VE2', 'AP']),
+      routerState('/claim/approver/form-pmt-duty-claim?id=C_ID_1767291978026')
+    );
+
+    expect(canActivate).toBeTrue();
+    expect(authService.destroySession).not.toHaveBeenCalled();
+  });
+
+  it('should reject PMT advance review route in CLM runtime', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getModuleName.and.returnValue('/approver');
+    authService.getRuntimeModuleId.and.returnValue('CLM' as any);
+    authService.getUserDetails.and.returnValue({ roleTypeId: 'VE1' });
+
+    const canActivate = guard.canActivate(
+      routeSnapshot('form-pmt-duty', ['VE1', 'VE2', 'AP']),
+      routerState('/claim/approver/form-pmt-duty?id=C_ID_1767291978026')
+    );
+
+    expect(canActivate).toBeFalse();
+    expect(authService.destroySession).toHaveBeenCalledWith('2');
+  });
+
+  it('should reject claim review routes in ADV runtime', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getModuleName.and.returnValue('/approver');
+    authService.getRuntimeModuleId.and.returnValue('ADV' as any);
+    authService.getUserDetails.and.returnValue({ roleTypeId: 'VE1' });
+
+    const canActivate = guard.canActivate(
+      routeSnapshot('form-pmt-duty-claim', ['VE1', 'VE2', 'AP']),
+      routerState('/adv/approver/form-pmt-duty-claim?id=C_ID_1767291978026')
+    );
+
+    expect(canActivate).toBeFalse();
+    expect(authService.destroySession).toHaveBeenCalledWith('2');
+  });
+
+  it('should allow PMT advance review route in ADV runtime', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getModuleName.and.returnValue('/approver');
+    authService.getRuntimeModuleId.and.returnValue('ADV' as any);
+    authService.getUserDetails.and.returnValue({ roleTypeId: 'VE1' });
+
+    const canActivate = guard.canActivate(
+      routeSnapshot('form-pmt-duty', ['VE1', 'VE2', 'AP']),
+      routerState('/adv/approver/form-pmt-duty?id=C_ID_1767291978026')
+    );
+
+    expect(canActivate).toBeTrue();
+    expect(authService.destroySession).not.toHaveBeenCalled();
+  });
+
+  it('should allow TY FTE and LTC claim review routes in CLM runtime', () => {
+    localStorage.setItem(storageKeys.accessToken, 'access-token');
+    authService.getModuleName.and.returnValue('/approver');
+    authService.getRuntimeModuleId.and.returnValue('CLM' as any);
+    authService.getUserDetails.and.returnValue({ roleTypeId: 'VE2' });
+
+    [
+      '/claim/approver/form-ty-duty-claim?id=C_ID_TY',
+      '/claim/approver/form-fte-claim?id=C_ID_FTE',
+      '/claim/approver/form-ltc-claim?id=C_ID_LTC',
+    ].forEach((url) => {
+      const path = url.split('?')[0].split('/').pop() || '';
+      expect(guard.canActivate(routeSnapshot(path, ['VE1', 'VE2', 'AP']), routerState(url)))
+        .withContext(url)
+        .toBeTrue();
+    });
+
+    expect(authService.destroySession).not.toHaveBeenCalled();
   });
 
   it('should accept the legacy Pilotage access token key', () => {
