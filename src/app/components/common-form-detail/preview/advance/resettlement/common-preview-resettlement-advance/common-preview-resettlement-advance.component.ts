@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
+import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
 
 @Component({
   selector: 'app-common-preview-resettlement-advance',
@@ -126,13 +127,11 @@ export class CommonPreviewResettlementAdvanceComponent implements OnInit {
   }
 
   asDate(value: any): any {
-    if (!value) return null;
-    const num = Number(value);
-    return Number.isNaN(num) ? value : this.datePipe.transform(new Date(num), 'dd-MMM-yyyy');
+    return legacyDate(value, 'dd-MMM-yyyy', null as any);
   }
 
   display(value: any): any {
-    return this.isBlank(value) ? '-' : value;
+    return legacyValue(value);
   }
 
   goBack(): void {

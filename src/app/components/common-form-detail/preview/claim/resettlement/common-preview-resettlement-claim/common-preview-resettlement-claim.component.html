@@ -14,14 +14,14 @@
       <h5 class="legacy-preview-heading"><strong>Claim Summary</strong></h5>
       <div class="row" *ngFor="let field of summaryFields">
         <div class="col-md-4 fw-bold"><p>{{ field.label }}</p></div>
-        <div class="col-md-8"><p>{{ display(field.value) }}</p></div>
+        <div class="col-md-8"><p>{{ (field.value | legacyValue) }}</p></div>
       </div>
     </div>
     <div class="level_1">
       <h5 class="legacy-preview-heading"><strong>(a) Personal Details</strong></h5>
       <div class="row" *ngFor="let field of personalFields">
         <div class="col-md-4 fw-bold"><p>{{ field.label }}</p></div>
-        <div class="col-md-8"><p>{{ display(field.value) }}</p></div>
+        <div class="col-md-8"><p>{{ (field.value | legacyValue) }}</p></div>
       </div>
     </div>
     <div class="level_1">
@@ -41,14 +41,14 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of travelRows">
-            <td>{{ asDate(row.date) }}</td>
-            <td>{{ display(row.from) }}</td>
-            <td>{{ display(row.to) }}</td>
-            <td>{{ display(row.mode) }}</td>
-            <td>{{ display(row.dts) }}</td>
-            <td>{{ display(row.amount) }}</td>
-            <td>{{ display(row.reason) }}</td>
-            <td>{{ display(row.remarks) }}</td>
+            <td>{{ (row.date | legacyDate) }}</td>
+            <td>{{ (row.from | legacyValue) }}</td>
+            <td>{{ (row.to | legacyValue) }}</td>
+            <td>{{ (row.mode | legacyValue) }}</td>
+            <td>{{ (row.dts | legacyValue) }}</td>
+            <td>{{ (row.amount | legacyValue) }}</td>
+            <td>{{ (row.reason | legacyValue) }}</td>
+            <td>{{ (row.remarks | legacyValue) }}</td>
           </tr>
           <tr *ngIf="!travelRows.length">
             <td colspan="8" class="text-center">No Record Found</td>
@@ -69,10 +69,10 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of familyRows">
-            <td>{{ display(row.name) }}</td>
-            <td>{{ display(row.relation) }}</td>
-            <td>{{ display(row.age) }}</td>
-            <td>{{ display(row.gender) }}</td>
+            <td>{{ (row.name | legacyValue) }}</td>
+            <td>{{ (row.relation | legacyValue) }}</td>
+            <td>{{ (row.age | legacyValue) }}</td>
+            <td>{{ (row.gender | legacyValue) }}</td>
           </tr>
           <tr *ngIf="!familyRows.length">
             <td colspan="4" class="text-center">No Record Found</td>
@@ -94,11 +94,11 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of gxRows">
-            <td>{{ display(row.gxType) }}</td>
-            <td>{{ display(row.unit) }}</td>
-            <td>{{ asDate(row.gxDate) }}</td>
-            <td>{{ display(row.gxNo) }}</td>
-            <td>{{ asDate(row.dateOfTravel) }}</td>
+            <td>{{ (row.gxType | legacyValue) }}</td>
+            <td>{{ (row.unit | legacyValue) }}</td>
+            <td>{{ (row.gxDate | legacyDate) }}</td>
+            <td>{{ (row.gxNo | legacyValue) }}</td>
+            <td>{{ (row.dateOfTravel | legacyDate) }}</td>
           </tr>
           <tr *ngIf="!gxRows.length">
             <td colspan="5" class="text-center">No Record Found</td>
@@ -129,20 +129,20 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of transportRows">
-            <td>{{ asDate(row.date) }}</td>
-            <td>{{ display(row.stnFrom) }}</td>
-            <td>{{ display(row.stnTo) }}</td>
-            <td>{{ display(row.mode) }}</td>
-            <td>{{ display(row.weight) }}</td>
-            <td>{{ display(row.kilometer) }}</td>
-            <td>{{ display(row.dailyRate) }}</td>
-            <td>{{ display(row.dailyRatePaid) }}</td>
-            <td>{{ display(row.gst) }}</td>
-            <td>{{ display(row.cess) }}</td>
-            <td>{{ display(row.totalClaimed) }}</td>
-            <td>{{ display(row.totalClaimedWithGst) }}</td>
-            <td>{{ display(row.totalPermitted) }}</td>
-            <td>{{ display(row.totAmt) }}</td>
+            <td>{{ (row.date | legacyDate) }}</td>
+            <td>{{ (row.stnFrom | legacyValue) }}</td>
+            <td>{{ (row.stnTo | legacyValue) }}</td>
+            <td>{{ (row.mode | legacyValue) }}</td>
+            <td>{{ (row.weight | legacyValue) }}</td>
+            <td>{{ (row.kilometer | legacyValue) }}</td>
+            <td>{{ (row.dailyRate | legacyValue) }}</td>
+            <td>{{ (row.dailyRatePaid | legacyValue) }}</td>
+            <td>{{ (row.gst | legacyValue) }}</td>
+            <td>{{ (row.cess | legacyValue) }}</td>
+            <td>{{ (row.totalClaimed | legacyValue) }}</td>
+            <td>{{ (row.totalClaimedWithGst | legacyValue) }}</td>
+            <td>{{ (row.totalPermitted | legacyValue) }}</td>
+            <td>{{ (row.totAmt | legacyValue) }}</td>
           </tr>
           <tr *ngIf="!transportRows.length">
             <td colspan="14" class="text-center">No Record Found</td>
@@ -168,15 +168,15 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of shipEffectRows">
-            <td>{{ asDate(row.date) }}</td>
-            <td>{{ display(row.stnFrom) }}</td>
-            <td>{{ display(row.stnTo) }}</td>
-            <td>{{ display(row.weight) }}</td>
-            <td>{{ display(row.dailyRatePaid) }}</td>
-            <td>{{ display(row.gst) }}</td>
-            <td>{{ display(row.cess) }}</td>
-            <td>{{ display(row.totalClaimed) }}</td>
-            <td>{{ display(row.totAmt) }}</td>
+            <td>{{ (row.date | legacyDate) }}</td>
+            <td>{{ (row.stnFrom | legacyValue) }}</td>
+            <td>{{ (row.stnTo | legacyValue) }}</td>
+            <td>{{ (row.weight | legacyValue) }}</td>
+            <td>{{ (row.dailyRatePaid | legacyValue) }}</td>
+            <td>{{ (row.gst | legacyValue) }}</td>
+            <td>{{ (row.cess | legacyValue) }}</td>
+            <td>{{ (row.totalClaimed | legacyValue) }}</td>
+            <td>{{ (row.totAmt | legacyValue) }}</td>
           </tr>
           <tr *ngIf="!shipEffectRows.length">
             <td colspan="9" class="text-center">No Record Found</td>
@@ -208,21 +208,21 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of conveyanceRows">
-            <td>{{ asDate(row.date) }}</td>
-            <td>{{ display(row.stnFrom) }}</td>
-            <td>{{ display(row.stnTo) }}</td>
-            <td>{{ display(row.mode) }}</td>
-            <td>{{ display(row.typeOfLoad) }}</td>
-            <td>{{ display(row.weight) }}</td>
-            <td>{{ display(row.kilometer) }}</td>
-            <td>{{ display(row.dailyRate) }}</td>
-            <td>{{ display(row.dailyRatePaid) }}</td>
-            <td>{{ display(row.gst) }}</td>
-            <td>{{ display(row.cess) }}</td>
-            <td>{{ display(row.totalClaimed) }}</td>
-            <td>{{ display(row.totalClaimedWithGst) }}</td>
-            <td>{{ display(row.totalPermitted) }}</td>
-            <td>{{ display(row.totAmt) }}</td>
+            <td>{{ (row.date | legacyDate) }}</td>
+            <td>{{ (row.stnFrom | legacyValue) }}</td>
+            <td>{{ (row.stnTo | legacyValue) }}</td>
+            <td>{{ (row.mode | legacyValue) }}</td>
+            <td>{{ (row.typeOfLoad | legacyValue) }}</td>
+            <td>{{ (row.weight | legacyValue) }}</td>
+            <td>{{ (row.kilometer | legacyValue) }}</td>
+            <td>{{ (row.dailyRate | legacyValue) }}</td>
+            <td>{{ (row.dailyRatePaid | legacyValue) }}</td>
+            <td>{{ (row.gst | legacyValue) }}</td>
+            <td>{{ (row.cess | legacyValue) }}</td>
+            <td>{{ (row.totalClaimed | legacyValue) }}</td>
+            <td>{{ (row.totalClaimedWithGst | legacyValue) }}</td>
+            <td>{{ (row.totalPermitted | legacyValue) }}</td>
+            <td>{{ (row.totAmt | legacyValue) }}</td>
           </tr>
           <tr *ngIf="!conveyanceRows.length">
             <td colspan="15" class="text-center">No Record Found</td>
@@ -248,15 +248,15 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of shipConveyanceRows">
-            <td>{{ asDate(row.date) }}</td>
-            <td>{{ display(row.stnFrom) }}</td>
-            <td>{{ display(row.stnTo) }}</td>
-            <td>{{ display(row.weight) }}</td>
-            <td>{{ display(row.dailyRatePaid) }}</td>
-            <td>{{ display(row.gst) }}</td>
-            <td>{{ display(row.cess) }}</td>
-            <td>{{ display(row.totalClaimed) }}</td>
-            <td>{{ display(row.totAmt) }}</td>
+            <td>{{ (row.date | legacyDate) }}</td>
+            <td>{{ (row.stnFrom | legacyValue) }}</td>
+            <td>{{ (row.stnTo | legacyValue) }}</td>
+            <td>{{ (row.weight | legacyValue) }}</td>
+            <td>{{ (row.dailyRatePaid | legacyValue) }}</td>
+            <td>{{ (row.gst | legacyValue) }}</td>
+            <td>{{ (row.cess | legacyValue) }}</td>
+            <td>{{ (row.totalClaimed | legacyValue) }}</td>
+            <td>{{ (row.totAmt | legacyValue) }}</td>
           </tr>
         </tbody>
       </table>
@@ -275,11 +275,11 @@
         </thead>
         <tbody>
           <tr *ngFor="let row of foreignTravelRows">
-            <td>{{ display(row.fromPlace) }}</td>
-            <td>{{ display(row.toPlace) }}</td>
-            <td>{{ display(row.travelMode) }}</td>
-            <td>{{ display(row.amount) }}</td>
-            <td>{{ display(row.remarks) }}</td>
+            <td>{{ (row.fromPlace | legacyValue) }}</td>
+            <td>{{ (row.toPlace | legacyValue) }}</td>
+            <td>{{ (row.travelMode | legacyValue) }}</td>
+            <td>{{ (row.amount | legacyValue) }}</td>
+            <td>{{ (row.remarks | legacyValue) }}</td>
           </tr>
           <tr *ngIf="!foreignTravelRows.length">
             <td colspan="5" class="text-center">No Record Found</td>
@@ -291,14 +291,14 @@
       <h5 class="legacy-preview-heading"><strong>(j) Claim Amount Details</strong></h5>
       <div class="row" *ngFor="let field of claimFields">
         <div class="col-md-4 fw-bold"><p>{{ field.label }}</p></div>
-        <div class="col-md-8"><p>{{ display(field.value) }}</p></div>
+        <div class="col-md-8"><p>{{ (field.value | legacyValue) }}</p></div>
       </div>
     </div>
     <div class="level_1">
       <h5 class="legacy-preview-heading"><strong>(k) Bank Details</strong></h5>
       <div class="row" *ngFor="let field of bankFields">
         <div class="col-md-4 fw-bold"><p>{{ field.label }}</p></div>
-        <div class="col-md-8"><p>{{ display(field.value) }}</p></div>
+        <div class="col-md-8"><p>{{ (field.value | legacyValue) }}</p></div>
       </div>
     </div>
     <div class="level_1">
@@ -313,8 +313,8 @@
         </thead>
         <tbody>
           <tr *ngFor="let doc of docRows">
-            <td>{{ display(doc.codeDocInfoDTO?.docName) }} <span *ngIf="doc.docNo">({{ doc.docNo }})</span></td>
-            <td>{{ display(doc.descr) }}</td>
+            <td>{{ (doc.codeDocInfoDTO?.docName | legacyValue) }} <span *ngIf="doc.docNo">({{ doc.docNo }})</span></td>
+            <td>{{ (doc.descr | legacyValue) }}</td>
             <td><button *ngIf="doc.url" type="button" class="btn btn-info btn-sm"
                 (click)="$auth.viewFile(doc.url)">View</button><span *ngIf="!doc.url">-</span></td>
           </tr>
@@ -332,7 +332,7 @@
     </div>
     <div class="level_1">
       <h5 class="legacy-preview-heading"><strong>(m) Remarks</strong></h5>
-      <p>{{ display(formObj?.internalRemarks) }}</p>
+      <p>{{ (formObj?.internalRemarks | legacyValue) }}</p>
     </div>
     <div class="level_1" *ngIf="formObj?.advClaimId || formObj?.supClaimId">
       <button type="button" class="btn btn-info me-2" *ngIf="formObj?.advClaimId"

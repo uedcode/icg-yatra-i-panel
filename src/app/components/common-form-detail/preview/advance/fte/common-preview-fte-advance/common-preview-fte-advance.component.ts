@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
+import { isLegacyBlank, legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
 
 @Component({
   selector: 'app-common-preview-fte-advance',
@@ -69,20 +70,15 @@ export class CommonPreviewFteAdvanceComponent implements OnInit {
   }
 
   asDate(value: any): string | null {
-    if (!value) return null;
-    const parsed = Number(value);
-    if (Number.isNaN(parsed)) {
-      return this.datePipe.transform(value, 'dd-MMM-yyyy') || value;
-    }
-    return this.datePipe.transform(new Date(parsed), 'dd-MMM-yyyy');
+    return legacyDate(value, 'dd-MMM-yyyy', null as any);
   }
 
   display(value: any): any {
-    return value === null || value === undefined || value === '' ? '-' : value;
+    return legacyValue(value);
   }
 
   displayZero(value: any): any {
-    return value === null || value === undefined || value === '' ? 0 : value;
+    return isLegacyBlank(value) ? 0 : value;
   }
 
   navigatePreview(route: string, claimId: any): void {

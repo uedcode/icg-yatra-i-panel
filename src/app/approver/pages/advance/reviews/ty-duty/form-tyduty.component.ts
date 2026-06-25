@@ -7,6 +7,7 @@ import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.
 import { ApproverActionRemarkModalService } from 'src/app/service/core/approver-action-remark-modal.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
+import { isLegacyBlank, legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
 declare var $: any;
 
 @Component({
@@ -547,20 +548,15 @@ export class FormTydutyComponent implements OnInit {
   }
 
   display(value: any): string {
-    if (value === null || value === undefined) return '';
-    const str = String(value).trim();
-    return str ? str : '';
+    return legacyValue(value, '');
   }
 
   showNil(value: any): string {
-    const displayed = this.display(value);
-    return displayed ? displayed : 'Nil';
+    return legacyValue(value, 'Nil');
   }
 
   showZero(value: any): string {
-    if (value === null || value === undefined || value === '') return '0';
-    const str = String(value).trim();
-    return str ? str : '0';
+    return isLegacyBlank(value) ? '0' : String(value).trim();
   }
 
   private handleEsignFeedback(): void {
@@ -610,12 +606,7 @@ export class FormTydutyComponent implements OnInit {
   }
 
   asDate(value: any): string {
-    if (!value) return '';
-    const parsed = Number(value);
-    if (Number.isNaN(parsed)) {
-      return this.datePipe.transform(value, 'dd-MMM-yyyy') || '';
-    }
-    return this.datePipe.transform(new Date(parsed), 'dd-MMM-yyyy') || '';
+    return legacyDate(value, 'dd-MMM-yyyy', '');
   }
 
   isChecked(value: any): boolean {

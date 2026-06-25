@@ -29,38 +29,38 @@
                 <input type="radio" name="signRadio" [checked]="formObj?.signWith === codeSignType.inkSign" disabled /> Ink Sign
                 <input type="radio" name="signRadio" [checked]="formObj?.signWith === codeSignType.eSign" disabled /> eSign
                 <div class="row">
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Name</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.name)" type="text" class="form-control" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Rank</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.rank)" type="text" class="form-control" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Personnel Number</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.pno)" type="text" class="form-control" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Pay Level</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.payLevel)" type="text" class="form-control" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Basic Pay (In Rs)</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.basicPay)" type="text" class="form-control" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Present Unit</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.videPresentUnit)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Name</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.name | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Rank</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.rank | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Personnel Number</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.pno | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Pay Level</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.payLevel | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Basic Pay (In Rs)</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.basicPay | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Present Unit</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.videPresentUnit | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
                 </div>
                 <div class="row">
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Temporary Duty to</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.tempTransferToType)" type="text" class="form-control" disabled /></div></div></div></div>
-                  <div class="col-md-4" *ngIf="advanceDetails?.tempTransTo"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Name of Unit</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.tempTransTo)" class="form-control" disabled /></div></div></div></div>
-                  <div class="col-md-4" *ngIf="advanceDetails?.tempTransTo === 'Others'"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Other Unit<sup>*</sup></label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.otherUnit)" class="form-control" placeholder="Unit Name" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Applied To</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.appliedTo)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Temporary Duty to</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.tempTransferToType | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4" *ngIf="advanceDetails?.tempTransTo"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Name of Unit</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.tempTransTo | legacyValue)" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4" *ngIf="advanceDetails?.tempTransTo === 'Others'"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Other Unit<sup>*</sup></label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.otherUnit | legacyValue)" class="form-control" placeholder="Unit Name" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Applied To</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.appliedTo | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
                 </div>
                 <div class="row">
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">{{ formObj?.extendedAdvId ? 'Authority' : 'Gx' }} Number</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.gxNumber)" type="text" class="form-control" disabled /></div></div></div></div>
-                  <div class="col-md-4" *ngIf="advanceDetails?.gxUnit"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Gx Unit</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.gxUnit)" type="text" class="form-control" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">{{ formObj?.extendedAdvId ? 'Authority' : 'Gx' }} Date</label></div><div class="col-md-8 padd_5"><input [value]="asDate(advanceDetails?.gxDate)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">{{ formObj?.extendedAdvId ? 'Authority' : 'Gx' }} Number</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.gxNumber | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4" *ngIf="advanceDetails?.gxUnit"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Gx Unit</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.gxUnit | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">{{ formObj?.extendedAdvId ? 'Authority' : 'Gx' }} Date</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.gxDate | legacyDate)" type="text" class="form-control" disabled /></div></div></div></div>
                   <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">{{ formObj?.extendedAdvId ? 'Authority' : 'Gx Form' }}</label></div><div class="col-md-8 padd_5"><button *ngIf="formObj?.gxFormFileUrl" type="button" class="btn btn-info" (click)="viewDocument(formObj?.gxFormFileUrl)">View</button><input *ngIf="!formObj?.gxFormFileUrl" class="form-control" disabled /></div></div></div></div>
                 </div>
                 <div class="row">
                   <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Purpose Type</label></div><div class="col-md-8 padd_5"><input [value]="advanceDetails?.purposeType ? advanceDetails?.purposeType : 'Other'" type="text" class="form-control" disabled /></div></div></div></div>
                 </div>
                 <div class="row" *ngIf="advanceDetails?.purpose">
-                  <div class="col-md-8"><div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">Purpose of Ty duty</label></div><div class="col-md-10 padd_5"><input [value]="display(advanceDetails?.purpose)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-8"><div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">Purpose of Ty duty</label></div><div class="col-md-10 padd_5"><input [value]="(advanceDetails?.purpose | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
                 </div>
                 <div class="row">
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Probable duration of Ty duty(In days)</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.duration)" type="text" class="form-control" disabled /></div></div></div></div>
-                  <div class="col-md-4" *ngIf="advanceDetails?.dutyStation"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Duty Station to</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.dutyStation)" type="text" class="form-control" disabled /></div></div></div></div>
-                  <div class="col-md-4" *ngIf="advanceDetails?.stationProceedingTo"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Station proceeding to</label></div><div class="col-md-8 padd_5"><input [value]="display(advanceDetails?.stationProceedingTo)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Probable duration of Ty duty(In days)</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.duration | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4" *ngIf="advanceDetails?.dutyStation"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Duty Station to</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.dutyStation | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4" *ngIf="advanceDetails?.stationProceedingTo"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Station proceeding to</label></div><div class="col-md-8 padd_5"><input [value]="(advanceDetails?.stationProceedingTo | legacyValue)" type="text" class="form-control" disabled /></div></div></div></div>
                 </div>
                 <div class="row">
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Occurrence Date (Movement Date)</label></div><div class="col-md-8 padd_5"><input [value]="asDate(formObj?.occDate)" type="text" class="form-control" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Occurrence Date (Movement Date)</label></div><div class="col-md-8 padd_5"><input [value]="(formObj?.occDate | legacyDate)" type="text" class="form-control" disabled /></div></div></div></div>
                   <div class="col-md-4" *ngIf="formObj?.extendedAdvId"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Extended From</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview(formObj?.extendedAdvId)">View</button></div></div></div></div>
                   <div class="col-md-4" *ngIf="formObj?.refExtendedAdvId"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Extended Duty</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview(formObj?.refExtendedAdvId)">View</button></div></div></div></div>
                 </div>
@@ -75,7 +75,7 @@
 
               <div id="ship2" class="tab-pane active show" *ngIf="activeTab === 'ship2'">
                 <label class="control-label">Travel Details</label>
-                <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>From</th><th>To</th><th>Travel Mode</th><th>Amount (In Rs.)</th><th>DTS</th><th>Reasons for not booking</th></tr></thead><tbody><tr *ngFor="let row of formObj?.yatDtsDetailDTOs"><td>{{ display(row?.source) }}</td><td>{{ display(row?.destination) }}</td><td>{{ display(row?.modeOfTravel) }}</td><td>{{ display(row?.amount) }}</td><td>{{ display(row?.isDts) }}</td><td>{{ display(row?.reasonForNoDts) }}</td></tr><tr *ngIf="!formObj?.yatDtsDetailDTOs?.length"><td colspan="9" class="text-center">No Record Found</td></tr></tbody></table></div>
+                <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>From</th><th>To</th><th>Travel Mode</th><th>Amount (In Rs.)</th><th>DTS</th><th>Reasons for not booking</th></tr></thead><tbody><tr *ngFor="let row of formObj?.yatDtsDetailDTOs"><td>{{ (row?.source | legacyValue) }}</td><td>{{ (row?.destination | legacyValue) }}</td><td>{{ (row?.modeOfTravel | legacyValue) }}</td><td>{{ (row?.amount | legacyValue) }}</td><td>{{ (row?.isDts | legacyValue) }}</td><td>{{ (row?.reasonForNoDts | legacyValue) }}</td></tr><tr *ngIf="!formObj?.yatDtsDetailDTOs?.length"><td colspan="9" class="text-center">No Record Found</td></tr></tbody></table></div>
                 <div class="legacy-verifier-footer"><div class="row"><div class="col-md-1 col-md-offset-9"><button type="button" class="btn btn-info" (click)="previousTabActive()">Previous</button></div><div class="col-md-1"><label class="con_tainer"> Checked <input type="checkbox" [(ngModel)]="form2" name="form2" /><span class="che_ckmark"></span></label></div><div class="col-md-1"><button type="button" class="btn btn-info" (click)="nextTabActive()">Next</button></div></div></div>
               </div>
 
@@ -84,57 +84,57 @@
                   <div class="row">
                     <div class="col-md-4 padd_5"><label class="control-label">Food charges for </label></div>
                     <div class="col-md-2 padd_5 ty-required-cell"><input [checked]="isChecked(advanceDetails?.isAvailFoodCharge)" type="checkbox" disabled /> Required</div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.foodChargeDays)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.foodChargeDays | legacyValue)" type="text" class="form-control" disabled /></div>
                     <div class="col-md-1 padd_5"><label class="control-label">days </label></div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.foodChargeRatePerDay)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.foodChargeRatePerDay | legacyValue)" type="text" class="form-control" disabled /></div>
                     <div class="col-md-1 padd_5"><label class="control-label">per day</label></div>
                     <div class="col-md-1 padd_5 ty-gst-label"><label class="control-label">GST</label></div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.foodChargePerc)" type="text" class="form-control" disabled /></div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.totalFoodCharge)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.foodChargePerc | legacyValue)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.totalFoodCharge | legacyValue)" type="text" class="form-control" disabled /></div>
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="row">
                     <div class="col-md-4 padd_5"><label class="control-label">Hotel accommodation charges for </label></div>
                     <div class="col-md-2 padd_5 ty-required-cell"><input [checked]="isChecked(advanceDetails?.isAvailHotelAcc)" type="checkbox" disabled /> Required</div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.hotelAccDays)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.hotelAccDays | legacyValue)" type="text" class="form-control" disabled /></div>
                     <div class="col-md-1 padd_5"><label class="control-label">days </label></div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.hotelAccRatePerDay)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.hotelAccRatePerDay | legacyValue)" type="text" class="form-control" disabled /></div>
                     <div class="col-md-1 padd_5"><label class="control-label">per day</label></div>
                     <div class="col-md-1 padd_5 ty-gst-label"><label class="control-label">GST</label></div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.hotelChargePerc)" type="text" class="form-control" disabled /></div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.totalHotelAcc)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.hotelChargePerc | legacyValue)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.totalHotelAcc | legacyValue)" type="text" class="form-control" disabled /></div>
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="row">
                     <div class="col-md-4 padd_5"><label class="control-label">Road mileage from duty station to Rail/Air/Road and back</label></div>
                     <div class="col-md-2 padd_5 ty-required-cell"><input [checked]="isChecked(advanceDetails?.isAvailArr)" type="checkbox" disabled /> Required</div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.arrToDutyRate)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.arrToDutyRate | legacyValue)" type="text" class="form-control" disabled /></div>
                     <div class="col-md-1 padd_5"><label class="control-label">kms</label></div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.arrToDutyKm)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.arrToDutyKm | legacyValue)" type="text" class="form-control" disabled /></div>
                     <div class="col-md-1 padd_5"><label class="control-label">per kms</label></div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.arrToDutyRs)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.arrToDutyRs | legacyValue)" type="text" class="form-control" disabled /></div>
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="row">
                     <div class="col-md-4 padd_5"><label class="control-label">Travel charges from hotel accommodation to duty station within city </label></div>
                     <div class="col-md-2 padd_5 ty-required-cell"><input [checked]="isChecked(advanceDetails?.isAvailAcc)" type="checkbox" disabled /> Required</div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.accHToDutyDays)" type="text" class="form-control ty-inline-input" disabled /><b class="ty-inline-label"> days</b></div>
-                    <div class="col-md-1 padd_5" *ngIf="isAvailedCategoryOneOrTwo(advanceDetails?.availedCategory)"><input [value]="display(advanceDetails?.accHToDutyKms)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.accHToDutyDays | legacyValue)" type="text" class="form-control ty-inline-input" disabled /><b class="ty-inline-label"> days</b></div>
+                    <div class="col-md-1 padd_5" *ngIf="isAvailedCategoryOneOrTwo(advanceDetails?.availedCategory)"><input [value]="(advanceDetails?.accHToDutyKms | legacyValue)" type="text" class="form-control" disabled /></div>
                     <div class="col-md-1 padd_5" *ngIf="isAvailedCategoryOneOrTwo(advanceDetails?.availedCategory)"><label class="control-label"> per day(kms)</label></div>
-                    <div class="col-md-1 padd_5" *ngIf="isAvailedCategoryOneOrTwo(advanceDetails?.availedCategory)"><input [value]="display(advanceDetails?.accHToDutyPerDay)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5" *ngIf="isAvailedCategoryOneOrTwo(advanceDetails?.availedCategory)"><input [value]="(advanceDetails?.accHToDutyPerDay | legacyValue)" type="text" class="form-control" disabled /></div>
                     <div class="col-md-1 padd_5" *ngIf="isAvailedCategoryOneOrTwo(advanceDetails?.availedCategory)"><label class="control-label">per km</label></div>
-                    <div class="col-md-1 padd_5" *ngIf="isAvailedCategoryZero(advanceDetails?.availedCategory)"><input [value]="display(advanceDetails?.accHToDutyPerDay)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5" *ngIf="isAvailedCategoryZero(advanceDetails?.availedCategory)"><input [value]="(advanceDetails?.accHToDutyPerDay | legacyValue)" type="text" class="form-control" disabled /></div>
                     <div class="col-md-1 padd_5" *ngIf="isAvailedCategoryZero(advanceDetails?.availedCategory)"><label class="control-label">per day</label></div>
-                    <div class="col-md-1 padd_5"><input [value]="display(advanceDetails?.totalAccHToDuty)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-1 padd_5"><input [value]="(advanceDetails?.totalAccHToDuty | legacyValue)" type="text" class="form-control" disabled /></div>
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="row">
                     <div class="col-md-1 padd_5"><label class="control-label">Place</label></div>
-                    <div class="col-md-2 padd_5"><input [value]="display(advanceDetails?.place)" type="text" class="form-control" disabled /></div>
+                    <div class="col-md-2 padd_5"><input [value]="(advanceDetails?.place | legacyValue)" type="text" class="form-control" disabled /></div>
                   </div>
                 </div>
                 <div>
@@ -170,14 +170,14 @@
               </div>
 
               <div id="ship4" class="tab-pane active show" *ngIf="activeTab === 'ship4'">
-                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">Bank Name</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.bankName)" disabled /></div></div></div>
-                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">IFSC Code</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.ifscCode)" disabled /></div></div></div>
-                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">Account Number</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.bankAccNo)" disabled /></div></div></div>
-                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">MICR Code</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.micrCode)" disabled /></div></div></div>
+                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">Bank Name</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.bankName | legacyValue)" disabled /></div></div></div>
+                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">IFSC Code</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.ifscCode | legacyValue)" disabled /></div></div></div>
+                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">Account Number</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.bankAccNo | legacyValue)" disabled /></div></div></div>
+                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">MICR Code</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.micrCode | legacyValue)" disabled /></div></div></div>
                 <div class="legacy-verifier-footer"><div class="row"><div class="col-md-1 col-md-offset-9"><button type="button" class="btn btn-info" (click)="previousTabActive()">Previous</button></div><div class="col-md-1"><label class="con_tainer"> Checked <input type="checkbox" [(ngModel)]="form6" name="form6" /><span class="che_ckmark"></span></label></div><div class="col-md-1" *ngIf="formObj?.internalRemarks"><button type="button" class="btn btn-info" (click)="nextTabActive()">Next</button></div></div></div>
               </div>
 
-              <div id="ship5" class="tab-pane active show" *ngIf="activeTab === 'ship5' && formObj?.internalRemarks"><div class="form-group"><div class="row"><div class="col-md-12"><label class="control-label">Remarks</label></div></div><div class="row"><div class="col-md-12"><textarea rows="6" cols="225" maxlength="500" class="form-control" [value]="display(formObj?.internalRemarks)" disabled></textarea></div></div></div><div class="legacy-verifier-footer"><div class="row"><div class="col-md-1 col-md-offset-11"><button type="button" class="btn btn-info" (click)="previousTabActive()">Previous</button></div></div></div></div>
+              <div id="ship5" class="tab-pane active show" *ngIf="activeTab === 'ship5' && formObj?.internalRemarks"><div class="form-group"><div class="row"><div class="col-md-12"><label class="control-label">Remarks</label></div></div><div class="row"><div class="col-md-12"><textarea rows="6" cols="225" maxlength="500" class="form-control" [value]="(formObj?.internalRemarks | legacyValue)" disabled></textarea></div></div></div><div class="legacy-verifier-footer"><div class="row"><div class="col-md-1 col-md-offset-11"><button type="button" class="btn btn-info" (click)="previousTabActive()">Previous</button></div></div></div></div>
             </div>
           </div>
         </div>

@@ -19,104 +19,104 @@
                   <p><strong>Name</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.name) }}</p>
+                  <p>{{ (pmt?.name | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Rank</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.rank) }}</p>
+                  <p>{{ (pmt?.rank | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Personnel Number</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.pno) }}</p>
+                  <p>{{ (pmt?.pno | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Pay Level</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.payLevel) }}</p>
+                  <p>{{ (pmt?.payLevel | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Basic Pay (In Rs.)</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.basicPay) }}</p>
+                  <p>{{ (pmt?.basicPay | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Permanent Transfer To</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.permTransTo) }} <span *ngIf="pmt?.permTransTo === 'Others'">({{
-                      display(pmt?.otherUnit) }})</span></p>
+                  <p>{{ (pmt?.permTransTo | legacyValue) }} <span *ngIf="pmt?.permTransTo === 'Others'">({{
+                      (pmt?.otherUnit | legacyValue) }})</span></p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>PMT Type</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.pmtType) }}</p>
+                  <p>{{ (pmt?.pmtType | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Family Type</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.familyType) }}</p>
+                  <p>{{ (pmt?.familyType | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Present Unit</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.videPresentUnit) }}</p>
+                  <p>{{ (pmt?.videPresentUnit | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Applied To</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.appliedTo) }}</p>
+                  <p>{{ (pmt?.appliedTo | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>From Station</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.stnFrom) }}</p>
+                  <p>{{ (pmt?.stnFrom | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>To Station</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.stnTo) }}</p>
+                  <p>{{ (pmt?.stnTo | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Distance between stations</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.distance) }}</p>
+                  <p>{{ (pmt?.distance | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Occurrence Date (Movement Date)</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(asDate(claims?.occDate)) }}</p>
+                  <p>{{ (claims?.occDate | legacyDate) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Gx Unit</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.gxUnit) }}</p>
+                  <p>{{ (pmt?.gxUnit | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Gx Number</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.gxNumber) }}</p>
+                  <p>{{ (pmt?.gxNumber | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Gx Date</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(asDate(pmt?.gxDate)) }}</p>
+                  <p>{{ (pmt?.gxDate | legacyDate) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Gx Form</strong></p>
@@ -140,10 +140,10 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let family of familyRows">
-                      <td>{{ display(family?.memberName) }}</td>
-                      <td>{{ display(family?.age) }}</td>
-                      <td>{{ display(family?.relation) }}</td>
-                      <td>{{ display(family?.occupation) }}</td>
+                      <td>{{ (family?.memberName | legacyValue) }}</td>
+                      <td>{{ (family?.age | legacyValue) }}</td>
+                      <td>{{ (family?.relation | legacyValue) }}</td>
+                      <td>{{ (family?.occupation | legacyValue) }}</td>
                     </tr>
                     <tr *ngIf="!familyRows.length">
                       <td colspan="4" class="text-center">No Records</td>
@@ -169,13 +169,13 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let row of travelRows">
-                      <td>{{ display(row?.source) }}</td>
-                      <td>{{ display(row?.destination) }}</td>
-                      <td>{{ display(row?.modeOfTravel) }}</td>
-                      <td>{{ display(row?.isDts) }}</td>
-                      <td>{{ display(row?.amount) }}</td>
-                      <td>{{ display(row?.reasonForNoDts) }}</td>
-                      <td>{{ display(row?.remarks) }}</td>
+                      <td>{{ (row?.source | legacyValue) }}</td>
+                      <td>{{ (row?.destination | legacyValue) }}</td>
+                      <td>{{ (row?.modeOfTravel | legacyValue) }}</td>
+                      <td>{{ (row?.isDts | legacyValue) }}</td>
+                      <td>{{ (row?.amount | legacyValue) }}</td>
+                      <td>{{ (row?.reasonForNoDts | legacyValue) }}</td>
+                      <td>{{ (row?.remarks | legacyValue) }}</td>
                     </tr>
                     <tr *ngIf="!travelRows.length">
                       <td colspan="7" class="text-center">No Record Found</td>
@@ -191,7 +191,7 @@
                   <p><strong>Area Type:</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.areaType) }}</p>
+                  <p>{{ (pmt?.areaType | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Composite Transfer Grant:</strong></p>
@@ -203,13 +203,13 @@
                   <p><strong>Composite Transfer Grant (80% of Basic Pay In Rs.)</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.compositeGrant) }}</p>
+                  <p>{{ (pmt?.compositeGrant | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Composite Transfer Grant in case of any island (100% of Basic Pay In Rs.)</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.compositeGrantIsland) }}</p>
+                  <p>{{ (pmt?.compositeGrantIsland | legacyValue) }}</p>
                 </div>
               </div>
               <div class="table-responsive">
@@ -217,16 +217,16 @@
                   <tbody>
                     <tr>
                       <td>Transportation of personal effect for</td>
-                      <td>{{ display(pmt?.transPerEffectKg) }} Kg</td>
-                      <td>{{ display(pmt?.transPerEffectKgRs) }} In Rs.</td>
-                      <td>{{ display(pmt?.transPerEffectKms) }} km</td>
-                      <td>{{ display(pmt?.transPerEffectKmsRs) }}</td>
+                      <td>{{ (pmt?.transPerEffectKg | legacyValue) }} Kg</td>
+                      <td>{{ (pmt?.transPerEffectKgRs | legacyValue) }} In Rs.</td>
+                      <td>{{ (pmt?.transPerEffectKms | legacyValue) }} km</td>
+                      <td>{{ (pmt?.transPerEffectKmsRs | legacyValue) }}</td>
                     </tr>
                     <tr>
                       <td>Transportation of personal effect by ship</td>
-                      <td>{{ display(pmt?.transPerEffectShipKgRs) }} Cubic meter</td>
-                      <td>{{ display(pmt?.transPerEffectShipKms) }} Rate</td>
-                      <td>{{ display(pmt?.transPerEffectShipKmsRs) }}</td>
+                      <td>{{ (pmt?.transPerEffectShipKgRs | legacyValue) }} Cubic meter</td>
+                      <td>{{ (pmt?.transPerEffectShipKms | legacyValue) }} Rate</td>
+                      <td>{{ (pmt?.transPerEffectShipKmsRs | legacyValue) }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -236,19 +236,19 @@
                   <p><strong>Transportation charge for conveyance (In Rs.)</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.transChargeRs) }}</p>
+                  <p>{{ (pmt?.transChargeRs | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Transportation of conveyance by ship (In Rs.)</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.transChargeShipRs) }}</p>
+                  <p>{{ (pmt?.transChargeShipRs | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Place</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(pmt?.place) }}</p>
+                  <p>{{ (pmt?.place | legacyValue) }}</p>
                 </div>
               </div>
             </div>
@@ -281,31 +281,31 @@
                   <p><strong>Bank Name</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(bankDetails?.bankName) }}</p>
+                  <p>{{ (bankDetails?.bankName | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>IFSC Code</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(bankDetails?.ifscCode) }}</p>
+                  <p>{{ (bankDetails?.ifscCode | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Account Number</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(bankDetails?.bankAccNo) }}</p>
+                  <p>{{ (bankDetails?.bankAccNo | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>MICR Code</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(bankDetails?.micrCode) }}</p>
+                  <p>{{ (bankDetails?.micrCode | legacyValue) }}</p>
                 </div>
               </div>
             </div>
             <div class="level_1">
               <h4 class="legacy-preview-heading">(e)<strong>Remarks</strong></h4>
-              <p>{{ display(claims?.internalRemarks) }}</p>
+              <p>{{ (claims?.internalRemarks | legacyValue) }}</p>
             </div>
           </div>
         </div>

@@ -90,7 +90,7 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-4 padd_5"><label class="control-label">{{ field.label }}</label></div>
-                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="display(field.value)" disabled /></div>
+                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="(field.value | legacyValue)" disabled /></div>
                       </div>
                     </div>
                   </div>
@@ -103,7 +103,7 @@
                         <div class="col-md-4 padd_5">
                           <label class="control-label">{{ formObj?.extendedAdvId ? 'Authority' : 'Gx' }} Number</label>
                         </div>
-                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.gxNumber)" disabled /></div>
+                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.gxNumber | legacyValue)" disabled /></div>
                       </div>
                     </div>
                   </div>
@@ -111,7 +111,7 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-4 padd_5"><label class="control-label">Gx Unit</label></div>
-                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.gxUnit)" disabled /></div>
+                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.gxUnit | legacyValue)" disabled /></div>
                       </div>
                     </div>
                   </div>
@@ -121,7 +121,7 @@
                         <div class="col-md-4 padd_5">
                           <label class="control-label">{{ formObj?.extendedAdvId ? 'Authority' : 'Gx' }} Date</label>
                         </div>
-                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="asDate(advanceDetails?.gxDate)" disabled /></div>
+                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.gxDate | legacyDate)" disabled /></div>
                       </div>
                     </div>
                   </div>
@@ -145,7 +145,7 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-4 padd_5"><label class="control-label">Purpose Type</label></div>
-                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.purposeType || 'Other')" disabled /></div>
+                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="((advanceDetails?.purposeType || 'Other') | legacyValue)" disabled /></div>
                       </div>
                     </div>
                   </div>
@@ -155,7 +155,7 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-2 padd_5"><label class="control-label">Purpose of duty</label></div>
-                        <div class="col-md-10 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.purpose)" disabled /></div>
+                        <div class="col-md-10 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.purpose | legacyValue)" disabled /></div>
                       </div>
                     </div>
                   </div>
@@ -165,7 +165,7 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-4 padd_5"><label class="control-label">Probable duration of duty(In days)</label></div>
-                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.duration)" disabled /></div>
+                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.duration | legacyValue)" disabled /></div>
                       </div>
                     </div>
                   </div>
@@ -173,7 +173,7 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-4 padd_5"><label class="control-label">Duty Station to</label></div>
-                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.dutyStation)" disabled /></div>
+                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.dutyStation | legacyValue)" disabled /></div>
                       </div>
                     </div>
                   </div>
@@ -181,7 +181,7 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-4 padd_5"><label class="control-label">Station proceeding to</label></div>
-                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.stationProceedingTo)" disabled /></div>
+                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.stationProceedingTo | legacyValue)" disabled /></div>
                       </div>
                     </div>
                   </div>
@@ -191,7 +191,7 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-4 padd_5"><label class="control-label">Occurrence Date (Movement Date)</label></div>
-                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="asDate(formObj?.occDate)" disabled /></div>
+                        <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="(formObj?.occDate | legacyDate)" disabled /></div>
                       </div>
                     </div>
                   </div>
@@ -221,10 +221,10 @@
                         <thead><tr><th>Name</th><th>Relation</th><th>Age</th><th>Gender</th></tr></thead>
                         <tbody>
                           <tr>
-                            <td>{{ displayNil(advanceDetails?.personName) }}</td>
-                            <td>{{ displayNil(advanceDetails?.relation) }}</td>
-                            <td>{{ displayNil(advanceDetails?.age) }}</td>
-                            <td>{{ displayNil(advanceDetails?.gender) }}</td>
+                            <td>{{ (advanceDetails?.personName | legacyValue:'Nil') }}</td>
+                            <td>{{ (advanceDetails?.relation | legacyValue:'Nil') }}</td>
+                            <td>{{ (advanceDetails?.age | legacyValue:'Nil') }}</td>
+                            <td>{{ (advanceDetails?.gender | legacyValue:'Nil') }}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -255,12 +255,12 @@
                     <thead><tr><th>From</th><th>To</th><th>Travel Mode</th><th>Amount (In Rs.)</th><th>DTS</th><th>Reasons for not booking</th></tr></thead>
                     <tbody>
                       <tr *ngFor="let row of formObj?.yatDtsDetailDTOs">
-                        <td>{{ display(row?.source) }}</td>
-                        <td>{{ display(row?.destination) }}</td>
-                        <td>{{ display(row?.modeOfTravel) }}</td>
-                        <td>{{ display(row?.amount) }}</td>
-                        <td>{{ display(row?.isDts) }}</td>
-                        <td>{{ display(row?.reasonForNoDts) }}</td>
+                        <td>{{ (row?.source | legacyValue) }}</td>
+                        <td>{{ (row?.destination | legacyValue) }}</td>
+                        <td>{{ (row?.modeOfTravel | legacyValue) }}</td>
+                        <td>{{ (row?.amount | legacyValue) }}</td>
+                        <td>{{ (row?.isDts | legacyValue) }}</td>
+                        <td>{{ (row?.reasonForNoDts | legacyValue) }}</td>
                       </tr>
                       <tr *ngIf="!formObj?.yatDtsDetailDTOs?.length"><td colspan="6" class="text-center">No Record Found</td></tr>
                     </tbody>
@@ -291,8 +291,8 @@
                     <thead><tr><th>Amount (In Rs.)</th><th>Remarks</th></tr></thead>
                     <tbody>
                       <tr *ngFor="let row of formObj?.yatForeignTravelDetailDTOs">
-                        <td>{{ display(row?.amount) }}</td>
-                        <td>{{ display(row?.descr) }}</td>
+                        <td>{{ (row?.amount | legacyValue) }}</td>
+                        <td>{{ (row?.descr | legacyValue) }}</td>
                       </tr>
                       <tr *ngIf="!formObj?.yatForeignTravelDetailDTOs?.length"><td colspan="2" class="text-center">No Record Found</td></tr>
                     </tbody>
@@ -301,7 +301,7 @@
                 <div class="form-group">
                   <div class="row">
                     <div class="col-md-1 padd_5"><label class="control-label">Place</label></div>
-                    <div class="col-md-2 padd_5"><input class="form-control" [value]="display(advanceDetails?.place)" disabled /></div>
+                    <div class="col-md-2 padd_5"><input class="form-control" [value]="(advanceDetails?.place | legacyValue)" disabled /></div>
                   </div>
                 </div>
                 <div class="table-responsive">
@@ -309,9 +309,9 @@
                     <thead><tr><th>Advance Request</th><th>Advance Admissible</th><th>DTS Amount</th><th>Amount to be budgeted</th></tr></thead>
                     <tbody>
                       <tr>
-                        <td>{{ display(advanceDetails?.totalAmt) }}</td>
+                        <td>{{ (advanceDetails?.totalAmt | legacyValue) }}</td>
                         <td>{{ displayedAdvanceAmount }}</td>
-                        <td>{{ display(advanceDetails?.dtsAmount) }}</td>
+                        <td>{{ (advanceDetails?.dtsAmount | legacyValue) }}</td>
                         <td>{{ displayedTotalBudgetedAmount }}</td>
                       </tr>
                     </tbody>
@@ -341,25 +341,25 @@
                   <div class="form-group">
                     <div class="row legacy-bank-row">
                       <div class="col-md-2 padd_5"><label class="control-label">Bank Name</label></div>
-                      <div class="col-md-3 padd_5"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.bankName)" disabled /></div>
+                      <div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.bankName | legacyValue)" disabled /></div>
                     </div>
                   </div>
                   <div class="form-group">
                     <div class="row legacy-bank-row">
                       <div class="col-md-2 padd_5"><label class="control-label">IFSC Code</label></div>
-                      <div class="col-md-3 padd_5"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.ifscCode)" disabled /></div>
+                      <div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.ifscCode | legacyValue)" disabled /></div>
                     </div>
                   </div>
                   <div class="form-group">
                     <div class="row legacy-bank-row">
                       <div class="col-md-2 padd_5"><label class="control-label">Account Number</label></div>
-                      <div class="col-md-3 padd_5"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.bankAccNo)" disabled /></div>
+                      <div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.bankAccNo | legacyValue)" disabled /></div>
                     </div>
                   </div>
                   <div class="form-group">
                     <div class="row legacy-bank-row">
                       <div class="col-md-2 padd_5"><label class="control-label">MICR Code</label></div>
-                      <div class="col-md-3 padd_5"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.micrCode)" disabled /></div>
+                      <div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.micrCode | legacyValue)" disabled /></div>
                     </div>
                   </div>
                 </div>
@@ -391,7 +391,7 @@
                   </div>
                   <div class="row">
                     <div class="col-md-12">
-                      <textarea rows="6" maxlength="500" class="form-control" [value]="display(formObj?.internalRemarks)" disabled></textarea>
+                      <textarea rows="6" maxlength="500" class="form-control" [value]="(formObj?.internalRemarks | legacyValue)" disabled></textarea>
                     </div>
                   </div>
                 </div>

@@ -7,6 +7,7 @@ import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.
 import { ApproverActionRemarkModalService } from 'src/app/service/core/approver-action-remark-modal.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
+import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
 declare var $: any;
 
 @Component({
@@ -548,14 +549,11 @@ export class FormLtcAdvanceComponent implements OnInit {
   }
 
   display(value: any): string {
-    if (value === null || value === undefined) return '-';
-    const str = String(value).trim();
-    return str ? str : '-';
+    return legacyValue(value);
   }
 
   inputValue(value: any): string {
-    if (value === null || value === undefined) return '';
-    return String(value).trim();
+    return legacyValue(value, '');
   }
 
   private handleEsignFeedback(): void {
@@ -605,17 +603,11 @@ export class FormLtcAdvanceComponent implements OnInit {
   }
 
   asDate(value: any): string {
-    if (!value) return '-';
-    const parsed = Number(value);
-    if (Number.isNaN(parsed)) {
-      return this.datePipe.transform(value, 'dd-MMM-yyyy') || '-';
-    }
-    return this.datePipe.transform(new Date(parsed), 'dd-MMM-yyyy') || '-';
+    return legacyDate(value);
   }
 
   inputDate(value: any): string {
-    const formatted = this.asDate(value);
-    return formatted === '-' ? '' : formatted;
+    return legacyDate(value, 'dd-MMM-yyyy', '');
   }
 
   viewDocument(url: any): void {

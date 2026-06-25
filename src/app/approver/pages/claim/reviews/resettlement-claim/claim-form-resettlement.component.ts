@@ -7,6 +7,7 @@ import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 import { isManualClaimModeValue, isYatraClaimModeValue } from 'src/app/shared/utils/claim-review-mode.util';
+import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
 declare var $: any;
 
 type ReviewSection = {
@@ -474,14 +475,11 @@ export class ClaimFormResettlementComponent implements OnInit {
   }
 
   display(value: any): string {
-    if (value === null || value === undefined) return '-';
-    const str = String(value).trim();
-    return str ? str : '-';
+    return legacyValue(value);
   }
 
   asDate(value: any): string {
-    if (!value) return '-';
-    return this.datePipe.transform(value, 'dd-MMM-yyyy') || '-';
+    return legacyDate(value);
   }
 
   toNumber(value: any): number {

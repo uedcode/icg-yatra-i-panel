@@ -12,28 +12,28 @@
                 <h4 class="legacy-preview-heading"><strong>{{ previewHeading }}</strong></h4>
                 <div class="level_1">
         <div class="row" *ngIf="ltc as adv">
-          <div class="col-md-3"><strong>Name:</strong> {{ display(adv.name) }}</div>
-          <div class="col-md-3"><strong>Rank:</strong> {{ display(adv.rank) }}</div>
-          <div class="col-md-3"><strong>PNO:</strong> {{ display(adv.pno) }}</div>
-          <div class="col-md-3"><strong>Pay Level:</strong> {{ display(adv.payLevel) }}</div>
-          <div class="col-md-3 mt-2"><strong>Basic Pay:</strong> {{ display(adv.basicPay) }}</div>
-          <div class="col-md-3 mt-2"><strong>Applied To:</strong> {{ display(adv.appliedTo) }}</div>
-          <div class="col-md-3 mt-2"><strong>GX Unit:</strong> {{ display(adv.gxUnit) }}</div>
-          <div class="col-md-3 mt-2"><strong>GX Number:</strong> {{ display(adv.gxNumber) }}</div>
-          <div class="col-md-3 mt-2"><strong>GX Date:</strong> {{ asDate(adv.gxDate) }}</div>
-          <div class="col-md-3 mt-2"><strong>Joining Date:</strong> {{ asDate(adv.joiningDate) }}</div>
-          <div class="col-md-3 mt-2"><strong>Block Year:</strong> {{ display(adv.blockYear) }}</div>
-          <div class="col-md-3 mt-2"><strong>Place of Visit:</strong> {{ display(adv.placeOfVisit) }}</div>
-          <div class="col-md-3 mt-2"><strong>LTC Place:</strong> {{ display(adv.ltcPlace) }}</div>
-          <div class="col-md-3 mt-2"><strong>Is DTS:</strong> {{ display(adv.isDts) }}</div>
-          <div class="col-md-3 mt-2"><strong>Arrival Fare:</strong> {{ display(adv.arrFare) }}</div>
-          <div class="col-md-3 mt-2"><strong>Total Amount:</strong> {{ display(adv.totalAmt) }}</div>
-          <div class="col-md-3 mt-2"><strong>Advance Amount:</strong> {{ display(adv.advAmt) }}</div>
-          <div class="col-md-3 mt-2"><strong>DTS Amount:</strong> {{ display(adv.dtsAmount) }}</div>
-          <div class="col-md-3 mt-2"><strong>Total Budgeted:</strong> {{ display(adv.totalBudgetedAmt) }}</div>
-          <div class="col-md-3 mt-2"><strong>Place:</strong> {{ display(adv.place) }}</div>
-          <div class="col-md-3 mt-2"><strong>Date:</strong> {{ asDate(adv.date) }}</div>
-          <div class="col-md-3 mt-2"><strong>Sign Mode:</strong> {{ display(formObj?.signWith) }}</div>
+          <div class="col-md-3"><strong>Name:</strong> {{ (adv.name | legacyValue) }}</div>
+          <div class="col-md-3"><strong>Rank:</strong> {{ (adv.rank | legacyValue) }}</div>
+          <div class="col-md-3"><strong>PNO:</strong> {{ (adv.pno | legacyValue) }}</div>
+          <div class="col-md-3"><strong>Pay Level:</strong> {{ (adv.payLevel | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>Basic Pay:</strong> {{ (adv.basicPay | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>Applied To:</strong> {{ (adv.appliedTo | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>GX Unit:</strong> {{ (adv.gxUnit | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>GX Number:</strong> {{ (adv.gxNumber | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>GX Date:</strong> {{ (adv.gxDate | legacyDate) }}</div>
+          <div class="col-md-3 mt-2"><strong>Joining Date:</strong> {{ (adv.joiningDate | legacyDate) }}</div>
+          <div class="col-md-3 mt-2"><strong>Block Year:</strong> {{ (adv.blockYear | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>Place of Visit:</strong> {{ (adv.placeOfVisit | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>LTC Place:</strong> {{ (adv.ltcPlace | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>Is DTS:</strong> {{ (adv.isDts | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>Arrival Fare:</strong> {{ (adv.arrFare | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>Total Amount:</strong> {{ (adv.totalAmt | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>Advance Amount:</strong> {{ (adv.advAmt | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>DTS Amount:</strong> {{ (adv.dtsAmount | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>Total Budgeted:</strong> {{ (adv.totalBudgetedAmt | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>Place:</strong> {{ (adv.place | legacyValue) }}</div>
+          <div class="col-md-3 mt-2"><strong>Date:</strong> {{ (adv.date | legacyDate) }}</div>
+          <div class="col-md-3 mt-2"><strong>Sign Mode:</strong> {{ (formObj?.signWith | legacyValue) }}</div>
         </div>
                 </div>
 
@@ -51,10 +51,10 @@
           </thead>
           <tbody>
             <tr *ngFor="let row of familyRows">
-              <td>{{ display(row.memberName) }}</td>
-              <td>{{ display(row.age) }}</td>
-              <td>{{ display(row.relation) }}</td>
-              <td>{{ display(row.occupation) }}</td>
+              <td>{{ (row.memberName | legacyValue) }}</td>
+              <td>{{ (row.age | legacyValue) }}</td>
+              <td>{{ (row.relation | legacyValue) }}</td>
+              <td>{{ (row.occupation | legacyValue) }}</td>
               <td>{{ row.checkedIndicator ? 'Yes' : 'No' }}</td>
             </tr>
             <tr *ngIf="!familyRows?.length">
@@ -80,16 +80,16 @@
           </thead>
           <tbody>
             <tr *ngFor="let row of travelRows">
-              <td>{{ display(row.source) }}</td>
-              <td>{{ display(row.destination) }}</td>
+              <td>{{ (row.source | legacyValue) }}</td>
+              <td>{{ (row.destination | legacyValue) }}</td>
               <td>
-                {{ display(row.modeOfTravel) }}
+                {{ (row.modeOfTravel | legacyValue) }}
                 <span *ngIf="row.otherModeOfTravel">({{ row.otherModeOfTravel }})</span>
               </td>
-              <td>{{ display(row.isDts) }}</td>
-              <td>{{ display(row.amount || row.tempAmount) }}</td>
-              <td>{{ display(row.reasonForNoDts) }}</td>
-              <td>{{ display(row.remarks) }}</td>
+              <td>{{ (row.isDts | legacyValue) }}</td>
+              <td>{{ ((row.amount || row.tempAmount) | legacyValue) }}</td>
+              <td>{{ (row.reasonForNoDts | legacyValue) }}</td>
+              <td>{{ (row.remarks | legacyValue) }}</td>
             </tr>
             <tr *ngIf="!travelRows?.length">
               <td colspan="7" class="text-center">No Record Found</td>
@@ -111,9 +111,9 @@
           </thead>
           <tbody>
             <tr *ngFor="let doc of documentDtos">
-              <td>{{ display(doc?.codeDocInfoDTO?.docName) }}</td>
-              <td>{{ display(doc?.descr || doc?.otherDocName) }}</td>
-              <td>{{ display((doc?.url || doc?.fileUrl || doc?.docUrl) ? 'Uploaded' : 'Missing') }}</td>
+              <td>{{ (doc?.codeDocInfoDTO?.docName | legacyValue) }}</td>
+              <td>{{ ((doc?.descr || doc?.otherDocName) | legacyValue) }}</td>
+              <td>{{ ((doc?.url || doc?.fileUrl || doc?.docUrl) ? 'Uploaded' : 'Missing' | legacyValue) }}</td>
               <td>
                 <button *ngIf="doc?.url || doc?.fileUrl || doc?.docUrl" type="button" class="btn btn-info btn-sm"
                   (click)="$auth.viewFile(doc?.url || doc?.fileUrl || doc?.docUrl)">
@@ -131,7 +131,7 @@
 
                 <div class="level_1">
         <h4 class="legacy-preview-heading"><strong>Remarks</strong></h4>
-        <p>{{ display(formObj?.internalRemarks) }}</p>
+        <p>{{ (formObj?.internalRemarks | legacyValue) }}</p>
                 </div>
               </div>
             </div>

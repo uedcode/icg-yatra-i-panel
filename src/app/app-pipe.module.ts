@@ -15,6 +15,8 @@ import { ShowDatePipe } from './pipe/show-date.pipe';
 import { CodeCadrePipe } from './pipe/codeCadre.pipe';
 import { CodeMappingTypePipe } from './pipe/codeMappingType.pipe';
 import { NumToWordPipe } from './pipe/num-to-word.pipe.pipe';
+import { LegacyDatePipe } from './pipe/legacy-date.pipe';
+import { LegacyValuePipe } from './pipe/legacy-value.pipe';
 
 @NgModule({
     imports: [],
@@ -34,6 +36,8 @@ import { NumToWordPipe } from './pipe/num-to-word.pipe.pipe';
         CodeCadrePipe,
         CodeMappingTypePipe,
         NumToWordPipe,
+        LegacyValuePipe,
+        LegacyDatePipe,
     ],
     exports: [
         FilterPipe,
@@ -51,6 +55,8 @@ import { NumToWordPipe } from './pipe/num-to-word.pipe.pipe';
         DateHypenPipe,
         ShowDatePipe,
         NumToWordPipe,
+        LegacyValuePipe,
+        LegacyDatePipe,
     ]
 })
 export class PipeModule { }

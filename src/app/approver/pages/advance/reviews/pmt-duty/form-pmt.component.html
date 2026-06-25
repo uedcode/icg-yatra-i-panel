@@ -35,7 +35,7 @@
                     <label class="control-label">{{ field.label }}</label>
                   </div>
                   <div class="col-md-8 padd_5">
-                    <input type="text" class="form-control" [value]="display(field.value)" disabled />
+                    <input type="text" class="form-control" [value]="(field.value | legacyValue)" disabled />
                   </div>
                 </div>
               </div>
@@ -44,7 +44,7 @@
               <div class="form-group">
                 <div class="row">
                   <div class="col-md-4 padd_5"><label class="control-label">Other Unit<sup>*</sup></label></div>
-                  <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.otherUnit)" disabled /></div>
+                  <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.otherUnit | legacyValue)" disabled /></div>
                 </div>
               </div>
             </div>
@@ -52,7 +52,7 @@
               <div class="form-group">
                 <div class="row">
                   <div class="col-md-4 padd_5"><label class="control-label">Gx Unit</label></div>
-                  <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.gxUnit)" disabled /></div>
+                  <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.gxUnit | legacyValue)" disabled /></div>
                 </div>
               </div>
             </div>
@@ -60,7 +60,7 @@
               <div class="form-group">
                 <div class="row">
                   <div class="col-md-4 padd_5"><label class="control-label">Gx Number</label></div>
-                  <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.gxNumber)" disabled /></div>
+                  <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.gxNumber | legacyValue)" disabled /></div>
                 </div>
               </div>
             </div>
@@ -68,7 +68,7 @@
               <div class="form-group">
                 <div class="row">
                   <div class="col-md-4 padd_5"><label class="control-label">Gx Date</label></div>
-                  <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="asDate(advanceDetails?.gxDate)" disabled /></div>
+                  <div class="col-md-8 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.gxDate | legacyDate)" disabled /></div>
                 </div>
               </div>
             </div>
@@ -123,10 +123,10 @@
               <thead><tr><th>Name</th><th>Age</th><th>Relation</th><th>Occupation</th></tr></thead>
               <tbody>
                 <tr *ngFor="let family of formObj?.yatFamilyDetailDTOs">
-                  <td>{{ display(family?.memberName) }}</td>
-                  <td>{{ display(family?.age) }}</td>
-                  <td>{{ display(family?.relation) }}</td>
-                  <td>{{ display(family?.occupation) }}</td>
+                  <td>{{ (family?.memberName | legacyValue) }}</td>
+                  <td>{{ (family?.age | legacyValue) }}</td>
+                  <td>{{ (family?.relation | legacyValue) }}</td>
+                  <td>{{ (family?.occupation | legacyValue) }}</td>
                 </tr>
                 <tr *ngIf="!formObj?.yatFamilyDetailDTOs?.length"><td colspan="4" class="text-center">No Records</td></tr>
               </tbody>
@@ -149,12 +149,12 @@
                   <thead><tr><th>From</th><th>To</th><th>Travel Mode</th><th>Amount (In Rs.)</th><th>DTS</th><th>Reasons for not booking</th></tr></thead>
                   <tbody>
                     <tr *ngFor="let row of formObj?.yatDtsDetailDTOs">
-                      <td>{{ display(row?.source) }}</td>
-                      <td>{{ display(row?.destination) }}</td>
-                      <td>{{ display(row?.modeOfTravel) }}</td>
-                      <td>{{ display(row?.amount) }}</td>
-                      <td>{{ display(row?.isDts) }}</td>
-                      <td>{{ display(row?.reasonForNoDts) }}</td>
+                      <td>{{ (row?.source | legacyValue) }}</td>
+                      <td>{{ (row?.destination | legacyValue) }}</td>
+                      <td>{{ (row?.modeOfTravel | legacyValue) }}</td>
+                      <td>{{ (row?.amount | legacyValue) }}</td>
+                      <td>{{ (row?.isDts | legacyValue) }}</td>
+                      <td>{{ (row?.reasonForNoDts | legacyValue) }}</td>
                     </tr>
                     <tr *ngIf="!formObj?.yatDtsDetailDTOs?.length"><td colspan="6" class="text-center">No Record Found</td></tr>
                   </tbody>
@@ -189,13 +189,13 @@
             <div class="form-group">
               <div class="row">
                 <div class="col-md-7 padd_5"><label class="control-label">Composite Transfer Grant (80% of Basic Pay In Rs.)</label></div>
-                <div class="col-md-5 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.compositeGrant)" disabled /></div>
+                <div class="col-md-5 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.compositeGrant | legacyValue)" disabled /></div>
               </div>
             </div>
             <div class="form-group">
               <div class="row">
                 <div class="col-md-7 padd_5"><label class="control-label">Composite Transfer Grant in case of any island (100% of Basic Pay In Rs.)</label></div>
-                <div class="col-md-5 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.compositeGrantIsland)" disabled /></div>
+                <div class="col-md-5 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.compositeGrantIsland | legacyValue)" disabled /></div>
               </div>
             </div>
           </div>
@@ -203,14 +203,14 @@
             <div class="form-group">
               <div class="row">
                 <div class="col-md-3 padd_5"><label class="control-label">Transportation of personal effect for</label></div>
-                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.maxTransEffectKg)" disabled /></div>
-                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.transPerEffectKg)" disabled /></div>
+                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.maxTransEffectKg | legacyValue)" disabled /></div>
+                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.transPerEffectKg | legacyValue)" disabled /></div>
                 <div class="col-md-1 padd_5"><label class="control-label">Kgs</label></div>
-                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.transPerEffectKgRs)" disabled /></div>
+                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.transPerEffectKgRs | legacyValue)" disabled /></div>
                 <div class="col-md-1 padd_5"><label class="control-label">In Rs.</label></div>
-                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.transPerEffectKms)" disabled /></div>
+                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.transPerEffectKms | legacyValue)" disabled /></div>
                 <div class="col-md-2 padd_5"><label class="control-label">Km = In Rs</label></div>
-                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.transPerEffectKmsRs)" disabled /></div>
+                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.transPerEffectKmsRs | legacyValue)" disabled /></div>
               </div>
             </div>
             <div class="form-group">
@@ -219,23 +219,23 @@
                 <div class="col-md-1 padd_5"></div>
                 <div class="col-md-1 padd_5"></div>
                 <div class="col-md-1 padd_5"></div>
-                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.transPerEffectShipKgRs)" disabled /></div>
+                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.transPerEffectShipKgRs | legacyValue)" disabled /></div>
                 <div class="col-md-1 padd_5"><label class="control-label">Cubic meter</label></div>
-                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.transPerEffectShipKms)" disabled /></div>
+                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.transPerEffectShipKms | legacyValue)" disabled /></div>
                 <div class="col-md-2 padd_5"><label class="control-label">Rate</label></div>
-                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.transPerEffectShipKmsRs)" disabled /></div>
+                <div class="col-md-1 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.transPerEffectShipKmsRs | legacyValue)" disabled /></div>
               </div>
             </div>
             <div class="form-group">
               <div class="row">
                 <div class="col-md-4 padd_5"><label class="control-label">Transportation charge for conveyance (In Rs.)</label></div>
-                <div class="col-md-2 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.transChargeRs)" disabled /></div>
+                <div class="col-md-2 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.transChargeRs | legacyValue)" disabled /></div>
               </div>
             </div>
             <div class="form-group">
               <div class="row">
                 <div class="col-md-4 padd_5"><label class="control-label">Transportation of conveyance by ship (In Rs.)</label></div>
-                <div class="col-md-2 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.transChargeShipRs)" disabled /></div>
+                <div class="col-md-2 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.transChargeShipRs | legacyValue)" disabled /></div>
               </div>
             </div>
           </div>
@@ -246,13 +246,13 @@
                   <div class="form-group">
                     <div class="row">
                       <div class="col-md-2 padd_5"><label class="control-label">Place</label></div>
-                      <div class="col-md-2 padd_5"><input type="text" class="form-control" [value]="display(advanceDetails?.place)" disabled /></div>
+                      <div class="col-md-2 padd_5"><input type="text" class="form-control" [value]="(advanceDetails?.place | legacyValue)" disabled /></div>
                     </div>
                   </div>
                 </div>
                 <table class="table">
                   <thead><tr><th>Advance Request</th><th>Advance Admissible</th><th>DTS Amount</th><th>Amount to be budgeted</th></tr></thead>
-                  <tbody><tr><td>{{ display(advanceDetails?.totalAmt) }}</td><td>{{ displayedAdvanceAmount }}</td><td>{{ display(advanceDetails?.dtsAmount) }}</td><td>{{ displayedTotalBudgetedAmount }}</td></tr></tbody>
+                  <tbody><tr><td>{{ (advanceDetails?.totalAmt | legacyValue) }}</td><td>{{ displayedAdvanceAmount }}</td><td>{{ (advanceDetails?.dtsAmount | legacyValue) }}</td><td>{{ displayedTotalBudgetedAmount }}</td></tr></tbody>
                 </table>
               </div>
             </div>
@@ -289,15 +289,15 @@
 
         <div id="ship4" class="tab-pane active show" *ngIf="activeTab === 'ship4'">
           <div class="col-md-12">
-            <div class="row legacy-bank-row"><div class="col-md-2"><label>Bank Name</label></div><div class="col-md-3"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.bankName)" disabled /></div></div>
-            <div class="row legacy-bank-row"><div class="col-md-2"><label>IFSC Code</label></div><div class="col-md-3"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.ifscCode)" disabled /></div></div>
-            <div class="row legacy-bank-row"><div class="col-md-2"><label>Account Number</label></div><div class="col-md-3"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.bankAccNo)" disabled /></div></div>
-            <div class="row legacy-bank-row"><div class="col-md-2"><label>MICR Code</label></div><div class="col-md-3"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.micrCode)" disabled /></div></div>
+            <div class="row legacy-bank-row"><div class="col-md-2"><label>Bank Name</label></div><div class="col-md-3"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.bankName | legacyValue)" disabled /></div></div>
+            <div class="row legacy-bank-row"><div class="col-md-2"><label>IFSC Code</label></div><div class="col-md-3"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.ifscCode | legacyValue)" disabled /></div></div>
+            <div class="row legacy-bank-row"><div class="col-md-2"><label>Account Number</label></div><div class="col-md-3"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.bankAccNo | legacyValue)" disabled /></div></div>
+            <div class="row legacy-bank-row"><div class="col-md-2"><label>MICR Code</label></div><div class="col-md-3"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.micrCode | legacyValue)" disabled /></div></div>
           </div>
           <div class="legacy-tab-footer"><button type="button" class="btn btn-info btn-sm" (click)="previousTabActive()">Previous</button><label class="review-check"><input type="checkbox" [(ngModel)]="form6" name="form6" /> <span>Checked</span></label><button *ngIf="formObj?.internalRemarks" type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div>
         </div>
 
-        <div id="ship5" class="tab-pane active show" *ngIf="activeTab === 'ship5' && formObj?.internalRemarks"><div class="form-group"><label class="control-label">Remarks</label><textarea rows="6" class="form-control" [value]="display(formObj?.internalRemarks)" disabled></textarea></div><div class="legacy-tab-footer"><button type="button" class="btn btn-info btn-sm" (click)="previousTabActive()">Previous</button></div></div>
+        <div id="ship5" class="tab-pane active show" *ngIf="activeTab === 'ship5' && formObj?.internalRemarks"><div class="form-group"><label class="control-label">Remarks</label><textarea rows="6" class="form-control" [value]="(formObj?.internalRemarks | legacyValue)" disabled></textarea></div><div class="legacy-tab-footer"><button type="button" class="btn btn-info btn-sm" (click)="previousTabActive()">Previous</button></div></div>
       </div>
     </div></div></div></div>
   </div>

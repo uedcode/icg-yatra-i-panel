@@ -24,40 +24,40 @@
                   <h4 class="legacy-preview-heading">(a) <strong>Personal Details</strong></h4>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Name</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.name) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.name | legacyValue:'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>Rank</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.rank) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.rank | legacyValue:'Nil') }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Personnel Number</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.pno) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.pno | legacyValue:'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>Pay Level</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.payLevel) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.payLevel | legacyValue:'Nil') }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Basic Pay (In Rs.) (At the time of transfer)</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.basicPay) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.basicPay | legacyValue:'Nil') }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Transfer from</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.transferFrom) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.transferFrom | legacyValue:'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>Applied To</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.appliedTo) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.appliedTo | legacyValue:'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>Transfer to</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.transferTo) }} <span *ngIf="claim?.otherUnit">({{
+                    <div class="col-md-3"><p>{{ (claim?.transferTo | legacyValue:'Nil') }} <span *ngIf="claim?.otherUnit">({{
                         claim.otherUnit }})</span></p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>From Station</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.stnFrom) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.stnFrom | legacyValue:'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>To Station</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.stnTo) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.stnTo | legacyValue:'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>Distance between stations</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.distance) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.distance | legacyValue:'Nil') }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Advance Voucher Number</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.advVoucherNumber) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.advVoucherNumber | legacyValue:'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>Advance Voucher</strong></p></div>
                     <div class="col-md-3"><p>{{ formObj?.gxFormFileUrl ? 'Attached' : 'Not Attached' }}</p></div>
                     <div class="col-md-3" *ngIf="formObj?.supClaimId"><p><strong>Linked Claim Form</strong></p></div>
@@ -69,9 +69,9 @@
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>PMT Type</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.pmtType) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.pmtType | legacyValue:'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>Family Type</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(claim?.familyType) }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.familyType | legacyValue:'Nil') }}</p></div>
                   </div>
 
                   <h4 class="legacy-preview-heading"><strong>Family Details</strong></h4>
@@ -87,10 +87,10 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let family of familyRows">
-                          <td>{{ nil(family?.memberName) }}</td>
-                          <td>{{ nil(family?.age) }}</td>
-                          <td>{{ nil(family?.relation) }}</td>
-                          <td>{{ nil(family?.occupation) }}</td>
+                          <td>{{ (family?.memberName | legacyValue:'Nil') }}</td>
+                          <td>{{ (family?.age | legacyValue:'Nil') }}</td>
+                          <td>{{ (family?.relation | legacyValue:'Nil') }}</td>
+                          <td>{{ (family?.occupation | legacyValue:'Nil') }}</td>
                         </tr>
                         <tr *ngIf="!familyRows.length">
                           <td colspan="4" class="text-center">No Records</td>
@@ -113,11 +113,11 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let row of gxRows">
-                          <td>{{ nil(row?.gxType) }}</td>
-                          <td>{{ nil(row?.unit) }}</td>
-                          <td>{{ nil(row?.gxNo) }}</td>
-                          <td>{{ nil(asDate(row?.gxDate)) }}</td>
-                          <td>{{ hyphen(asDate(row?.dateOfTravel)) }}</td>
+                          <td>{{ (row?.gxType | legacyValue:'Nil') }}</td>
+                          <td>{{ (row?.unit | legacyValue:'Nil') }}</td>
+                          <td>{{ (row?.gxNo | legacyValue:'Nil') }}</td>
+                          <td>{{ (row?.gxDate | legacyDate:'dd-MMM-yyyy':'Nil') }}</td>
+                          <td>{{ (row?.dateOfTravel | legacyDate) }}</td>
                         </tr>
                         <tr *ngIf="!gxRows.length">
                           <td colspan="5" class="text-center">No Record Found</td>
@@ -156,19 +156,19 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let row of travelRows">
-                          <td>{{ hyphen(row?.fromPlace) }}</td>
-                          <td>{{ hyphen(asDateTime(row?.fromDate)) }}</td>
-                          <td>{{ hyphen(row?.toPlace) }}</td>
-                          <td>{{ hyphen(asDateTime(row?.toDate)) }}</td>
-                          <td>{{ hyphen(row?.travelMode) }}</td>
-                          <td>{{ hyphen(row?.isDts) }}</td>
-                          <td>{{ hyphen(row?.reasonDts) }}</td>
-                          <td>{{ hyphen(row?.entitledClass) }}</td>
-                          <td>{{ hyphen(row?.travelClass) }}</td>
-                          <td>{{ hyphen(row?.sanctionDetails) }}</td>
-                          <td>{{ hyphen(row?.distance) }}</td>
-                          <td>{{ hyphen(row?.amount) }}</td>
-                          <td>{{ hyphen(row?.remarks) }}</td>
+                          <td>{{ (row?.fromPlace | legacyValue) }}</td>
+                          <td>{{ ((row?.fromDate | legacyDate:'dd-MMM-yyyy HH:mm') | legacyValue) }}</td>
+                          <td>{{ (row?.toPlace | legacyValue) }}</td>
+                          <td>{{ ((row?.toDate | legacyDate:'dd-MMM-yyyy HH:mm') | legacyValue) }}</td>
+                          <td>{{ (row?.travelMode | legacyValue) }}</td>
+                          <td>{{ (row?.isDts | legacyValue) }}</td>
+                          <td>{{ (row?.reasonDts | legacyValue) }}</td>
+                          <td>{{ (row?.entitledClass | legacyValue) }}</td>
+                          <td>{{ (row?.travelClass | legacyValue) }}</td>
+                          <td>{{ (row?.sanctionDetails | legacyValue) }}</td>
+                          <td>{{ (row?.distance | legacyValue) }}</td>
+                          <td>{{ (row?.amount | legacyValue) }}</td>
+                          <td>{{ (row?.remarks | legacyValue) }}</td>
                         </tr>
                         <tr *ngIf="!travelRows.length">
                           <td colspan="13" class="text-center">No Record Found</td>
@@ -197,17 +197,17 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let row of transportRows">
-                          <td>{{ hyphen(asDate(row?.date)) }}</td>
-                          <td>{{ hyphen(row?.stnFrom) }}</td>
-                          <td>{{ hyphen(row?.stnTo) }}</td>
-                          <td>{{ hyphen(row?.travelMode) }}</td>
-                          <td>{{ hyphen(row?.weight) }}</td>
-                          <td>{{ hyphen(row?.dailyRate) }}</td>
-                          <td>{{ hyphen(row?.dailyRatePaid) }}</td>
-                          <td>{{ hyphen(row?.gst) }}</td>
-                          <td>{{ hyphen(row?.cess) }}</td>
-                          <td>{{ hyphen(row?.totalClaimed) }}</td>
-                          <td>{{ hyphen(row?.totAmt) }}</td>
+                          <td>{{ (row?.date | legacyDate) }}</td>
+                          <td>{{ (row?.stnFrom | legacyValue) }}</td>
+                          <td>{{ (row?.stnTo | legacyValue) }}</td>
+                          <td>{{ (row?.travelMode | legacyValue) }}</td>
+                          <td>{{ (row?.weight | legacyValue) }}</td>
+                          <td>{{ (row?.dailyRate | legacyValue) }}</td>
+                          <td>{{ (row?.dailyRatePaid | legacyValue) }}</td>
+                          <td>{{ (row?.gst | legacyValue) }}</td>
+                          <td>{{ (row?.cess | legacyValue) }}</td>
+                          <td>{{ (row?.totalClaimed | legacyValue) }}</td>
+                          <td>{{ (row?.totAmt | legacyValue) }}</td>
                         </tr>
                         <tr *ngIf="!transportRows.length">
                           <td colspan="11" class="text-center">No Record Found</td>
@@ -234,15 +234,15 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let row of shipEffectRows">
-                          <td>{{ hyphen(asDate(row?.date)) }}</td>
-                          <td>{{ hyphen(row?.stnFrom) }}</td>
-                          <td>{{ hyphen(row?.stnTo) }}</td>
-                          <td>{{ hyphen(row?.weight) }}</td>
-                          <td>{{ hyphen(row?.dailyRatePaid) }}</td>
-                          <td>{{ hyphen(row?.gst) }}</td>
-                          <td>{{ hyphen(row?.cess) }}</td>
-                          <td>{{ hyphen(row?.totalClaimed) }}</td>
-                          <td>{{ hyphen(row?.totAmt) }}</td>
+                          <td>{{ (row?.date | legacyDate) }}</td>
+                          <td>{{ (row?.stnFrom | legacyValue) }}</td>
+                          <td>{{ (row?.stnTo | legacyValue) }}</td>
+                          <td>{{ (row?.weight | legacyValue) }}</td>
+                          <td>{{ (row?.dailyRatePaid | legacyValue) }}</td>
+                          <td>{{ (row?.gst | legacyValue) }}</td>
+                          <td>{{ (row?.cess | legacyValue) }}</td>
+                          <td>{{ (row?.totalClaimed | legacyValue) }}</td>
+                          <td>{{ (row?.totAmt | legacyValue) }}</td>
                         </tr>
                         <tr *ngIf="!shipEffectRows.length">
                           <td colspan="9" class="text-center">No Record Found</td>
@@ -271,17 +271,17 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let row of conveyanceRows">
-                          <td>{{ hyphen(asDate(row?.date)) }}</td>
-                          <td>{{ hyphen(row?.stnFrom) }}</td>
-                          <td>{{ hyphen(row?.stnTo) }}</td>
-                          <td>{{ hyphen(row?.typeOfVehicle) }}</td>
-                          <td>{{ hyphen(row?.cc) }}</td>
-                          <td>{{ hyphen(row?.dailyRate) }}</td>
-                          <td>{{ hyphen(row?.dailyRatePaid) }}</td>
-                          <td>{{ hyphen(row?.gst) }}</td>
-                          <td>{{ hyphen(row?.cess) }}</td>
-                          <td>{{ hyphen(row?.totalClaimed) }}</td>
-                          <td>{{ hyphen(row?.totAmt) }}</td>
+                          <td>{{ (row?.date | legacyDate) }}</td>
+                          <td>{{ (row?.stnFrom | legacyValue) }}</td>
+                          <td>{{ (row?.stnTo | legacyValue) }}</td>
+                          <td>{{ (row?.typeOfVehicle | legacyValue) }}</td>
+                          <td>{{ (row?.cc | legacyValue) }}</td>
+                          <td>{{ (row?.dailyRate | legacyValue) }}</td>
+                          <td>{{ (row?.dailyRatePaid | legacyValue) }}</td>
+                          <td>{{ (row?.gst | legacyValue) }}</td>
+                          <td>{{ (row?.cess | legacyValue) }}</td>
+                          <td>{{ (row?.totalClaimed | legacyValue) }}</td>
+                          <td>{{ (row?.totAmt | legacyValue) }}</td>
                         </tr>
                         <tr *ngIf="!conveyanceRows.length">
                           <td colspan="11" class="text-center">No Record Found</td>
@@ -309,15 +309,15 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let row of shipConveyanceRows">
-                          <td>{{ hyphen(asDate(row?.date)) }}</td>
-                          <td>{{ hyphen(row?.stnFrom) }}</td>
-                          <td>{{ hyphen(row?.stnTo) }}</td>
-                          <td>{{ hyphen(row?.weight) }}</td>
-                          <td>{{ hyphen(row?.dailyRatePaid) }}</td>
-                          <td>{{ hyphen(row?.gst) }}</td>
-                          <td>{{ hyphen(row?.cess) }}</td>
-                          <td>{{ hyphen(row?.totalClaimed) }}</td>
-                          <td>{{ hyphen(row?.totAmt) }}</td>
+                          <td>{{ (row?.date | legacyDate) }}</td>
+                          <td>{{ (row?.stnFrom | legacyValue) }}</td>
+                          <td>{{ (row?.stnTo | legacyValue) }}</td>
+                          <td>{{ (row?.weight | legacyValue) }}</td>
+                          <td>{{ (row?.dailyRatePaid | legacyValue) }}</td>
+                          <td>{{ (row?.gst | legacyValue) }}</td>
+                          <td>{{ (row?.cess | legacyValue) }}</td>
+                          <td>{{ (row?.totalClaimed | legacyValue) }}</td>
+                          <td>{{ (row?.totAmt | legacyValue) }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -337,9 +337,9 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let doc of documentDtos">
-                          <td>{{ nil(doc?.codeDocInfoDTO?.docName) }} <span *ngIf="doc?.docNo">({{ doc.docNo }})</span>
+                          <td>{{ (doc?.codeDocInfoDTO?.docName | legacyValue:'Nil') }} <span *ngIf="doc?.docNo">({{ doc.docNo }})</span>
                           </td>
-                          <td>{{ nil(doc?.descr) }}</td>
+                          <td>{{ (doc?.descr | legacyValue:'Nil') }}</td>
                           <td><button *ngIf="doc?.url" type="button" class="btn btn-info btn-sm"
                               (click)="$auth.viewFile(doc.url)">View</button></td>
                         </tr>
@@ -370,8 +370,8 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let row of otherChargeRows">
-                          <td>{{ hyphen(row?.amount) }}</td>
-                          <td>{{ hyphen(row?.descr) }}</td>
+                          <td>{{ (row?.amount | legacyValue) }}</td>
+                          <td>{{ (row?.descr | legacyValue) }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -391,14 +391,14 @@
                       <tbody>
                         <tr *ngFor="let row of financialRows">
                           <td>{{ row.description }}</td>
-                          <td>{{ nil(row.amount) }}</td>
+                          <td>{{ (row.amount | legacyValue:'Nil') }}</td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                   <div class="row">
-                    <div class="col-md-3"><p><strong>Place</strong>: {{ nil(claim?.currentPlace) }}</p></div>
-                    <div class="col-md-3 offset-md-3"><p><strong>Date</strong>: {{ nil(asDate(claim?.currentDate)) }}</p></div>
+                    <div class="col-md-3"><p><strong>Place</strong>: {{ (claim?.currentPlace | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3 offset-md-3"><p><strong>Date</strong>: {{ (claim?.currentDate | legacyDate:'dd-MMM-yyyy':'Nil') }}</p></div>
                   </div>
                 </div>
 
@@ -406,19 +406,19 @@
                   <h4 class="legacy-preview-heading">(d) <strong>Bank Details</strong></h4>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Bank Name</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(bankDetails?.bankName) }}</p></div>
+                    <div class="col-md-3"><p>{{ (bankDetails?.bankName | legacyValue:'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>IFSC Code</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(bankDetails?.ifscCode) }}</p></div>
+                    <div class="col-md-3"><p>{{ (bankDetails?.ifscCode | legacyValue:'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>Account Number</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(bankDetails?.bankAccNo) }}</p></div>
+                    <div class="col-md-3"><p>{{ (bankDetails?.bankAccNo | legacyValue:'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>MICR Code</strong></p></div>
-                    <div class="col-md-3"><p>{{ nil(bankDetails?.micrCode) }}</p></div>
+                    <div class="col-md-3"><p>{{ (bankDetails?.micrCode | legacyValue:'Nil') }}</p></div>
                   </div>
                 </div>
 
                 <div class="level_1">
                   <h4 class="legacy-preview-heading">(e) <strong>Remarks</strong></h4>
-                  <p>{{ nil(formObj?.internalRemarks) }}</p>
+                  <p>{{ (formObj?.internalRemarks | legacyValue:'Nil') }}</p>
                 </div>
               </div>
             </div>

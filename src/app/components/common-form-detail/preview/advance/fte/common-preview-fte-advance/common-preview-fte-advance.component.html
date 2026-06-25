@@ -19,67 +19,67 @@
                   <p><strong>Name</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.name) }}</p>
+                  <p>{{ (fte?.name | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Rank</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.rank) }}</p>
+                  <p>{{ (fte?.rank | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Personnel Number</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.pno) }}</p>
+                  <p>{{ (fte?.pno | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Pay Level</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.payLevel) }}</p>
+                  <p>{{ (fte?.payLevel | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Basic Pay (In Rs.)</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.basicPay) }}</p>
+                  <p>{{ (fte?.basicPay | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Probable duration of duty(In days)</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.duration) }}</p>
+                  <p>{{ (fte?.duration | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Present Unit</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.videPresentUnit) }}</p>
+                  <p>{{ (fte?.videPresentUnit | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Applied To</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.appliedTo) }}</p>
+                  <p>{{ (fte?.appliedTo | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Gx Unit</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.gxUnit) }}</p>
+                  <p>{{ (fte?.gxUnit | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>{{ gxLabelPrefix }} Number</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.gxNumber) }}</p>
+                  <p>{{ (fte?.gxNumber | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>{{ gxLabelPrefix }} Date</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(asDate(fte?.gxDate)) }}</p>
+                  <p>{{ (fte?.gxDate | legacyDate) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>{{ gxFormLabel }}</strong></p>
@@ -91,7 +91,7 @@
                   <p><strong>Purpose Type</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.purposeType || 'Other') }}</p>
+                  <p>{{ ((fte?.purposeType || 'Other') | legacyValue) }}</p>
                 </div>
               </div>
               <div class="row" *ngIf="fte?.purpose">
@@ -99,7 +99,7 @@
                   <p><strong>Purpose of duty</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.purpose) }}</p>
+                  <p>{{ (fte?.purpose | legacyValue) }}</p>
                 </div>
               </div>
               <div class="row" *ngIf="fte?.tempTransTo && fte?.stationProceedingTo">
@@ -107,13 +107,13 @@
                   <p><strong>Name of Unit</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.tempTransTo) }}</p>
+                  <p>{{ (fte?.tempTransTo | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Station proceeding to</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.stationProceedingTo) }}</p>
+                  <p>{{ (fte?.stationProceedingTo | legacyValue) }}</p>
                 </div>
               </div>
               <div class="row">
@@ -121,13 +121,13 @@
                   <p><strong>Occurrence Date (Movement Date)</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(asDate(claims?.occDate)) }}</p>
+                  <p>{{ (claims?.occDate | legacyDate) }}</p>
                 </div>
                 <div class="col-md-3" *ngIf="fte?.dutyStation">
                   <p><strong>Duty Station to</strong></p>
                 </div>
                 <div class="col-md-3" *ngIf="fte?.dutyStation">
-                  <p>{{ display(fte?.dutyStation) }}</p>
+                  <p>{{ (fte?.dutyStation | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3" *ngIf="claims?.extendedAdvId">
                   <p><strong>Extended From</strong></p>
@@ -157,10 +157,10 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td>{{ display(fte?.personName) }}</td>
-                      <td>{{ display(fte?.relation) }}</td>
-                      <td>{{ display(fte?.age) }}</td>
-                      <td>{{ display(fte?.gender) }}</td>
+                      <td>{{ (fte?.personName | legacyValue) }}</td>
+                      <td>{{ (fte?.relation | legacyValue) }}</td>
+                      <td>{{ (fte?.age | legacyValue) }}</td>
+                      <td>{{ (fte?.gender | legacyValue) }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -183,13 +183,13 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let row of travelRows">
-                      <td>{{ display(row?.source) }}</td>
-                      <td>{{ display(row?.destination) }}</td>
-                      <td>{{ display(row?.modeOfTravel) }}</td>
-                      <td>{{ display(row?.isDts) }}</td>
-                      <td>{{ display(row?.amount) }}</td>
-                      <td>{{ display(row?.reasonForNoDts) }}</td>
-                      <td>{{ display(row?.remarks) }}</td>
+                      <td>{{ (row?.source | legacyValue) }}</td>
+                      <td>{{ (row?.destination | legacyValue) }}</td>
+                      <td>{{ (row?.modeOfTravel | legacyValue) }}</td>
+                      <td>{{ (row?.isDts | legacyValue) }}</td>
+                      <td>{{ (row?.amount | legacyValue) }}</td>
+                      <td>{{ (row?.reasonForNoDts | legacyValue) }}</td>
+                      <td>{{ (row?.remarks | legacyValue) }}</td>
                     </tr>
                     <tr *ngIf="!travelRows.length">
                       <td colspan="7" class="text-center">No Record Found</td>
@@ -210,8 +210,8 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let row of foreignTravelRows">
-                      <td>{{ display(row?.amount) }}</td>
-                      <td>{{ display(row?.descr) }}</td>
+                      <td>{{ (row?.amount | legacyValue) }}</td>
+                      <td>{{ (row?.descr | legacyValue) }}</td>
                     </tr>
                     <tr *ngIf="!foreignTravelRows.length">
                       <td colspan="2" class="text-center">No Record Found</td>
@@ -224,7 +224,7 @@
                   <p><strong>Place</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(fte?.place) }}</p>
+                  <p>{{ (fte?.place | legacyValue) }}</p>
                 </div>
               </div>
             </div>
@@ -257,31 +257,31 @@
                   <p><strong>Bank Name</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(bankDetails?.bankName) }}</p>
+                  <p>{{ (bankDetails?.bankName | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>IFSC Code</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(bankDetails?.ifscCode) }}</p>
+                  <p>{{ (bankDetails?.ifscCode | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Account Number</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(bankDetails?.bankAccNo) }}</p>
+                  <p>{{ (bankDetails?.bankAccNo | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>MICR Code</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ display(bankDetails?.micrCode) }}</p>
+                  <p>{{ (bankDetails?.micrCode | legacyValue) }}</p>
                 </div>
               </div>
             </div>
             <div class="level_1">
               <h4 class="legacy-preview-heading">(e)<strong>Remarks</strong></h4>
-              <p>{{ display(claims?.internalRemarks) }}</p>
+              <p>{{ (claims?.internalRemarks | legacyValue) }}</p>
             </div>
           </div>
         </div>

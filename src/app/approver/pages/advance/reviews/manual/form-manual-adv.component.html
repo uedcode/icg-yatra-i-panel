@@ -152,10 +152,10 @@
           </div>
           <div class="card-body">
             <div class="row">
-              <div class="col-md-3"><strong>Claim ID:</strong> {{ display(formObj?.claimId || claimId) }}</div>
-              <div class="col-md-3"><strong>Sub Form:</strong> {{ display(subFormId) }}</div>
+              <div class="col-md-3"><strong>Claim ID:</strong> {{ ((formObj?.claimId || claimId) | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Sub Form:</strong> {{ (subFormId | legacyValue) }}</div>
               <div class="col-md-3"><strong>State:</strong> {{ (formObj?.claimState || statusId) | codeStatus:'-' }}</div>
-              <div class="col-md-3"><strong>Sign With:</strong> {{ display(formObj?.signWith) }}</div>
+              <div class="col-md-3"><strong>Sign With:</strong> {{ (formObj?.signWith | legacyValue) }}</div>
             </div>
           </div>
         </div>
@@ -190,16 +190,16 @@
             </div>
             <div class="card-body">
               <div class="row">
-                <div class="col-md-3"><strong>Name:</strong> {{ display(primaryAdvanceDetails?.name) }}</div>
-                <div class="col-md-3"><strong>Rank:</strong> {{ display(primaryAdvanceDetails?.rank) }}</div>
-                <div class="col-md-3"><strong>PNO:</strong> {{ display(primaryAdvanceDetails?.pno) }}</div>
-                <div class="col-md-3"><strong>Pay Level:</strong> {{ display(primaryAdvanceDetails?.payLevel) }}</div>
-                <div class="col-md-3"><strong>Basic Pay:</strong> {{ display(primaryAdvanceDetails?.basicPay) }}</div>
-                <div class="col-md-3"><strong>Applied To:</strong> {{ display(primaryAdvanceDetails?.appliedTo) }}</div>
-                <div class="col-md-3"><strong>GX No:</strong> {{ display(primaryAdvanceDetails?.gxNumber) }}</div>
-                <div class="col-md-3"><strong>GX Date:</strong> {{ asDate(primaryAdvanceDetails?.gxDate) }}</div>
-                <div class="col-md-3"><strong>Occurrence Date:</strong> {{ asDate(formObj?.occDate) }}</div>
-                <div class="col-md-3"><strong>Present Unit:</strong> {{ display(primaryAdvanceDetails?.videPresentUnit) }}</div>
+                <div class="col-md-3"><strong>Name:</strong> {{ (primaryAdvanceDetails?.name | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Rank:</strong> {{ (primaryAdvanceDetails?.rank | legacyValue) }}</div>
+                <div class="col-md-3"><strong>PNO:</strong> {{ (primaryAdvanceDetails?.pno | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Pay Level:</strong> {{ (primaryAdvanceDetails?.payLevel | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Basic Pay:</strong> {{ (primaryAdvanceDetails?.basicPay | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Applied To:</strong> {{ (primaryAdvanceDetails?.appliedTo | legacyValue) }}</div>
+                <div class="col-md-3"><strong>GX No:</strong> {{ (primaryAdvanceDetails?.gxNumber | legacyValue) }}</div>
+                <div class="col-md-3"><strong>GX Date:</strong> {{ (primaryAdvanceDetails?.gxDate | legacyDate) }}</div>
+                <div class="col-md-3"><strong>Occurrence Date:</strong> {{ (formObj?.occDate | legacyDate) }}</div>
+                <div class="col-md-3"><strong>Present Unit:</strong> {{ (primaryAdvanceDetails?.videPresentUnit | legacyValue) }}</div>
               </div>
             </div>
           </div>
@@ -212,50 +212,50 @@
             </div>
             <div class="card-body">
               <div class="row" *ngIf="subFormId === 'P'">
-                <div class="col-md-3"><strong>PMT Type:</strong> {{ display(primaryAdvanceDetails?.pmtType) }}</div>
-                <div class="col-md-3"><strong>Transfer To:</strong> {{ display(primaryAdvanceDetails?.permTransTo) }}</div>
-                <div class="col-md-3"><strong>Station From:</strong> {{ display(primaryAdvanceDetails?.stnFrom || primaryAdvanceDetails?.stationFrom) }}</div>
-                <div class="col-md-3"><strong>Station To:</strong> {{ display(primaryAdvanceDetails?.stnTo || primaryAdvanceDetails?.stationTo) }}</div>
-                <div class="col-md-3"><strong>Distance:</strong> {{ display(primaryAdvanceDetails?.distance) }}</div>
-                <div class="col-md-3"><strong>Area Type:</strong> {{ display(primaryAdvanceDetails?.areaType) }}</div>
+                <div class="col-md-3"><strong>PMT Type:</strong> {{ (primaryAdvanceDetails?.pmtType | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Transfer To:</strong> {{ (primaryAdvanceDetails?.permTransTo | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Station From:</strong> {{ ((primaryAdvanceDetails?.stnFrom || primaryAdvanceDetails?.stationFrom) | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Station To:</strong> {{ ((primaryAdvanceDetails?.stnTo || primaryAdvanceDetails?.stationTo) | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Distance:</strong> {{ (primaryAdvanceDetails?.distance | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Area Type:</strong> {{ (primaryAdvanceDetails?.areaType | legacyValue) }}</div>
               </div>
 
               <div class="row" *ngIf="subFormId === 'T'">
-                <div class="col-md-3"><strong>Purpose:</strong> {{ display(primaryAdvanceDetails?.purpose) }}</div>
-                <div class="col-md-3"><strong>Purpose Type:</strong> {{ display(primaryAdvanceDetails?.purposeType) }}</div>
-                <div class="col-md-3"><strong>Proceeding To:</strong> {{ display(primaryAdvanceDetails?.stationProceedingTo) }}</div>
-                <div class="col-md-3"><strong>Duration:</strong> {{ display(primaryAdvanceDetails?.duration) }}</div>
-                <div class="col-md-3"><strong>Temporary Duty To:</strong> {{ display(primaryAdvanceDetails?.tempTransTo || primaryAdvanceDetails?.tempTransferToType) }}</div>
-                <div class="col-md-3"><strong>GX Unit:</strong> {{ display(primaryAdvanceDetails?.gxUnit) }}</div>
+                <div class="col-md-3"><strong>Purpose:</strong> {{ (primaryAdvanceDetails?.purpose | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Purpose Type:</strong> {{ (primaryAdvanceDetails?.purposeType | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Proceeding To:</strong> {{ (primaryAdvanceDetails?.stationProceedingTo | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Duration:</strong> {{ (primaryAdvanceDetails?.duration | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Temporary Duty To:</strong> {{ ((primaryAdvanceDetails?.tempTransTo || primaryAdvanceDetails?.tempTransferToType) | legacyValue) }}</div>
+                <div class="col-md-3"><strong>GX Unit:</strong> {{ (primaryAdvanceDetails?.gxUnit | legacyValue) }}</div>
               </div>
 
               <div class="row" *ngIf="subFormId === 'F'">
-                <div class="col-md-3"><strong>Purpose:</strong> {{ display(primaryAdvanceDetails?.purpose) }}</div>
-                <div class="col-md-3"><strong>Purpose Type:</strong> {{ display(primaryAdvanceDetails?.purposeType) }}</div>
-                <div class="col-md-3"><strong>Proceeding To:</strong> {{ display(primaryAdvanceDetails?.stationProceedingTo) }}</div>
-                <div class="col-md-3"><strong>Country:</strong> {{ display(primaryAdvanceDetails?.country) }}</div>
-                <div class="col-md-3"><strong>GX Unit:</strong> {{ display(primaryAdvanceDetails?.gxUnit) }}</div>
+                <div class="col-md-3"><strong>Purpose:</strong> {{ (primaryAdvanceDetails?.purpose | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Purpose Type:</strong> {{ (primaryAdvanceDetails?.purposeType | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Proceeding To:</strong> {{ (primaryAdvanceDetails?.stationProceedingTo | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Country:</strong> {{ (primaryAdvanceDetails?.country | legacyValue) }}</div>
+                <div class="col-md-3"><strong>GX Unit:</strong> {{ (primaryAdvanceDetails?.gxUnit | legacyValue) }}</div>
               </div>
 
               <div class="row" *ngIf="subFormId === 'L'">
-                <div class="col-md-3"><strong>LTC Type:</strong> {{ display(primaryAdvanceDetails?.ltcType) }}</div>
-                <div class="col-md-3"><strong>Block Year:</strong> {{ display(primaryAdvanceDetails?.blockYear) }}</div>
-                <div class="col-md-3"><strong>Place Of Visit:</strong> {{ display(primaryAdvanceDetails?.placeOfVisit) }}</div>
-                <div class="col-md-3"><strong>LTC Place:</strong> {{ display(primaryAdvanceDetails?.ltcPlace) }}</div>
-                <div class="col-md-3"><strong>GX Unit:</strong> {{ display(primaryAdvanceDetails?.gxUnit) }}</div>
-                <div class="col-md-3"><strong>Joining Date:</strong> {{ asDate(primaryAdvanceDetails?.joiningDate) }}</div>
-                <div class="col-md-3"><strong>Is DTS:</strong> {{ display(primaryAdvanceDetails?.isDts) }}</div>
-                <div class="col-md-3"><strong>Arrival Fare:</strong> {{ display(primaryAdvanceDetails?.arrFare) }}</div>
-                <div class="col-md-3"><strong>Place:</strong> {{ display(primaryAdvanceDetails?.place) }}</div>
-                <div class="col-md-3"><strong>Date:</strong> {{ asDate(primaryAdvanceDetails?.date) }}</div>
+                <div class="col-md-3"><strong>LTC Type:</strong> {{ (primaryAdvanceDetails?.ltcType | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Block Year:</strong> {{ (primaryAdvanceDetails?.blockYear | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Place Of Visit:</strong> {{ (primaryAdvanceDetails?.placeOfVisit | legacyValue) }}</div>
+                <div class="col-md-3"><strong>LTC Place:</strong> {{ (primaryAdvanceDetails?.ltcPlace | legacyValue) }}</div>
+                <div class="col-md-3"><strong>GX Unit:</strong> {{ (primaryAdvanceDetails?.gxUnit | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Joining Date:</strong> {{ (primaryAdvanceDetails?.joiningDate | legacyDate) }}</div>
+                <div class="col-md-3"><strong>Is DTS:</strong> {{ (primaryAdvanceDetails?.isDts | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Arrival Fare:</strong> {{ (primaryAdvanceDetails?.arrFare | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Place:</strong> {{ (primaryAdvanceDetails?.place | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Date:</strong> {{ (primaryAdvanceDetails?.date | legacyDate) }}</div>
               </div>
 
               <div class="row" *ngIf="subFormId === 'M'">
-                <div class="col-md-3"><strong>Unit:</strong> {{ display(primaryAdvanceDetails?.codeUnitDTO?.descr) }}</div>
-                <div class="col-md-3"><strong>Form Type:</strong> {{ display(primaryAdvanceDetails?.formType) }}</div>
-                <div class="col-md-3"><strong>Reason:</strong> {{ display(primaryAdvanceDetails?.reason) }}</div>
-                <div class="col-md-3"><strong>Amount:</strong> {{ display(primaryAdvanceDetails?.amount) }}</div>
-                <div class="col-md-3"><strong>Admissible:</strong> {{ display(primaryAdvanceDetails?.admissibleAmt) }}</div>
+                <div class="col-md-3"><strong>Unit:</strong> {{ (primaryAdvanceDetails?.codeUnitDTO?.descr | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Form Type:</strong> {{ (primaryAdvanceDetails?.formType | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Reason:</strong> {{ (primaryAdvanceDetails?.reason | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Amount:</strong> {{ (primaryAdvanceDetails?.amount | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Admissible:</strong> {{ (primaryAdvanceDetails?.admissibleAmt | legacyValue) }}</div>
               </div>
             </div>
           </div>
@@ -292,11 +292,11 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let row of formObj?.yatFamilyDetailDTOs">
-                    <td>{{ display(row?.memberName) }}</td>
-                    <td>{{ display(row?.age) }}</td>
-                    <td>{{ display(row?.relation) }}</td>
-                    <td>{{ display(row?.occupation) }}</td>
-                    <td>{{ display(row?.checkedIndicator ? 'Yes' : 'No') }}</td>
+                    <td>{{ (row?.memberName | legacyValue) }}</td>
+                    <td>{{ (row?.age | legacyValue) }}</td>
+                    <td>{{ (row?.relation | legacyValue) }}</td>
+                    <td>{{ (row?.occupation | legacyValue) }}</td>
+                    <td>{{ (row?.checkedIndicator ? 'Yes' : 'No' | legacyValue) }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -312,9 +312,9 @@
             <div class="card-body">
               <div class="row mb-3">
                 <div class="col-md-3"><strong>Advance Amt:</strong> {{ displayedAdvanceAmount }}</div>
-                <div class="col-md-3"><strong>DTS Amt:</strong> {{ display(primaryAdvanceDetails?.dtsAmount) }}</div>
+                <div class="col-md-3"><strong>DTS Amt:</strong> {{ (primaryAdvanceDetails?.dtsAmount | legacyValue) }}</div>
                 <div class="col-md-3"><strong>Total Budgeted:</strong> {{ displayedTotalBudgetedAmount }}</div>
-                <div class="col-md-3"><strong>Total Amt:</strong> {{ display(primaryAdvanceDetails?.totalAmt) }}</div>
+                <div class="col-md-3"><strong>Total Amt:</strong> {{ (primaryAdvanceDetails?.totalAmt | legacyValue) }}</div>
               </div>
 
               <div class="alert alert-warning py-2" *ngIf="redPercentage !== null">
@@ -337,16 +337,16 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let row of formObj?.yatDtsDetailDTOs">
-                      <td>{{ display(row?.source) }}</td>
-                      <td>{{ display(row?.destination) }}</td>
+                      <td>{{ (row?.source | legacyValue) }}</td>
+                      <td>{{ (row?.destination | legacyValue) }}</td>
                       <td>
-                        {{ display(row?.modeOfTravel) }}
-                        <span *ngIf="row?.otherModeOfTravel">({{ display(row?.otherModeOfTravel) }})</span>
+                        {{ (row?.modeOfTravel | legacyValue) }}
+                        <span *ngIf="row?.otherModeOfTravel">({{ (row?.otherModeOfTravel | legacyValue) }})</span>
                       </td>
-                      <td>{{ display(row?.isDts) }}</td>
-                      <td>{{ display(row?.amount || row?.tempAmount) }}</td>
-                      <td>{{ display(row?.reasonForNoDts || row?.reasonDts) }}</td>
-                      <td>{{ display(row?.remarks) }}</td>
+                      <td>{{ (row?.isDts | legacyValue) }}</td>
+                      <td>{{ ((row?.amount || row?.tempAmount) | legacyValue) }}</td>
+                      <td>{{ ((row?.reasonForNoDts || row?.reasonDts) | legacyValue) }}</td>
+                      <td>{{ (row?.remarks | legacyValue) }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -362,10 +362,10 @@
             </div>
             <div class="card-body">
               <div class="row">
-                <div class="col-md-3"><strong>Bank Name:</strong> {{ display(formObj?.yatClaimBankDetailDTO?.bankName) }}</div>
-                <div class="col-md-3"><strong>IFSC:</strong> {{ display(formObj?.yatClaimBankDetailDTO?.ifscCode) }}</div>
-                <div class="col-md-3"><strong>Account No:</strong> {{ display(formObj?.yatClaimBankDetailDTO?.bankAccNo) }}</div>
-                <div class="col-md-3"><strong>MICR:</strong> {{ display(formObj?.yatClaimBankDetailDTO?.micrCode) }}</div>
+                <div class="col-md-3"><strong>Bank Name:</strong> {{ (formObj?.yatClaimBankDetailDTO?.bankName | legacyValue) }}</div>
+                <div class="col-md-3"><strong>IFSC:</strong> {{ (formObj?.yatClaimBankDetailDTO?.ifscCode | legacyValue) }}</div>
+                <div class="col-md-3"><strong>Account No:</strong> {{ (formObj?.yatClaimBankDetailDTO?.bankAccNo | legacyValue) }}</div>
+                <div class="col-md-3"><strong>MICR:</strong> {{ (formObj?.yatClaimBankDetailDTO?.micrCode | legacyValue) }}</div>
               </div>
             </div>
           </div>
@@ -428,26 +428,26 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let row of bucket.rows">
-                      <td>{{ display(row?.year) }}</td>
+                      <td>{{ (row?.year | legacyValue) }}</td>
                       <td>{{ yesNo(row?.availed) }}</td>
-                      <td>{{ display(row?.ltcType) }}</td>
-                      <td>{{ display(row?.ltcSubType) }}</td>
-                      <td>{{ display(row?.frmLocation) }}</td>
-                      <td>{{ display(row?.toLocation) }}</td>
-                      <td>{{ asDate(row?.occDate) }}</td>
-                      <td>{{ display(row?.reason) }}</td>
+                      <td>{{ (row?.ltcType | legacyValue) }}</td>
+                      <td>{{ (row?.ltcSubType | legacyValue) }}</td>
+                      <td>{{ (row?.frmLocation | legacyValue) }}</td>
+                      <td>{{ (row?.toLocation | legacyValue) }}</td>
+                      <td>{{ (row?.occDate | legacyDate) }}</td>
+                      <td>{{ (row?.reason | legacyValue) }}</td>
                       <td>
                         <div *ngIf="row?._selectedFamilyMembers?.length; else noFamilyMembers">
                           <div
                             class="family-member"
                             *ngFor="let family of row?._selectedFamilyMembers"
                           >
-                            <strong>{{ display(family?.memberName) }}</strong>
+                            <strong>{{ (family?.memberName | legacyValue) }}</strong>
                             <span>
-                              ({{ display(family?.relation) }}, Age {{ display(family?.age) }})
+                              ({{ (family?.relation | legacyValue) }}, Age {{ (family?.age | legacyValue) }})
                             </span>
                             <span class="d-block text-muted">
-                              Occurrence: {{ asDate(family?.occDate) }}
+                              Occurrence: {{ (family?.occDate | legacyDate) }}
                             </span>
                           </div>
                         </div>
@@ -510,9 +510,9 @@
               </thead>
               <tbody>
                 <tr *ngFor="let doc of documentDtos">
-                  <td>{{ display(doc?.codeDocInfoDTO?.docName) }}</td>
-                  <td>{{ display(doc?.descr || doc?.otherDocName) }}</td>
-                  <td>{{ display(doc?.checkedIndicator ? 'Yes' : 'No') }}</td>
+                  <td>{{ (doc?.codeDocInfoDTO?.docName | legacyValue) }}</td>
+                  <td>{{ ((doc?.descr || doc?.otherDocName) | legacyValue) }}</td>
+                  <td>{{ (doc?.checkedIndicator ? 'Yes' : 'No' | legacyValue) }}</td>
                   <td>
                     <button
                       *ngIf="doc?.url || doc?.fileUrl || doc?.docUrl"
@@ -537,9 +537,9 @@
             <strong>Remarks</strong>
           </div>
           <div class="card-body">
-            <div class="mb-2"><strong>Internal Remark:</strong> {{ display(formObj?.internalRemarks) }}</div>
+            <div class="mb-2"><strong>Internal Remark:</strong> {{ (formObj?.internalRemarks | legacyValue) }}</div>
             <div *ngIf="claimRemarkSummary">
-              <strong>Latest Workflow Remark:</strong> {{ display(claimRemarkSummary?.title) }}
+              <strong>Latest Workflow Remark:</strong> {{ (claimRemarkSummary?.title | legacyValue) }}
             </div>
           </div>
         </div>
@@ -560,10 +560,10 @@
               </thead>
               <tbody>
                 <tr *ngFor="let row of stateHistory">
-                  <td>{{ display(row?.roleTypeName || row?.aclCodeRoleTypeDTO?.roleTypeName || row?.aclCodeRoleTypeDTO?.descr) }}</td>
+                  <td>{{ ((row?.roleTypeName || row?.aclCodeRoleTypeDTO?.roleTypeName || row?.aclCodeRoleTypeDTO?.descr) | legacyValue) }}</td>
                   <td>{{ (row?.formState || row?.claimState || row?.statusId) | codeStatus:'-' }}</td>
-                  <td>{{ display(row?.unitName || row?.yatClaimDTO?.codeUnitDTO?.descr || row?.yatClaimDTO?.codeUnitDTO?.unit) }}</td>
-                  <td>{{ asDate(row?.createdOn) }}</td>
+                  <td>{{ ((row?.unitName || row?.yatClaimDTO?.codeUnitDTO?.descr || row?.yatClaimDTO?.codeUnitDTO?.unit) | legacyValue) }}</td>
+                  <td>{{ (row?.createdOn | legacyDate) }}</td>
                 </tr>
                 <tr *ngIf="!stateHistory?.length">
                   <td colspan="4" class="text-center">No workflow history available.</td>

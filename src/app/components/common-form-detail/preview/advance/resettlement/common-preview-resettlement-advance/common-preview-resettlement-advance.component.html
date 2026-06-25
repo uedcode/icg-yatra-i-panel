@@ -16,7 +16,7 @@
               <h4 class="legacy-preview-heading"><strong>Claim Summary</strong></h4>
               <div class="row" *ngFor="let field of summaryFields">
                 <div class="col-md-4 fw-bold">{{ field.label }}</div>
-                <div class="col-md-8">{{ display(field.value) }}</div>
+                <div class="col-md-8">{{ (field.value | legacyValue) }}</div>
               </div>
             </div>
 
@@ -24,7 +24,7 @@
               <h4 class="legacy-preview-heading"><strong>(a) Personal Details</strong></h4>
               <div class="row" *ngFor="let field of personalFields">
                 <div class="col-md-4 fw-bold">{{ field.label }}</div>
-                <div class="col-md-8">{{ display(field.value) }}</div>
+                <div class="col-md-8">{{ (field.value | legacyValue) }}</div>
               </div>
             </div>
 
@@ -32,7 +32,7 @@
               <h4 class="legacy-preview-heading"><strong>Resettlement Details</strong></h4>
               <div class="row" *ngFor="let field of resettlementFields">
                 <div class="col-md-4 fw-bold">{{ field.label }}</div>
-                <div class="col-md-8">{{ display(field.value) }}</div>
+                <div class="col-md-8">{{ (field.value | legacyValue) }}</div>
               </div>
             </div>
 
@@ -49,10 +49,10 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let row of familyRows">
-                    <td>{{ display(row.memberName || row.name) }}</td>
-                    <td>{{ display(row.age) }}</td>
-                    <td>{{ display(row.relation) }}</td>
-                    <td>{{ display(row.occupation) }}</td>
+                    <td>{{ ((row.memberName || row.name) | legacyValue) }}</td>
+                    <td>{{ (row.age | legacyValue) }}</td>
+                    <td>{{ (row.relation | legacyValue) }}</td>
+                    <td>{{ (row.occupation | legacyValue) }}</td>
                   </tr>
                   <tr *ngIf="!familyRows.length">
                     <td colspan="4" class="text-center">No Records</td>
@@ -77,13 +77,13 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let row of travelRows">
-                    <td>{{ display(row.from) }}</td>
-                    <td>{{ display(row.to) }}</td>
-                    <td>{{ display(row.mode) }}</td>
-                    <td>{{ display(row.dts) }}</td>
-                    <td>{{ display(row.amount) }}</td>
-                    <td>{{ display(row.reason) }}</td>
-                    <td>{{ display(row.remarks) }}</td>
+                    <td>{{ (row.from | legacyValue) }}</td>
+                    <td>{{ (row.to | legacyValue) }}</td>
+                    <td>{{ (row.mode | legacyValue) }}</td>
+                    <td>{{ (row.dts | legacyValue) }}</td>
+                    <td>{{ (row.amount | legacyValue) }}</td>
+                    <td>{{ (row.reason | legacyValue) }}</td>
+                    <td>{{ (row.remarks | legacyValue) }}</td>
                   </tr>
                   <tr *ngIf="!travelRows.length">
                     <td colspan="7" class="text-center">No Record Found</td>
@@ -104,7 +104,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let doc of documentDtos">
-                    <td>{{ display(doc.codeDocInfoDTO?.docName || doc.documentName || doc.docName || doc.name) }}</td>
+                    <td>{{ ((doc.codeDocInfoDTO?.docName || doc.documentName || doc.docName || doc.name) | legacyValue) }}</td>
                     <td>{{ doc.url || doc.fileUrl || doc.docUrl ? 'Uploaded' : '-' }}</td>
                     <td>
                       <button type="button" class="btn btn-info btn-sm" *ngIf="doc.url || doc.fileUrl || doc.docUrl"

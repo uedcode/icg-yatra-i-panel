@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
+import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
 
 @Component({
   selector: 'app-common-preview-voucher-claim',
@@ -63,13 +64,11 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
   }
 
   display(value: any): string {
-    if (value === null || value === undefined || value === '') return '-';
-    return String(value);
+    return legacyValue(value);
   }
 
   asDate(value: any): string {
-    if (!value) return '-';
-    return this.datePipe.transform(value, 'dd/MM/yyyy') ?? '-';
+    return legacyDate(value, 'dd/MM/yyyy');
   }
 
   goBack(): void {

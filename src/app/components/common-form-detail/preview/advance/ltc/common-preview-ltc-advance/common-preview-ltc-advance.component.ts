@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
+import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
 
 @Component({
   selector: 'app-common-preview-ltc-advance',
@@ -84,14 +85,11 @@ export class CommonPreviewLtcAdvanceComponent implements OnInit {
   }
 
   asDate(value: any): string {
-    if (!value) return '-';
-    return this.datePipe.transform(value, 'dd-MMM-yyyy') || '-';
+    return legacyDate(value);
   }
 
   display(value: any): string {
-    if (value === null || value === undefined) return '-';
-    const str = String(value).trim();
-    return str ? str : '-';
+    return legacyValue(value);
   }
 
   get ltc(): any {

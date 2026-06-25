@@ -35,13 +35,13 @@
                       <p><strong>Name</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.name) }}</p>
+                      <p>{{ (tyDuty?.name | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3">
                       <p><strong>Rank</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.rank) }}</p>
+                      <p>{{ (tyDuty?.rank | legacyValue) }}</p>
                     </div>
                   </div>
                   <div class="row">
@@ -49,13 +49,13 @@
                       <p><strong>Personnel Number</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.pno) }}</p>
+                      <p>{{ (tyDuty?.pno | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3">
                       <p><strong>Pay Level</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.payLevel) }}</p>
+                      <p>{{ (tyDuty?.payLevel | legacyValue) }}</p>
                     </div>
                   </div>
                   <div class="row">
@@ -63,13 +63,13 @@
                       <p><strong>Basic Pay (In Rs.)</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.basicPay) }}</p>
+                      <p>{{ (tyDuty?.basicPay | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3">
                       <p><strong>Probable duration of Ty duty(In days)</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.duration) }}</p>
+                      <p>{{ (tyDuty?.duration | legacyValue) }}</p>
                     </div>
                   </div>
                   <div class="row">
@@ -77,19 +77,19 @@
                       <p><strong>Present Unit</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.videPresentUnit) }}</p>
+                      <p>{{ (tyDuty?.videPresentUnit | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3">
                       <p><strong>Temporary Duty to</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.tempTransferToType) }}</p>
+                      <p>{{ (tyDuty?.tempTransferToType | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3">
                       <p><strong>Applied To</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.appliedTo) }}</p>
+                      <p>{{ (tyDuty?.appliedTo | legacyValue) }}</p>
                     </div>
                   </div>
                   <div class="row">
@@ -97,19 +97,19 @@
                       <p><strong>Gx Unit</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.gxUnit) }}</p>
+                      <p>{{ (tyDuty?.gxUnit | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3">
                       <p><strong>{{ gxLabelPrefix }} Number</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.gxNumber) }}</p>
+                      <p>{{ (tyDuty?.gxNumber | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3">
                       <p><strong>{{ gxLabelPrefix }} Date</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(gxDate) }}</p>
+                      <p>{{ (gxDate | legacyValue) }}</p>
                     </div>
                   </div>
                   <div class="row">
@@ -123,7 +123,7 @@
                       <p><strong>Purpose Type</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(purposeType) }}</p>
+                      <p>{{ (purposeType | legacyValue) }}</p>
                     </div>
                   </div>
                   <div class="row" *ngIf="showPurpose">
@@ -131,7 +131,7 @@
                       <p><strong>Purpose of Ty duty</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.purpose) }}</p>
+                      <p>{{ (tyDuty?.purpose | legacyValue) }}</p>
                     </div>
                   </div>
                   <div class="row" *ngIf="showUnitStation">
@@ -139,13 +139,13 @@
                       <p><strong>Name of Unit</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.tempTransTo) }}</p>
+                      <p>{{ (tyDuty?.tempTransTo | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3">
                       <p><strong>Station proceeding to</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.stationProceedingTo) }}</p>
+                      <p>{{ (tyDuty?.stationProceedingTo | legacyValue) }}</p>
                     </div>
                   </div>
                   <div class="row">
@@ -153,13 +153,13 @@
                       <p><strong>Occurrence Date (Movement Date)</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(occDate) }}</p>
+                      <p>{{ (occDate | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3" *ngIf="showDutyStation">
                       <p><strong>Duty Station to</strong></p>
                     </div>
                     <div class="col-md-3" *ngIf="showDutyStation">
-                      <p>{{ display(tyDuty?.dutyStation) }}</p>
+                      <p>{{ (tyDuty?.dutyStation | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3" *ngIf="showExtendedFrom">
                       <p><strong>Extended From</strong></p>
@@ -194,10 +194,10 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td>{{ display(tyDuty?.personName) }}</td>
-                          <td>{{ display(tyDuty?.relation) }}</td>
-                          <td>{{ display(tyDuty?.age) }}</td>
-                          <td>{{ display(tyDuty?.gender) }}</td>
+                          <td>{{ (tyDuty?.personName | legacyValue) }}</td>
+                          <td>{{ (tyDuty?.relation | legacyValue) }}</td>
+                          <td>{{ (tyDuty?.age | legacyValue) }}</td>
+                          <td>{{ (tyDuty?.gender | legacyValue) }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -221,13 +221,13 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let row of travelRows">
-                          <td>{{ display(row?.source) }}</td>
-                          <td>{{ display(row?.destination) }}</td>
-                          <td>{{ display(row?.modeOfTravel) }}</td>
-                          <td>{{ display(row?.isDts) }}</td>
-                          <td>{{ display(row?.amount) }}</td>
-                          <td>{{ display(row?.reasonForNoDts) }}</td>
-                          <td>{{ display(row?.remarks) }}</td>
+                          <td>{{ (row?.source | legacyValue) }}</td>
+                          <td>{{ (row?.destination | legacyValue) }}</td>
+                          <td>{{ (row?.modeOfTravel | legacyValue) }}</td>
+                          <td>{{ (row?.isDts | legacyValue) }}</td>
+                          <td>{{ (row?.amount | legacyValue) }}</td>
+                          <td>{{ (row?.reasonForNoDts | legacyValue) }}</td>
+                          <td>{{ (row?.remarks | legacyValue) }}</td>
                         </tr>
                         <tr *ngIf="!travelRows.length">
                           <td colspan="7" class="text-center">No Record Found</td>
@@ -244,31 +244,31 @@
                       <tbody>
                         <tr>
                           <td>Food charges for</td>
-                          <td>{{ display(tyDuty?.foodChargeDays) }} days</td>
-                          <td>{{ display(tyDuty?.foodChargeRatePerDay) }} per day</td>
-                          <td>{{ display(tyDuty?.foodChargePerc) }}% GST</td>
-                          <td>{{ display(tyDuty?.totalFoodCharge) }}</td>
+                          <td>{{ (tyDuty?.foodChargeDays | legacyValue) }} days</td>
+                          <td>{{ (tyDuty?.foodChargeRatePerDay | legacyValue) }} per day</td>
+                          <td>{{ (tyDuty?.foodChargePerc | legacyValue) }}% GST</td>
+                          <td>{{ (tyDuty?.totalFoodCharge | legacyValue) }}</td>
                         </tr>
                         <tr>
                           <td>Hotel accommodation charges for</td>
-                          <td>{{ display(tyDuty?.hotelAccDays) }} days</td>
-                          <td>{{ display(tyDuty?.hotelAccRatePerDay) }} per day</td>
-                          <td>{{ display(tyDuty?.hotelChargePerc) }}% GST</td>
-                          <td>{{ display(tyDuty?.totalHotelAcc) }}</td>
+                          <td>{{ (tyDuty?.hotelAccDays | legacyValue) }} days</td>
+                          <td>{{ (tyDuty?.hotelAccRatePerDay | legacyValue) }} per day</td>
+                          <td>{{ (tyDuty?.hotelChargePerc | legacyValue) }}% GST</td>
+                          <td>{{ (tyDuty?.totalHotelAcc | legacyValue) }}</td>
                         </tr>
                         <tr>
                           <td>Road mileage from duty station to Rail/Air/Road and back</td>
-                          <td>{{ display(tyDuty?.arrToDutyRate) }} kms</td>
-                          <td>{{ display(tyDuty?.arrToDutyKm) }} Per kms</td>
+                          <td>{{ (tyDuty?.arrToDutyRate | legacyValue) }} kms</td>
+                          <td>{{ (tyDuty?.arrToDutyKm | legacyValue) }} Per kms</td>
                           <td>-</td>
-                          <td>{{ display(tyDuty?.arrToDutyRs) }}</td>
+                          <td>{{ (tyDuty?.arrToDutyRs | legacyValue) }}</td>
                         </tr>
                         <tr>
                           <td>Travel charges from hotel accommodation to duty station within city</td>
-                          <td>{{ display(tyDuty?.accHToDutyDays) }} days</td>
+                          <td>{{ (tyDuty?.accHToDutyDays | legacyValue) }} days</td>
                           <td *ngFor="let cell of accHToDutyCells">{{ cell }}</td>
                           <td>-</td>
-                          <td>{{ display(tyDuty?.totalAccHToDuty) }}</td>
+                          <td>{{ (tyDuty?.totalAccHToDuty | legacyValue) }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -278,7 +278,7 @@
                       <p><strong>Place</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(tyDuty?.place) }}</p>
+                      <p>{{ (tyDuty?.place | legacyValue) }}</p>
                     </div>
                   </div>
                 </div>
@@ -313,32 +313,32 @@
                       <p><strong>Bank Name</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(bankDetails?.bankName) }}</p>
+                      <p>{{ (bankDetails?.bankName | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3">
                       <p><strong>IFSC Code</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(bankDetails?.ifscCode) }}</p>
+                      <p>{{ (bankDetails?.ifscCode | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3">
                       <p><strong>Account Number</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(bankDetails?.bankAccNo) }}</p>
+                      <p>{{ (bankDetails?.bankAccNo | legacyValue) }}</p>
                     </div>
                     <div class="col-md-3">
                       <p><strong>MICR Code</strong></p>
                     </div>
                     <div class="col-md-3">
-                      <p>{{ display(bankDetails?.micrCode) }}</p>
+                      <p>{{ (bankDetails?.micrCode | legacyValue) }}</p>
                     </div>
                   </div>
                 </div>
 
                 <div class="level_1">
                   <h4 class="legacy-preview-heading">(e)<strong>Remarks</strong></h4>
-                  <p>{{ display(claims?.internalRemarks) }}</p>
+                  <p>{{ (claims?.internalRemarks | legacyValue) }}</p>
                 </div>
               </div>
             </div>

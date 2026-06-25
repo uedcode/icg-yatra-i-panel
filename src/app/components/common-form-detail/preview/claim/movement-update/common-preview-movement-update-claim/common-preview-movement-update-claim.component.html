@@ -21,14 +21,14 @@
                 <div class="level_1">
       <h4 class="legacy-preview-heading"><strong>Movement Details</strong></h4>
       <div class="row">
-        <div class="col-md-3"><p><strong>Claim ID:</strong> {{ display(claimId) }}</p></div>
+        <div class="col-md-3"><p><strong>Claim ID:</strong> {{ (claimId | legacyValue) }}</p></div>
         <div class="col-md-3"><p><strong>Mode:</strong> {{ modeLabel(movement?.claimMode) }}</p></div>
         <div class="col-md-3"><p><strong>Purpose:</strong> {{ purposeLabel(movement?.subFormId) }}</p></div>
-        <div class="col-md-3"><p><strong>Voucher Number:</strong> {{ display(movement?.voucherNo) }}</p></div>
-        <div class="col-md-3 mt-2"><p><strong>Voucher Date:</strong> {{ asDate(movement?.voucherDate) }}</p></div>
-        <div class="col-md-3 mt-2"><p><strong>Amount (In Rs):</strong> {{ display(movement?.voucherAmt) }}</p></div>
-        <div class="col-md-3 mt-2"><p><strong>Drawn From:</strong> {{ display(movement?.drawnFrom) }}</p></div>
-        <div class="col-md-3 mt-2"><p><strong>Other:</strong> {{ display(movement?.drawnFromOther) }}</p></div>
+        <div class="col-md-3"><p><strong>Voucher Number:</strong> {{ (movement?.voucherNo | legacyValue) }}</p></div>
+        <div class="col-md-3 mt-2"><p><strong>Voucher Date:</strong> {{ (movement?.voucherDate | legacyDate) }}</p></div>
+        <div class="col-md-3 mt-2"><p><strong>Amount (In Rs):</strong> {{ (movement?.voucherAmt | legacyValue) }}</p></div>
+        <div class="col-md-3 mt-2"><p><strong>Drawn From:</strong> {{ (movement?.drawnFrom | legacyValue) }}</p></div>
+        <div class="col-md-3 mt-2"><p><strong>Other:</strong> {{ (movement?.drawnFromOther | legacyValue) }}</p></div>
       </div>
 
       <div class="mt-3">
@@ -53,11 +53,11 @@
           </thead>
           <tbody>
             <tr *ngFor="let row of gxDetails; let i = index; trackBy: trackByIndex">
-              <td>{{ display(row?.gxType) }}</td>
-              <td>{{ display(row?.unit) }}</td>
-              <td>{{ asDate(row?.gxDate) }}</td>
-              <td>{{ display(row?.gxNo) }}</td>
-              <td>{{ asDate(row?.dateOfTravel) }}</td>
+              <td>{{ (row?.gxType | legacyValue) }}</td>
+              <td>{{ (row?.unit | legacyValue) }}</td>
+              <td>{{ (row?.gxDate | legacyDate) }}</td>
+              <td>{{ (row?.gxNo | legacyValue) }}</td>
+              <td>{{ (row?.dateOfTravel | legacyDate) }}</td>
             </tr>
             <tr *ngIf="!gxDetails.length">
               <td colspan="5" class="text-center">No Record Found</td>
@@ -70,14 +70,14 @@
                 <div class="level_1">
       <h4 class="legacy-preview-heading"><strong>Manual Claim Settlement</strong></h4>
       <div class="row">
-        <div class="col-md-3"><p><strong>Already Submitted:</strong> {{ display(movement?.isClaimAlreadySubmitted) }}</p></div>
-        <div class="col-md-3"><p><strong>Claim Amount:</strong> {{ display(movement?.claimAmt) }}</p></div>
-        <div class="col-md-3"><p><strong>Claim Settled:</strong> {{ display(movement?.isClaimSettle) }}</p></div>
-        <div class="col-md-3"><p><strong>Credit/Debit Memo No:</strong> {{ display(movement?.creditDebitNo) }}</p></div>
-        <div class="col-md-3 mt-2"><p><strong>Passed Amount:</strong> {{ display(movement?.claimPassAmt) }}</p></div>
-        <div class="col-md-3 mt-2"><p><strong>Unit:</strong> {{ display(movement?.unitId) }}</p></div>
-        <div class="col-md-3 mt-2"><p><strong>Letter No:</strong> {{ display(movement?.letterNo) }}</p></div>
-        <div class="col-md-3 mt-2"><p><strong>Letter Date:</strong> {{ asDate(movement?.letterNoDated) }}</p></div>
+        <div class="col-md-3"><p><strong>Already Submitted:</strong> {{ (movement?.isClaimAlreadySubmitted | legacyValue) }}</p></div>
+        <div class="col-md-3"><p><strong>Claim Amount:</strong> {{ (movement?.claimAmt | legacyValue) }}</p></div>
+        <div class="col-md-3"><p><strong>Claim Settled:</strong> {{ (movement?.isClaimSettle | legacyValue) }}</p></div>
+        <div class="col-md-3"><p><strong>Credit/Debit Memo No:</strong> {{ (movement?.creditDebitNo | legacyValue) }}</p></div>
+        <div class="col-md-3 mt-2"><p><strong>Passed Amount:</strong> {{ (movement?.claimPassAmt | legacyValue) }}</p></div>
+        <div class="col-md-3 mt-2"><p><strong>Unit:</strong> {{ (movement?.unitId | legacyValue) }}</p></div>
+        <div class="col-md-3 mt-2"><p><strong>Letter No:</strong> {{ (movement?.letterNo | legacyValue) }}</p></div>
+        <div class="col-md-3 mt-2"><p><strong>Letter Date:</strong> {{ (movement?.letterNoDated | legacyDate) }}</p></div>
       </div>
                 </div>
 

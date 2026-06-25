@@ -8,6 +8,7 @@ import { ApproverActionRemarkModalService } from 'src/app/service/core/approver-
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 import { isManualClaimModeValue, isYatraClaimModeValue } from 'src/app/shared/utils/claim-review-mode.util';
+import { legacyDate, legacyDateTime, legacyValue } from 'src/app/shared/utils/legacy-display.util';
 declare var $: any;
 
 @Component({
@@ -417,38 +418,23 @@ export class ClaimFormPmtDutyComponent implements OnInit {
   }
 
   display(value: any): string {
-    if (value === null || value === undefined) return '-';
-    const str = String(value).trim();
-    return str ? str : '-';
+    return legacyValue(value);
   }
 
   inputValue(value: any): string {
-    if (value === null || value === undefined) return '';
-    const str = String(value).trim();
-    return str ? str : '';
+    return legacyValue(value, '');
   }
 
   asDate(value: any): string {
-    if (!value) return '-';
-    const parsed = Number(value);
-    if (Number.isNaN(parsed)) {
-      return this.datePipe.transform(value, 'dd-MMM-yyyy') || '-';
-    }
-    return this.datePipe.transform(new Date(parsed), 'dd-MMM-yyyy') || '-';
+    return legacyDate(value);
   }
 
   inputDate(value: any): string {
-    const date = this.asDate(value);
-    return date === '-' ? '' : date;
+    return legacyDate(value, 'dd-MMM-yyyy', '');
   }
 
   asDateTime(value: any): string {
-    if (!value) return '-';
-    const parsed = Number(value);
-    if (Number.isNaN(parsed)) {
-      return this.datePipe.transform(value, 'dd-MMM-yyyy HH:mm') || '-';
-    }
-    return this.datePipe.transform(new Date(parsed), 'dd-MMM-yyyy HH:mm') || '-';
+    return legacyDateTime(value);
   }
 
   toNumber(value: any): number {

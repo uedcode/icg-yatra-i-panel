@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
+import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
 
 @Component({
   selector: 'app-common-preview-ty-duty-claim',
@@ -214,23 +215,19 @@ export class CommonPreviewTyDutyClaimComponent implements OnInit {
   }
 
   asDate(value: any): any {
-    if (!value && value !== 0) return null;
-    const num = Number(value);
-    return Number.isNaN(num) ? value : this.datePipe.transform(new Date(num), 'dd/MM/yyyy');
+    return legacyDate(value, 'dd/MM/yyyy', null as any);
   }
 
   asDateTime(value: any): any {
-    if (!value && value !== 0) return null;
-    const num = Number(value);
-    return Number.isNaN(num) ? value : this.datePipe.transform(new Date(num), 'dd/MM/yyyy HH:mm');
+    return legacyDate(value, 'dd/MM/yyyy HH:mm', null as any);
   }
 
   nil(value: any): any {
-    return this.isBlank(value) ? 'Nil' : value;
+    return legacyValue(value, 'Nil');
   }
 
   hyphen(value: any): any {
-    return this.isBlank(value) ? '-' : value;
+    return legacyValue(value);
   }
 
   goBack(): void {

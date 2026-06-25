@@ -13,39 +13,39 @@
               <img src="/assets/images/dad_logo.png" alt="LOGO" class="voucher-logo mb-2" />
               <h4 class="legacy-preview-heading"><strong>CGCDA (Delhi)</strong></h4>
               <h4 class="legacy-preview-heading"><strong>Payment Receipt Voucher</strong></h4>
-              <h4 class="legacy-preview-heading"><strong>{{ display(yatClaimVoucher?.subForm) }}</strong></h4>
+              <h4 class="legacy-preview-heading"><strong>{{ (yatClaimVoucher?.subForm | legacyValue) }}</strong></h4>
             </div>
 
             <div class="level_1">
             <div class="row mb-2">
               <div class="col-md-3"><p><strong>Name</strong></p></div>
-              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.name) }}</p></div>
+              <div class="col-md-3"><p>{{ (yatClaimVoucher?.name | legacyValue) }}</p></div>
               <div class="col-md-3"><p><strong>Rank</strong></p></div>
-              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.rank) }}</p></div>
+              <div class="col-md-3"><p>{{ (yatClaimVoucher?.rank | legacyValue) }}</p></div>
             </div>
 
             <div class="row mb-2">
               <div class="col-md-3"><p><strong>Personnel Number</strong></p></div>
-              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.pno) }}</p></div>
+              <div class="col-md-3"><p>{{ (yatClaimVoucher?.pno | legacyValue) }}</p></div>
               <div class="col-md-3"><p><strong>Form ID</strong></p></div>
-              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.formId) }}</p></div>
+              <div class="col-md-3"><p>{{ (yatClaimVoucher?.formId | legacyValue) }}</p></div>
             </div>
 
             <div class="row mb-2">
               <div class="col-md-3"><p><strong>Claimed Amount (In Rs.)</strong></p></div>
-              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.claimedAmount) }}</p></div>
+              <div class="col-md-3"><p>{{ (yatClaimVoucher?.claimedAmount | legacyValue) }}</p></div>
               <div class="col-md-3"><p><strong>Passed Amount</strong></p></div>
-              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.passedAmount) }}</p></div>
+              <div class="col-md-3"><p>{{ (yatClaimVoucher?.passedAmount | legacyValue) }}</p></div>
             </div>
 
             <div class="row mb-2">
               <div class="col-md-3"><p><strong>Voucher No</strong></p></div>
-              <div class="col-md-3"><p>{{ display(yatClaimVoucher?.voucherNo) }}</p></div>
+              <div class="col-md-3"><p>{{ (yatClaimVoucher?.voucherNo | legacyValue) }}</p></div>
             </div>
 
             <div class="row mb-2">
               <div class="col-md-3"><p><strong>Voucher Date</strong></p></div>
-              <div class="col-md-3"><p>{{ asDate(yatClaimVoucher?.voucherDate) }}</p></div>
+              <div class="col-md-3"><p>{{ (yatClaimVoucher?.voucherDate | legacyDate) }}</p></div>
             </div>
 
             <div class="text-center text-muted py-3" *ngIf="!yatClaimVoucher">
