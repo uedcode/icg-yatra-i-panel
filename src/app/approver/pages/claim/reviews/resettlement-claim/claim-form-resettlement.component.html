@@ -1,7 +1,4 @@
-<div class="page-header gov-page-toolbar">
-          <div class="page-leftheader">
-            <h4 class="page-title">{{ pageTitle }}</h4>
-          </div>
+<app-common-form-header [pageTitle]="pageTitle" sectionLabel="Claim">
           <div>
             <button
               *ngIf="!isLegacyPreviewContext"
@@ -15,7 +12,9 @@
               <i class="fa fa-chevron-left"></i>
             </button>
           </div>
-        </div>
+        </app-common-form-header>
+
+
 
         <div class="card mb-3" *ngIf="canTakeAction()">
           <div class="card-header">
@@ -84,6 +83,8 @@
           </div>
         </div>
 
+
+
         <div class="card mb-3" *ngIf="reviewSections.length">
           <div class="card-header">
             <strong>Review Tabs</strong>
@@ -104,6 +105,8 @@
             </div>
           </div>
         </div>
+
+
 
         <div class="card mb-3" *ngIf="isActiveSection('personal')">
           <div class="card-header">
@@ -135,6 +138,8 @@
             </div>
           </div>
         </div>
+
+
 
         <div class="card mb-3" *ngIf="isActiveSection('personal') && (formObj?.claimMode || formObj?.voucherNo || formObj?.voucherDate || formObj?.voucherAmt)">
           <div class="card-header">
@@ -168,6 +173,8 @@
           </div>
         </div>
 
+
+
         <div class="card mb-3" *ngIf="isActiveSection('personal')">
           <div class="card-header">
             <strong>Resettlement Review Actions</strong>
@@ -195,6 +202,8 @@
           </div>
         </div>
 
+
+
         <div class="card mb-3" *ngIf="isActiveSection('personal')">
           <div class="card-header">
             <strong>Personal Details</strong>
@@ -215,6 +224,8 @@
             </div>
           </div>
         </div>
+
+
 
         <div class="card mb-3" *ngIf="isActiveSection('travel')">
           <div class="card-header">
@@ -268,6 +279,8 @@
           </div>
         </div>
 
+
+
         <div class="card mb-3" *ngIf="isActiveSection('travel')">
           <div class="card-header">
             <strong>Travel Details</strong>
@@ -308,6 +321,8 @@
           </div>
         </div>
 
+
+
         <div class="card mb-3" *ngIf="isActiveSection('travel')">
           <div class="card-header">
             <strong>Family Details</strong>
@@ -343,6 +358,8 @@
           </div>
         </div>
 
+
+
         <div class="card mb-3" *ngIf="isActiveSection('documents')">
           <div class="card-header">
             <strong>Supporting Documents</strong>
@@ -355,7 +372,11 @@
                   <th>Description</th>
                   <th>File Status</th>
                   <th>Verified</th>
-                  <th>File</th>
+                  <th>
+                    File
+                    <input type="checkbox" [(ngModel)]="parallelView" name="resettlementParallelView" />
+                    Parallel View
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -394,6 +415,8 @@
             </table>
           </div>
         </div>
+
+
 
         <div class="card mb-3" *ngIf="isActiveSection('documents') && lostDocuments.length">
           <div class="card-header">
@@ -527,9 +550,17 @@
                   <td colspan="4" class="text-center">No workflow history available.</td>
                 </tr>
               </tbody>
-            </table><app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>
+            </table>
+            <app-common-parallel-file-viewer
+              *ngIf="parallelViewerUrl"
+              [fileUrl]="parallelViewerUrl"
+              [title]="parallelViewerTitle"
+              (closeViewer)="closeParallelViewer()">
+            </app-common-parallel-file-viewer>
+            <app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>
   </div>
 </div>
+
 
 
 

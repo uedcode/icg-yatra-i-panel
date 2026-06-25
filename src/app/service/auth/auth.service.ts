@@ -741,18 +741,51 @@ export class AuthService {
   //  Barch detail end
 
   fileUrl = environment.fileUrl;
-  viewFile(url) {
+  async resolveExistingFileUrl(url: any): Promise<string | null> {
     const normalizedUrl = this.normalizeFileUrl(url);
     if (!normalizedUrl) {
-      this.$common.showMessage('File URL is not available.', 'danger');
-      return;
+      this.$common.showMessage("File doesn't exist", 'danger');
+      return null;
     }
 
+    const exists = await this.checkFileExists(normalizedUrl);
+    if (!exists) {
+      this.$common.showMessage("File doesn't exist", 'danger');
+      return null;
+    }
+
+    return normalizedUrl;
+  }
+
+  async viewFile(url: any): Promise<boolean> {
+    const normalizedUrl = this.normalizeFileUrl(url);
+    if (!normalizedUrl) {
+      this.$common.showMessage("File doesn't exist", 'danger');
+      return false;
+    }
+
+    const viewerWindow = window.open('', '_blank');
+    const exists = await this.checkFileExists(normalizedUrl);
+    if (!exists) {
+      this.$common.showMessage("File doesn't exist", 'danger');
+      viewerWindow?.close();
+      return false;
+    }
+
+    const viewerPath = this.buildFileViewerPath(normalizedUrl);
+    if (viewerWindow) {
+      viewerWindow.location.href = viewerPath;
+    } else {
+      window.open(viewerPath, '_blank');
+    }
+    return true;
+  }
+
+  private buildFileViewerPath(normalizedUrl: string): string {
     const modulePath = this.getViewFileModulePath();
-    const viewerPath = this.route.serializeUrl(
+    return this.route.serializeUrl(
       this.route.createUrlTree([modulePath, this.encodeFileViewerParam(normalizedUrl)])
     );
-    window.open(viewerPath, '_blank');
   }
 
   private encodeFileViewerParam(url: string): string {
@@ -801,6 +834,18 @@ export class AuthService {
 
     const separator = absoluteUrl.includes('?') ? '&' : '?';
     return `${absoluteUrl}${separator}t=${Date.now()}`;
+  }
+
+  private async checkFileExists(url: string): Promise<boolean> {
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        cache: 'no-store',
+      });
+      return response.ok;
+    } catch (error) {
+      return false;
+    }
   }
 
   formatEntryDate(entryDate: Date, entryTime: string): string {

@@ -46,6 +46,8 @@ import { CommonEsignComponent } from './components/common-esign/common-esign/com
 import { CommonEsignModalComponent } from './components/common-esign/common-esign-modal/common-esign-modal.component';
 import { CommonRedirectComponent } from './components/common-esign/common-redirect/common-redirect.component';
 import { CommonViewFileComponent } from './components/common-view-file/common-view-file.component';
+import { CommonParallelFileViewerComponent } from './components/common-parallel-file-viewer/common-parallel-file-viewer.component';
+import { CommonFormHeaderComponent } from './components/common-form-header/common-form-header.component';
 
 import { ExportFormModalComponent } from './modals/export-form-modal/export-form-modal.component';
 import { ChangeBatchStatusComponent } from './modals/change-batch-status/change-batch-status.component';
@@ -147,6 +149,8 @@ const CustomSelectOptions: INgxSelectOptions = {
     CommonEsignModalComponent,
     CommonRedirectComponent,
     CommonViewFileComponent,
+    CommonParallelFileViewerComponent,
+    CommonFormHeaderComponent,
 
     ExportFormModalComponent,
     ChangeBatchStatusComponent,
@@ -209,6 +213,8 @@ const CustomSelectOptions: INgxSelectOptions = {
     CommonEsignModalComponent,
     CommonRedirectComponent,
     CommonViewFileComponent,
+    CommonParallelFileViewerComponent,
+    CommonFormHeaderComponent,
 
     ExportFormModalComponent,
     ChangeBatchStatusComponent,

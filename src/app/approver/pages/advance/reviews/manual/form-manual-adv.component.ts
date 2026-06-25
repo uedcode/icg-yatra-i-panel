@@ -6,6 +6,7 @@ import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 import { LtcAvailedHistApiService } from 'src/app/service/api/claim/ltc-availed-hist-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 declare var $: any;
 
 type ReviewSection = {
@@ -63,6 +64,7 @@ export class FormManualAdvComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
+    private previewWindow: PreviewWindowService,
     private datePipe: DatePipe,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
@@ -794,7 +796,7 @@ export class FormManualAdvComponent implements OnInit {
       `?claimId=${encodeURIComponent(this.claimId)}` +
       `&id=${encodeURIComponent(this.formId || this.claimId)}` +
       `&subFormId=${encodeURIComponent(this.subFormId)}`;
-    window.open(url, '_blank');
+    this.previewWindow.openUrl(url);
   }
 
   private getPreviewRoute(): string {

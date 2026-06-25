@@ -78,6 +78,7 @@ describe('FormTydutyComponent', () => {
     component.$formDocument.deleteSupportDocByUrl.and.returnValue(of(true));
     component.$auth = jasmine.createSpyObj('AuthService', ['getModuleName']);
     component.$auth.getModuleName.and.returnValue('/adv/creator');
+    component.previewWindow = jasmine.createSpyObj('PreviewWindowService', ['openUrl']);
     component.UtilService = { toMillis: (value: any) => value };
     component.router = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
     component.activateTab = jasmine.createSpy('activateTab');
@@ -123,14 +124,10 @@ describe('FormTydutyComponent', () => {
 
   it('navigates TY preview with supplementary id', () => {
     const component = createComponent();
-    spyOn(window, 'open');
     component.claims.claimId = 555;
     component.supplementryId = 'SUP-TY-1';
     component.navigatePreview('', 555);
-    expect(window.open).toHaveBeenCalledWith(
-      '/adv/creator/preview-ty-duty?id=555&supId=SUP-TY-1',
-      '_blank'
-    );
+    expect(component.previewWindow.openUrl).toHaveBeenCalledWith('/adv/creator/preview-ty-duty?id=555&supId=SUP-TY-1');
   });
 
   it('uses legacy TY claim title and preview route in claim mode', () => {
@@ -143,11 +140,9 @@ describe('FormTydutyComponent', () => {
     expect(component.pageTitle).toBe('Supplementary TY Duty Claim');
 
     component.$auth.getModuleName.and.returnValue('/claim/creator');
-    spyOn(window, 'open');
     component.navigatePreview('', 556);
-    expect(window.open).toHaveBeenCalledWith(
-      '/claim/creator/preview-ty-duty-claim?id=556&subFormId=TYD&supId=SUP-TY-2',
-      '_blank'
+    expect(component.previewWindow.openUrl).toHaveBeenCalledWith(
+      '/claim/creator/preview-ty-duty-claim?id=556&subFormId=TYD&supId=SUP-TY-2'
     );
   });
 

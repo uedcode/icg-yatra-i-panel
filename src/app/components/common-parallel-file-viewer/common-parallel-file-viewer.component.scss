@@ -1,0 +1,70 @@
+:host {
+  display: block;
+}
+
+.parallel-file-viewer {
+  background: #ffffff;
+  border: 1px solid #c8d6e3;
+  border-radius: 6px;
+  bottom: 16px;
+  box-shadow: 0 12px 32px rgba(4, 31, 58, 0.28);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  right: 16px;
+  top: 96px;
+  width: min(48vw, 760px);
+  z-index: 1040;
+}
+
+.parallel-file-viewer__header {
+  align-items: center;
+  border-bottom: 1px solid #d9e2ec;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 8px 10px;
+}
+
+.parallel-file-viewer__header strong {
+  color: #000;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.parallel-file-viewer__actions {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 6px;
+}
+
+ngx-extended-pdf-viewer {
+  display: block;
+  width: 100%;
+}
+
+.parallel-file-viewer__image-wrap {
+  align-items: center;
+  background: #eef3f8;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  overflow: auto;
+  padding: 10px;
+}
+
+.parallel-file-viewer__image-wrap img {
+  max-height: calc(100vh - 178px);
+  max-width: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 991px) {
+  .parallel-file-viewer {
+    left: 12px;
+    right: 12px;
+    width: auto;
+  }
+}

@@ -1,19 +1,5 @@
 <div class="main-container legacy-form-page legacy-creator-form">
-          <div class="page-header gov-page-toolbar">
-            <div class="page-leftheader">
-              <h4 class="page-title">{{ pageTitle }}</h4>
-              <ol class="breadcrumb pl-0">
-                <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Yatra</a></li>
-                <li class="breadcrumb-item">
-                  <a [routerLink]="activeFormKind === 'claim' ? ['../claim-new'] : ['../new']">
-                    {{ activeFormKind === 'claim' ? 'Claim' : 'New' }}
-                  </a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                  {{ pageTitle }}
-                </li>
-              </ol>
-            </div>
+  <app-common-form-header [pageTitle]="pageTitle" [sectionLabel]="activeFormKind === 'claim' ? 'Claim' : 'Advance'" [sectionLink]="activeFormKind === 'claim' ? ['../claim-new'] : ['../new']">
             <div class="row mrg_btm_5">
               <div class="col-md-3">
                 <button type="button" class="btn btn-info" [disabled]="isPreviewDisabled"
@@ -36,8 +22,7 @@
               </div>
 
             </div>
-          </div>
-
+          </app-common-form-header>
           <!-- MAIN CONTENT -->
           <div class="content-wrap">
             <!-- panel_card -->
@@ -1347,3 +1332,4 @@
         </div> <!-- /.main-container -->
 
         <app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>
+

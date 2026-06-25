@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 
 import { AuthService } from '../../../../service/auth.service';
 import { ClaimApiService } from '../../../../service/api/claim/claim-api.service';
@@ -11,6 +11,7 @@ import { EsignApiService } from '../../../../service/api/security/esign-api.serv
 import { BankIfscApiService } from 'src/app/service/api/code/bank-ifsc-api.service';
 import { CommonService } from '../../../../service/common.service';
 import { FormDocumentService } from 'src/app/service/core/form-document.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 import { CodeDocInfoApiService } from '../../../../service/api/code/code-doc-info-api.service';
 import { UtilService } from '../../../../service/util.service';
 import { FormPmtDutyComponent } from './form-pmt.component';
@@ -27,6 +28,7 @@ describe('FormPmtDutyComponent', () => {
   let esignApiService: jasmine.SpyObj<EsignApiService>;
   let bankIfscApiService: jasmine.SpyObj<BankIfscApiService>;
   let formDocumentService: jasmine.SpyObj<FormDocumentService>;
+  let previewWindowService: jasmine.SpyObj<PreviewWindowService>;
   let codeDocInfoService: jasmine.SpyObj<CodeDocInfoApiService> & { documentDtos: Subject<any> };
 
   const userDetails = {
@@ -103,6 +105,7 @@ describe('FormPmtDutyComponent', () => {
     ]);
     formDocumentService.uploadSupportDoc.and.returnValue(of('gx-pmt.pdf'));
     formDocumentService.deleteSupportDocByUrl.and.returnValue(of(true));
+    previewWindowService = jasmine.createSpyObj<PreviewWindowService>('PreviewWindowService', ['openUrl']);
 
     codeDocInfoService = jasmine.createSpyObj<CodeDocInfoApiService>('CodeDocInfoApiService', [
       'setDocument'
@@ -168,6 +171,7 @@ describe('FormPmtDutyComponent', () => {
         { provide: EsignApiService, useValue: esignApiService },
         { provide: BankIfscApiService, useValue: bankIfscApiService },
         { provide: FormDocumentService, useValue: formDocumentService },
+        { provide: PreviewWindowService, useValue: previewWindowService },
         { provide: CodeDocInfoApiService, useValue: codeDocInfoService },
         { provide: HttpClient, useValue: jasmine.createSpyObj<HttpClient>('HttpClient', ['get']) }
       ]
@@ -811,13 +815,9 @@ describe('FormPmtDutyComponent', () => {
     component.activeSubFormId = 'P';
     authService.getModuleName.and.returnValue('/adv/creator');
 
-    spyOn(window, 'open');
     component.navigatePreview('P', '321');
 
-    expect(window.open).toHaveBeenCalledWith(
-      '/adv/creator/preview-pmt-duty?id=321&supId=SUP-7',
-      '_blank'
-    );
+    expect(previewWindowService.openUrl).toHaveBeenCalledWith('/adv/creator/preview-pmt-duty?id=321&supId=SUP-7');
     expect(router.navigate).not.toHaveBeenCalled();
   });
 

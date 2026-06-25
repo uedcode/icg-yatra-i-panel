@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UtilService } from 'src/app/service/core/util.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 import { EsignApiService } from 'src/app/service/api/security/esign-api.service';
@@ -253,6 +254,7 @@ export class FormPmtDutyComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
+    private previewWindow: PreviewWindowService,
     private UtilService: UtilService,
     private datePipe: DatePipe,
     public $auth: AuthService,
@@ -1745,7 +1747,7 @@ export class FormPmtDutyComponent implements OnInit {
       .join('&');
     const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
     const previewUrl = `${String(moduleUrl || '').replace(/\/$/, '')}/${route}${queryString ? `?${queryString}` : ''}`;
-    window.open(previewUrl, '_blank');
+    this.previewWindow.openUrl(previewUrl);
   }
 
   get isResettlementClaimMode(): boolean {

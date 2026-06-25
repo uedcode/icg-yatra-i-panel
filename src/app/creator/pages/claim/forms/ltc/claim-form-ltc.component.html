@@ -1,18 +1,6 @@
 <div class="main-container legacy-form-page legacy-creator-form">
           <!-- PAGE HEADER -->
-          <div class="page-header gov-page-toolbar">
-            <div class="page-leftheader">
-              <h4 class="page-title">{{ pageTitle }}</h4>
-              <ol class="breadcrumb pl-0">
-                <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Yatra</a></li>
-                <li class="breadcrumb-item">
-                  <a [routerLink]="['../claim-new']">
-                    Claim
-                  </a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">{{ pageTitle }}</li>
-              </ol>
-            </div>
+  <app-common-form-header [pageTitle]="pageTitle" sectionLabel="Claim" [sectionLink]="['../claim-new']">
 
             <div class="row mrg_btm_5">
               <div class="col-md-3">
@@ -34,8 +22,7 @@
                 </button>
               </div>
             </div>
-          </div>
-
+          </app-common-form-header>
           <!-- MAIN CONTENT -->
           <div class="content-wrap">
             <div class="panel_card">
@@ -1081,5 +1068,6 @@
           </div>
 
         </div>
+
 
 

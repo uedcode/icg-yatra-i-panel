@@ -466,82 +466,113 @@ describe('AuthService', () => {
     expect(service.formatOperation('', '1015')).toBe('');
   });
 
-  it('should open creator advance file viewer inside active ADV shell route', () => {
+  it('should open creator advance file viewer inside active ADV shell route', async () => {
     service.createSession(sessionPayload, 'NONE');
     spyOn(Date, 'now').and.returnValue(1782115442078);
-    spyOn(window, 'open');
+    const viewerWindow = { location: { href: '' }, close: jasmine.createSpy('close') };
+    spyOn(window, 'open').and.returnValue(viewerWindow as any);
+    spyOn(window, 'fetch').and.returnValue(Promise.resolve({ ok: true } as Response));
     window.history.pushState({}, '', '/adv/creator/form-ty-duty');
 
-    service.viewFile('/claim/178/support_doc/file.pdf');
+    await service.viewFile('/claim/178/support_doc/file.pdf');
 
     const expectedUrl = `${environment.fileUrl.replace(/\/$/, '')}/claim/178/support_doc/file.pdf?t=1782115442078`;
-    expect(window.open).toHaveBeenCalledWith(
-      `/adv/creator/view-file/${toRouteSafeBase64(expectedUrl)}`,
-      '_blank'
+    expect(window.open).toHaveBeenCalledWith('', '_blank');
+    expect(window.fetch).toHaveBeenCalledWith(expectedUrl, {
+      method: 'GET',
+      cache: 'no-store',
+    });
+    expect(viewerWindow.location.href).toBe(
+      `/adv/creator/view-file/${toRouteSafeBase64(expectedUrl)}`
     );
   });
 
-  it('should open creator claim file viewer inside active CLM shell route', () => {
+  it('should open creator claim file viewer inside active CLM shell route', async () => {
     service.createSession(sessionPayload, 'NONE');
     spyOn(Date, 'now').and.returnValue(1782115442078);
-    spyOn(window, 'open');
+    const viewerWindow = { location: { href: '' }, close: jasmine.createSpy('close') };
+    spyOn(window, 'open').and.returnValue(viewerWindow as any);
+    spyOn(window, 'fetch').and.returnValue(Promise.resolve({ ok: true } as Response));
     window.history.pushState({}, '', '/claim/creator/preview-ty-duty-claim');
 
-    service.viewFile('claim/178/support_doc/file.pdf');
+    await service.viewFile('claim/178/support_doc/file.pdf');
 
     const expectedUrl = `${environment.fileUrl.replace(/\/$/, '')}/claim/178/support_doc/file.pdf?t=1782115442078`;
-    expect(window.open).toHaveBeenCalledWith(
-      `/claim/creator/view-file/${toRouteSafeBase64(expectedUrl)}`,
-      '_blank'
+    expect(window.open).toHaveBeenCalledWith('', '_blank');
+    expect(viewerWindow.location.href).toBe(
+      `/claim/creator/view-file/${toRouteSafeBase64(expectedUrl)}`
     );
   });
 
-  it('should open approver advance file viewer inside active ADV shell route', () => {
+  it('should open approver advance file viewer inside active ADV shell route', async () => {
     service.createSession(
       { ...sessionPayload, roleTypeId: 'AP', roleName: 'Approver' },
       'NONE'
     );
     spyOn(Date, 'now').and.returnValue(1782115442078);
-    spyOn(window, 'open');
+    const viewerWindow = { location: { href: '' }, close: jasmine.createSpy('close') };
+    spyOn(window, 'open').and.returnValue(viewerWindow as any);
+    spyOn(window, 'fetch').and.returnValue(Promise.resolve({ ok: true } as Response));
     window.history.pushState({}, '', '/adv/approver/form-ty-duty');
 
-    service.viewFile('/claim/178/support_doc/file.pdf');
+    await service.viewFile('/claim/178/support_doc/file.pdf');
 
     const expectedUrl = `${environment.fileUrl.replace(/\/$/, '')}/claim/178/support_doc/file.pdf?t=1782115442078`;
-    expect(window.open).toHaveBeenCalledWith(
-      `/adv/approver/view-file/${toRouteSafeBase64(expectedUrl)}`,
-      '_blank'
+    expect(window.open).toHaveBeenCalledWith('', '_blank');
+    expect(viewerWindow.location.href).toBe(
+      `/adv/approver/view-file/${toRouteSafeBase64(expectedUrl)}`
     );
   });
 
-  it('should open approver claim file viewer inside active CLM shell route', () => {
+  it('should open approver claim file viewer inside active CLM shell route', async () => {
     service.createSession(
       { ...sessionPayload, roleTypeId: 'VE1', roleName: 'Verifier' },
       'NONE'
     );
     spyOn(Date, 'now').and.returnValue(1782115442078);
-    spyOn(window, 'open');
+    const viewerWindow = { location: { href: '' }, close: jasmine.createSpy('close') };
+    spyOn(window, 'open').and.returnValue(viewerWindow as any);
+    spyOn(window, 'fetch').and.returnValue(Promise.resolve({ ok: true } as Response));
     window.history.pushState({}, '', '/claim/approver/preview-ty-duty-claim');
 
-    service.viewFile('/claim/178/support_doc/file.pdf');
+    await service.viewFile('/claim/178/support_doc/file.pdf');
 
     const expectedUrl = `${environment.fileUrl.replace(/\/$/, '')}/claim/178/support_doc/file.pdf?t=1782115442078`;
-    expect(window.open).toHaveBeenCalledWith(
-      `/claim/approver/view-file/${toRouteSafeBase64(expectedUrl)}`,
-      '_blank'
+    expect(window.open).toHaveBeenCalledWith('', '_blank');
+    expect(viewerWindow.location.href).toBe(
+      `/claim/approver/view-file/${toRouteSafeBase64(expectedUrl)}`
     );
   });
 
-  it('should show a message and not open viewer when file URL is empty', () => {
+  it('should show a message and not open viewer when file URL is empty', async () => {
     spyOn(window, 'open');
 
-    service.viewFile('');
+    await service.viewFile('');
 
     expect(commonService.showMessage).toHaveBeenCalledWith(
-      'File URL is not available.',
+      "File doesn't exist",
       'danger'
     );
     expect(window.open).not.toHaveBeenCalled();
+  });
+
+  it('should show a message and close preopened viewer when file does not exist', async () => {
+    service.createSession(sessionPayload, 'NONE');
+    spyOn(Date, 'now').and.returnValue(1782115442078);
+    const viewerWindow = { location: { href: '' }, close: jasmine.createSpy('close') };
+    spyOn(window, 'open').and.returnValue(viewerWindow as any);
+    spyOn(window, 'fetch').and.returnValue(Promise.resolve({ ok: false, status: 404 } as Response));
+    window.history.pushState({}, '', '/adv/creator/form-ty-duty');
+
+    const opened = await service.viewFile('/claim/178/support_doc/missing.pdf');
+
+    expect(opened).toBeFalse();
+    expect(commonService.showMessage).toHaveBeenCalledWith(
+      "File doesn't exist",
+      'danger'
+    );
+    expect(viewerWindow.close).toHaveBeenCalled();
+    expect(viewerWindow.location.href).toBe('');
   });
 
   it('should identify null, empty, and string-null values as empty', () => {

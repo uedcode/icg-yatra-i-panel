@@ -1,5 +1,4 @@
-﻿<div class="page-header gov-page-toolbar">
-  <div class="page-leftheader"><h4 class="page-title">{{ pageTitle }}</h4></div>
+<app-common-form-header [pageTitle]="pageTitle" sectionLabel="Advance">
   <div class="detail-actions legacy-review-actions">
     <button *ngIf="!previewMode" type="button" class="btn btn-info mr-2" (click)="openPreview()">Preview</button>
     <button *ngIf="canTakeAction()" type="button" class="btn btn-info mr-2" [disabled]="actionLoading" (click)="openActionRemarkModal(codeStatus?.returned)">Return</button>
@@ -7,7 +6,9 @@
     <button *ngIf="canTakeAction()" type="button" class="btn btn-info mr-2" [disabled]="actionLoading || !allSectionsReviewed" (click)="openActionRemarkModal(codeStatus?.outbox)">{{ primaryActionLabel }}</button>
     <button type="button" class="btn btn-dark request_view_back" (click)="goBack()"><i class="fa fa-chevron-left"></i></button>
   </div>
-</div>
+</app-common-form-header>
+
+
 
 <div class="legacy-review-form pmt-duty-review-form">
   <div class="panel_card">
@@ -303,3 +304,4 @@
 </div>
 
 <app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>
+

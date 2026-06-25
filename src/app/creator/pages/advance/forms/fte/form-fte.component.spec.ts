@@ -58,6 +58,7 @@ describe('FormFteComponent', () => {
     }));
     component.$auth = jasmine.createSpyObj('AuthService', ['getModuleName']);
     component.$auth.getModuleName.and.returnValue('/adv/creator');
+    component.previewWindow = jasmine.createSpyObj('PreviewWindowService', ['openUrl']);
     component.router = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
     component.UtilService = jasmine.createSpyObj('UtilService', ['toMillis']);
     component.UtilService.toMillis.and.callFake((value: any) => value);
@@ -479,12 +480,8 @@ describe('FormFteComponent', () => {
     const component = createComponent();
     component.claims.claimId = 777;
     component.supplementaryId = 'SUP-77';
-    spyOn(window, 'open');
     component.navigatePreview('', 777);
-    expect(window.open).toHaveBeenCalledWith(
-      '/adv/creator/preview-fte-advance?id=777&supId=SUP-77',
-      '_blank'
-    );
+    expect(component.previewWindow.openUrl).toHaveBeenCalledWith('/adv/creator/preview-fte-advance?id=777&supId=SUP-77');
     expect(component.router.navigate).not.toHaveBeenCalled();
   });
 
@@ -494,12 +491,8 @@ describe('FormFteComponent', () => {
 
     expect(component.pageTitle).toBe('REQUISITION FOR FTE ADVANCE');
 
-    spyOn(window, 'open');
     component.navigatePreview('', 778);
-    expect(window.open).toHaveBeenCalledWith(
-      '/adv/creator/preview-fte-advance?id=778',
-      '_blank'
-    );
+    expect(component.previewWindow.openUrl).toHaveBeenCalledWith('/adv/creator/preview-fte-advance?id=778');
     expect(component.router.navigate).not.toHaveBeenCalled();
   });
 });

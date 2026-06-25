@@ -1,4 +1,4 @@
-﻿import { DatePipe, Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -6,6 +6,7 @@ import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 import { ApproverActionRemarkModalService } from 'src/app/service/core/approver-action-remark-modal.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 declare var $: any;
 
 @Component({
@@ -40,6 +41,8 @@ export class ClaimFormTyDutyComponent implements OnInit {
   form6 = false;
   form7 = false;
   parallelView = false;
+  parallelViewerUrl = '';
+  parallelViewerTitle = '';
   eSignTempFormObj: any = null;
   userIdDetails: any;
   codeStatus: any;
@@ -49,6 +52,7 @@ export class ClaimFormTyDutyComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
+    private previewWindow: PreviewWindowService,
     private datePipe: DatePipe,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
@@ -79,6 +83,7 @@ export class ClaimFormTyDutyComponent implements OnInit {
       this.form6 = false;
       this.form7 = false;
       this.parallelView = false;
+      this.closeParallelViewer();
 
       if (this.claimId) {
         this.loadClaim();
@@ -370,7 +375,7 @@ export class ClaimFormTyDutyComponent implements OnInit {
       return;
     }
     const url = `${this.$auth.getModuleName()}/preview-ty-duty-claim?id=${encodeURIComponent(this.claimId)}&subFormId=${encodeURIComponent(this.subFormId)}`;
-    window.open(url, '_blank');
+    this.previewWindow.openUrl(url);
   }
 
   openRelatedPreview(route: string, relatedClaimId: any, subFormId?: string): void {
@@ -382,7 +387,7 @@ export class ClaimFormTyDutyComponent implements OnInit {
     if (subFormId) {
       query.push(`subFormId=${encodeURIComponent(subFormId)}`);
     }
-    window.open(`${this.$auth.getModuleName()}/${route}?${query.join('&')}`, '_blank');
+    this.previewWindow.openUrl(`${this.$auth.getModuleName()}/${route}?${query.join('&')}`);
   }
   goBack(): void {
     this.location.back();
@@ -469,21 +474,53 @@ export class ClaimFormTyDutyComponent implements OnInit {
     return '-';
   }
 
-  viewDocument(url: any): void {
+  async viewDocument(url: any): Promise<void> {
     if (!url) {
-      this.$common.showMessage('Document file is not available.', 'danger');
+      this.$common.showMessage("File doesn't exist", 'danger');
       return;
     }
-    this.$auth.viewFile(url);
+    await this.openDocumentUrl(url, 'Signed Documents');
   }
 
-  viewSupportingDocument(doc: any): void {
+  async viewSupportingDocument(doc: any): Promise<void> {
     if (!doc?.url) {
-      this.$common.showMessage('Document file is not available.', 'danger');
+      this.$common.showMessage("File doesn't exist", 'danger');
       return;
     }
-    doc.disableVal = true;
-    this.$auth.viewFile(doc.url);
+    const opened = await this.openDocumentUrl(doc.url, this.getDocumentTitle(doc));
+    if (opened) {
+      doc.disableVal = true;
+    }
+  }
+
+  closeParallelViewer(): void {
+    this.parallelViewerUrl = '';
+    this.parallelViewerTitle = '';
+  }
+
+  private async openDocumentUrl(url: any, title: string): Promise<boolean> {
+    if (this.parallelView) {
+      const existingUrl = await this.$auth.resolveExistingFileUrl(url);
+      if (!existingUrl) {
+        return false;
+      }
+      this.parallelViewerUrl = existingUrl;
+      this.parallelViewerTitle = title;
+      return true;
+    }
+
+    this.closeParallelViewer();
+    return this.$auth.viewFile(url);
+  }
+
+  private getDocumentTitle(doc: any): string {
+    return (
+      doc?.codeDocInfoDTO?.docName ||
+      doc?.documentName ||
+      doc?.docName ||
+      doc?.docNo ||
+      'Document'
+    );
   }
 
   private initializeSupportingDocumentVerification(): void {

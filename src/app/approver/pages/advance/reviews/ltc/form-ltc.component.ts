@@ -1,4 +1,4 @@
-﻿import { DatePipe, Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -6,6 +6,7 @@ import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 import { ApproverActionRemarkModalService } from 'src/app/service/core/approver-action-remark-modal.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 declare var $: any;
 
 @Component({
@@ -49,6 +50,7 @@ export class FormLtcAdvanceComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
+    private previewWindow: PreviewWindowService,
     private datePipe: DatePipe,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
@@ -525,7 +527,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       `${this.$auth.getModuleName()}/${previewRoute}` +
       `?id=${encodeURIComponent(this.formId ?? this.claimId)}` +
       `&subFormId=${encodeURIComponent(this.subFormId)}`;
-    window.open(url, '_blank');
+    this.previewWindow.openUrl(url);
   }
 
   openRelatedPreview(relatedClaimId: any): void {
@@ -534,7 +536,7 @@ export class FormLtcAdvanceComponent implements OnInit {
       return;
     }
     const url = `${this.$auth.getModuleName()}/preview-ltc-advance?id=${encodeURIComponent(relatedClaimId)}`;
-    window.open(url, '_blank');
+    this.previewWindow.openUrl(url);
   }
 
   private getPreviewRoute(): string {

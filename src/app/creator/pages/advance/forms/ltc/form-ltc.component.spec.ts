@@ -53,6 +53,7 @@ describe('FormLtcAdvanceComponent', () => {
     component.userIdDetails = userDetails;
     component.$auth = jasmine.createSpyObj('AuthService', ['getModuleName']);
     component.$auth.getModuleName.and.returnValue('/creator');
+    component.previewWindow = jasmine.createSpyObj('PreviewWindowService', ['openUrl']);
     component.$common = jasmine.createSpyObj('CommonService', [
       'showLoader', 'hideLoader', 'showMessage', 'checkForValidFile', 'parseResponse'
     ]);
@@ -966,14 +967,10 @@ describe('FormLtcAdvanceComponent', () => {
     component.supplementaryId = 'SUP-LTC-1';
     component.activeSubFormId = 'L';
     component.$auth.getModuleName.and.returnValue('/adv/creator');
-    spyOn(window, 'open');
 
     component.navigatePreview();
 
-    expect(window.open).toHaveBeenCalledWith(
-      '/adv/creator/preview-ltc-advance?id=222&supId=SUP-LTC-1',
-      '_blank'
-    );
+    expect(component.previewWindow.openUrl).toHaveBeenCalledWith('/adv/creator/preview-ltc-advance?id=222&supId=SUP-LTC-1');
     expect(component.router.navigate).not.toHaveBeenCalled();
   });
 

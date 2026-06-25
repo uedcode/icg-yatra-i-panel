@@ -1,7 +1,4 @@
-<div class="page-header gov-page-toolbar">
-  <div class="page-leftheader">
-    <h4 class="page-title">{{ pageTitle }}</h4>
-  </div>
+<app-common-form-header [pageTitle]="pageTitle" sectionLabel="Advance">
   <div class="detail-actions legacy-review-actions">
     <button *ngIf="!previewMode" type="button" class="btn btn-info mr-2" (click)="openPreview()">
       Preview
@@ -37,7 +34,9 @@
       <i class="fa fa-chevron-left"></i>
     </button>
   </div>
-</div>
+</app-common-form-header>
+
+
 
 <div class="legacy-review-form fte-review-form">
   <div class="panel_card">
@@ -413,3 +412,4 @@
 </div>
 
 <app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>
+

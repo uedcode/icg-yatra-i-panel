@@ -8,6 +8,7 @@ import { FormApiService } from 'src/app/service/api/form/form-api.service';
 import { FormDocumentService } from 'src/app/service/core/form-document.service';
 import { FormStateApiService } from 'src/app/service/api/form/form-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 import { EsignApiService } from 'src/app/service/api/security/esign-api.service';
@@ -451,7 +452,7 @@ export class ClaimFormFteComponent implements OnInit {
       .join('&');
     const moduleUrl = this.getModuleUrl();
     const previewUrl = `${moduleUrl}/${previewRoute}${queryString ? `?${queryString}` : ''}`;
-    window.open(previewUrl, '_blank');
+    this.previewWindow.openUrl(previewUrl);
   }
 
   private getModuleUrl(): string {
@@ -636,6 +637,7 @@ export class ClaimFormFteComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
+    private previewWindow: PreviewWindowService,
     private UtilService: UtilService,
     private datePipe: DatePipe,
     public $auth: AuthService,

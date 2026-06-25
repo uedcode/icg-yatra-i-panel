@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
+import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 declare var $: any;
 
 type ReviewSection = {
@@ -44,6 +45,9 @@ export class ClaimFormResettlementComponent implements OnInit {
   userIdDetails: any;
   codeStatus: any;
   codeRoleType: any;
+  parallelView = false;
+  parallelViewerUrl = '';
+  parallelViewerTitle = '';
 
   get pageTitle(): string {
     return `${this.supplementaryId ? 'Supplementary ' : ''}Resettlement Claim`;
@@ -53,6 +57,7 @@ export class ClaimFormResettlementComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
+    private previewWindow: PreviewWindowService,
     private datePipe: DatePipe,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
@@ -81,6 +86,8 @@ export class ClaimFormResettlementComponent implements OnInit {
         !this.isLegacyPreviewContext;
       this.reviewSections = [];
       this.activeReviewSectionKey = '';
+      this.parallelView = false;
+      this.closeParallelViewer();
       if (this.claimId && this.subFormId) {
         this.loadClaim();
         this.loadStateHistory();
@@ -454,7 +461,7 @@ export class ClaimFormResettlementComponent implements OnInit {
       `${this.$auth.getModuleName()}/${route}` +
       `?id=${encodeURIComponent(this.claimId)}` +
       `&subFormId=${encodeURIComponent(this.subFormId)}`;
-    window.open(url, '_blank');
+    this.previewWindow.openUrl(url);
   }
 
   display(value: any): string {
@@ -519,24 +526,58 @@ export class ClaimFormResettlementComponent implements OnInit {
     );
   }
 
-  viewSupportingDocument(doc: any): void {
+  async viewSupportingDocument(doc: any): Promise<void> {
     const url = doc?.url || doc?.fileUrl || doc?.docUrl;
     if (!url) {
-      this.$common.showMessage('Document file is not available.', 'danger');
+      this.$common.showMessage("File doesn't exist", 'danger');
       return;
     }
-    doc.checkedIndicator = true;
-    this.$auth.viewFile(url);
+    const opened = await this.openDocumentUrl(url, this.getDocumentTitle(doc));
+    if (opened) {
+      doc.checkedIndicator = true;
+    }
   }
 
-  viewSignedDocument(): void {
+  async viewSignedDocument(): Promise<void> {
     const signedUrl = this.formObj?.signedFileUrl;
     if (!signedUrl) {
-      this.$common.showMessage('Signed document is not available.', 'danger');
+      this.$common.showMessage("File doesn't exist", 'danger');
       return;
     }
-    this.formObj.signedCheckedIndicator = true;
-    this.$auth.viewFile(signedUrl);
+    const opened = await this.openDocumentUrl(signedUrl, 'Signed Documents');
+    if (opened) {
+      this.formObj.signedCheckedIndicator = true;
+    }
+  }
+
+  closeParallelViewer(): void {
+    this.parallelViewerUrl = '';
+    this.parallelViewerTitle = '';
+  }
+
+  private async openDocumentUrl(url: any, title: string): Promise<boolean> {
+    if (this.parallelView) {
+      const existingUrl = await this.$auth.resolveExistingFileUrl(url);
+      if (!existingUrl) {
+        return false;
+      }
+      this.parallelViewerUrl = existingUrl;
+      this.parallelViewerTitle = title;
+      return true;
+    }
+
+    this.closeParallelViewer();
+    return this.$auth.viewFile(url);
+  }
+
+  private getDocumentTitle(doc: any): string {
+    return (
+      doc?.codeDocInfoDTO?.docName ||
+      doc?.documentName ||
+      doc?.docName ||
+      doc?.docNo ||
+      'Document'
+    );
   }
 
   openRelatedPreview(route: string, claimId: any, subFormId?: string): void {
@@ -550,7 +591,7 @@ export class ClaimFormResettlementComponent implements OnInit {
     if (relatedSubFormId) {
       query.push(`subFormId=${encodeURIComponent(relatedSubFormId)}`);
     }
-    window.open(`${this.$auth.getModuleName()}/${route}?${query.join('&')}`, '_blank');
+    this.previewWindow.openUrl(`${this.$auth.getModuleName()}/${route}?${query.join('&')}`);
   }
 
   private getRemarkForStatus(status: string, mutateField = true): string {
