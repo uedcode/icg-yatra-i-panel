@@ -69,7 +69,7 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
 
   asDate(value: any): string {
     if (!value) return '-';
-    return this.datePipe.transform(value, 'dd-MMM-yyyy') ?? '-';
+    return this.datePipe.transform(value, 'dd/MM/yyyy') ?? '-';
   }
 
   goBack(): void {

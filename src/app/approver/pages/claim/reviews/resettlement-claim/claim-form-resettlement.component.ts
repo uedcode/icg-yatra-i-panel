@@ -6,6 +6,7 @@ import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
+import { isManualClaimModeValue, isYatraClaimModeValue } from 'src/app/shared/utils/claim-review-mode.util';
 declare var $: any;
 
 type ReviewSection = {
@@ -199,7 +200,7 @@ export class ClaimFormResettlementComponent implements OnInit {
   }
 
   get uploadedDocuments(): any[] {
-    return this.documentDtos.filter((doc) => !!(doc?.url || doc?.fileUrl || doc?.docUrl));
+    return this.documentDtos.filter((doc) => !!doc?.url);
   }
 
   get allUploadedDocumentsVerified(): boolean {
@@ -216,6 +217,14 @@ export class ClaimFormResettlementComponent implements OnInit {
       signWith === this.codeSignType.eSign ||
       signWith === this.codeSignType.eSignAlt;
     return isESign && this.isApprovingRole();
+  }
+
+  isYatraClaimMode(): boolean {
+    return isYatraClaimModeValue(this.formObj?.claimMode);
+  }
+
+  isManualClaimMode(): boolean {
+    return isManualClaimModeValue(this.formObj?.claimMode);
   }
 
   getActionLabel(): string {
@@ -527,7 +536,7 @@ export class ClaimFormResettlementComponent implements OnInit {
   }
 
   async viewSupportingDocument(doc: any): Promise<void> {
-    const url = doc?.url || doc?.fileUrl || doc?.docUrl;
+    const url = doc?.url;
     if (!url) {
       this.$common.showMessage("File doesn't exist", 'danger');
       return;

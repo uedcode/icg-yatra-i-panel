@@ -7,6 +7,7 @@ import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.
 import { ApproverActionRemarkModalService } from 'src/app/service/core/approver-action-remark-modal.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
+import { isManualClaimModeValue, isYatraClaimModeValue } from 'src/app/shared/utils/claim-review-mode.util';
 declare var $: any;
 
 @Component({
@@ -140,6 +141,14 @@ export class ClaimFormPmtDutyComponent implements OnInit {
 
   get isRemarksVisible(): boolean {
     return !!String(this.formObj?.internalRemarks ?? '').trim();
+  }
+
+  isYatraClaimMode(): boolean {
+    return isYatraClaimModeValue(this.formObj?.claimMode);
+  }
+
+  isManualClaimMode(): boolean {
+    return isManualClaimModeValue(this.formObj?.claimMode);
   }
 
   get canGoToPreviousSection(): boolean {

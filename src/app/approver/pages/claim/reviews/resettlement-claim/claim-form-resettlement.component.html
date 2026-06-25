@@ -242,39 +242,39 @@
               <div class="col-md-3 mt-2"><strong>Distance:</strong> {{ display(primaryAdvanceDetails?.distance) }}</div>
               <div class="col-md-3 mt-2"><strong>Family Type:</strong> {{ display(primaryAdvanceDetails?.familyType) }}</div>
             </div>
-            <div class="mt-3 d-flex flex-wrap gap-2">
-              <button
-                *ngIf="primaryClaimDetails?.advVoucherNumber"
-                type="button"
-                class="btn btn-outline-info btn-sm mr-2 mb-2"
-                (click)="openRelatedPreview('preview-voucher', claimId, subForm())"
-              >
-                View Voucher
-              </button>
-              <button
-                *ngIf="formObj?.advClaimId"
-                type="button"
-                class="btn btn-outline-primary btn-sm mr-2 mb-2"
-                (click)="openRelatedPreview(getAdvancePreviewRoute(), formObj?.advClaimId, subForm())"
-              >
-                View Linked Advance
-              </button>
-              <button
-                *ngIf="formObj?.supClaimId"
-                type="button"
-                class="btn btn-outline-secondary btn-sm mr-2 mb-2"
-                (click)="openRelatedPreview(getPreviewRoute(), formObj?.supClaimId, subForm())"
-              >
-                View Supplementary Claim
-              </button>
-              <button
-                *ngIf="primaryClaimDetails?.pmtTypeClaimId"
-                type="button"
-                class="btn btn-outline-dark btn-sm mb-2"
-                (click)="openRelatedPreview(getPreviewRoute(), primaryClaimDetails?.pmtTypeClaimId, subForm())"
-              >
-                View PMT Type Claim
-              </button>
+            <div class="row mt-3">
+              <div class="col-md-4" *ngIf="primaryClaimDetails?.advVoucherNumber && isYatraClaimMode()">
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-md-4 padd_5"><label class="control-label">Advance Voucher</label></div>
+                    <div class="col-md-8 padd_5"><button type="button" class="btn btn-info btn-sm" (click)="openRelatedPreview('preview-voucher', claimId, subForm())">View</button></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4" *ngIf="isYatraClaimMode() && formObj?.advClaimId">
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-md-4 padd_5"><label class="control-label">Linked Advance Form</label></div>
+                    <div class="col-md-8 padd_5"><button type="button" class="btn btn-info btn-sm" (click)="openRelatedPreview(getAdvancePreviewRoute(), formObj?.advClaimId, subForm())">View</button></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4" *ngIf="formObj?.supClaimId">
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-md-4 padd_5"><label class="control-label">Linked Claim Form</label></div>
+                    <div class="col-md-8 padd_5"><button type="button" class="btn btn-info btn-sm" (click)="openRelatedPreview(getPreviewRoute(), formObj?.supClaimId, subForm())">View</button></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4" *ngIf="primaryClaimDetails?.pmtTypeClaimId">
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-md-4 padd_5"><label class="control-label">Link Part</label></div>
+                    <div class="col-md-8 padd_5"><button type="button" class="btn btn-info btn-sm" (click)="openRelatedPreview(getPreviewRoute(), primaryClaimDetails?.pmtTypeClaimId, subForm())">View</button></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -383,18 +383,18 @@
                 <tr *ngFor="let doc of documentDtos">
                   <td>{{ display(doc?.codeDocInfoDTO?.docName) }}</td>
                   <td>{{ display(doc?.descr || doc?.otherDocName) }}</td>
-                  <td>{{ display((doc?.url || doc?.fileUrl || doc?.docUrl) ? 'Uploaded' : 'Missing') }}</td>
+                  <td>{{ display(doc?.url ? 'Uploaded' : 'Missing') }}</td>
                   <td>{{ display(doc?.checkedIndicator ? 'Yes' : 'No') }}</td>
                   <td>
                     <button
-                      *ngIf="doc?.url || doc?.fileUrl || doc?.docUrl"
+                      *ngIf="doc?.url"
                       type="button"
                       class="btn btn-warning btn-sm"
                       (click)="viewSupportingDocument(doc)"
                     >
                       <i class="fa fa-eye"></i> View
                     </button>
-                    <span *ngIf="!(doc?.url || doc?.fileUrl || doc?.docUrl)">-</span>
+                    <span *ngIf="!doc?.url">-</span>
                   </td>
                 </tr>
                 <tr *ngIf="formObj?.signedFileUrl">

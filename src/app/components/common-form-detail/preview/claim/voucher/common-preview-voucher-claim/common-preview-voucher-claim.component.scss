@@ -1,1 +1,26 @@
 
+.legacy-voucher-preview {
+  .voucher-logo {
+    width: 80px;
+    height: auto;
+    display: inline-block;
+  }
+
+  .legacy-preview-heading {
+    margin: 6px 0;
+    color: #303857;
+    font-weight: 700;
+  }
+
+  .legacy-preview-heading strong {
+    text-decoration: none;
+  }
+
+  .level_1 {
+    padding-left: 30px;
+  }
+
+  .general-data > .level_1.text-center {
+    padding-left: 0;
+  }
+}
