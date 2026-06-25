@@ -51,9 +51,9 @@ describe('CommonPreviewLtcAdvanceComponent', () => {
 
   it('uses shared display and preview data helpers', () => {
     const component = createComponent();
-    expect(component.display(null)).toBe(legacyValue(null));
-    expect(component.display('  ')).toBe(legacyValue('  '));
-    expect(component.display('abc')).toBe(legacyValue('abc'));
+    expect(legacyValue(null)).toBe('-');
+    expect(legacyValue('  ')).toBe('-');
+    expect(legacyValue('abc')).toBe('abc');
     expect(legacyDate(1700000000000, 'previewDate')).toBeTruthy();
     expect(firstItem([{ id: 1 }])).toEqual({ id: 1 });
     expect(asArray({ id: 1 })).toEqual([{ id: 1 }]);

@@ -118,16 +118,12 @@ export class CommonPreviewTyDutyAdvanceComponent implements OnInit {
   get accHToDutyCells(): string[] {
     if (this.tyDuty?.availedCategory === '1' || this.tyDuty?.availedCategory === '2') {
       return [
-        `${this.display(this.tyDuty?.accHToDutyKms)} per day(Kms)`,
-        `${this.display(this.tyDuty?.accHToDutyPerDay)} per km`,
+        `${legacyValue(this.tyDuty?.accHToDutyKms)} per day(Kms)`,
+        `${legacyValue(this.tyDuty?.accHToDutyPerDay)} per km`,
       ];
     }
 
-    return [`${this.display(this.tyDuty?.accHToDutyPerDay)} per day`];
-  }
-
-  display(value: any): any {
-    return legacyValue(value);
+    return [`${legacyValue(this.tyDuty?.accHToDutyPerDay)} per day`];
   }
 
   goBack(): void {

@@ -83,10 +83,6 @@ export class CommonPreviewLtcAdvanceComponent implements OnInit {
     });
   }
 
-  display(value: any): string {
-    return legacyValue(value);
-  }
-
   get ltc(): any {
     return this.preview?.ltc || {};
   }

@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
+import { legacyValue } from 'src/app/shared/utils/legacy-display.util';
 import { unwrapNullablePreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
 
 @Component({
@@ -91,18 +92,13 @@ export class CommonPreviewMovementUpdateClaimComponent implements OnInit {
     this.previewWindow.closeOrBack(this.location);
   }
 
-  display(value: any): string {
-    if (value === null || value === undefined || value === '') return '-';
-    return String(value);
-  }
-
   modeLabel(mode: any): string {
     const id = String(mode ?? '').toUpperCase();
     if (id === this.yatTravelMode.yatra) return 'YATRA Advance';
     if (id === this.yatTravelMode.manual) return 'Manual Advance';
     if (id === this.yatTravelMode.nil) return 'Nil Advance';
     if (id === this.yatTravelMode.supplementary) return 'Supplementary';
-    return this.display(mode);
+    return legacyValue(mode);
   }
 
   purposeLabel(subFormId: any): string {
@@ -112,7 +108,7 @@ export class CommonPreviewMovementUpdateClaimComponent implements OnInit {
     if (id === 'F') return 'FTE Advance';
     if (id === 'L') return 'LTC Advance';
     if (id === 'RS') return 'Resettlement Claim';
-    return this.display(subFormId);
+    return legacyValue(subFormId);
   }
 
   trackByIndex(index: number): number {

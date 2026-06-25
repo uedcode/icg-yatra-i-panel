@@ -5,7 +5,6 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
-import { legacyValue } from 'src/app/shared/utils/legacy-display.util';
 import { unwrapPreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
 import { isESign, isInkSign } from 'src/app/shared/utils/legacy-preview.util';
 
@@ -67,10 +66,6 @@ export class CommonPreviewFteAdvanceComponent implements OnInit {
 
   get gxFormLabel(): string {
     return this.claims?.extendedAdvId ? 'Authority' : 'Gx Form';
-  }
-
-  display(value: any): any {
-    return legacyValue(value);
   }
 
   goBack(): void {

@@ -30,29 +30,29 @@
                   <h4 class="legacy-preview-heading">(a)<strong>Personal Details</strong></h4>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Name</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.name | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.name | legacyNil }}</p></div>
                     <div class="col-md-3"><p><strong>Rank</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.rank | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.rank | legacyNil }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Personnel Number</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.pno | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.pno | legacyNil }}</p></div>
                     <div class="col-md-3"><p><strong>Pay Level</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.payLevel | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.payLevel | legacyNil }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Basic Pay (In Rs) </strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.basicPay | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.basicPay | legacyNil }}</p></div>
                     <div class="col-md-3"><p><strong>Date of Joining </strong></p></div>
                     <div class="col-md-3"><p>{{ ltc?.joiningDate | legacyDate:'previewDate':'Nil' }}</p></div>
                     <div class="col-md-3"><p><strong>Applied To</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.appliedTo | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.appliedTo | legacyNil }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Gx Unit</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.gxUnit | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.gxUnit | legacyNil }}</p></div>
                     <div class="col-md-3"><p><strong>Gx Number</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.gxNumber | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.gxNumber | legacyNil }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Gx Date</strong></p></div>
@@ -75,23 +75,23 @@
                   <h4 class="legacy-preview-heading">(b)<strong>Travel Details</strong></h4>
                   <div class="row">
                     <div class="col-md-3"><p><strong>LTC</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltcSubType | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltcSubType | legacyNil }}</p></div>
                     <div class="col-md-3"><p><strong>LTC Type</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltcTypeDescription | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltcTypeDescription | legacyNil }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Block Year</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.blockYear | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.blockYear | legacyNil }}</p></div>
                     <div class="col-md-3"><p><strong>Home Town</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.placeOfVisit | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.placeOfVisit | legacyNil }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Permanent Address</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.others | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.others | legacyNil }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Place of visit</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.ltcPlace | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.ltcPlace | legacyNil }}</p></div>
                   </div>
                 </div>
 
@@ -182,7 +182,7 @@
                   <h4 class="legacy-preview-heading">(c)<strong>Financial Terms</strong></h4>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Place</strong></p></div>
-                    <div class="col-md-3"><p>{{ ltc?.place | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ ltc?.place | legacyNil }}</p></div>
                     <div class="col-md-3"><p><strong>Date</strong></p></div>
                     <div class="col-md-3"><p>{{ ltc?.date | legacyDate:'previewDate':'Nil' }}</p></div>
                   </div>
@@ -212,19 +212,19 @@
                   <h4 class="legacy-preview-heading">(d)<strong>Bank Details</strong></h4>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Bank Name</strong></p></div>
-                    <div class="col-md-3"><p>{{ bankDetails?.bankName | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ bankDetails?.bankName | legacyNil }}</p></div>
                     <div class="col-md-3"><p><strong>IFSC Code</strong></p></div>
-                    <div class="col-md-3"><p>{{ bankDetails?.ifscCode | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ bankDetails?.ifscCode | legacyNil }}</p></div>
                     <div class="col-md-3"><p><strong>Account Number</strong></p></div>
-                    <div class="col-md-3"><p>{{ bankDetails?.bankAccNo | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ bankDetails?.bankAccNo | legacyNil }}</p></div>
                     <div class="col-md-3"><p><strong>MICR Code</strong></p></div>
-                    <div class="col-md-3"><p>{{ bankDetails?.micrCode | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p>{{ bankDetails?.micrCode | legacyNil }}</p></div>
                   </div>
                 </div>
 
                 <div class="level_1">
                   <h4 class="legacy-preview-heading">(e)<strong>Remarks</strong></h4>
-                  <p>{{ formObj?.internalRemarks | legacyValue:'Nil' }}</p>
+                  <p>{{ formObj?.internalRemarks | legacyNil }}</p>
                 </div>
               </div>
             </div>
