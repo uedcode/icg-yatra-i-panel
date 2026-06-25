@@ -348,11 +348,11 @@ export class ClaimFormPmtDutyComponent implements OnInit {
       }
 
       if (status === 'SC') {
-        this.$common.showMessage(txnId ? `eSign completed successfully. Transaction ID: ` : 'eSign completed successfully.', 'success');
+        this.$common.showMessage(txnId ? `eSign completed successfully. Transaction ID: ${txnId}` : 'eSign completed successfully.', 'success');
       } else if (status === 'US' || status === 'ER') {
-        this.$common.showMessage(txnId ? `eSign could not be completed. Transaction ID: ` : 'eSign could not be completed.', 'danger');
+        this.$common.showMessage(txnId ? `eSign could not be completed. Transaction ID: ${txnId}` : 'eSign could not be completed.', 'danger');
       } else {
-        this.$common.showMessage(txnId ? `eSign status is being processed. Transaction ID: ` : 'eSign status is being processed.', 'info');
+        this.$common.showMessage(txnId ? `eSign status is being processed. Transaction ID: ${txnId}` : 'eSign status is being processed.', 'info');
       }
 
       this.router.navigate([], {
@@ -600,7 +600,6 @@ export class ClaimFormPmtDutyComponent implements OnInit {
       progressiveExpenditureAmt: this.formObj?.progressiveExpenditureAmt,
       balance: this.formObj?.balance,
     };
-    $('#esign_modal').modal('show');
   }
 
   private checkLegacyPreviewContext(): boolean {

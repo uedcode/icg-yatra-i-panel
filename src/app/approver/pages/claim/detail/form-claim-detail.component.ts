@@ -643,7 +643,6 @@ export class FormClaimDetailComponent implements OnInit {
       progressiveExpenditureAmt: this.formObj?.progressiveExpenditureAmt,
       balance: this.formObj?.balance,
     };
-    $('#esign_modal').modal('show');
   }
 
   private buildReviewSections(): ReviewSection[] {

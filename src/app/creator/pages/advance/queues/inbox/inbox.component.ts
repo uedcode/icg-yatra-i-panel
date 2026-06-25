@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
@@ -6,7 +6,8 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
-import { EsignApiService } from 'src/app/service/api/security/esign-api.service';
+import { Subscription } from 'rxjs';
+import { ESignFlowService } from 'src/app/service/core/esign-flow.service';
 import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.util';
 declare var $: any;
 
@@ -16,7 +17,7 @@ declare var $: any;
     styleUrls: ['./inbox.component.scss'],
     standalone: false
 })
-export class InboxComponent implements OnInit {
+export class InboxComponent implements OnInit, OnDestroy {
   readonly codeReadyStatus = {
     readyForDownload: 'RFD',
     downloaded: 'DW',
@@ -31,8 +32,8 @@ export class InboxComponent implements OnInit {
     private router: Router,
     private $claimApi: ClaimApiService,
     private $claimStateApi: ClaimStateApiService,
-    private $esignApi: EsignApiService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private eSignFlow: ESignFlowService,
   ) { }
 
   @Input() dataList: Array<any> = [];
@@ -51,53 +52,15 @@ export class InboxComponent implements OnInit {
   queueLabel = 'Advance';
   uploadTarget: any = null;
   uploadLoadingMap: { [key: string]: boolean } = {};
+  eSignTempFormObj: any = null;
+  private eSignFeedbackSubscription?: Subscription;
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
     this.codeStatus = this.$auth.codeStatus();
     this.queueLabel = 'Advance';
-this.handleEsignFeedback();
+    this.eSignFeedbackSubscription = this.eSignFlow.handleEsignFeedback(this.route);
     this.getState();
-  }
-
-  private handleEsignFeedback(): void {
-    this.route.queryParamMap.subscribe((params) => {
-      const status = params.get('esignStatus');
-      const txnId = params.get('txnId');
-      if (!status) {
-        return;
-      }
-
-      if (status === 'SC') {
-        this.$common.showMessage(
-          txnId
-            ? `eSign completed successfully. Transaction ID: ${txnId}`
-            : 'eSign completed successfully.',
-          'success'
-        );
-      } else if (status === 'US' || status === 'ER') {
-        this.$common.showMessage(
-          txnId
-            ? `eSign could not be completed. Transaction ID: ${txnId}`
-            : 'eSign could not be completed.',
-          'danger'
-        );
-      } else {
-        this.$common.showMessage(
-          txnId
-            ? `eSign status is being processed. Transaction ID: ${txnId}`
-            : 'eSign status is being processed.',
-          'info'
-        );
-      }
-
-      this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: { esignStatus: null, txnId: null },
-        queryParamsHandling: 'merge',
-        replaceUrl: true,
-      });
-    });
   }
 
   filterDataObj
@@ -203,7 +166,8 @@ this.handleEsignFeedback();
       return;
     }
 
-    const payload = {
+    this.eSignTempFormObj = {
+      id: String(claimId),
       claimId: String(claimId),
       roleTypeId: this.userIdDetails?.roleTypeId,
       userId: this.userIdDetails?.userId,
@@ -212,21 +176,6 @@ this.handleEsignFeedback();
       financialYear: this.userIdDetails?.financialYear,
       moduleId: this.userIdDetails?.moduleId,
     };
-
-    this.$esignApi.prepareForESign(payload).subscribe({
-      next: (res: any) => {
-        const responseObject = Array.isArray(res?.object) ? res.object[0] : res?.object;
-        const redirectUrl = responseObject?.redirectUrl || responseObject?.url || responseObject?.esignUrl;
-        if (!res?.status || !redirectUrl) {
-          this.$common.showMessage(res?.message || 'Unable to start eSign.', 'danger');
-          return;
-        }
-        window.location.href = redirectUrl;
-      },
-      error: () => {
-        this.$common.showMessage('Unable to start eSign.', 'danger');
-      },
-    });
   }
 
   downloadInkSignedForSign(data: any): void {
@@ -440,7 +389,10 @@ this.handleEsignFeedback();
     this.reverse = !this.reverse;
   }
 
-}
+  ngOnDestroy(): void {
+    this.eSignFeedbackSubscription?.unsubscribe();
+  }
 
+}
 
 

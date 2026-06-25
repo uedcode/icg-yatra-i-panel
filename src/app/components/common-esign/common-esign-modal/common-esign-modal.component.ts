@@ -1,9 +1,7 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { CommonService } from 'src/app/service/core/common.service';
-import { EsignApiService } from 'src/app/service/api/security/esign-api.service';
-import { environment } from 'src/environments/environment';
+import { ESignFlowService } from 'src/app/service/core/esign-flow.service';
 declare var $: any;
 
 @Component({
@@ -12,123 +10,80 @@ declare var $: any;
     styleUrls: ['./common-esign-modal.component.css'],
     standalone: false
 })
-export class CommonEsignModalComponent implements OnInit {
-  private readonly gatewayStorageKey = environment.esignConfig.gatewayStorageKey;
-  private readonly redirectStorageKey = environment.esignConfig.redirectStorageKey;
+export class CommonEsignModalComponent implements OnInit, OnChanges, OnDestroy {
+  private prepareSubscription?: Subscription;
+  private performSubscription?: Subscription;
 
   constructor(
-    private router: Router,
-    private $common: CommonService,
-    private $esign: EsignApiService,
     public $auth: AuthService,
+    private eSignFlow: ESignFlowService,
   ) { }
 
   @Input() tempFormObj: any;
-  fileUrl = environment.fileUrl;
   userIdDetails;
   documentList: any = [];
   isAgree: boolean = false;
+  prepareMessage = '';
+  isPreparing = false;
+  isPerforming = false;
 
   ngOnInit() {
     this.userIdDetails = this.$auth.getUserDetails();
-    // this.prepareForESign();
-  }
-
-  private buildESignRequest(eSignTransDocDTOs?: any[]) {
-    return {
-      "claimId": this.tempFormObj?.claimId ?? this.tempFormObj?.id,
-      "roleTypeId": this.tempFormObj?.roleTypeId ?? this.userIdDetails?.roleTypeId,
-      "desigId": this.userIdDetails?.desigId,
-      "userId": this.tempFormObj?.userId ?? this.userIdDetails?.userId,
-      "status": this.tempFormObj?.status ?? "OB",
-      "remark": this.tempFormObj?.remark ?? this.tempFormObj?.formRemarks,
-      "financialYear": this.tempFormObj?.financialYear ?? this.userIdDetails?.financialYear,
-      "moduleId": this.tempFormObj?.moduleId ?? this.userIdDetails?.moduleId,
-      "redPercent": this.tempFormObj?.redPercent,
-      "redAmount": this.tempFormObj?.redAmount,
-      "redRemarks": this.tempFormObj?.redRemarks,
-      "unitId": this.userIdDetails?.unitId,
-      "formId": this.tempFormObj?.formId ?? this.tempFormObj?.id,
-      "recommendedAmount": this.tempFormObj?.recommendedAmount,
-      "allotedBudget": this.tempFormObj?.allotedBudget,
-      "balanceAmt": this.tempFormObj?.balanceAmount,
-      "progressiveExpenditureAmt": this.tempFormObj?.progressiveExpenditureAmt,
-      "balance": this.tempFormObj?.balance,
-      ...(eSignTransDocDTOs ? { "eSignTransDocDTOs": eSignTransDocDTOs } : {}),
-    };
   }
 
   prepareForESign() {
-    this.$common.showLoader();
-    try {
-      let req = this.buildESignRequest();
+    this.resetConsentState();
+    this.isPreparing = true;
+    this.prepareSubscription?.unsubscribe();
+    this.prepareSubscription = this.eSignFlow.start(this.tempFormObj).subscribe((prepared) => {
+      this.isPreparing = false;
+      if (!prepared) {
+        return;
+      }
 
-      this.$esign.prepareForESign(req).subscribe(
-        (response: any) => {
-          this.$common.hideLoader();
-          if (response.status === true) {
-            this.documentList = response?.object;
-          }
-        },
-        (err) => {
-          console.log(err);
-          this.$common.hideLoader();
-        }
-      );
-    } catch (error) {
-      this.$common.hideLoader();
-      console.log(error);
-    }
+      this.tempFormObj = prepared.context;
+      this.prepareMessage = prepared.message;
+      this.documentList = prepared.documents;
+      if (typeof $ !== 'undefined') {
+        $('#esign_modal').modal('show');
+      }
+    });
   }
 
   performESign() {
-    this.$common.showLoader();
-    try {
-      let req = {
-        ...this.buildESignRequest(this.documentList),
-        "codeFormId": "",
-        "name": this.userIdDetails?.personName,
-      }
-      
-      this.$esign.performESign(req).subscribe(
-        (response: any) => {
-          this.$common.hideLoader();
-          if (response.status === true) {
-            $("#esign_modal").modal("hide");
-            let moduleUrl = this.$auth.getModuleName();
-            if (response?.object) {
-              localStorage.setItem(this.gatewayStorageKey, response?.object);
-              localStorage.setItem(
-                this.redirectStorageKey,
-                this.router.url || (moduleUrl ? `${moduleUrl}/dashboard` : '/login')
-              );
-              this.router.navigateByUrl(moduleUrl + `/esign`);
-            }
-          }
-        },
-        (err) => {
-          console.log(err);
-          this.$common.hideLoader();
-        }
-      );
-    } catch (error) {
-      this.$common.hideLoader();
-      console.log(error);
+    if (!this.isAgree || this.isPerforming) {
+      return;
     }
+
+    this.isPerforming = true;
+    this.performSubscription?.unsubscribe();
+    this.performSubscription = this.eSignFlow.perform(this.tempFormObj, this.documentList).subscribe((isStarted) => {
+      this.isPerforming = false;
+      if (isStarted && typeof $ !== 'undefined') {
+        $('#esign_modal').modal('hide');
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (!changes) return;
     if (changes.tempFormObj && changes.tempFormObj.currentValue) {
       this.tempFormObj = changes.tempFormObj.currentValue;
-      if (this.tempFormObj?.id) {
+      if (this.tempFormObj?.id || this.tempFormObj?.claimId) {
         this.prepareForESign();
       }
     }
   }
 
-  handleIsCheck() {
-    this.isAgree = !this.isAgree;
+  private resetConsentState(): void {
+    this.isAgree = false;
+    this.documentList = [];
+    this.prepareMessage = '';
+  }
+
+  ngOnDestroy(): void {
+    this.prepareSubscription?.unsubscribe();
+    this.performSubscription?.unsubscribe();
   }
 
 }

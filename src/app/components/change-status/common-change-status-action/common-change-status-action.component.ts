@@ -65,7 +65,6 @@ export class CommonChangeStatusActionComponent implements OnInit {
     this.state = state;
     // if (this.userIdDetails?.isSign && this.actionType == this.codeRoleList?.approver) {
     //   this.tempFormObj = { id: this.formId };
-    //   $('#esign_modal').modal('show');
     //   return;
     // }
     if (actionType == 'AP') {
@@ -102,7 +101,6 @@ export class CommonChangeStatusActionComponent implements OnInit {
         this.tempFormObj.allotedBudget = this.formObj?.allotedBudget;
         this.tempFormObj.progressiveExpenditureAmt = this.formObj?.progressiveExpenditureAmt;
         this.tempFormObj.balance = this.formObj?.balance;
-        $('#esign_modal').modal('show');
         // this.changeConfirm();
       } else {
         this.changeConfirm();
@@ -199,7 +197,6 @@ export class CommonChangeStatusActionComponent implements OnInit {
               this.tempFormObj.billAmt = this.formObj?.billAmount;
               this.tempFormObj.balance = this.formObj?.balance;
               this.tempFormObj.balanceAmt = this.formObj?.balanceAmount;
-              $('#esign_modal').modal('show');
             }
             this.actionType = '';
           }

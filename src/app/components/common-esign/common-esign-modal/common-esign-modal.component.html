@@ -15,7 +15,8 @@
               <h2>User Consent</h2>
               <h4><b>उपयोगकर्ता की सहमति</b></h4>
             </div>
-            <input type="checkbox" [(ngModel)]="isAgree" (click)="handleIsCheck()">
+            <p class="text-info" *ngIf="prepareMessage">{{ prepareMessage }}</p>
+            <input type="checkbox" [(ngModel)]="isAgree">
             <span> I agree to use my kyc for eSign purpose. I understand that I
               will be redirected to emudhra for authentication purpose.</span>
             <p>मैं अपने kyc का उपयोग करने के लिए सहमत हूँ। मैं समझता हूं कि मुझे
@@ -44,8 +45,8 @@
         </div>
         <div class="modal-footer ad_modal_footer text-center" style="display: block;">
           <div class="text-center">
-            <button type="button" class="btn btn-primary" data-dismiss="modal" title="Yes" data-toggle="tooltip"
-              title="Yes" (click)="performESign()" [disabled]="!isAgree ? true : false"><i class="fa fa-check"
+            <button type="button" class="btn btn-primary" title="Yes" data-toggle="tooltip"
+              title="Yes" (click)="performESign()" [disabled]="!isAgree || isPreparing || isPerforming"><i class="fa fa-check"
                 aria-hidden="true"></i>
               Yes</button>
             <button type="button" class="btn btn-danger" data-dismiss="modal" title="No"><i class="fa fa-times"

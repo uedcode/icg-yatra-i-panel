@@ -1364,11 +1364,18 @@ export class ClaimFormLtcComponent implements OnInit {
 
     const payload = this.buildClaimRemarkPayload(this.codeClaimState.outbox, claimId);
     const isESign = this.claims.signWith === this.codeSignType.eSign;
-    const statusRequest$ = isESign
-      ? this.$esignApi.prepareForESign(payload)
-      : this.$claimStateApi.changeStatusById(payload);
+    if (isESign) {
+      this.eSignTempFormObj = {
+        ...payload,
+        id: claimId,
+        claimId,
+      };
+      this.$common.hideLoader();
+      this.disableBtn = false;
+      return;
+    }
 
-    statusRequest$.subscribe(
+    this.$claimStateApi.changeStatusById(payload).subscribe(
       (response: any) => {
         this.$common.hideLoader();
         this.disableBtn = false;
@@ -1382,14 +1389,6 @@ export class ClaimFormLtcComponent implements OnInit {
         }
 
         this.$claimStateApi.notifyStatusCountRefresh();
-
-        if (isESign) {
-          this.eSignTempFormObj = response.object || payload;
-          if (typeof $ !== 'undefined') {
-            $('#esign_modal').modal('show');
-          }
-          return;
-        }
 
         const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
         if (moduleUrl) {

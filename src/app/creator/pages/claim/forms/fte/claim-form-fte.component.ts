@@ -490,11 +490,18 @@ export class ClaimFormFteComponent implements OnInit {
     const isESignSubmit =
       status === this.codeClaimState.outbox &&
       this.claims?.signWith === this.codeSignType.eSign;
-    const statusRequest = isESignSubmit
-      ? this.$esignApi.prepareForESign(payload)
-      : this.$claimStateApi.changeStatusById(payload);
+    if (isESignSubmit) {
+      this.eSignTempFormObj = {
+        ...payload,
+        id: claimId,
+        claimId,
+      };
+      this.$common.hideLoader();
+      this.disableBtn = false;
+      return;
+    }
 
-    statusRequest.subscribe(
+    this.$claimStateApi.changeStatusById(payload).subscribe(
       (res: any) => {
         if (res?.status === false) {
           this.$common.showMessage(
@@ -507,23 +514,7 @@ export class ClaimFormFteComponent implements OnInit {
         }
 
         this.$claimStateApi.notifyStatusCountRefresh();
-        if (isESignSubmit) {
-          this.eSignTempFormObj = {
-            id: claimId,
-            claimId,
-            roleTypeId: this.userIdDetails?.roleTypeId,
-            userId: this.userIdDetails?.userId,
-            status,
-            remark: '',
-            financialYear: this.userIdDetails?.financialYear,
-            moduleId:
-              this.userIdDetails?.moduleId ||
-              (this.$auth.getRuntimeModuleId ? this.$auth.getRuntimeModuleId() : undefined),
-          };
-          if (typeof $ !== 'undefined') {
-            $('#esign_modal').modal('show');
-          }
-        } else if (status === this.codeClaimState.outbox) {
+        if (status === this.codeClaimState.outbox) {
           const moduleUrl = this.getModuleUrl();
           if (moduleUrl) {
             this.router.navigateByUrl(moduleUrl + '/claim-new');

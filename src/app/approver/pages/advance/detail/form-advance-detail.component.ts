@@ -971,7 +971,6 @@ export class FormAdvanceDetailComponent implements OnInit {
       redAmount: this.redPercentage !== null ? this.redAmount || undefined : undefined,
       redRemarks: this.redPercentage !== null ? (this.redRemarks || undefined) : undefined,
     };
-    $('#esign_modal').modal('show');
   }
 }
 
