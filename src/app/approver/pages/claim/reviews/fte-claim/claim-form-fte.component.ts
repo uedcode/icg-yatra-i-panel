@@ -13,7 +13,7 @@ declare var $: any;
 
 @Component({
   selector: 'app-approver-claim-form-fte',
-  templateUrl: './claim-form-fte-legacy.component.html',
+  templateUrl: './claim-form-fte.component.html',
   styleUrls: ['./claim-form-fte.component.css'],
   standalone: false,
 })

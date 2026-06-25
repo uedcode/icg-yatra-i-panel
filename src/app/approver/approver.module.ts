@@ -33,7 +33,6 @@ import { FaqComponent } from './pages/support/faq/faq.component';
 import { WebDetailComponent } from './pages/support/web-detail/web-detail.component';
 import { NotPassedComponent } from './pages/advance/queues/not-passed/not-passed.component';
 import { PassedComponent } from './pages/advance/queues/passed/passed.component';
-import { FormClaimDetailComponent } from './pages/claim/detail/form-claim-detail.component';
 import { ClaimFormPmtDutyComponent } from './pages/claim/reviews/pmt-duty-claim/claim-form-pmt-duty.component';
 import { ClaimFormTyDutyComponent } from './pages/claim/reviews/ty-duty-claim/claim-form-ty-duty.component';
 import { ClaimFormFteComponent } from './pages/claim/reviews/fte-claim/claim-form-fte.component';
@@ -47,7 +46,6 @@ import { FormPayDetailComponent } from './pages/payment/detail/form-pay-detail.c
 import { ManualDraftComponent } from './pages/advance/queues/manual-draft/manual-draft.component';
 import { BudgetAllocationComponent } from './pages/settings/budget-allocation/budget-allocation.component';
 import { ArchiveComponent } from './pages/advance/queues/archive/archive.component';
-import { FormAdvanceDetailComponent } from './pages/advance/detail/form-advance-detail.component';
 import { SettingsLauncherComponent } from './pages/settings/launcher/settings-launcher.component';
 import { ClaimInboxComponent } from './pages/claim/queues/inbox/claim-inbox.component';
 import { ClaimOutboxComponent } from './pages/claim/queues/outbox/claim-outbox.component';
@@ -98,7 +96,6 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         RedirectComponent,
         PassedComponent,
         NotPassedComponent,
-        FormClaimDetailComponent,
         ClaimFormPmtDutyComponent,
         ClaimFormTyDutyComponent,
         ClaimFormFteComponent,
@@ -109,7 +106,6 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         PayApprovedComponent,
         PayNotApprovedComponent,
         FormPayDetailComponent,
-        FormAdvanceDetailComponent,
         ManualDraftComponent,
         BudgetAllocationComponent,
         SettingsLauncherComponent,

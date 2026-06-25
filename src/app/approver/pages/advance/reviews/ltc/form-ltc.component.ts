@@ -12,7 +12,7 @@ declare var $: any;
 
 @Component({
   selector: 'app-approver-form-ltc',
-  templateUrl: './form-ltc-legacy.component.html',
+  templateUrl: './form-ltc.component.html',
   styleUrls: ['./form-ltc.component.scss'],
   standalone: false,
 })

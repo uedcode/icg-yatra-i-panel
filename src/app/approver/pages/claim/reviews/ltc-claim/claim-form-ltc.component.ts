@@ -13,7 +13,7 @@ declare var $: any;
 
 @Component({
   selector: 'app-approver-claim-form-ltc',
-  templateUrl: './claim-form-ltc-legacy.component.html',
+  templateUrl: './claim-form-ltc.component.html',
   styleUrls: ['./claim-form-ltc.component.css'],
   standalone: false,
 })

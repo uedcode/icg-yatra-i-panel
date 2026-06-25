@@ -13,7 +13,7 @@ declare var $: any;
 
 @Component({
   selector: 'app-approver-claim-form-ty-duty',
-  templateUrl: './claim-form-ty-duty-legacy.component.html',
+  templateUrl: './claim-form-ty-duty.component.html',
   styleUrls: ['./claim-form-ty-duty.component.css'],
   standalone: false,
 })

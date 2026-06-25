@@ -13,7 +13,7 @@ declare var $: any;
 
 @Component({
   selector: 'app-approver-claim-form-pmt-duty',
-  templateUrl: './claim-form-pmt-duty-legacy.component.html',
+  templateUrl: './claim-form-pmt-duty.component.html',
   styleUrls: ['./claim-form-pmt-duty.component.css'],
   standalone: false,
 })

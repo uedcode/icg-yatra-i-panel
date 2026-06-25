@@ -70,7 +70,6 @@ export class AuthGuard  {
       '-claim',
       'movement-update-claim',
       'preview-voucher',
-      'form-claim-detail',
       'claim-new'
     ];
 
