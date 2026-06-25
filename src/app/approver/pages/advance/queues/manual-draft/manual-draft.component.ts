@@ -40,7 +40,7 @@ export class ManualDraftComponent implements OnInit {
     this.userIdDetails = this.$auth.getUserDetails();
     if (this.userIdDetails?.roleTypeId !== this.$auth.codeRoleType()?.verifier) {
       this.$common.showMessage('Manual Draft is available for verifier role only.', 'danger');
-      this.router.navigateByUrl(this.$auth.getModuleName() + '/dashboard');
+      this.router.navigateByUrl(this.$auth.getPostLoginLandingUrl());
       return;
     }
     this.codeStatus = this.$auth.codeStatus();

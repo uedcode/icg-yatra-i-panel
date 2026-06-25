@@ -20,7 +20,6 @@ import { ApproverRoutingModule } from './approver-routing.module';
 import { ApproverComponent } from './approver.component';
 
 import { SidebarComponent } from './common/shell/sidebar/sidebar.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ChangePasswordComponent } from './pages/support/change-password/change-password.component';
 import { InboxComponent } from './pages/advance/queues/inbox/inbox.component';
 import { OutboxComponent } from './pages/advance/queues/outbox/outbox.component';
@@ -82,7 +81,6 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
 
 @NgModule({ declarations: [
         SidebarComponent,
-        DashboardComponent,
         ChangePasswordComponent,
         ApproverComponent,
         InboxComponent,

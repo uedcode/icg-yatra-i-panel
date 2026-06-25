@@ -302,13 +302,13 @@ export class AuthService {
       let moduleUrl = this.getModuleName();
       if (redirectType == 'NONE') {
       } else if (redirectType == 'LOGIN') {
-        this.route.navigateByUrl(moduleUrl + '/dashboard');
+        this.route.navigateByUrl(this.getPostLoginLandingUrl());
       } else if (redirectType == 'REFRESH') {
         if (moduleUrl == moduleUrlOld) {
           location.reload();
         } else {
           sessionStorage.setItem('isReload', '1');
-          this.route.navigateByUrl(moduleUrl + '/dashboard');
+          this.route.navigateByUrl(this.getPostLoginLandingUrl());
         }
       }
     } else {
@@ -463,6 +463,49 @@ export class AuthService {
     } else {
       return '/';
     }
+  }
+
+  getPostLoginLandingUrl(pathname?: string): string {
+    const userDetails = this.getUserDetails();
+    const roleTypeId = userDetails?.roleTypeId;
+    const codeRoleList = this.codeRoleType();
+    const moduleUrl = this.getModuleName();
+    const runtimeModuleId = this.getRuntimeModuleId(pathname);
+
+    if (roleTypeId == codeRoleList.creator) {
+      return runtimeModuleId === 'CLM'
+        ? '/creator/movement-update-claim?statusId=0'
+        : '/creator/new';
+    }
+
+    if (
+      roleTypeId == codeRoleList.verifier ||
+      roleTypeId == codeRoleList.verifier1 ||
+      roleTypeId == codeRoleList.verifier2 ||
+      roleTypeId == codeRoleList.approver
+    ) {
+      return runtimeModuleId === 'CLM'
+        ? '/approver/claim/inbox'
+        : '/approver/inbox';
+    }
+
+    if (roleTypeId == codeRoleList.unitAdmin) {
+      return '/unit-admin/manage-unit-admin';
+    }
+
+    if (roleTypeId == codeRoleList.systemAdmin) {
+      return '/system-admin/dashboard';
+    }
+
+    if (roleTypeId == codeRoleList.executor) {
+      return '/executor/dashboard';
+    }
+
+    if (moduleUrl && moduleUrl !== '/') {
+      return `${moduleUrl}/dashboard`;
+    }
+
+    return '/login';
   }
 
   openPageInNewTab() {

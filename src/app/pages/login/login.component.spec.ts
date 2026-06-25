@@ -27,6 +27,7 @@ describe('LoginComponent', () => {
     authService = jasmine.createSpyObj<AuthService>('AuthService', [
       'createSession',
       'getModuleName',
+      'getPostLoginLandingUrl',
       'getRuntimeModuleId',
       'getUserDetails',
       'login'
@@ -42,6 +43,7 @@ describe('LoginComponent', () => {
 
     authService.getUserDetails.and.returnValue(null);
     authService.getModuleName.and.returnValue('/creator');
+    authService.getPostLoginLandingUrl.and.returnValue('/creator/new');
     authService.getRuntimeModuleId.and.returnValue('ADV');
     router.navigateByUrl.and.returnValue(Promise.resolve(true));
 
@@ -77,22 +79,22 @@ describe('LoginComponent', () => {
     expect(router.navigateByUrl).not.toHaveBeenCalled();
   });
 
-  it('redirects an existing session to the role dashboard', () => {
+  it('redirects an existing session to the legacy role landing page', () => {
     authService.getUserDetails.and.returnValue({ userId: 'U1', roleTypeId: 'CR' });
-    authService.getModuleName.and.returnValue('/creator');
+    authService.getPostLoginLandingUrl.and.returnValue('/creator/new');
 
     component.checkSession();
 
-    expect(router.navigateByUrl).toHaveBeenCalledOnceWith('/creator/dashboard');
+    expect(router.navigateByUrl).toHaveBeenCalledOnceWith('/creator/new');
   });
 
-  it('uses the resolved module name when a session exists, even if it is empty', () => {
+  it('uses the central post-login landing helper when a session exists', () => {
     authService.getUserDetails.and.returnValue({ userId: 'U1', roleTypeId: 'CR' });
-    authService.getModuleName.and.returnValue('');
+    authService.getPostLoginLandingUrl.and.returnValue('/creator/movement-update-claim?statusId=0');
 
     component.checkSession();
 
-    expect(router.navigateByUrl).toHaveBeenCalledOnceWith('/dashboard');
+    expect(router.navigateByUrl).toHaveBeenCalledOnceWith('/creator/movement-update-claim?statusId=0');
   });
 
   it('blocks login and refreshes captcha when captcha does not match', () => {

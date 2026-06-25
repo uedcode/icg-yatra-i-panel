@@ -51,7 +51,7 @@ export class ClaimArchiveComponent implements OnInit {
     this.pageTitle = this.getPageTitle();
     if (this.userIdDetails?.roleTypeId !== this.roleCodes?.verifier) {
       this.$common.showMessage(`${this.pageTitle} is available for verifier role only.`, 'danger');
-      this.router.navigateByUrl(this.$auth.getModuleName() + '/dashboard');
+      this.router.navigateByUrl(this.$auth.getPostLoginLandingUrl());
       return;
     }
     this.codeStatus = this.$auth.codeStatus();

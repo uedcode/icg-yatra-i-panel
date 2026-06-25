@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { inject, NgModule } from '@angular/core';
+import { RedirectFunction, Router, Routes, RouterModule } from '@angular/router';
 import { ApproverComponent } from './approver.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ChangePasswordComponent } from './pages/support/change-password/change-password.component';
 import { AuthGuard } from '../auth.guard';
+import { AuthService } from '../service/auth/auth.service';
 
 import { InboxComponent } from './pages/advance/queues/inbox/inbox.component';
 import { OutboxComponent } from './pages/advance/queues/outbox/outbox.component';
@@ -58,6 +58,11 @@ import { FormLtcAvailedHistoryComponent } from './pages/advance/reviews/ltc-hist
 import { AdvancePreviewLtcHistoryComponent } from './pages/advance/previews/ltc-availed-history/preview-ltc-availed-history.component';
 import { CommonViewFileComponent } from '../components/common-view-file/common-view-file.component';
 
+const approverLandingRedirect: RedirectFunction = () => {
+  const landingUrl = inject(AuthService).getPostLoginLandingUrl();
+  return inject(Router).parseUrl(landingUrl);
+};
+
 const APPROVER_PREVIEW_ROUTES: Routes = [
   { path: 'view-file/:id', component: CommonViewFileComponent, canActivate: [AuthGuard], data: { title: 'View File', roles: ['VE1', 'VE2', 'AP'] } },
   { path: 'preview-pmt-duty', component: AdvancePreviewPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Advance Preview', roles: ['VE1', 'VE2', 'AP'] } },
@@ -83,9 +88,7 @@ const routes: Routes = [
     path: '',
     component: ApproverComponent,
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], data: { title: 'Dashboard' } },
-      { path: 'dashboard-back', component: DashboardComponent, canActivate: [AuthGuard], data: { title: 'Dashboard' } },
+      { path: '', redirectTo: approverLandingRedirect, pathMatch: 'full' },
       { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard], data: { title: 'Change Password' } },
       { path: 'form-pmt-duty-claim', component: ClaimFormPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'PMT' } },
       { path: 'form-ty-duty-claim', component: ClaimFormTyDutyComponent, canActivate: [AuthGuard], data: { title: 'TY Duty Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'TYD' } },
@@ -136,7 +139,7 @@ const routes: Routes = [
       { path: 'claim/archive', component: ClaimArchiveComponent, canActivate: [AuthGuard], data: { title: 'Claim Archive', roles: ['VE1', 'VE2', 'AP'], queueModule: 'CLM', queueState: 'AC' } },
       { path: 'archive-claim', redirectTo: 'claim/archive', pathMatch: 'full' },
       { path: 'claim-archive', redirectTo: 'claim/archive', pathMatch: 'full' },
-      { path: '**', redirectTo: 'dashboard' },
+      { path: '**', redirectTo: approverLandingRedirect },
     ],
   },
 ];

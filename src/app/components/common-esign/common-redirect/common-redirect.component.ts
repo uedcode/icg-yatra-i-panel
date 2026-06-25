@@ -130,18 +130,7 @@ export class CommonRedirectComponent implements OnInit {
       return '/login';
     }
 
-    if (this.userIdDetails?.roleTypeId == this.codeRoleType.creator) {
-      return moduleUrl + `/new`;
-    }
-
-    if (
-      this.userIdDetails?.roleTypeId == this.codeRoleType.approver ||
-      this.userIdDetails?.roleTypeId == this.codeRoleType.verifier
-    ) {
-      return moduleUrl + `/inbox`;
-    }
-
-    return moduleUrl + `/dashboard`;
+    return this.$auth.getPostLoginLandingUrl();
   }
 
   private getStatusMessage(): string {

@@ -26,6 +26,7 @@ describe('SsoLoginComponent', () => {
       'createSession',
       'getUserDetails',
       'getModuleName',
+      'getPostLoginLandingUrl',
       'getRuntimeModuleId'
     ]);
     router = jasmine.createSpyObj<Router>('Router', ['navigateByUrl']);
@@ -36,6 +37,7 @@ describe('SsoLoginComponent', () => {
     authService.login.and.returnValue(of({ access_token: 'token-1' }) as any);
     authService.getUserDetails.and.returnValue(null);
     authService.getModuleName.and.returnValue('/approver');
+    authService.getPostLoginLandingUrl.and.returnValue('/approver/inbox');
     authService.getRuntimeModuleId.and.returnValue('ADV');
 
     await TestBed.configureTestingModule({
@@ -147,13 +149,13 @@ describe('SsoLoginComponent', () => {
     expect(console.log).toHaveBeenCalled();
   });
 
-  it('should navigate to dashboard in checkSession when user details exist', () => {
+  it('should navigate to legacy landing in checkSession when user details exist', () => {
     authService.getUserDetails.and.returnValue({ userId: 'U1' } as any);
-    authService.getModuleName.and.returnValue('/approver');
+    authService.getPostLoginLandingUrl.and.returnValue('/approver/inbox');
 
     component.checkSession();
 
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/approver/dashboard');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/approver/inbox');
   });
 
   it('should not navigate in checkSession when user details are null', () => {

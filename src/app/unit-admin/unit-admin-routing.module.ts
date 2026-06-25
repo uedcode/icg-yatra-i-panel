@@ -28,7 +28,7 @@ export const routes: Routes = [
     path: '',
     component: UnitAdminComponent,
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: '', redirectTo: 'manage-unit-admin', pathMatch: 'full' },
       {
         path: 'dashboard',
         component: DashboardComponent,
@@ -133,7 +133,7 @@ export const routes: Routes = [
       },
       {
         path: '**',
-        redirectTo: 'dashboard',
+        redirectTo: 'manage-unit-admin',
       },
     ],
   },

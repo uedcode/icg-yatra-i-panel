@@ -135,6 +135,25 @@
 
 .gov-header-dropdown .dropdown-menu {
   z-index: 2000;
+  height: auto;
+  min-height: 0;
+  max-height: min(70vh, 360px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.gov-header-dropdown .dropdown-menu::-webkit-scrollbar {
+  width: 5px;
+}
+
+.gov-header-dropdown .dropdown-menu::-webkit-scrollbar-track {
+  background: #eef3f8;
+  border-radius: 999px;
+}
+
+.gov-header-dropdown .dropdown-menu::-webkit-scrollbar-thumb {
+  background: #b7c5d4;
+  border-radius: 999px;
 }
 
 .app-header .dropdown-item {

@@ -107,7 +107,7 @@ export class ESignFlowService {
         localStorage.setItem(this.gatewayStorageKey, response.object);
         localStorage.setItem(
           this.redirectStorageKey,
-          this.router.url || (moduleUrl ? `${moduleUrl}/dashboard` : '/login'),
+          this.router.url || this.$auth.getPostLoginLandingUrl(),
         );
         this.router.navigateByUrl(`${moduleUrl}/esign`);
         return true;

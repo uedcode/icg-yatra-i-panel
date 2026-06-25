@@ -50,7 +50,7 @@ export class BudgetAllocationComponent implements OnInit {
     this.userIdDetails = this.$auth.getUserDetails();
     if (this.userIdDetails?.roleTypeId !== this.$auth.codeRoleType()?.verifier) {
       this.$common.showMessage('Budget Allocation is available for verifier role only.', 'danger');
-      this.router.navigateByUrl(this.$auth.getModuleName() + '/dashboard');
+      this.router.navigateByUrl(this.$auth.getPostLoginLandingUrl());
       return;
     }
     this.formObj.financialYear = this.userIdDetails?.financialYear || '';

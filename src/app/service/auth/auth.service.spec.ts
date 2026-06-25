@@ -159,7 +159,7 @@ describe('AuthService', () => {
     request.flush({ status: true, object: expectedObject });
   });
 
-  it('should store new and legacy session keys and route creator login to dashboard', () => {
+  it('should store new and legacy session keys and route creator login to legacy advance landing', () => {
     service.createSession(sessionPayload, 'LOGIN');
 
     expect(localStorage.getItem(storageKeys.accessToken)).toBe('access-token');
@@ -173,7 +173,7 @@ describe('AuthService', () => {
     expect(localStorage.getItem(legacyStorageKeys.refreshToken)).toBe(
       'refresh-token'
     );
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/creator/dashboard');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/creator/new');
 
     const storedUser = service.getUserDetails();
     expect(storedUser).toEqual(
@@ -253,7 +253,28 @@ describe('AuthService', () => {
         formId: 'FORM-AP',
       })
     );
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/approver/dashboard');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/approver/inbox');
+  });
+
+  it('should resolve post-login landing URLs by role and runtime module', () => {
+    const cases = [
+      ['CR', '/adv/creator/login', '/creator/new'],
+      ['CR', '/claim/creator/login', '/creator/movement-update-claim?statusId=0'],
+      ['VE1', '/adv/approver/login', '/approver/inbox'],
+      ['VE2', '/claim/approver/login', '/approver/claim/inbox'],
+      ['AP', '/claim/approver/login', '/approver/claim/inbox'],
+      ['UN', '/adv/unit-admin/login', '/unit-admin/manage-unit-admin'],
+      ['SY', '/adv/system-admin/login', '/system-admin/dashboard'],
+      ['EX', '/adv/executor/login', '/executor/dashboard'],
+    ];
+
+    cases.forEach(([roleTypeId, pathname, expectedUrl]) => {
+      localStorage.setItem(
+        storageKeys.userDetails,
+        JSON.stringify([{ roleTypeId }])
+      );
+      expect(service.getPostLoginLandingUrl(pathname)).toBe(expectedUrl);
+    });
   });
 
   it('should resolve module names for active Yatra roles', () => {

@@ -92,8 +92,7 @@ export class SsoLoginComponent implements OnInit {
     if (this.$auth.getUserDetails() === null) {
       return;
     }
-    let moduleUrl = this.$auth.getModuleName();
-    this.router.navigateByUrl(moduleUrl + "/dashboard");
+    this.router.navigateByUrl(this.$auth.getPostLoginLandingUrl());
   }
 
 }
