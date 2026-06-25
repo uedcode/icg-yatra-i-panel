@@ -1,10 +1,11 @@
-import { DatePipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
+import { unwrapNullablePreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
 
 @Component({
   selector: 'app-common-preview-movement-update-claim',
@@ -29,7 +30,6 @@ export class CommonPreviewMovementUpdateClaimComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private location: Location,
-    private datePipe: DatePipe,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
     private $common: CommonService,
@@ -63,7 +63,7 @@ export class CommonPreviewMovementUpdateClaimComponent implements OnInit {
     this.$claimApi.getSingleMovement(config).subscribe({
       next: (response: any) => {
         this.$common.hideLoader();
-        const row = Array.isArray(response?.object) ? response.object[0] ?? null : response?.object ?? null;
+        const row = unwrapNullablePreviewObject(response?.object);
         this.movement = row;
         this.gxDetails = Array.isArray(row?.yatTempDutyClaimGxDTOs) ? row.yatTempDutyClaimGxDTOs : [];
         this.subFormId = row?.subFormId ?? this.subFormId;
@@ -94,11 +94,6 @@ export class CommonPreviewMovementUpdateClaimComponent implements OnInit {
   display(value: any): string {
     if (value === null || value === undefined || value === '') return '-';
     return String(value);
-  }
-
-  asDate(value: any): string {
-    if (!value) return '-';
-    return this.datePipe.transform(value, 'dd-MMM-yyyy') || '-';
   }
 
   modeLabel(mode: any): string {

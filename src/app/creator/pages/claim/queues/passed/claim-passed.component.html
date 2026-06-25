@@ -1,4 +1,4 @@
-﻿<!--Page header-->
+<!--Page header-->
         <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Passed</h4>
@@ -79,7 +79,7 @@
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ dataObj?.yatClaimDTO?.codeSubFormDTO?.descr | showHypen }}</td>
                         <td>{{ dataObj?.yatClaimDTO?.formId | showHypen }}</td>
-                        <td>{{ dataObj?.yatClaimDTO?.subDate | showDate:'mediumDate' }}</td>
+                        <td>{{ dataObj?.yatClaimDTO?.subDate | legacyDate:'queueDate' }}</td>
                         <td>{{ dataObj?.yatClaimDTO?.claimAmt | showHypen }}</td>
                         <td>{{ dataObj?.yatClaimDTO?.claimPassAmt | showHypen }}</td>
                         <td>

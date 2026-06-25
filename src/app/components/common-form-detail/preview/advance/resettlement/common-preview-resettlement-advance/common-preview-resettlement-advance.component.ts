@@ -1,11 +1,13 @@
-import { DatePipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
-import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
+import { legacyDate } from 'src/app/shared/utils/legacy-display.util';
+import { asArray, firstItem, isLegacyPresent, unwrapPreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
+import { legacySignLabel } from 'src/app/shared/utils/legacy-preview.util';
 
 @Component({
   selector: 'app-common-preview-resettlement-advance',
@@ -30,7 +32,6 @@ export class CommonPreviewResettlementAdvanceComponent implements OnInit {
   constructor(
     private location: Location,
     private route: ActivatedRoute,
-    private datePipe: DatePipe,
     private $common: CommonService,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
@@ -91,10 +92,10 @@ export class CommonPreviewResettlementAdvanceComponent implements OnInit {
       { label: 'Form ID', value: this.formObj?.formId || this.formObj?.claimId || this.claimId },
       { label: 'Claim ID', value: this.formObj?.claimId },
       { label: 'Claim Status', value: this.formObj?.claimStatus || this.formObj?.status },
-      { label: 'Sign With', value: this.signLabel(this.formObj?.signWith) },
-      { label: 'Occurrence Date (Movement Date)', value: this.asDate(this.formObj?.occDate) },
+      { label: 'Sign With', value: legacySignLabel(this.formObj?.signWith) },
+      { label: 'Occurrence Date (Movement Date)', value: legacyDate(this.formObj?.occDate, 'previewDate', null as any) },
       { label: 'GX Form', value: this.formObj?.gxFormFileUrl ? 'Attached' : 'Not Attached' },
-    ].filter((field) => !this.isBlank(field.value));
+    ].filter((field) => isLegacyPresent(field.value));
   }
 
   get personalFields() {
@@ -107,7 +108,7 @@ export class CommonPreviewResettlementAdvanceComponent implements OnInit {
       { label: 'Permanent Transfer To', value: this.advance?.permTransTo },
       { label: 'Present Unit', value: this.advance?.videPresentUnit || this.advance?.presentUnit },
       { label: 'Applied To', value: this.advance?.appliedTo || this.formObj?.codeUnitDTO?.descr },
-    ].filter((field) => !this.isBlank(field.value));
+    ].filter((field) => isLegacyPresent(field.value));
   }
 
   get resettlementFields() {
@@ -119,19 +120,11 @@ export class CommonPreviewResettlementAdvanceComponent implements OnInit {
       { label: 'Distance between stations', value: this.advance?.distance },
       { label: 'GX Unit', value: this.advance?.gxUnit },
       { label: 'GX Number', value: this.advance?.gxNumber || this.advance?.gxNo },
-      { label: 'GX Date', value: this.asDate(this.advance?.gxDate) },
+      { label: 'GX Date', value: legacyDate(this.advance?.gxDate, 'previewDate', null as any) },
       { label: 'Advance Amount', value: this.advance?.advAmt },
       { label: 'Total Amount', value: this.advance?.totalAmt },
       { label: 'Total Budgeted Amount', value: this.advance?.totalBudgetedAmt },
-    ].filter((field) => !this.isBlank(field.value));
-  }
-
-  asDate(value: any): any {
-    return legacyDate(value, 'dd-MMM-yyyy', null as any);
-  }
-
-  display(value: any): any {
-    return legacyValue(value);
+    ].filter((field) => isLegacyPresent(field.value));
   }
 
   goBack(): void {
@@ -139,11 +132,11 @@ export class CommonPreviewResettlementAdvanceComponent implements OnInit {
   }
 
   private parsePreviewResponse(response: any): void {
-    const claims = this.unwrapClaimObject(response?.object);
+    const claims = unwrapPreviewObject(response?.object);
     this.formObj = claims;
-    this.advance = this.firstItem(claims?.yatPermDutyAdvDTOs || claims?.yatPermDutyAdvDTO);
-    this.familyRows = this.asArray(claims?.yatFamilyDetailDTOs || claims?.familyDetails);
-    this.travelRows = this.asArray(claims?.yatDtsDetailDTOs).map((row) => ({
+    this.advance = firstItem(claims?.yatPermDutyAdvDTOs || claims?.yatPermDutyAdvDTO);
+    this.familyRows = asArray(claims?.yatFamilyDetailDTOs || claims?.familyDetails);
+    this.travelRows = asArray(claims?.yatDtsDetailDTOs).map((row) => ({
       from: row?.source || row?.fromPlace || row?.from,
       to: row?.destination || row?.toPlace || row?.to,
       mode: row?.modeOfTravel || row?.travelMode,
@@ -152,7 +145,7 @@ export class CommonPreviewResettlementAdvanceComponent implements OnInit {
       reason: row?.reasonForNoDts || row?.reasonForNotUsingDts || row?.reason,
       remarks: row?.remarks,
     }));
-    this.documentDtos = this.asArray(claims?.yatDocsDTOs || claims?.documentDtos);
+    this.documentDtos = asArray(claims?.yatDocsDTOs || claims?.documentDtos);
   }
 
   private normalizeSubFormId(subFormId: any): string {
@@ -162,27 +155,5 @@ export class CommonPreviewResettlementAdvanceComponent implements OnInit {
     return this.defaultSubFormId;
   }
 
-  private unwrapClaimObject(object: any): any {
-    return Array.isArray(object) ? object[0] || {} : object || {};
-  }
-
-  private firstItem(value: any): any {
-    return Array.isArray(value) ? value[0] || {} : value || {};
-  }
-
-  private asArray(value: any): any[] {
-    return Array.isArray(value) ? value : [];
-  }
-
-  private signLabel(signWith: any): string {
-    const sign = String(signWith || '').toUpperCase();
-    if (sign === 'ES') return 'eSign';
-    if (sign === 'IS' || sign === 'IK') return 'Ink Sign';
-    return signWith;
-  }
-
-  private isBlank(value: any): boolean {
-    return value === null || value === undefined || value === '';
-  }
 }
 

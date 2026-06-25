@@ -22,7 +22,7 @@
                 *ngFor="let dataObj of stateList | filterComplex : searchObj | paginate: { itemsPerPage: noOfPage, currentPage: p }"
               >
                 <td>{{ dataObj?.formId | showHypen }}</td>
-                <td>{{ dataObj?.subDate | showDate:'mediumDate' }}</td>
+                <td>{{ dataObj?.subDate | legacyDate:'queueDate' }}</td>
                 <td>
                   <button
                     *ngIf="dataObj?.codeSubFormDTO?.viewUrl && dataObj?.claimId"

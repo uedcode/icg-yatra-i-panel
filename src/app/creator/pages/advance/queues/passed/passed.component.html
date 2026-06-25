@@ -115,7 +115,7 @@
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ dataObj?.yatClaimDTO?.codeSubFormDTO?.descr | showHypen }}</td>
                         <td>{{ dataObj?.yatClaimDTO?.formId | showHypen }}</td>
-                        <td>{{ dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-' }}</td>
+                        <td>{{ dataObj?.yatClaimDTO?.occDate | legacyDate:'queueDate' }}</td>
                         <td>{{ dataObj?.yatClaimDTO?.claimAmt | showHypen }}</td>
                         <td>{{ dataObj?.yatClaimDTO?.claimPassAmt | showHypen }}</td>
                         <td>

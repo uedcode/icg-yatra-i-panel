@@ -1,4 +1,4 @@
-﻿<div class="page-header gov-page-toolbar">
+<div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Budget Allocation</h4>
             <ol class="breadcrumb pl-0">
@@ -146,7 +146,7 @@
                         <td>{{ dataObj?.amountBudgeted | showHypen }}</td>
                         <td>{{ dataObj?.balancePostBooked | showHypen }}</td>
                         <td>{{ dataObj?.balancePostBudgeted | showHypen }}</td>
-                        <td>{{ (dataObj?.videLetterNo | showHypen) }} / {{ dataObj?.occDate | showDate : 'mediumDate' }}</td>
+                        <td>{{ (dataObj?.videLetterNo | showHypen) }} / {{ dataObj?.occDate | legacyDate:'queueDate' }}</td>
                         <td>{{ dataObj?.remark | showHypen }}</td>
                         <td>{{ dataObj?.updatedOn | showDate : 'medium' }}</td>
                         <td class="switch_in_table">

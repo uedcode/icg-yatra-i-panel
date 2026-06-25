@@ -71,6 +71,12 @@
                     <div class="col-md-3">
                       <p>{{ (tyDuty?.duration | legacyValue) }}</p>
                     </div>
+                    <div class="col-md-3">
+                      <p><strong>wef (Date) </strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ (tyDuty?.wefDate | legacyDate:'previewDate') }}</p>
+                    </div>
                   </div>
                   <div class="row">
                     <div class="col-md-3">
@@ -166,7 +172,7 @@
                     </div>
                     <div class="col-md-3" *ngIf="showExtendedFrom">
                       <button type="button" class="btn btn-info btn-sm"
-                        (click)="navigatePreview('preview-ty-duty', claims?.extendedAdvId)">View</button>
+                        (click)="previewWindow.openRelatedPreview($auth.getModuleName(), 'preview-ty-duty', claims?.extendedAdvId)">View</button>
                     </div>
                   </div>
                   <div class="row" *ngIf="showExtendedDuty">
@@ -175,7 +181,7 @@
                     </div>
                     <div class="col-md-3">
                       <button type="button" class="btn btn-info btn-sm"
-                        (click)="navigatePreview('preview-ty-duty', claims?.refExtendedAdvId)">View</button>
+                        (click)="previewWindow.openRelatedPreview($auth.getModuleName(), 'preview-ty-duty', claims?.refExtendedAdvId)">View</button>
                     </div>
                   </div>
                 </div>
@@ -280,6 +286,12 @@
                     <div class="col-md-3">
                       <p>{{ (tyDuty?.place | legacyValue) }}</p>
                     </div>
+                    <div class="col-md-3">
+                      <p><strong>Date</strong></p>
+                    </div>
+                    <div class="col-md-3">
+                      <p>{{ (tyDuty?.date | legacyDate:'previewDate') }}</p>
+                    </div>
                   </div>
                 </div>
 
@@ -296,10 +308,10 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td>{{ displayZero(tyDuty?.totalAmt) }}</td>
-                          <td>{{ displayZero(tyDuty?.advAmt) }}</td>
-                          <td>{{ displayZero(tyDuty?.dtsAmount) }}</td>
-                          <td>{{ displayZero(tyDuty?.totalBudgetedAmt) }}</td>
+                          <td>{{ tyDuty?.totalAmt | legacyZero }}</td>
+                          <td>{{ tyDuty?.advAmt | legacyZero }}</td>
+                          <td>{{ tyDuty?.dtsAmount | legacyZero }}</td>
+                          <td>{{ tyDuty?.totalBudgetedAmt | legacyZero }}</td>
                         </tr>
                       </tbody>
                     </table>

@@ -8,130 +8,223 @@
               <div class="general-data">
                 <div class="legacy-preview-actions text-right">
                   <button type="button" class="btn btn-sm btn-warning mr-2" (click)="goBack()">Back</button>
+                  <button type="button" class="btn btn-sm btn-info" *ngIf="canDownloadInkSign"
+                    (click)="downloadInkSigned()">Download</button>
                 </div>
-                <h4 class="legacy-preview-heading"><strong>{{ previewHeading }}</strong></h4>
+
+                <h4 class="legacy-preview-heading">
+                  <strong>Requisition for LTC Advance</strong>
+                  <span *ngIf="formObj?.formId"> - {{ formObj.formId }}</span>
+                </h4>
+
                 <div class="level_1">
-        <div class="row" *ngIf="ltc as adv">
-          <div class="col-md-3"><strong>Name:</strong> {{ (adv.name | legacyValue) }}</div>
-          <div class="col-md-3"><strong>Rank:</strong> {{ (adv.rank | legacyValue) }}</div>
-          <div class="col-md-3"><strong>PNO:</strong> {{ (adv.pno | legacyValue) }}</div>
-          <div class="col-md-3"><strong>Pay Level:</strong> {{ (adv.payLevel | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>Basic Pay:</strong> {{ (adv.basicPay | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>Applied To:</strong> {{ (adv.appliedTo | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>GX Unit:</strong> {{ (adv.gxUnit | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>GX Number:</strong> {{ (adv.gxNumber | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>GX Date:</strong> {{ (adv.gxDate | legacyDate) }}</div>
-          <div class="col-md-3 mt-2"><strong>Joining Date:</strong> {{ (adv.joiningDate | legacyDate) }}</div>
-          <div class="col-md-3 mt-2"><strong>Block Year:</strong> {{ (adv.blockYear | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>Place of Visit:</strong> {{ (adv.placeOfVisit | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>LTC Place:</strong> {{ (adv.ltcPlace | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>Is DTS:</strong> {{ (adv.isDts | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>Arrival Fare:</strong> {{ (adv.arrFare | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>Total Amount:</strong> {{ (adv.totalAmt | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>Advance Amount:</strong> {{ (adv.advAmt | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>DTS Amount:</strong> {{ (adv.dtsAmount | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>Total Budgeted:</strong> {{ (adv.totalBudgetedAmt | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>Place:</strong> {{ (adv.place | legacyValue) }}</div>
-          <div class="col-md-3 mt-2"><strong>Date:</strong> {{ (adv.date | legacyDate) }}</div>
-          <div class="col-md-3 mt-2"><strong>Sign Mode:</strong> {{ (formObj?.signWith | legacyValue) }}</div>
-        </div>
-                </div>
+                  <label class="mr-3">
+                    <input type="radio" name="ltcSignRadio" [checked]="isInkSign" disabled />
+                    Ink Sign
+                  </label>
+                  <label>
+                    <input type="radio" name="ltcSignRadio" [checked]="isESign" disabled />
+                    eSign
+                  </label>
 
-                <div class="level_1 table-responsive">
-        <h4 class="legacy-preview-heading"><strong>Family Details</strong></h4>
-        <table class="table table-striped table-bordered table-hover">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Age</th>
-              <th>Relation</th>
-              <th>Occupation</th>
-              <th>Selected</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let row of familyRows">
-              <td>{{ (row.memberName | legacyValue) }}</td>
-              <td>{{ (row.age | legacyValue) }}</td>
-              <td>{{ (row.relation | legacyValue) }}</td>
-              <td>{{ (row.occupation | legacyValue) }}</td>
-              <td>{{ row.checkedIndicator ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr *ngIf="!familyRows?.length">
-              <td colspan="5" class="text-center">No Records</td>
-            </tr>
-          </tbody>
-        </table>
-                </div>
-
-                <div class="level_1 table-responsive">
-        <h4 class="legacy-preview-heading"><strong>Travel Details</strong></h4>
-        <table class="table table-striped table-bordered table-hover">
-          <thead>
-            <tr>
-              <th>From</th>
-              <th>To</th>
-              <th>Mode</th>
-              <th>DTS</th>
-              <th>Amount</th>
-              <th>Reason</th>
-              <th>Remarks</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let row of travelRows">
-              <td>{{ (row.source | legacyValue) }}</td>
-              <td>{{ (row.destination | legacyValue) }}</td>
-              <td>
-                {{ (row.modeOfTravel | legacyValue) }}
-                <span *ngIf="row.otherModeOfTravel">({{ row.otherModeOfTravel }})</span>
-              </td>
-              <td>{{ (row.isDts | legacyValue) }}</td>
-              <td>{{ ((row.amount || row.tempAmount) | legacyValue) }}</td>
-              <td>{{ (row.reasonForNoDts | legacyValue) }}</td>
-              <td>{{ (row.remarks | legacyValue) }}</td>
-            </tr>
-            <tr *ngIf="!travelRows?.length">
-              <td colspan="7" class="text-center">No Record Found</td>
-            </tr>
-          </tbody>
-        </table>
-                </div>
-
-                <div class="level_1 table-responsive">
-        <h4 class="legacy-preview-heading"><strong>Documents</strong></h4>
-        <table class="table table-striped table-bordered table-hover">
-          <thead>
-            <tr>
-              <th>Document</th>
-              <th>Description</th>
-              <th>File Status</th>
-              <th>File</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let doc of documentDtos">
-              <td>{{ (doc?.codeDocInfoDTO?.docName | legacyValue) }}</td>
-              <td>{{ ((doc?.descr || doc?.otherDocName) | legacyValue) }}</td>
-              <td>{{ ((doc?.url || doc?.fileUrl || doc?.docUrl) ? 'Uploaded' : 'Missing' | legacyValue) }}</td>
-              <td>
-                <button *ngIf="doc?.url || doc?.fileUrl || doc?.docUrl" type="button" class="btn btn-info btn-sm"
-                  (click)="$auth.viewFile(doc?.url || doc?.fileUrl || doc?.docUrl)">
-                  <i class="fa fa-eye"></i> View
-                </button>
-                <span *ngIf="!(doc?.url || doc?.fileUrl || doc?.docUrl)">-</span>
-              </td>
-            </tr>
-            <tr *ngIf="!documentDtos?.length">
-              <td colspan="4" class="text-center">No Records</td>
-            </tr>
-          </tbody>
-        </table>
+                  <h4 class="legacy-preview-heading">(a)<strong>Personal Details</strong></h4>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Name</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.name | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p><strong>Rank</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.rank | legacyValue:'Nil' }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Personnel Number</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.pno | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p><strong>Pay Level</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.payLevel | legacyValue:'Nil' }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Basic Pay (In Rs) </strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.basicPay | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p><strong>Date of Joining </strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.joiningDate | legacyDate:'previewDate':'Nil' }}</p></div>
+                    <div class="col-md-3"><p><strong>Applied To</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.appliedTo | legacyValue:'Nil' }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Gx Unit</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.gxUnit | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p><strong>Gx Number</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.gxNumber | legacyValue:'Nil' }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Gx Date</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.gxDate | legacyDate:'previewDate':'Nil' }}</p></div>
+                    <div class="col-md-3"><p><strong>Gx Form</strong></p></div>
+                    <div class="col-md-3"><p>{{ formObj?.gxFormFileUrl ? 'Attached' : 'Not Attached' }}</p></div>
+                    <div class="col-md-3"><p><strong>Occurrence Date (Movement Date)</strong></p></div>
+                    <div class="col-md-3"><p>{{ formObj?.occDate | legacyDate:'previewDate':'Nil' }}</p></div>
+                    <div class="col-md-3" *ngIf="isYatraClaimMode && formObj?.advClaimId">
+                      <p><strong>Linked Advance Form</strong></p>
+                    </div>
+                    <div class="col-md-3" *ngIf="isYatraClaimMode && formObj?.advClaimId">
+                      <button type="button" class="btn btn-info btn-sm"
+                        (click)="previewWindow.openRelatedPreview($auth.getModuleName(), 'preview-ltc-advance', formObj?.advClaimId)">View</button>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="level_1">
-        <h4 class="legacy-preview-heading"><strong>Remarks</strong></h4>
-        <p>{{ (formObj?.internalRemarks | legacyValue) }}</p>
+                  <h4 class="legacy-preview-heading">(b)<strong>Travel Details</strong></h4>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>LTC</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltcSubType | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p><strong>LTC Type</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltcTypeDescription | legacyValue:'Nil' }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Block Year</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.blockYear | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p><strong>Home Town</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.placeOfVisit | legacyValue:'Nil' }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Permanent Address</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.others | legacyValue:'Nil' }}</p></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Place of visit</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.ltcPlace | legacyValue:'Nil' }}</p></div>
+                  </div>
+                </div>
+
+                <div class="level_1">
+                  <h4 class="legacy-preview-heading"><b>Family Details</b></h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Age</th>
+                          <th>Relation</th>
+                          <th>Occupation</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let family of familyRows">
+                          <td>{{ family?.memberName | legacyValue:'' }}</td>
+                          <td>{{ family?.age | legacyValue:'' }}</td>
+                          <td>{{ family?.relation | legacyValue:'' }}</td>
+                          <td>{{ family?.occupation | legacyValue:'' }}</td>
+                        </tr>
+                        <tr *ngIf="!familyRows.length">
+                          <td colspan="4" class="text-center">No Records</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="level_1" *ngIf="isNewlyMarried">
+                  <h4 class="legacy-preview-heading"><b>Spouse Details</b></h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Age</th>
+                          <th>Relation</th>
+                          <th>Occupation</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{ spouseDetails?.memberName | legacyValue:'' }}</td>
+                          <td>{{ spouseDetails?.age | legacyValue:'' }}</td>
+                          <td>{{ spouseDetails?.relation | legacyValue:'' }}</td>
+                          <td>{{ spouseDetails?.occupation | legacyValue:'' }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="level_1">
+                  <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th>From</th>
+                          <th>To</th>
+                          <th>Travel Mode</th>
+                          <th>DTS</th>
+                          <th>Amount (In Rs.)</th>
+                          <th>Reason for not using DTS</th>
+                          <th>Remarks</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let row of travelRows">
+                          <td>{{ row?.source | legacyValue:'' }}</td>
+                          <td>{{ row?.destination | legacyValue:'' }}</td>
+                          <td>{{ row?.modeOfTravel | legacyValue:'' }}</td>
+                          <td>{{ row?.isDts | legacyValue:'' }}</td>
+                          <td>{{ row?.amount | legacyValue:'' }}</td>
+                          <td>{{ row?.reasonForNoDts | legacyValue:'' }}</td>
+                          <td>{{ row?.remarks | legacyValue:'' }}</td>
+                        </tr>
+                        <tr *ngIf="!travelRows.length">
+                          <td colspan="7" class="text-center">No Record Found</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="level_1">
+                  <h4 class="legacy-preview-heading">(c)<strong>Financial Terms</strong></h4>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Place</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.place | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p><strong>Date</strong></p></div>
+                    <div class="col-md-3"><p>{{ ltc?.date | legacyDate:'previewDate':'Nil' }}</p></div>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Advance Request</th>
+                          <th>Advance admissible</th>
+                          <th>DTS Amount</th>
+                          <th>Amount to be budgeted</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{ ltc?.totalAmt | legacyZero }}</td>
+                          <td>{{ ltc?.advAmt | legacyZero }}</td>
+                          <td>{{ ltc?.dtsAmount | legacyZero }}</td>
+                          <td>{{ ltc?.totalBudgetedAmt | legacyZero }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="level_1">
+                  <h4 class="legacy-preview-heading">(d)<strong>Bank Details</strong></h4>
+                  <div class="row">
+                    <div class="col-md-3"><p><strong>Bank Name</strong></p></div>
+                    <div class="col-md-3"><p>{{ bankDetails?.bankName | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p><strong>IFSC Code</strong></p></div>
+                    <div class="col-md-3"><p>{{ bankDetails?.ifscCode | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p><strong>Account Number</strong></p></div>
+                    <div class="col-md-3"><p>{{ bankDetails?.bankAccNo | legacyValue:'Nil' }}</p></div>
+                    <div class="col-md-3"><p><strong>MICR Code</strong></p></div>
+                    <div class="col-md-3"><p>{{ bankDetails?.micrCode | legacyValue:'Nil' }}</p></div>
+                  </div>
+                </div>
+
+                <div class="level_1">
+                  <h4 class="legacy-preview-heading">(e)<strong>Remarks</strong></h4>
+                  <p>{{ formObj?.internalRemarks | legacyValue:'Nil' }}</p>
                 </div>
               </div>
             </div>

@@ -1,4 +1,4 @@
-﻿<!--Page header-->
+<!--Page header-->
         <div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Outbox</h4>
@@ -120,7 +120,7 @@
                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
                         <td>{{ (i + 1) + (p - 1) * noOfPage}}.</td>
                         <td>{{dataObj?.yatClaimDTO?.codeSubFormDTO?.descr | showHypen}}</td>
-                        <td>{{dataObj?.yatClaimDTO?.occDate ? (dataObj?.yatClaimDTO?.occDate | showDate:'mediumDate') : '-'}}</td>
+                        <td>{{ dataObj?.yatClaimDTO?.occDate | legacyDate:'queueDate' }}</td>
                         <td>{{dataObj?.yatClaimDTO?.formId | showHypen}}</td>
                         <td>{{dataObj?.onWork | showHypen}}</td>
                         <td>

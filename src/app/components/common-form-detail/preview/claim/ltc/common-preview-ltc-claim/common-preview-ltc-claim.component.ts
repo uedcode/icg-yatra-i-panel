@@ -1,11 +1,13 @@
-import { DatePipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
-import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
+import { legacyShowNil } from 'src/app/shared/utils/legacy-display.util';
+import { asArray, firstItem, hasAnyLegacyValue, isLegacyPresent, unwrapNullablePreviewObject, unwrapPreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
+import { isESign, isInkSign, isManualClaimMode } from 'src/app/shared/utils/legacy-preview.util';
 
 @Component({
   selector: 'app-common-preview-ltc-claim',
@@ -31,11 +33,10 @@ export class CommonPreviewLtcClaimComponent implements OnInit {
   constructor(
     private location: Location,
     private route: ActivatedRoute,
-    private datePipe: DatePipe,
     private $common: CommonService,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
-    private previewWindow: PreviewWindowService
+    public previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -85,8 +86,8 @@ export class CommonPreviewLtcClaimComponent implements OnInit {
   }
 
   get previewTitle(): string {
-    const prefix = this.isBlank(this.formObj?.supClaimId) ? '' : 'Supplementary ';
-    const suffix = this.isBlank(this.formObj?.formId) ? '' : ` - ${this.formObj.formId}`;
+    const prefix = isLegacyPresent(this.formObj?.supClaimId) ? 'Supplementary ' : '';
+    const suffix = isLegacyPresent(this.formObj?.formId) ? ` - ${this.formObj.formId}` : '';
     return `${prefix}LTC Claim${suffix}`;
   }
 
@@ -95,15 +96,19 @@ export class CommonPreviewLtcClaimComponent implements OnInit {
   }
 
   get isInkSign(): boolean {
-    return ['IS', 'IK', 'INK_SIGN'].includes(String(this.formObj?.signWith ?? '').toUpperCase());
+    return isInkSign(this.formObj?.signWith);
   }
 
   get isESign(): boolean {
-    return ['ES', 'E_SIGN'].includes(String(this.formObj?.signWith ?? '').toUpperCase());
+    return isESign(this.formObj?.signWith);
+  }
+
+  get isManualClaimMode(): boolean {
+    return isManualClaimMode(this.formObj?.claimMode);
   }
 
   get ltcLeave(): any {
-    return this.firstItem(this.claim?.yatLtcClaimLeaveDTOs);
+    return firstItem(this.claim?.yatLtcClaimLeaveDTOs);
   }
 
   get spouseRows(): any[] {
@@ -114,77 +119,35 @@ export class CommonPreviewLtcClaimComponent implements OnInit {
   }
 
   get otherChargeRows(): any[] {
-    return this.asArray(this.formObj?.yatForeignTravelDetailDTOs);
+    return asArray(this.formObj?.yatForeignTravelDetailDTOs);
   }
 
   get declarationRows(): any[] {
     return [
       { text: 'The information as given above is true to the best of my knowledge and belief.', checked: this.claim?.certify },
       { text: `That my ${this.spouseWord()} is not employed in government service.`, checked: this.claim?.secondCertify },
-      { text: `That my ${this.spouseWord()} is employed in government service and the concession has not been availed separately for the concerned block of years ${this.nil(this.claim?.blockYearFrom)} to ${this.nil(this.claim?.blockYearTo)}.`, checked: this.claim?.thirdCertify },
-      { text: `That my ${this.spouseWord()} for whom LTC is claimed is employed in ${this.nil(this.claim?.empIn)} and will not prefer any claim in this behalf.`, checked: this.claim?.fourthCertify },
+      { text: `That my ${this.spouseWord()} is employed in government service and the concession has not been availed separately for the concerned block of years ${legacyShowNil(this.claim?.blockYearFrom)} to ${legacyShowNil(this.claim?.blockYearTo)}.`, checked: this.claim?.thirdCertify },
+      { text: `That my ${this.spouseWord()} for whom LTC is claimed is employed in ${legacyShowNil(this.claim?.empIn)} and will not prefer any claim in this behalf.`, checked: this.claim?.fourthCertify },
       { text: 'That my spouse for whom LTC is claimed is employed in an organisation which provides LTC facilities to its employees and families.', checked: this.claim?.fifthCertify },
       { text: 'I have not submitted any other claim so far for LTC in respect of myself or my family members for year/block year.', checked: this.claim?.sixthCertify },
-      { text: `Journey has been performed by ${this.nil(this.claim?.performedBy)} to declared place of visit/hometown viz. ${this.nil(this.ltcLeave?.ltcType)} for block year ${this.nil(this.ltcLeave?.blockYear)}.`, checked: this.claim?.seventhCertify },
+      { text: `Journey has been performed by ${legacyShowNil(this.claim?.performedBy)} to declared place of visit/hometown viz. ${legacyShowNil(this.ltcLeave?.ltcType)} for block year ${legacyShowNil(this.ltcLeave?.blockYear)}.`, checked: this.claim?.seventhCertify },
     ];
   }
 
-  get financialRows(): any[] {
-    const rows = [
-      { description: 'Travel Details (All mode of travel excluding DTS Booking)', amount: this.claim?.travelDetailsAmt },
-      { description: 'Travel details (DTS bookings)', amount: this.claim?.travelDetailsDTSAmt },
-    ];
-    if (!this.isBlank(this.claim?.otherChargeAmt)) {
-      rows.push({ description: 'Other Charges', amount: this.claim?.otherChargeAmt });
-    }
-    rows.push(
-      { description: 'Grand Total', amount: this.claim?.total },
-      { description: `Amount of advance. If any, drawn vide voucher No. ${this.nil(this.claim?.advVoucherNumber)} dated ${this.nil(this.asDate(this.claim?.lessAmtVoucherDate))}`, amount: this.claim?.lessAmtVoucherAmt },
-      { description: `Excess TA advance paid through MRO. If any, paid via MRO No. ${this.nil(this.claim?.mroNo)} dated ${this.nil(this.asDate(this.claim?.mroDate))}`, amount: this.claim?.mroAmt }
-    );
-    if (Number(this.claim?.mroPiAmt) > 0) {
-      rows.push({
-        description: `MRO Penal Interest (from date ${this.nil(this.asDate(this.claim?.mroPiFromDate))} to date ${this.nil(this.asDate(this.claim?.mroPiToDate))}) ${this.nil(this.claim?.mroPiInterestRate)}% Interest Rate`,
-        amount: this.claim?.mroPiAmt,
-      });
-    }
-    rows.push(
-      { description: `Penal Interest (from date ${this.nil(this.asDate(this.claim?.piFromDate))} to date ${this.nil(this.asDate(this.claim?.piToDate))}) ${this.nil(this.claim?.piInterestRate)}% Interest Rate`, amount: this.claim?.piAmt },
-      { description: 'Net Amount Due', amount: this.claim?.netDueAbsoluteAmt }
-    );
-    return rows;
+  get hasOtherChargeAmount(): boolean {
+    return isLegacyPresent(this.claim?.otherChargeAmt);
   }
 
-  asDate(value: any): any {
-    return legacyDate(value, 'dd/MM/yyyy', null as any);
-  }
-
-  asDateTime(value: any): any {
-    return legacyDate(value, 'dd/MM/yyyy HH:mm', null as any);
-  }
-
-  nil(value: any): any {
-    return legacyValue(value, 'Nil');
-  }
-
-  hyphen(value: any): any {
-    return legacyValue(value);
+  get hasMroPenalInterest(): boolean {
+    return Number(this.claim?.mroPiAmt) > 0;
   }
 
   goBack(): void {
     this.previewWindow.closeOrBack(this.location);
   }
 
-  openRelatedPreview(route: string, claimId: any): void {
-    if (!route) return;
-    if (!claimId) return;
-    const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '/creator';
-    this.previewWindow.open(moduleUrl, route, { id: claimId });
-  }
-
   hasRelatedClaims(): boolean {
-    if (!this.isBlank(this.formObj?.advClaimId)) return true;
-    return !this.isBlank(this.formObj?.supClaimId);
+    return hasAnyLegacyValue(this.formObj?.advClaimId, this.formObj?.supClaimId);
   }
 
   downloadPreview(): void {
@@ -205,7 +168,7 @@ export class CommonPreviewLtcClaimComponent implements OnInit {
             this.$common.showMessage(response?.message ?? 'Unable to download file.', 'danger');
             return;
           }
-          const responseObject = Array.isArray(response?.object) ? response.object[0] ?? null : null;
+          const responseObject = unwrapNullablePreviewObject(response?.object);
           this.$common.download(responseObject?.inkSignedFileUrl);
         },
         error: () => this.$common.showMessage('Unable to download file.', 'danger'),
@@ -213,35 +176,18 @@ export class CommonPreviewLtcClaimComponent implements OnInit {
   }
 
   private parseClaimPreviewResponse(response: any): void {
-    const claims = this.unwrapClaimObject(response?.object);
+    const claims = unwrapPreviewObject(response?.object);
     this.formObj = claims;
-    this.claim = this.firstItem(claims?.yatLtcClaimDTOs);
-    this.travelRows = this.asArray(claims?.yatClaimTravelDetailsDTOs);
-    this.familyRows = this.asArray(claims?.yatFamilyDetailDTOs);
-    this.gxRows = this.asArray(claims?.yatClaimGxDetailsDTOs);
-    this.documentDtos = this.asArray(claims?.yatDocsDTOs);
+    this.claim = firstItem(claims?.yatLtcClaimDTOs);
+    this.travelRows = asArray(claims?.yatClaimTravelDetailsDTOs);
+    this.familyRows = asArray(claims?.yatFamilyDetailDTOs);
+    this.gxRows = asArray(claims?.yatClaimGxDetailsDTOs);
+    this.documentDtos = asArray(claims?.yatDocsDTOs);
     this.bankDetails = claims?.yatClaimBankDetailDTO ?? {};
-  }
-
-  private unwrapClaimObject(object: any): any {
-    return Array.isArray(object) ? object[0] ?? {} : object ?? {};
-  }
-
-  private firstItem(value: any): any {
-    return Array.isArray(value) ? value[0] ?? {} : value ?? {};
-  }
-
-  private asArray(value: any): any[] {
-    return Array.isArray(value) ? value : [];
   }
 
   private spouseWord(): string {
     return this.claim?.gender === 'F' ? 'husband' : 'wife';
-  }
-
-  private isBlank(value: any): boolean {
-    if (value == null) return true;
-    return value === '';
   }
 }
 

@@ -141,7 +141,7 @@
                   <td>{{ display(row?.roleTypeName || row?.aclCodeRoleTypeDTO?.roleTypeName || row?.aclCodeRoleTypeDTO?.descr) }}</td>
                   <td>{{ display(row?.formState || row?.claimState || row?.claimStateId || row?.statusId) }}</td>
                   <td>{{ display(row?.unitName || row?.yatClaimDTO?.codeUnitDTO?.descr || row?.yatClaimDTO?.codeUnitDTO?.unit) }}</td>
-                  <td>{{ asDate(row?.createdOn) }}</td>
+                  <td>{{ row?.createdOn | legacyDate:'dateTime' }}</td>
                 </tr>
                 <tr *ngIf="!stateHistory?.length">
                   <td colspan="4" class="text-center">No workflow history available.</td>

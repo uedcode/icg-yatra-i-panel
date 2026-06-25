@@ -1,11 +1,10 @@
-﻿import { DatePipe } from '@angular/common';
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
-import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
+import { unwrapNullablePreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
 
 @Component({
   selector: 'app-common-preview-voucher-claim',
@@ -20,7 +19,6 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
   constructor(
     private location: Location,
     private route: ActivatedRoute,
-    private datePipe: DatePipe,
     private $claimApi: ClaimApiService,
     private $common: CommonService,
     private previewWindow: PreviewWindowService
@@ -54,7 +52,7 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
           this.$common.showMessage(response?.message ?? 'Unable to load voucher details.', 'danger');
           return;
         }
-        this.yatClaimVoucher = this.unwrapVoucher(response?.object);
+        this.yatClaimVoucher = unwrapNullablePreviewObject(response?.object);
       },
       error: () => {
         this.$common.hideLoader();
@@ -63,19 +61,7 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
     });
   }
 
-  display(value: any): string {
-    return legacyValue(value);
-  }
-
-  asDate(value: any): string {
-    return legacyDate(value, 'dd/MM/yyyy');
-  }
-
   goBack(): void {
     this.previewWindow.closeOrBack(this.location);
-  }
-
-  private unwrapVoucher(object: any): any {
-    return Array.isArray(object) ? object[0] ?? null : object ?? null;
   }
 }

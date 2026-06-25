@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DatePipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { YatPayDetailsApiService } from 'src/app/service/api/payment/yat-pay-details-api.service';
@@ -21,7 +21,6 @@ export class FormPayDetailsDetailComponent implements OnInit {
     private $auth: AuthService,
     private $payDetailsApi: YatPayDetailsApiService,
     private $common: CommonService,
-    private datePipe: DatePipe,
     private previewWindow: PreviewWindowService
   ) {}
 
@@ -50,14 +49,6 @@ export class FormPayDetailsDetailComponent implements OnInit {
       return;
     }
     this.$auth.viewFile(docUrl);
-  }
-
-  asDate(value: any): string {
-    if (!value) return '-';
-    const date = typeof value === 'number' || /^\d+$/.test(`${value}`)
-      ? new Date(Number(value))
-      : new Date(value);
-    return Number.isNaN(date.getTime()) ? `${value}` : (this.datePipe.transform(date, 'dd/MM/yyyy') || '-');
   }
 
   goBack(): void {

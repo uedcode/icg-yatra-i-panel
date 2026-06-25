@@ -46,6 +46,12 @@
                   <p>{{ (pmt?.basicPay | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
+                  <p><strong>wef (Date) </strong></p>
+                </div>
+                <div class="col-md-3">
+                  <p>{{ (pmt?.wefDate | legacyDate:'previewDate') }}</p>
+                </div>
+                <div class="col-md-3">
                   <p><strong>Permanent Transfer To</strong></p>
                 </div>
                 <div class="col-md-3">
@@ -98,7 +104,7 @@
                   <p><strong>Occurrence Date (Movement Date)</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ (claims?.occDate | legacyDate) }}</p>
+                  <p>{{ (claims?.occDate | legacyDate:'previewDate') }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Gx Unit</strong></p>
@@ -116,7 +122,7 @@
                   <p><strong>Gx Date</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ (pmt?.gxDate | legacyDate) }}</p>
+                  <p>{{ (pmt?.gxDate | legacyDate:'previewDate') }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>Gx Form</strong></p>
@@ -250,6 +256,12 @@
                 <div class="col-md-3">
                   <p>{{ (pmt?.place | legacyValue) }}</p>
                 </div>
+                <div class="col-md-3">
+                  <p><strong>Date</strong></p>
+                </div>
+                <div class="col-md-3">
+                  <p>{{ (pmt?.date | legacyDate:'previewDate') }}</p>
+                </div>
               </div>
             </div>
             <div class="level_1">
@@ -265,10 +277,10 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td>{{ displayZero(pmt?.totalAmt) }}</td>
-                      <td>{{ displayZero(pmt?.advAmt) }}</td>
-                      <td>{{ displayZero(pmt?.dtsAmount) }}</td>
-                      <td>{{ displayZero(pmt?.totalBudgetedAmt) }}</td>
+                      <td>{{ pmt?.totalAmt | legacyZero }}</td>
+                      <td>{{ pmt?.advAmt | legacyZero }}</td>
+                      <td>{{ pmt?.dtsAmount | legacyZero }}</td>
+                      <td>{{ pmt?.totalBudgetedAmt | legacyZero }}</td>
                     </tr>
                   </tbody>
                 </table>

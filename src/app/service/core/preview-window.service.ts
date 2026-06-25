@@ -24,6 +24,13 @@ export class PreviewWindowService {
     window.open(url, '_blank');
   }
 
+  openRelatedPreview(moduleUrl: string, route: string, claimId: any): void {
+    if (!route || claimId === null || claimId === undefined || claimId === '') {
+      return;
+    }
+    this.open(moduleUrl, route, { id: claimId });
+  }
+
   openUrl(url: string): void {
     window.open(this.buildUrlFromRaw(url), '_blank');
   }

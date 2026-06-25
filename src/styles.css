@@ -2848,6 +2848,10 @@ ngx-select-ex.legacy-invalid-field .ngx-select__toggle,
   background-color: #f9f9f9;
 }
 
+.legacy-preview-page .legacy-financial-bold {
+  font-weight: 800;
+}
+
 .legacy-preview-page .btn {
   border-radius: 3px;
   font-size: 12px;

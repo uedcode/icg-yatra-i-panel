@@ -16,7 +16,10 @@ import { CodeCadrePipe } from './pipe/codeCadre.pipe';
 import { CodeMappingTypePipe } from './pipe/codeMappingType.pipe';
 import { NumToWordPipe } from './pipe/num-to-word.pipe.pipe';
 import { LegacyDatePipe } from './pipe/legacy-date.pipe';
+import { LegacyHyphenPipe } from './pipe/legacy-hyphen.pipe';
+import { LegacyNilPipe } from './pipe/legacy-nil.pipe';
 import { LegacyValuePipe } from './pipe/legacy-value.pipe';
+import { LegacyZeroPipe } from './pipe/legacy-zero.pipe';
 
 @NgModule({
     imports: [],
@@ -38,6 +41,9 @@ import { LegacyValuePipe } from './pipe/legacy-value.pipe';
         NumToWordPipe,
         LegacyValuePipe,
         LegacyDatePipe,
+        LegacyNilPipe,
+        LegacyHyphenPipe,
+        LegacyZeroPipe,
     ],
     exports: [
         FilterPipe,
@@ -57,6 +63,9 @@ import { LegacyValuePipe } from './pipe/legacy-value.pipe';
         NumToWordPipe,
         LegacyValuePipe,
         LegacyDatePipe,
+        LegacyNilPipe,
+        LegacyHyphenPipe,
+        LegacyZeroPipe,
     ]
 })
 export class PipeModule { }

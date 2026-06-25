@@ -1,11 +1,13 @@
-import { DatePipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
-import { isLegacyBlank, legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
+import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
+import { isLegacyPresent, unwrapPreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
+import { isESign, isInkSign } from 'src/app/shared/utils/legacy-preview.util';
 
 @Component({
   selector: 'app-common-preview-ty-duty-advance',
@@ -22,11 +24,10 @@ export class CommonPreviewTyDutyAdvanceComponent implements OnInit {
   constructor(
     private location: Location,
     private route: ActivatedRoute,
-    private datePipe: DatePipe,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
     private $common: CommonService,
-    private previewWindow: PreviewWindowService
+    public previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -59,59 +60,59 @@ export class CommonPreviewTyDutyAdvanceComponent implements OnInit {
   }
 
   get isInkSign(): boolean {
-    return this.signWith === 'IS' || this.signWith === 'IK';
+    return isInkSign(this.signWith);
   }
 
   get isESign(): boolean {
-    return this.signWith === 'ES';
+    return isESign(this.signWith);
   }
 
   get gxLabelPrefix(): string {
-    return this.isBlank(this.claims?.extendedAdvId) ? 'Gx' : 'Authority';
+    return isLegacyPresent(this.claims?.extendedAdvId) ? 'Authority' : 'Gx';
   }
 
   get gxFormLabel(): string {
-    return this.isBlank(this.claims?.extendedAdvId) ? 'Gx Form' : 'Authority';
+    return isLegacyPresent(this.claims?.extendedAdvId) ? 'Authority' : 'Gx Form';
   }
 
   get gxFormStatus(): string {
-    return this.isBlank(this.claims?.gxFormFileUrl) ? 'Not Attached' : 'Attached';
+    return isLegacyPresent(this.claims?.gxFormFileUrl) ? 'Attached' : 'Not Attached';
   }
 
   get purposeType(): string {
-    return this.isBlank(this.tyDuty?.purposeType) ? 'Other' : this.tyDuty.purposeType;
+    return isLegacyPresent(this.tyDuty?.purposeType) ? this.tyDuty.purposeType : 'Other';
   }
 
   get showPurpose(): boolean {
-    return !this.isBlank(this.tyDuty?.purpose);
+    return isLegacyPresent(this.tyDuty?.purpose);
   }
 
   get showGuestDetails(): boolean {
-    return this.isBlank(this.tyDuty?.purpose);
+    return !isLegacyPresent(this.tyDuty?.purpose);
   }
 
   get showUnitStation(): boolean {
-    return !this.isBlank(this.tyDuty?.tempTransTo) && !this.isBlank(this.tyDuty?.stationProceedingTo);
+    return isLegacyPresent(this.tyDuty?.tempTransTo) && isLegacyPresent(this.tyDuty?.stationProceedingTo);
   }
 
   get showDutyStation(): boolean {
-    return !this.isBlank(this.tyDuty?.dutyStation);
+    return isLegacyPresent(this.tyDuty?.dutyStation);
   }
 
   get showExtendedFrom(): boolean {
-    return !this.isBlank(this.claims?.extendedAdvId);
+    return isLegacyPresent(this.claims?.extendedAdvId);
   }
 
   get showExtendedDuty(): boolean {
-    return !this.isBlank(this.claims?.refExtendedAdvId);
+    return isLegacyPresent(this.claims?.refExtendedAdvId);
   }
 
   get gxDate(): string | null {
-    return this.asDate(this.tyDuty?.gxDate);
+    return legacyDate(this.tyDuty?.gxDate, 'previewDate', null as any);
   }
 
   get occDate(): string | null {
-    return this.asDate(this.claims?.occDate);
+    return legacyDate(this.claims?.occDate, 'previewDate', null as any);
   }
 
   get accHToDutyCells(): string[] {
@@ -125,22 +126,8 @@ export class CommonPreviewTyDutyAdvanceComponent implements OnInit {
     return [`${this.display(this.tyDuty?.accHToDutyPerDay)} per day`];
   }
 
-  asDate(value: any): string | null {
-    return legacyDate(value, 'dd-MMM-yyyy', null as any);
-  }
-
   display(value: any): any {
     return legacyValue(value);
-  }
-
-  displayZero(value: any): any {
-    return isLegacyBlank(value) ? 0 : value;
-  }
-
-  navigatePreview(route: string, claimId: any): void {
-    if (!route || !claimId) return;
-    const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '';
-    window.open(`${moduleUrl}/${route}?id=${claimId}`, '_blank');
   }
 
   goBack(): void {
@@ -176,7 +163,7 @@ export class CommonPreviewTyDutyAdvanceComponent implements OnInit {
           return;
         }
 
-        this.claims = Array.isArray(response?.object) ? response.object[0] || {} : response?.object || {};
+        this.claims = unwrapPreviewObject(response?.object);
       },
       error: () => {
         this.$common.hideLoader();
@@ -185,8 +172,5 @@ export class CommonPreviewTyDutyAdvanceComponent implements OnInit {
     });
   }
 
-  private isBlank(value: any): boolean {
-    return value === null || value === undefined || value === '';
-  }
 }
 

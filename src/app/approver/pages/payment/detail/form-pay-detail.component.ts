@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -35,8 +34,7 @@ export class FormPayDetailComponent implements OnInit {
     private $claimStateApi: ClaimStateApiService,
     private $payStateApi: PayStateApiService,
     private $payDetailsApi: YatPayDetailsApiService,
-    private $common: CommonService,
-    private datePipe: DatePipe
+    private $common: CommonService
   ) {}
 
   ngOnInit(): void {
@@ -128,14 +126,6 @@ export class FormPayDetailComponent implements OnInit {
       return;
     }
     this.$auth.viewFile(docUrl);
-  }
-
-  asDate(value: any): string {
-    if (!value) return '-';
-    const date = typeof value === 'number' || /^\d+$/.test(`${value}`)
-      ? new Date(Number(value))
-      : new Date(value);
-    return Number.isNaN(date.getTime()) ? `${value}` : (this.datePipe.transform(date, 'dd-MMM-yyyy') || '-');
   }
 
   applyAction(status: string = this.selectedStatus): void {

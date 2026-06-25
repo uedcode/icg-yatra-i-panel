@@ -1,11 +1,12 @@
-import { DatePipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
-import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
+import { asArray, firstItem, hasAnyLegacyValue, isLegacyPresent, unwrapNullablePreviewObject, unwrapPreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
+import { isESign, isInkSign, isYatraClaimMode } from 'src/app/shared/utils/legacy-preview.util';
 
 @Component({
   selector: 'app-common-preview-pmt-duty-claim',
@@ -31,11 +32,10 @@ export class CommonPreviewPmtDutyClaimComponent implements OnInit {
   constructor(
     private location: Location,
     private route: ActivatedRoute,
-    private datePipe: DatePipe,
     private $common: CommonService,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
-    private previewWindow: PreviewWindowService
+    public previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -85,8 +85,8 @@ export class CommonPreviewPmtDutyClaimComponent implements OnInit {
   }
 
   get previewTitle(): string {
-    const prefix = this.isBlank(this.formObj?.supClaimId) ? '' : 'Supplementary ';
-    const suffix = this.isBlank(this.formObj?.formId) ? '' : ` - ${this.formObj.formId}`;
+    const prefix = isLegacyPresent(this.formObj?.supClaimId) ? 'Supplementary ' : '';
+    const suffix = isLegacyPresent(this.formObj?.formId) ? ` - ${this.formObj.formId}` : '';
     return `${prefix}Permanent Duty Claim${suffix}`;
   }
 
@@ -95,100 +95,51 @@ export class CommonPreviewPmtDutyClaimComponent implements OnInit {
   }
 
   get isInkSign(): boolean {
-    return ['IS', 'IK', 'INK_SIGN'].includes(String(this.formObj?.signWith ?? '').toUpperCase());
+    return isInkSign(this.formObj?.signWith);
   }
 
   get isESign(): boolean {
-    return ['ES', 'E_SIGN'].includes(String(this.formObj?.signWith ?? '').toUpperCase());
+    return isESign(this.formObj?.signWith);
   }
 
   get hasLinkedAdvance(): boolean {
-    const claimMode = String(this.formObj?.claimMode ?? '').toUpperCase();
-    return ['YT', 'YATRA'].includes(claimMode) && !this.isBlank(this.formObj?.advClaimId);
+    return isYatraClaimMode(this.formObj?.claimMode) && isLegacyPresent(this.formObj?.advClaimId);
   }
 
   get transportRows(): any[] {
-    return this.asArray(this.claim?.yatPermDutyClaimTransportDTOs);
+    return asArray(this.claim?.yatPermDutyClaimTransportDTOs);
   }
 
   get shipEffectRows(): any[] {
-    return this.asArray(this.claim?.yatPermDutyClaimShipEffDTOs);
+    return asArray(this.claim?.yatPermDutyClaimShipEffDTOs);
   }
 
   get conveyanceRows(): any[] {
-    return this.asArray(this.claim?.yatPermDutyClaimTransportConveyanceDTOs);
+    return asArray(this.claim?.yatPermDutyClaimTransportConveyanceDTOs);
   }
 
   get shipConveyanceRows(): any[] {
-    return this.asArray(this.claim?.yatPermDutyClaimShipConveyanceDTOs);
+    return asArray(this.claim?.yatPermDutyClaimShipConveyanceDTOs);
   }
 
   get otherChargeRows(): any[] {
-    return this.asArray(this.formObj?.yatForeignTravelDetailDTOs);
+    return asArray(this.formObj?.yatForeignTravelDetailDTOs);
   }
 
-  get financialRows(): any[] {
-    const rows = [
-      { description: 'Travel Details (All mode of travel excluding DTS Booking)', amount: this.claim?.travelDetailsAmt },
-      { description: 'Travel details (DTS bookings)', amount: this.claim?.travelDetailsDTSAmt },
-    ];
-    if (!this.isBlank(this.claim?.otherChargeAmt)) {
-      rows.push({ description: 'Other Charges', amount: this.claim?.otherChargeAmt });
-    }
-    rows.push(
-      { description: 'Composite/ Transfer Grant', amount: this.claim?.composite },
-      { description: 'Transportation of personal effects', amount: this.claim?.effects },
-      { description: 'Transportation of personal effects by ship', amount: this.claim?.effShip },
-      { description: 'Transportation of private conveyance', amount: this.claim?.conveyance },
-      { description: 'Transportation charge of personal conveyance by ship', amount: this.claim?.conveyanceShip },
-      { description: 'Grand Total', amount: this.claim?.total },
-      { description: `Amount of advance. If any, drawn vide voucher No. ${this.nil(this.claim?.advVoucherNumber)} dated ${this.nil(this.asDate(this.claim?.lessAmtVoucherDate))}`, amount: this.claim?.lessAmtVoucherAmt },
-      { description: `Excess TA advance paid through MRO. If any, paid via MRO No. ${this.nil(this.claim?.mroNo)} dated ${this.nil(this.asDate(this.claim?.mroDate))}`, amount: this.claim?.mroAmt }
-    );
-    if (Number(this.claim?.mroPiAmt) > 0) {
-      rows.push({
-        description: `MRO Penal Interest (from date ${this.nil(this.asDate(this.claim?.mroPiFromDate))} to date ${this.nil(this.asDate(this.claim?.mroPiToDate))}) ${this.nil(this.claim?.mroPiInterestRate)}% Interest Rate`,
-        amount: this.claim?.mroPiAmt,
-      });
-    }
-    rows.push(
-      { description: `Penal Interest (from date ${this.nil(this.asDate(this.claim?.piFromDate))} to date ${this.nil(this.asDate(this.claim?.piToDate))}) ${this.nil(this.claim?.piInterestRate)}% Interest Rate`, amount: this.claim?.piAmt },
-      { description: 'DTS Ticket Adjusted', amount: this.claim?.travelDetailsDTSAmt },
-      { description: 'Net Amount Due', amount: this.claim?.netDueAbsoluteAmt }
-    );
-    return rows;
+  get hasOtherChargeAmount(): boolean {
+    return isLegacyPresent(this.claim?.otherChargeAmt);
   }
 
-  asDate(value: any): any {
-    return legacyDate(value, 'dd/MM/yyyy', null as any);
-  }
-
-  asDateTime(value: any): any {
-    return legacyDate(value, 'dd/MM/yyyy HH:mm', null as any);
-  }
-
-  nil(value: any): any {
-    return legacyValue(value, 'Nil');
-  }
-
-  hyphen(value: any): any {
-    return legacyValue(value);
+  get hasMroPenalInterest(): boolean {
+    return Number(this.claim?.mroPiAmt) > 0;
   }
 
   goBack(): void {
     this.previewWindow.closeOrBack(this.location);
   }
 
-  openRelatedPreview(route: string, claimId: any): void {
-    if (!route) return;
-    if (!claimId) return;
-    const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '/creator';
-    this.previewWindow.open(moduleUrl, route, { id: claimId });
-  }
-
   hasRelatedClaims(): boolean {
-    if (!this.isBlank(this.formObj?.advClaimId)) return true;
-    return !this.isBlank(this.formObj?.supClaimId);
+    return hasAnyLegacyValue(this.formObj?.advClaimId, this.formObj?.supClaimId);
   }
 
   downloadPreview(): void {
@@ -209,7 +160,7 @@ export class CommonPreviewPmtDutyClaimComponent implements OnInit {
             this.$common.showMessage(response?.message ?? 'Unable to download file.', 'danger');
             return;
           }
-          const responseObject = Array.isArray(response?.object) ? response.object[0] ?? null : null;
+          const responseObject = unwrapNullablePreviewObject(response?.object);
           this.$common.download(responseObject?.inkSignedFileUrl);
         },
         error: () => this.$common.showMessage('Unable to download file.', 'danger'),
@@ -217,31 +168,15 @@ export class CommonPreviewPmtDutyClaimComponent implements OnInit {
   }
 
   private parseClaimPreviewResponse(response: any): void {
-    const claims = this.unwrapClaimObject(response?.object);
+    const claims = unwrapPreviewObject(response?.object);
     this.formObj = claims;
-    this.claim = this.firstItem(claims?.yatPermDutyClaimDTOs);
-    this.travelRows = this.asArray(claims?.yatClaimTravelDetailsDTOs);
-    this.familyRows = this.asArray(claims?.yatFamilyDetailDTOs);
-    this.gxRows = this.asArray(claims?.yatClaimGxDetailsDTOs);
-    this.documentDtos = this.asArray(claims?.yatDocsDTOs);
+    this.claim = firstItem(claims?.yatPermDutyClaimDTOs);
+    this.travelRows = asArray(claims?.yatClaimTravelDetailsDTOs);
+    this.familyRows = asArray(claims?.yatFamilyDetailDTOs);
+    this.gxRows = asArray(claims?.yatClaimGxDetailsDTOs);
+    this.documentDtos = asArray(claims?.yatDocsDTOs);
     this.bankDetails = claims?.yatClaimBankDetailDTO ?? {};
   }
 
-  private unwrapClaimObject(object: any): any {
-    return Array.isArray(object) ? object[0] ?? {} : object ?? {};
-  }
-
-  private firstItem(value: any): any {
-    return Array.isArray(value) ? value[0] ?? {} : value ?? {};
-  }
-
-  private asArray(value: any): any[] {
-    return Array.isArray(value) ? value : [];
-  }
-
-  private isBlank(value: any): boolean {
-    if (value == null) return true;
-    return value === '';
-  }
 }
 

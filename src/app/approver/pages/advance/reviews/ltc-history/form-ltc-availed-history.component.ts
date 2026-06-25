@@ -1,4 +1,4 @@
-import { DatePipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -65,7 +65,6 @@ export class FormLtcAvailedHistoryComponent implements OnInit {
     private router: Router,
     private location: Location,
     private previewWindow: PreviewWindowService,
-    private datePipe: DatePipe,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
     private $claimStateApi: ClaimStateApiService,
@@ -863,15 +862,6 @@ export class FormLtcAvailedHistoryComponent implements OnInit {
     if (value === 1 || value === '1' || value === true) return 'Yes';
     if (value === 0 || value === '0' || value === false) return 'No';
     return '-';
-  }
-
-  asDate(value: any): string {
-    if (!value) return '-';
-    const parsed = Number(value);
-    if (Number.isNaN(parsed)) {
-      return this.datePipe.transform(value, 'dd-MMM-yyyy') || '-';
-    }
-    return this.datePipe.transform(new Date(parsed), 'dd-MMM-yyyy') || '-';
   }
 
   viewDocument(url: any): void {

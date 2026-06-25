@@ -25,7 +25,7 @@
         <div class="col-md-3"><p><strong>Mode:</strong> {{ modeLabel(movement?.claimMode) }}</p></div>
         <div class="col-md-3"><p><strong>Purpose:</strong> {{ purposeLabel(movement?.subFormId) }}</p></div>
         <div class="col-md-3"><p><strong>Voucher Number:</strong> {{ (movement?.voucherNo | legacyValue) }}</p></div>
-        <div class="col-md-3 mt-2"><p><strong>Voucher Date:</strong> {{ (movement?.voucherDate | legacyDate) }}</p></div>
+        <div class="col-md-3 mt-2"><p><strong>Voucher Date:</strong> {{ (movement?.voucherDate | legacyDate:'voucherDate') }}</p></div>
         <div class="col-md-3 mt-2"><p><strong>Amount (In Rs):</strong> {{ (movement?.voucherAmt | legacyValue) }}</p></div>
         <div class="col-md-3 mt-2"><p><strong>Drawn From:</strong> {{ (movement?.drawnFrom | legacyValue) }}</p></div>
         <div class="col-md-3 mt-2"><p><strong>Other:</strong> {{ (movement?.drawnFromOther | legacyValue) }}</p></div>
@@ -55,9 +55,9 @@
             <tr *ngFor="let row of gxDetails; let i = index; trackBy: trackByIndex">
               <td>{{ (row?.gxType | legacyValue) }}</td>
               <td>{{ (row?.unit | legacyValue) }}</td>
-              <td>{{ (row?.gxDate | legacyDate) }}</td>
+              <td>{{ (row?.gxDate | legacyDate:'previewDate') }}</td>
               <td>{{ (row?.gxNo | legacyValue) }}</td>
-              <td>{{ (row?.dateOfTravel | legacyDate) }}</td>
+              <td>{{ (row?.dateOfTravel | legacyDate:'previewDate') }}</td>
             </tr>
             <tr *ngIf="!gxDetails.length">
               <td colspan="5" class="text-center">No Record Found</td>
@@ -77,7 +77,7 @@
         <div class="col-md-3 mt-2"><p><strong>Passed Amount:</strong> {{ (movement?.claimPassAmt | legacyValue) }}</p></div>
         <div class="col-md-3 mt-2"><p><strong>Unit:</strong> {{ (movement?.unitId | legacyValue) }}</p></div>
         <div class="col-md-3 mt-2"><p><strong>Letter No:</strong> {{ (movement?.letterNo | legacyValue) }}</p></div>
-        <div class="col-md-3 mt-2"><p><strong>Letter Date:</strong> {{ (movement?.letterNoDated | legacyDate) }}</p></div>
+        <div class="col-md-3 mt-2"><p><strong>Letter Date:</strong> {{ (movement?.letterNoDated | legacyDate:'previewDate') }}</p></div>
       </div>
                 </div>
 

@@ -5,6 +5,7 @@ import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
+import { firstItem, unwrapPreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
 
 @Component({
   selector: 'app-common-preview-manual-advance',
@@ -57,22 +58,8 @@ export class CommonPreviewManualAdvanceComponent implements OnInit {
   }
 
   private parsePreviewResponse(response: any): void {
-    this.claim = this.unwrapClaimObject(response?.object);
-    this.manual = this.firstItem(this.claim?.yatManualAdvDTOs);
-  }
-
-  private unwrapClaimObject(object: any): any {
-    if (Array.isArray(object)) {
-      return object[0] || {};
-    }
-    return object || {};
-  }
-
-  private firstItem(value: any): any {
-    if (Array.isArray(value)) {
-      return value[0] || {};
-    }
-    return value || {};
+    this.claim = unwrapPreviewObject(response?.object);
+    this.manual = firstItem(this.claim?.yatManualAdvDTOs);
   }
 
   goBack(): void {

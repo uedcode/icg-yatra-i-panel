@@ -71,10 +71,10 @@
             <td>{{ (row?.to || row?.yatClaimDTO?.to) | showHypen }}</td>
             <td>{{ (row?.advanceMode || row?.yatClaimDTO?.advanceMode) | showHypen }}</td>
             <td>{{ (row?.voucherNo || row?.yatClaimDTO?.voucherNo) | showHypen }}</td>
-            <td>{{ (row?.voucherDate || row?.yatClaimDTO?.voucherDate) | showDate:'mediumDate' }}</td>
+            <td>{{ (row?.voucherDate || row?.yatClaimDTO?.voucherDate) | legacyDate:'queueDate' }}</td>
             <td>{{ (row?.voucherAmt || row?.yatClaimDTO?.voucherAmt) | showHypen }}</td>
-            <td>{{ (row?.occDate || row?.yatClaimDTO?.occDate) | showDate:'mediumDate' }}</td>
-            <td>{{ (row?.reportingDate || row?.yatClaimDTO?.reportingDate) | showDate:'mediumDate' }}</td>
+            <td>{{ (row?.occDate || row?.yatClaimDTO?.occDate) | legacyDate:'queueDate' }}</td>
+            <td>{{ (row?.reportingDate || row?.yatClaimDTO?.reportingDate) | legacyDate:'queueDate' }}</td>
             <td class="text-center">
               <button class="btn btn-info" (click)="openMovement(row)">Update</button>
             </td>

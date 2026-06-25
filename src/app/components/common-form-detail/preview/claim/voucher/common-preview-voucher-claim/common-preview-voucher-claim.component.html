@@ -45,7 +45,7 @@
 
             <div class="row mb-2">
               <div class="col-md-3"><p><strong>Voucher Date</strong></p></div>
-              <div class="col-md-3"><p>{{ (yatClaimVoucher?.voucherDate | legacyDate) }}</p></div>
+              <div class="col-md-3"><p>{{ (yatClaimVoucher?.voucherDate | legacyDate:'voucherDate') }}</p></div>
             </div>
 
             <div class="text-center text-muted py-3" *ngIf="!yatClaimVoucher">

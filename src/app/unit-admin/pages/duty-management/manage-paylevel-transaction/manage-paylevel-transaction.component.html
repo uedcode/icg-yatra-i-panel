@@ -133,8 +133,8 @@
                         <td>{{ dataObj?.aclUserDTO?.name | showHypen }}</td>
                         <td>{{ dataObj?.aclUserDTO?.codeUnitDTO?.descr | showHypen }}</td>
                         <td>Level {{ dataObj?.paylevel?.replace('L', '') || '-' }}</td>
-                        <td>{{ dataObj?.fromDt | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ dataObj?.toDt ? (dataObj?.toDt | date:'dd/MM/yyyy') : '-' }}</td>
+                        <td>{{ dataObj?.fromDt | legacyDate:'queueDate' }}</td>
+                        <td>{{ dataObj?.toDt | legacyDate:'queueDate' }}</td>
                         <td>{{ dataObj?.basicPay | showHypen }}</td>
                         <td>
                           <button type="button" class="btn btn-info btn-sm" (click)="editObject(dataObj)">Edit</button>

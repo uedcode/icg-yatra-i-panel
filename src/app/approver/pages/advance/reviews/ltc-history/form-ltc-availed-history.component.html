@@ -197,8 +197,8 @@
                 <div class="col-md-3"><strong>Basic Pay:</strong> {{ (primaryAdvanceDetails?.basicPay | legacyValue) }}</div>
                 <div class="col-md-3"><strong>Applied To:</strong> {{ (primaryAdvanceDetails?.appliedTo | legacyValue) }}</div>
                 <div class="col-md-3"><strong>GX No:</strong> {{ (primaryAdvanceDetails?.gxNumber | legacyValue) }}</div>
-                <div class="col-md-3"><strong>GX Date:</strong> {{ (primaryAdvanceDetails?.gxDate | legacyDate) }}</div>
-                <div class="col-md-3"><strong>Occurrence Date:</strong> {{ (formObj?.occDate | legacyDate) }}</div>
+                <div class="col-md-3"><strong>GX Date:</strong> {{ (primaryAdvanceDetails?.gxDate | legacyDate:'previewDate') }}</div>
+                <div class="col-md-3"><strong>Occurrence Date:</strong> {{ (formObj?.occDate | legacyDate:'previewDate') }}</div>
                 <div class="col-md-3"><strong>Present Unit:</strong> {{ (primaryAdvanceDetails?.videPresentUnit | legacyValue) }}</div>
               </div>
             </div>
@@ -243,11 +243,11 @@
                 <div class="col-md-3"><strong>Place Of Visit:</strong> {{ (primaryAdvanceDetails?.placeOfVisit | legacyValue) }}</div>
                 <div class="col-md-3"><strong>LTC Place:</strong> {{ (primaryAdvanceDetails?.ltcPlace | legacyValue) }}</div>
                 <div class="col-md-3"><strong>GX Unit:</strong> {{ (primaryAdvanceDetails?.gxUnit | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Joining Date:</strong> {{ (primaryAdvanceDetails?.joiningDate | legacyDate) }}</div>
+                <div class="col-md-3"><strong>Joining Date:</strong> {{ (primaryAdvanceDetails?.joiningDate | legacyDate:'previewDate') }}</div>
                 <div class="col-md-3"><strong>Is DTS:</strong> {{ (primaryAdvanceDetails?.isDts | legacyValue) }}</div>
                 <div class="col-md-3"><strong>Arrival Fare:</strong> {{ (primaryAdvanceDetails?.arrFare | legacyValue) }}</div>
                 <div class="col-md-3"><strong>Place:</strong> {{ (primaryAdvanceDetails?.place | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Date:</strong> {{ (primaryAdvanceDetails?.date | legacyDate) }}</div>
+                <div class="col-md-3"><strong>Date:</strong> {{ (primaryAdvanceDetails?.date | legacyDate:'previewDate') }}</div>
               </div>
 
               <div class="row" *ngIf="subFormId === 'M'">
@@ -434,7 +434,7 @@
                       <td>{{ (row?.ltcSubType | legacyValue) }}</td>
                       <td>{{ (row?.frmLocation | legacyValue) }}</td>
                       <td>{{ (row?.toLocation | legacyValue) }}</td>
-                      <td>{{ (row?.occDate | legacyDate) }}</td>
+                      <td>{{ (row?.occDate | legacyDate:'previewDate') }}</td>
                       <td>{{ (row?.reason | legacyValue) }}</td>
                       <td>
                         <div *ngIf="row?._selectedFamilyMembers?.length; else noFamilyMembers">
@@ -447,7 +447,7 @@
                               ({{ (family?.relation | legacyValue) }}, Age {{ (family?.age | legacyValue) }})
                             </span>
                             <span class="d-block text-muted">
-                              Occurrence: {{ (family?.occDate | legacyDate) }}
+                              Occurrence: {{ (family?.occDate | legacyDate:'previewDate') }}
                             </span>
                           </div>
                         </div>
@@ -563,7 +563,7 @@
                   <td>{{ ((row?.roleTypeName || row?.aclCodeRoleTypeDTO?.roleTypeName || row?.aclCodeRoleTypeDTO?.descr) | legacyValue) }}</td>
                   <td>{{ (row?.formState || row?.claimState || row?.statusId) | codeStatus:'-' }}</td>
                   <td>{{ ((row?.unitName || row?.yatClaimDTO?.codeUnitDTO?.descr || row?.yatClaimDTO?.codeUnitDTO?.unit) | legacyValue) }}</td>
-                  <td>{{ (row?.createdOn | legacyDate) }}</td>
+                  <td>{{ (row?.createdOn | legacyDate:'previewDate') }}</td>
                 </tr>
                 <tr *ngIf="!stateHistory?.length">
                   <td colspan="4" class="text-center">No workflow history available.</td>

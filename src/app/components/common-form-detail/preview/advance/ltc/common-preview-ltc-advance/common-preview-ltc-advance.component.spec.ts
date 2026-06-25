@@ -1,9 +1,11 @@
 import { of, throwError } from 'rxjs';
-import { PreviewLtcAdvanceComponent } from './preview-ltc-advance.component';
+import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
+import { asArray, firstItem } from 'src/app/shared/utils/legacy-preview-data.util';
+import { CommonPreviewLtcAdvanceComponent } from './common-preview-ltc-advance.component';
 
-describe('PreviewLtcAdvanceComponent', () => {
+describe('CommonPreviewLtcAdvanceComponent', () => {
   const createComponent = () => {
-    const component = Object.create(PreviewLtcAdvanceComponent.prototype) as any;
+    const component = Object.create(CommonPreviewLtcAdvanceComponent.prototype) as any;
     component.route = {
       snapshot: {
         data: { subFormId: 'LTC' },
@@ -13,12 +15,11 @@ describe('PreviewLtcAdvanceComponent', () => {
       }
     };
     component.location = jasmine.createSpyObj('Location', ['back']);
-    component.datePipe = jasmine.createSpyObj('DatePipe', ['transform']);
-    component.datePipe.transform.and.returnValue('10-Jan-2026');
     component.$common = jasmine.createSpyObj('CommonService', ['showLoader', 'hideLoader', 'showMessage']);
     component.$claimApi = jasmine.createSpyObj('ClaimApiService', ['getSingleClaim']);
-    component.$claimApi.getSingleClaim.and.returnValue(of({ object: [{ claimId: '501', yatDocsDTOs: [{ id: 1 }] }] }));
+    component.$claimApi.getSingleClaim.and.returnValue(of({ object: [{ claimId: '501', yatFamilyDetailDTOs: [{ id: 1 }] }] }));
     component.$auth = {} as any;
+    component.previewWindow = jasmine.createSpyObj('PreviewWindowService', ['closeOrBack', 'open']);
     return component;
   };
 
@@ -37,7 +38,7 @@ describe('PreviewLtcAdvanceComponent', () => {
     component.subFormId = 'L';
     component.getClaimDetails();
     expect(component.formObj.claimId).toBe('501');
-    expect(component.documentDtos.length).toBe(1);
+    expect(component.familyRows.length).toBe(1);
   });
 
   it('shows danger message on claim API error', () => {
@@ -48,25 +49,26 @@ describe('PreviewLtcAdvanceComponent', () => {
     expect(component.$common.showMessage).toHaveBeenCalledWith('Unable to load LTC preview details.', 'danger');
   });
 
-  it('formats display and date helper outputs', () => {
+  it('uses shared display and preview data helpers', () => {
     const component = createComponent();
-    expect(component.display(null)).toBe('-');
-    expect(component.display('  ')).toBe('-');
-    expect(component.display('abc')).toBe('abc');
-    expect(component.asDate(1700000000000)).toBe('10-Jan-2026');
-    expect(component.asDate(null)).toBe('-');
+    expect(component.display(null)).toBe(legacyValue(null));
+    expect(component.display('  ')).toBe(legacyValue('  '));
+    expect(component.display('abc')).toBe(legacyValue('abc'));
+    expect(legacyDate(1700000000000, 'previewDate')).toBeTruthy();
+    expect(firstItem([{ id: 1 }])).toEqual({ id: 1 });
+    expect(asArray({ id: 1 })).toEqual([{ id: 1 }]);
   });
 
   it('goes back on goBack', () => {
     const component = createComponent();
     component.goBack();
-    expect(component.location.back).toHaveBeenCalled();
+    expect(component.previewWindow.closeOrBack).toHaveBeenCalledWith(component.location);
   });
 
-  it('uses claim-specific heading for LTC claim preview', () => {
+  it('maps LTC subtype labels like legacy', () => {
     const component = createComponent();
-    component.subFormId = 'LTC';
-    expect(component.previewHeading).toBe('LTC Claim Preview');
+    component.preview = { ltc: { ltcType: 'PL' } };
+    expect(component.ltcSubType).toBe('Self and Family');
   });
 });
 

@@ -52,6 +52,12 @@
                   <p>{{ (fte?.duration | legacyValue) }}</p>
                 </div>
                 <div class="col-md-3">
+                  <p><strong>wef (Date) </strong></p>
+                </div>
+                <div class="col-md-3">
+                  <p>{{ (fte?.wefDate | legacyDate:'previewDate') }}</p>
+                </div>
+                <div class="col-md-3">
                   <p><strong>Present Unit</strong></p>
                 </div>
                 <div class="col-md-3">
@@ -79,7 +85,7 @@
                   <p><strong>{{ gxLabelPrefix }} Date</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ (fte?.gxDate | legacyDate) }}</p>
+                  <p>{{ (fte?.gxDate | legacyDate:'previewDate') }}</p>
                 </div>
                 <div class="col-md-3">
                   <p><strong>{{ gxFormLabel }}</strong></p>
@@ -121,7 +127,7 @@
                   <p><strong>Occurrence Date (Movement Date)</strong></p>
                 </div>
                 <div class="col-md-3">
-                  <p>{{ (claims?.occDate | legacyDate) }}</p>
+                  <p>{{ (claims?.occDate | legacyDate:'previewDate') }}</p>
                 </div>
                 <div class="col-md-3" *ngIf="fte?.dutyStation">
                   <p><strong>Duty Station to</strong></p>
@@ -133,14 +139,14 @@
                   <p><strong>Extended From</strong></p>
                 </div>
                 <div class="col-md-3" *ngIf="claims?.extendedAdvId"><button type="button" class="btn btn-info btn-sm"
-                    (click)="navigatePreview('preview-ty-duty', claims?.extendedAdvId)">View</button></div>
+                    (click)="previewWindow.openRelatedPreview($auth.getModuleName(), 'preview-ty-duty', claims?.extendedAdvId)">View</button></div>
               </div>
               <div class="row" *ngIf="claims?.refExtendedAdvId">
                 <div class="col-md-3">
                   <p><strong>Extended Duty</strong></p>
                 </div>
                 <div class="col-md-3"><button type="button" class="btn btn-info btn-sm"
-                    (click)="navigatePreview('preview-ty-duty', claims?.refExtendedAdvId)">View</button></div>
+                    (click)="previewWindow.openRelatedPreview($auth.getModuleName(), 'preview-ty-duty', claims?.refExtendedAdvId)">View</button></div>
               </div>
             </div>
             <div class="level_1" *ngIf="!fte?.purpose">
@@ -226,6 +232,12 @@
                 <div class="col-md-3">
                   <p>{{ (fte?.place | legacyValue) }}</p>
                 </div>
+                <div class="col-md-3">
+                  <p><strong>Date</strong></p>
+                </div>
+                <div class="col-md-3">
+                  <p>{{ (fte?.date | legacyDate:'previewDate') }}</p>
+                </div>
               </div>
             </div>
             <div class="level_1">
@@ -241,10 +253,10 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td>{{ displayZero(fte?.totalAmt) }}</td>
-                      <td>{{ displayZero(fte?.advAmt) }}</td>
-                      <td>{{ displayZero(fte?.dtsAmount) }}</td>
-                      <td>{{ displayZero(fte?.totalBudgetedAmt) }}</td>
+                      <td>{{ fte?.totalAmt | legacyZero }}</td>
+                      <td>{{ fte?.advAmt | legacyZero }}</td>
+                      <td>{{ fte?.dtsAmount | legacyZero }}</td>
+                      <td>{{ fte?.totalBudgetedAmt | legacyZero }}</td>
                     </tr>
                   </tbody>
                 </table>

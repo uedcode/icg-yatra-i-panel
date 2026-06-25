@@ -24,43 +24,42 @@
                   <h4 class="legacy-preview-heading">(a) <strong>Personal Details</strong></h4>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Name</strong></p></div>
-                    <div class="col-md-3"><p>{{ (claim?.name | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.name | legacyNil) }}</p></div>
                     <div class="col-md-3"><p><strong>Rank</strong></p></div>
-                    <div class="col-md-3"><p>{{ (claim?.rank | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.rank | legacyNil) }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Personnel Number</strong></p></div>
-                    <div class="col-md-3"><p>{{ (claim?.pno | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.pno | legacyNil) }}</p></div>
                     <div class="col-md-3"><p><strong>Pay Level</strong></p></div>
-                    <div class="col-md-3"><p>{{ (claim?.payLevel | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.payLevel | legacyNil) }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Basic Pay (In Rs.)</strong></p></div>
-                    <div class="col-md-3"><p>{{ (claim?.basicPay | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.basicPay | legacyNil) }}</p></div>
                     <div class="col-md-3"><p><strong>Date of Joining</strong></p></div>
-                    <div class="col-md-3"><p>{{ (claim?.dateOfjoining | legacyDate:'dd-MMM-yyyy':'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.dateOfjoining | legacyDate:'previewDate':'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>Applied To</strong></p></div>
-                    <div class="col-md-3"><p>{{ (claim?.appliedTo | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.appliedTo | legacyNil) }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Advance Voucher Number</strong></p></div>
-                    <div class="col-md-3"><p>{{ (claim?.advVoucherNumber | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.advVoucherNumber | legacyNil) }}</p></div>
                     <div class="col-md-3" *ngIf="formObj?.supClaimId"><p><strong>Linked Claim Form</strong></p></div>
                     <div class="col-md-3" *ngIf="formObj?.supClaimId"><p><button type="button" class="btn btn-info btn-sm"
-                        (click)="openRelatedPreview('preview-ltc-claim', formObj.supClaimId)">View</button></p></div>
+                        (click)="previewWindow.openRelatedPreview($auth.getModuleName(), 'preview-ltc-claim', formObj.supClaimId)">View</button></p></div>
                   </div>
-                  <div class="row"
-                    *ngIf="formObj?.claimMode === 'M' || formObj?.claimMode === 'MANUAL'">
+                  <div class="row" *ngIf="isManualClaimMode">
                     <div class="col-md-3"><p><strong>Drawn from</strong></p></div>
-                    <div class="col-md-3"><p>{{ (formObj?.drawnFrom | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (formObj?.drawnFrom | legacyNil) }}</p></div>
                     <div class="col-md-3"><p><strong>Voucher Date</strong></p></div>
-                    <div class="col-md-3"><p>{{ (formObj?.voucherDate | legacyDate:'dd-MMM-yyyy':'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (formObj?.voucherDate | legacyDate:'previewDate':'Nil') }}</p></div>
                   </div>
 
                   <h4 class="legacy-preview-heading"><strong>Family Details</strong></h4>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Family Type</strong></p></div>
-                    <div class="col-md-3"><p>{{ (claim?.familyType | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.familyType | legacyNil) }}</p></div>
                   </div>
                   <div class="table-responsive">
                     <table class="table table-striped table-bordered table-hover">
@@ -74,10 +73,10 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let family of familyRows">
-                          <td>{{ (family?.memberName | legacyValue:'Nil') }}</td>
-                          <td>{{ (family?.age | legacyValue:'Nil') }}</td>
-                          <td>{{ (family?.relation | legacyValue:'Nil') }}</td>
-                          <td>{{ (family?.occupation | legacyValue:'Nil') }}</td>
+                          <td>{{ (family?.memberName | legacyNil) }}</td>
+                          <td>{{ (family?.age | legacyNil) }}</td>
+                          <td>{{ (family?.relation | legacyNil) }}</td>
+                          <td>{{ (family?.occupation | legacyNil) }}</td>
                         </tr>
                         <tr *ngIf="!familyRows.length">
                           <td colspan="4" class="text-center">No Records</td>
@@ -100,10 +99,10 @@
                         </thead>
                         <tbody>
                           <tr *ngFor="let spouse of spouseRows">
-                            <td>{{ (spouse?.memberName | legacyValue:'Nil') }}</td>
-                            <td>{{ (spouse?.age | legacyValue:'Nil') }}</td>
-                            <td>{{ (spouse?.relation | legacyValue:'Nil') }}</td>
-                            <td>{{ (spouse?.occupation | legacyValue:'Nil') }}</td>
+                            <td>{{ (spouse?.memberName | legacyNil) }}</td>
+                            <td>{{ (spouse?.age | legacyNil) }}</td>
+                            <td>{{ (spouse?.relation | legacyNil) }}</td>
+                            <td>{{ (spouse?.occupation | legacyNil) }}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -124,11 +123,11 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let row of gxRows">
-                          <td>{{ (row?.gxType | legacyValue) }}</td>
-                          <td>{{ (row?.unit | legacyValue) }}</td>
-                          <td>{{ (row?.gxNo | legacyValue) }}</td>
-                          <td>{{ (row?.gxDate | legacyDate) }}</td>
-                          <td>{{ (row?.dateOfTravel | legacyDate) }}</td>
+                          <td>{{ (row?.gxType | legacyHyphen) }}</td>
+                          <td>{{ (row?.unit | legacyHyphen) }}</td>
+                          <td>{{ (row?.gxNo | legacyHyphen) }}</td>
+                          <td>{{ (row?.gxDate | legacyDate:'previewDate' | legacyHyphen) }}</td>
+                          <td>{{ (row?.dateOfTravel | legacyDate:'previewDate' | legacyHyphen) }}</td>
                         </tr>
                         <tr *ngIf="!gxRows.length">
                           <td colspan="5" class="text-center">No Record Found</td>
@@ -142,27 +141,27 @@
                   <h4 class="legacy-preview-heading">(b) <strong>LTC Details</strong></h4>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Block year</strong></p></div>
-                    <div class="col-md-3"><p>{{ (ltcLeave?.blockYear | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (ltcLeave?.blockYear | legacyNil) }}</p></div>
                     <div class="col-md-3"><p><strong>LTC Type</strong></p></div>
-                    <div class="col-md-3"><p>{{ (ltcLeave?.ltcType | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (ltcLeave?.ltcType | legacyNil) }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Nature of leave</strong></p></div>
-                    <div class="col-md-3"><p>{{ (ltcLeave?.natureOfleave | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (ltcLeave?.natureOfleave | legacyNil) }}</p></div>
                     <div class="col-md-3"><p><strong>Leave (From date)</strong></p></div>
-                    <div class="col-md-3"><p>{{ (ltcLeave?.leaveFormDt | legacyDate:'dd-MMM-yyyy':'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (ltcLeave?.leaveFormDt | legacyDate:'previewDate':'Nil') }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Leave (To date)</strong></p></div>
-                    <div class="col-md-3"><p>{{ (ltcLeave?.leaveToDt | legacyDate:'dd-MMM-yyyy':'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (ltcLeave?.leaveToDt | legacyDate:'previewDate':'Nil') }}</p></div>
                     <div class="col-md-3"><p><strong>Leaves (No of days)</strong></p></div>
-                    <div class="col-md-3"><p>{{ (ltcLeave?.leavesNoOfDay | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (ltcLeave?.leavesNoOfDay | legacyNil) }}</p></div>
                   </div>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Place of visit</strong></p></div>
-                    <div class="col-md-3"><p>{{ (claim?.placeOfVisit | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.placeOfVisit | legacyNil) }}</p></div>
                     <div class="col-md-3"><p><strong>Journey Performed By</strong></p></div>
-                    <div class="col-md-3"><p>{{ (claim?.performedBy | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (claim?.performedBy | legacyNil) }}</p></div>
                   </div>
                 </div>
 
@@ -193,18 +192,18 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let row of travelRows">
-                          <td>{{ (row?.fromPlace | legacyValue) }}</td>
-                          <td>{{ ((row?.fromDate | legacyDate:'dd-MMM-yyyy HH:mm') | legacyValue) }}</td>
-                          <td>{{ (row?.toPlace | legacyValue) }}</td>
-                          <td>{{ ((row?.toDate | legacyDate:'dd-MMM-yyyy HH:mm') | legacyValue) }}</td>
-                          <td>{{ (row?.travelMode | legacyValue) }}</td>
-                          <td>{{ (row?.isDts | legacyValue) }}</td>
-                          <td>{{ (row?.reasonDts | legacyValue) }}</td>
-                          <td>{{ (row?.entitledClass | legacyValue) }}</td>
-                          <td>{{ (row?.travelClass | legacyValue) }}</td>
-                          <td>{{ (row?.distance | legacyValue) }}</td>
-                          <td>{{ (row?.amount | legacyValue) }}</td>
-                          <td>{{ (row?.remarks | legacyValue) }}</td>
+                          <td>{{ (row?.fromPlace | legacyHyphen) }}</td>
+                          <td>{{ (row?.fromDate | legacyDate:'previewDateTime' | legacyHyphen) }}</td>
+                          <td>{{ (row?.toPlace | legacyHyphen) }}</td>
+                          <td>{{ (row?.toDate | legacyDate:'previewDateTime' | legacyHyphen) }}</td>
+                          <td>{{ (row?.travelMode | legacyHyphen) }}</td>
+                          <td>{{ (row?.isDts | legacyHyphen) }}</td>
+                          <td>{{ (row?.reasonDts | legacyHyphen) }}</td>
+                          <td>{{ (row?.entitledClass | legacyHyphen) }}</td>
+                          <td>{{ (row?.travelClass | legacyHyphen) }}</td>
+                          <td>{{ (row?.distance | legacyHyphen) }}</td>
+                          <td>{{ (row?.amount | legacyHyphen) }}</td>
+                          <td>{{ (row?.remarks | legacyHyphen) }}</td>
                         </tr>
                         <tr *ngIf="!travelRows.length">
                           <td colspan="12" class="text-center">No Record Found</td>
@@ -227,9 +226,9 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let doc of documentDtos">
-                          <td>{{ (doc?.codeDocInfoDTO?.docName | legacyValue:'Nil') }} <span *ngIf="doc?.docNo">({{ doc.docNo }})</span>
+                          <td>{{ (doc?.codeDocInfoDTO?.docName | legacyValue:'') }} <span *ngIf="doc?.docNo">({{ doc.docNo }})</span>
                           </td>
-                          <td>{{ (doc?.descr | legacyValue:'Nil') }}</td>
+                          <td>{{ (doc?.descr | legacyNil) }}</td>
                           <td><button *ngIf="doc?.url" type="button" class="btn btn-info btn-sm"
                               (click)="$auth.viewFile(doc.url)">View</button></td>
                         </tr>
@@ -250,7 +249,6 @@
                 <div class="level_1">
                   <h4 class="legacy-preview-heading">(e) <strong>Financial Details</strong></h4>
                   <div class="table-responsive" *ngIf="otherChargeRows.length">
-                    <p><strong>Other Charges</strong></p>
                     <table class="table table-striped table-bordered table-hover">
                       <thead>
                         <tr>
@@ -275,9 +273,67 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let row of financialRows">
-                          <td>{{ row.description }}</td>
-                          <td>{{ (row.amount | legacyValue:'Nil') }}</td>
+                        <tr>
+                          <td>Travel Details (All mode of travel excluding DTS Booking) </td>
+                          <td>{{ claim?.travelDetailsAmt | legacyNil }}</td>
+                        </tr>
+                        <tr>
+                          <td>Travel details (DTS bookings)</td>
+                          <td>{{ claim?.travelDetailsDTSAmt | legacyNil }}</td>
+                        </tr>
+                        <tr *ngIf="hasOtherChargeAmount">
+                          <td>Other Charges</td>
+                          <td>{{ claim?.otherChargeAmt | legacyNil }}</td>
+                        </tr>
+                        <tr>
+                          <td>Grand Total</td>
+                          <td>{{ claim?.total | legacyNil }}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Amount of advance. If any, drawn vide voucher No.
+                            <b class="legacy-financial-bold">{{ claim?.advVoucherNumber | legacyNil }}</b>
+                            dated
+                            <b class="legacy-financial-bold">{{ claim?.lessAmtVoucherDate | legacyDate:'previewDate':'Nil' }}</b>
+                          </td>
+                          <td>{{ claim?.lessAmtVoucherAmt | legacyNil }}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Excess TA advance paid through MRO. If any, paid via MRO No.
+                            <b class="legacy-financial-bold">{{ claim?.mroNo | legacyNil }}</b>
+                            dated
+                            <b class="legacy-financial-bold">{{ claim?.mroDate | legacyDate:'previewDate':'Nil' }}</b>
+                          </td>
+                          <td>{{ claim?.mroAmt | legacyNil }}</td>
+                        </tr>
+                        <tr *ngIf="hasMroPenalInterest">
+                          <td>
+                            MRO Penal Interest (from date
+                            <b class="legacy-financial-bold">{{ claim?.mroPiFromDate | legacyDate:'previewDate':'Nil' }}</b>
+                            to date
+                            <b class="legacy-financial-bold">{{ claim?.mroPiToDate | legacyDate:'previewDate':'Nil' }}</b>)
+                            {{ claim?.mroPiInterestRate }}% Interest Rate
+                          </td>
+                          <td>{{ claim?.mroPiAmt | legacyNil }}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Penal Interest (from date
+                            <b class="legacy-financial-bold">{{ claim?.piFromDate | legacyDate:'previewDate':'Nil' }}</b>
+                            to date
+                            <b class="legacy-financial-bold">{{ claim?.piToDate | legacyDate:'previewDate':'Nil' }}</b>)
+                            {{ claim?.piInterestRate }}% Interest Rate
+                          </td>
+                          <td>{{ claim?.piAmt | legacyNil }}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Net Amount Due
+                            <span *ngIf="claim?.netDueAmt < 0" style="float:right; color: red; font-weight: bold"> To Government</span>
+                            <span *ngIf="claim?.netDueAmt > 0" style="float:right; color: green; font-weight: bold"> To Individual</span>
+                          </td>
+                          <td>{{ claim?.netDueAbsoluteAmt | legacyNil }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -302,8 +358,8 @@
                     </table>
                   </div>
                   <div class="row">
-                    <div class="col-md-3"><p><strong>Place</strong>: {{ (claim?.currentPlace | legacyValue:'Nil') }}</p></div>
-                    <div class="col-md-3 offset-md-3"><p><strong>Date</strong>: {{ (claim?.currentDate | legacyDate:'dd-MMM-yyyy':'Nil') }}</p></div>
+                    <div class="col-md-3"><p><strong>Place</strong>: {{ (claim?.currentPlace | legacyNil) }}</p></div>
+                    <div class="col-md-3 offset-md-3"><p><strong>Date</strong>: {{ (claim?.currentDate | legacyDate:'previewDate':'Nil') }}</p></div>
                   </div>
                 </div>
 
@@ -311,19 +367,19 @@
                   <h4 class="legacy-preview-heading">(d) <strong>Bank Details</strong></h4>
                   <div class="row">
                     <div class="col-md-3"><p><strong>Bank Name</strong></p></div>
-                    <div class="col-md-3"><p>{{ (bankDetails?.bankName | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (bankDetails?.bankName | legacyNil) }}</p></div>
                     <div class="col-md-3"><p><strong>IFSC Code</strong></p></div>
-                    <div class="col-md-3"><p>{{ (bankDetails?.ifscCode | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (bankDetails?.ifscCode | legacyNil) }}</p></div>
                     <div class="col-md-3"><p><strong>Account Number</strong></p></div>
-                    <div class="col-md-3"><p>{{ (bankDetails?.bankAccNo | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (bankDetails?.bankAccNo | legacyNil) }}</p></div>
                     <div class="col-md-3"><p><strong>MICR Code</strong></p></div>
-                    <div class="col-md-3"><p>{{ (bankDetails?.micrCode | legacyValue:'Nil') }}</p></div>
+                    <div class="col-md-3"><p>{{ (bankDetails?.micrCode | legacyNil) }}</p></div>
                   </div>
                 </div>
 
                 <div class="level_1">
                   <h4 class="legacy-preview-heading">(f) <strong>Remarks</strong></h4>
-                  <p>{{ (formObj?.internalRemarks | legacyValue:'Nil') }}</p>
+                  <p>{{ (formObj?.internalRemarks | legacyNil) }}</p>
                 </div>
               </div>
             </div>

@@ -1,11 +1,13 @@
-import { DatePipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
-import { legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
+import { isLegacyBlank, legacyValue } from 'src/app/shared/utils/legacy-display.util';
+import { asArray, firstItem, unwrapPreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
+import { isESign, isInkSign, isYatraClaimMode } from 'src/app/shared/utils/legacy-preview.util';
 
 @Component({
   selector: 'app-common-preview-ltc-advance',
@@ -20,22 +22,19 @@ export class CommonPreviewLtcAdvanceComponent implements OnInit {
     ltc: {},
     familyRows: [],
     travelRows: [],
-    documentDtos: [],
   };
   claimId: string | null = null;
   subFormId: string = 'L';
   supplementaryId: string | null = null;
   userIdDetails: any;
-  documentDtos: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private location: Location,
-    private datePipe: DatePipe,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
     private $common: CommonService,
-    private previewWindow: PreviewWindowService
+    public previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -84,10 +83,6 @@ export class CommonPreviewLtcAdvanceComponent implements OnInit {
     });
   }
 
-  asDate(value: any): string {
-    return legacyDate(value);
-  }
-
   display(value: any): string {
     return legacyValue(value);
   }
@@ -104,12 +99,55 @@ export class CommonPreviewLtcAdvanceComponent implements OnInit {
     return this.preview?.travelRows || [];
   }
 
-  get previewHeading(): string {
-    return this.subFormId === 'LTC' ? 'LTC Claim Preview' : 'LTC Advance Preview';
+  get bankDetails(): any {
+    return this.formObj?.yatClaimBankDetailDTO || {};
+  }
+
+  get signWith(): string {
+    return String(this.formObj?.signWith || '').toUpperCase();
+  }
+
+  get isInkSign(): boolean {
+    return isInkSign(this.signWith);
+  }
+
+  get isESign(): boolean {
+    return isESign(this.signWith);
+  }
+
+  get canDownloadInkSign(): boolean {
+    return !isLegacyBlank(this.formObj?.inkSignedFileUrl);
+  }
+
+  get isYatraClaimMode(): boolean {
+    return isYatraClaimMode(this.formObj?.claimMode);
+  }
+
+  get isNewlyMarried(): boolean {
+    return String(this.ltc?.isNewlyMarried || '').toUpperCase() === 'YES';
+  }
+
+  get spouseDetails(): any {
+    return this.ltc?.yatSpouseDetailDTO || {};
+  }
+
+  get ltcSubType(): string {
+    const type = String(this.ltc?.ltcType || '').toUpperCase();
+    if (type === 'SF' || type === 'SELF') return 'Self';
+    if (type === 'PL' || type === 'PARTIAL') return 'Self and Family';
+    return legacyValue(this.ltc?.ltcType, '');
+  }
+
+  get ltcTypeDescription(): string {
+    return legacyValue(this.ltc?.codeLtcTypeDTO?.descr, legacyValue(this.ltc?.ltcType, ''));
   }
 
   goBack(): void {
     this.previewWindow.closeOrBack(this.location);
+  }
+
+  downloadInkSigned(): void {
+    this.$auth.viewFile(this.formObj?.inkSignedFileUrl);
   }
 
   private normalizeSubFormId(subFormId: any): string {
@@ -120,37 +158,18 @@ export class CommonPreviewLtcAdvanceComponent implements OnInit {
   }
 
   private parsePreviewResponse(response: any): void {
-    const claims = this.unwrapClaimObject(response?.object);
-    const ltc = this.firstItem(claims?.yatLtcAdvDTOs);
+    const claims = unwrapPreviewObject(response?.object);
+    const ltc = firstItem(claims?.yatLtcAdvDTOs);
 
     this.formObj = claims;
-    this.documentDtos = this.asArray(claims?.yatDocsDTOs);
     this.preview = {
       claims,
       ltc,
-      familyRows: this.asArray(claims?.yatFamilyDetailDTOs),
-      travelRows: this.asArray(claims?.yatDtsDetailDTOs),
-      documentDtos: this.documentDtos,
+      familyRows: asArray(claims?.yatFamilyDetailDTOs),
+      travelRows: asArray(claims?.yatDtsDetailDTOs),
     };
   }
 
-  private unwrapClaimObject(object: any): any {
-    if (Array.isArray(object)) {
-      return object[0] || {};
-    }
-    return object || {};
-  }
-
-  private firstItem(value: any): any {
-    if (Array.isArray(value)) {
-      return value[0] || {};
-    }
-    return value || {};
-  }
-
-  private asArray(value: any): any[] {
-    return Array.isArray(value) ? value : [];
-  }
 }
 
 

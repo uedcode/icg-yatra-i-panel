@@ -1,4 +1,4 @@
-﻿<div class="page-header gov-page-toolbar">
+<div class="page-header gov-page-toolbar">
           <div class="page-leftheader">
             <h4 class="page-title">Archive</h4>
             <ol class="breadcrumb pl-0">
@@ -67,7 +67,7 @@
                       >
                         <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
                         <td>{{ dataObj?.yatClaimDTO?.codeSubFormDTO?.descr | showHypen }}</td>
-                        <td>{{ dataObj?.yatClaimDTO?.occDate | showDate : 'mediumDate' }}</td>
+                        <td>{{ dataObj?.yatClaimDTO?.occDate | legacyDate:'queueDate' }}</td>
                         <td>{{ dataObj?.claimState | showHypen }}</td>
                         <td>
                           <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>

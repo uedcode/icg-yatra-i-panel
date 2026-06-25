@@ -1,11 +1,13 @@
-import { DatePipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
-import { isLegacyBlank, legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
+import { isLegacyBlank, legacyDate } from 'src/app/shared/utils/legacy-display.util';
+import { asArray, firstItem, isLegacyPresent, unwrapPreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
+import { legacySignLabel } from 'src/app/shared/utils/legacy-preview.util';
 
 @Component({
   selector: 'app-common-preview-resettlement-claim',
@@ -38,11 +40,10 @@ export class CommonPreviewResettlementClaimComponent implements OnInit {
   constructor(
     private location: Location,
     private route: ActivatedRoute,
-    private datePipe: DatePipe,
     private $common: CommonService,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
-    private previewWindow: PreviewWindowService
+    public previewWindow: PreviewWindowService
   ) {}
 
   ngOnInit(): void {
@@ -98,10 +99,10 @@ export class CommonPreviewResettlementClaimComponent implements OnInit {
       { label: 'Advance Claim ID', value: this.formObj?.advClaimId },
       { label: 'Supplementary Claim ID', value: this.formObj?.supClaimId },
       { label: 'Claim Status', value: this.formObj?.claimStatus },
-      { label: 'Sign With', value: this.signLabel(this.formObj?.signWith) },
-      { label: 'Occurrence Date', value: this.asDate(this.formObj?.occDate) },
+      { label: 'Sign With', value: legacySignLabel(this.formObj?.signWith) },
+      { label: 'Occurrence Date', value: legacyDate(this.formObj?.occDate, 'previewDate', null as any) },
       { label: 'GX Form', value: this.formObj?.gxFormFileUrl ? 'Attached' : 'Not Attached' },
-    ].filter((field) => !this.isBlank(field.value));
+    ].filter((field) => isLegacyPresent(field.value));
   }
 
   get personalFields() {
@@ -121,7 +122,7 @@ export class CommonPreviewResettlementClaimComponent implements OnInit {
       { label: 'Advance Voucher Number', value: this.claim?.advVoucherNumber },
       { label: 'PMT Type', value: this.claim?.pmtType },
       { label: 'Family Type', value: this.claim?.familyType },
-    ].filter((field) => !this.isBlank(field.value));
+    ].filter((field) => isLegacyPresent(field.value));
   }
 
   get claimFields() {
@@ -140,10 +141,10 @@ export class CommonPreviewResettlementClaimComponent implements OnInit {
       { label: 'MRO Amount', value: this.amount(this.claim?.mroAmt) },
       { label: 'MRO Penal Interest', value: this.amount(this.claim?.mroPiAmt) },
       { label: 'Penal Interest', value: this.amount(this.claim?.piAmt) },
-      { label: 'Net Amount Due', value: this.amount(this.claim?.netDueAbsoluteAmt) },
+      { label: 'Net Amount Due', value: this.amount(this.claim?.netDueAbsoluteAmt), netDue: true },
       { label: 'Place', value: this.claim?.currentPlace },
-      { label: 'Date', value: this.asDate(this.claim?.currentDate) },
-    ].filter((field) => !this.isBlank(field.value));
+      { label: 'Date', value: legacyDate(this.claim?.currentDate, 'previewDate', null as any) },
+    ].filter((field) => isLegacyPresent(field.value));
   }
 
   get bankFields() {
@@ -152,15 +153,7 @@ export class CommonPreviewResettlementClaimComponent implements OnInit {
       { label: 'Account Number', value: this.bankDetails?.bankAccNo },
       { label: 'IFSC Code', value: this.bankDetails?.ifscCode },
       { label: 'MICR Code', value: this.bankDetails?.micrCode },
-    ].filter((field) => !this.isBlank(field.value));
-  }
-
-  asDate(value: any): any {
-    return legacyDate(value, 'dd-MMM-yyyy', null as any);
-  }
-
-  display(value: any): any {
-    return legacyValue(value);
+    ].filter((field) => isLegacyPresent(field.value));
   }
 
   amount(value: any): any {
@@ -171,31 +164,25 @@ export class CommonPreviewResettlementClaimComponent implements OnInit {
     this.previewWindow.closeOrBack(this.location);
   }
 
-  openRelatedPreview(route: string, claimId: any): void {
-    if (!route || !claimId) return;
-    const moduleUrl = this.$auth.getModuleName ? this.$auth.getModuleName() : '/creator';
-    this.previewWindow.open(moduleUrl, route, { id: claimId });
-  }
-
   private parseClaimPreviewResponse(response: any): void {
-    const claims = this.unwrapClaimObject(response?.object);
+    const claims = unwrapPreviewObject(response?.object);
     this.formObj = claims;
-    this.claim = this.firstItem(claims?.yatPermDutyClaimDTOs);
-    this.advance = this.firstItem(claims?.yatPermDutyAdvDTOs);
+    this.claim = firstItem(claims?.yatPermDutyClaimDTOs);
+    this.advance = firstItem(claims?.yatPermDutyAdvDTOs);
     this.travelRows = this.resolveTravelRows(claims);
-    this.familyRows = this.asArray(claims?.yatFamilyDetailDTOs);
-    this.gxRows = this.asArray(claims?.yatClaimGxDetailsDTOs);
-    this.transportRows = this.asArray(this.claim?.yatPermDutyClaimTransportDTOs);
-    this.shipEffectRows = this.asArray(this.claim?.yatPermDutyClaimShipEffDTOs);
-    this.conveyanceRows = this.asArray(this.claim?.yatPermDutyClaimTransportConveyanceDTOs);
-    this.shipConveyanceRows = this.asArray(this.claim?.yatPermDutyClaimShipConveyanceDTOs);
-    this.foreignTravelRows = this.asArray(claims?.yatForeignTravelDetailDTOs);
-    this.docRows = this.asArray(claims?.yatDocsDTOs);
+    this.familyRows = asArray(claims?.yatFamilyDetailDTOs);
+    this.gxRows = asArray(claims?.yatClaimGxDetailsDTOs);
+    this.transportRows = asArray(this.claim?.yatPermDutyClaimTransportDTOs);
+    this.shipEffectRows = asArray(this.claim?.yatPermDutyClaimShipEffDTOs);
+    this.conveyanceRows = asArray(this.claim?.yatPermDutyClaimTransportConveyanceDTOs);
+    this.shipConveyanceRows = asArray(this.claim?.yatPermDutyClaimShipConveyanceDTOs);
+    this.foreignTravelRows = asArray(claims?.yatForeignTravelDetailDTOs);
+    this.docRows = asArray(claims?.yatDocsDTOs);
     this.bankDetails = claims?.yatClaimBankDetailDTO ?? {};
   }
 
   private resolveTravelRows(claims: any): any[] {
-    return this.asArray(claims?.yatClaimTravelDetailsDTOs).map((row) => ({
+    return asArray(claims?.yatClaimTravelDetailsDTOs).map((row) => ({
       date: row?.date,
       from: row?.fromPlace,
       to: row?.toPlace,
@@ -207,27 +194,5 @@ export class CommonPreviewResettlementClaimComponent implements OnInit {
     }));
   }
 
-  private unwrapClaimObject(object: any): any {
-    return Array.isArray(object) ? object[0] ?? {} : object ?? {};
-  }
-
-  private firstItem(value: any): any {
-    return Array.isArray(value) ? value[0] ?? {} : value ?? {};
-  }
-
-  private asArray(value: any): any[] {
-    return Array.isArray(value) ? value : [];
-  }
-
-  private signLabel(signWith: any): string {
-    const sign = String(signWith ?? '').toUpperCase();
-    if (sign === 'ES') return 'eSign';
-    if (['IS', 'IK'].includes(sign)) return 'Ink Sign';
-    return signWith;
-  }
-
-  private isBlank(value: any): boolean {
-    return value === null || value === undefined || value === '';
-  }
 }
 

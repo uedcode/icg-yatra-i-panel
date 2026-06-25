@@ -1,11 +1,13 @@
-import { DatePipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
-import { isLegacyBlank, legacyDate, legacyValue } from 'src/app/shared/utils/legacy-display.util';
+import { legacyValue } from 'src/app/shared/utils/legacy-display.util';
+import { unwrapPreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
+import { isESign, isInkSign } from 'src/app/shared/utils/legacy-preview.util';
 
 @Component({
   selector: 'app-common-preview-pmt-duty-advance',
@@ -21,7 +23,6 @@ export class CommonPreviewPmtDutyAdvanceComponent implements OnInit {
   constructor(
     private location: Location,
     private route: ActivatedRoute,
-    private datePipe: DatePipe,
     public $auth: AuthService,
     private $claimApi: ClaimApiService,
     private $common: CommonService,
@@ -53,24 +54,15 @@ export class CommonPreviewPmtDutyAdvanceComponent implements OnInit {
   }
 
   get isInkSign(): boolean {
-    const signWith = String(this.claims?.signWith || '').toUpperCase();
-    return signWith === 'IS' || signWith === 'IK';
+    return isInkSign(this.claims?.signWith);
   }
 
   get isESign(): boolean {
-    return String(this.claims?.signWith || '').toUpperCase() === 'ES';
-  }
-
-  asDate(value: any): string | null {
-    return legacyDate(value, 'dd-MMM-yyyy', null as any);
+    return isESign(this.claims?.signWith);
   }
 
   display(value: any): any {
     return legacyValue(value);
-  }
-
-  displayZero(value: any): any {
-    return isLegacyBlank(value) ? 0 : value;
   }
 
   goBack(): void {
@@ -99,7 +91,7 @@ export class CommonPreviewPmtDutyAdvanceComponent implements OnInit {
           this.$common.showMessage(response?.message || 'Unable to load PMT Duty preview.', 'danger');
           return;
         }
-        this.claims = Array.isArray(response?.object) ? response.object[0] || {} : response?.object || {};
+        this.claims = unwrapPreviewObject(response?.object);
       },
       error: () => {
         this.$common.hideLoader();
