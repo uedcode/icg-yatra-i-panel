@@ -2159,6 +2159,319 @@ ngx-select-ex.legacy-invalid-field .ngx-select__toggle,
   border-color: red !important;
 }
 
+/* Shared Legacy Form Contract: used by editable Creator forms and disabled
+   Verifier/Approver review forms so both keep JSP-like rhythm. */
+.legacy-form-page,
+.legacy-review-form {
+  background: #fff;
+  border-radius: 4px;
+  color: #071844;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.legacy-form-page .padd_5,
+.legacy-review-form .padd_5 {
+  padding-left: 5px;
+  padding-right: 5px;
+  min-width: 0;
+}
+
+.legacy-form-page .form-group,
+.legacy-review-form .form-group {
+  margin-bottom: 6px;
+}
+
+.legacy-form-page label,
+.legacy-form-page .form-label,
+.legacy-form-page .control-label,
+.legacy-review-form label,
+.legacy-review-form .form-label,
+.legacy-review-form .control-label {
+  color: #071844;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 0;
+}
+
+.legacy-form-page .form-control,
+.legacy-review-form .form-control {
+  height: 24px;
+  min-height: 24px;
+  padding: 2px 6px;
+  font-size: 12px;
+  line-height: 1.2;
+  border-radius: 0;
+}
+
+.legacy-form-page textarea.form-control,
+.legacy-review-form textarea.form-control {
+  height: auto;
+  min-height: 72px;
+}
+
+.legacy-creator-form .form-control {
+  background: #fff;
+  color: #071844;
+}
+
+.legacy-review-form .form-control:disabled,
+.legacy-review-form .form-control[disabled] {
+  background: #d9d9d9;
+  color: #071844;
+  opacity: 1;
+}
+
+.legacy-form-page .btn,
+.legacy-review-form .btn {
+  font-size: 12px;
+  padding: 4px 10px;
+  line-height: 1.2;
+}
+
+.legacy-review-form .legacy-field {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  min-height: 0;
+}
+
+.legacy-review-form .legacy-verifier-footer {
+  margin-top: 15px;
+}
+
+.legacy-review-form .col-md-offset-9 {
+  margin-left: 75%;
+}
+
+.legacy-review-form .col-md-offset-10 {
+  margin-left: 83.333333%;
+}
+
+.legacy-review-form .col-md-offset-11 {
+  margin-left: 91.666667%;
+}
+
+.legacy-review-form .con_tainer {
+  color: #071844;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.legacy-review-form .ty-required-cell {
+  flex: 0 0 11.6%;
+  max-width: 11.6%;
+  width: 11.6%;
+}
+
+.legacy-review-form .ty-gst-label {
+  flex: 0 0 5%;
+  max-width: 5%;
+  width: 5%;
+}
+
+.legacy-review-form .ty-inline-input {
+  width: 50%;
+  display: inline-block;
+}
+
+.legacy-review-form .ty-inline-label {
+  font-size: 11px;
+}
+
+.legacy-review-form .ty-ceiling-icon {
+  float: left;
+  margin-right: 5px;
+}
+
+.legacy-review-form .ty-inline-block,
+.legacy-review-form .ty-clear-ceiling {
+  display: inline-block;
+}
+
+.legacy-review-form .ty-clear-ceiling {
+  margin-left: 0;
+}
+
+.legacy-review-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.legacy-form-page .nav-tabs.custom-tabs,
+.legacy-review-form .nav-tabs.custom-tabs {
+  border-bottom: 2px solid #005eb8 !important;
+  margin-bottom: 14px;
+  width: 99.5%;
+}
+
+.legacy-form-page .nav-tabs.custom-tabs > li,
+.legacy-review-form .nav-tabs.custom-tabs > li {
+  margin-bottom: -1px;
+  margin-right: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+.legacy-form-page .nav-tabs.custom-tabs > li > a,
+.legacy-form-page .nav-tabs.custom-tabs > li > button,
+.legacy-review-form .nav-tabs.custom-tabs > li > a,
+.legacy-review-form .nav-tabs.custom-tabs > li > button {
+  display: block;
+  padding: 12px 28px !important;
+  border: 1px solid #dcdcdc !important;
+  border-bottom: none !important;
+  border-radius: 6px 6px 0 0;
+  background: #f2f2f2 !important;
+  color: #1a1a1a !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 2;
+}
+
+.legacy-form-page .nav-tabs.custom-tabs > li > a:hover,
+.legacy-form-page .nav-tabs.custom-tabs > li > button:hover,
+.legacy-review-form .nav-tabs.custom-tabs > li > a:hover,
+.legacy-review-form .nav-tabs.custom-tabs > li > button:hover {
+  background: #e7f1ff !important;
+  border-color: #80bdff !important;
+  color: #0056b3 !important;
+}
+
+.legacy-form-page .nav-tabs.custom-tabs > li.active > a,
+.legacy-form-page .nav-tabs.custom-tabs > li.active > button,
+.legacy-review-form .nav-tabs.custom-tabs > li.active > a,
+.legacy-review-form .nav-tabs.custom-tabs > li.active > button {
+  background: #005eb8 !important;
+  color: #fff !important;
+  border: 1px solid #005eb8 !important;
+  border-bottom: none !important;
+  font-weight: 700 !important;
+}
+
+.legacy-form-page .nav-tabs.custom-tabs > li.active > a:hover,
+.legacy-form-page .nav-tabs.custom-tabs > li.active > button:hover,
+.legacy-review-form .nav-tabs.custom-tabs > li.active > a:hover,
+.legacy-review-form .nav-tabs.custom-tabs > li.active > button:hover {
+  background: #005eb8 !important;
+  color: #fff !important;
+}
+
+.legacy-review-form .card {
+  border: 0;
+  box-shadow: none;
+  margin-bottom: 12px !important;
+}
+
+.legacy-review-form .card-header {
+  background: transparent;
+  border: 0;
+  padding: 5px 0 8px;
+}
+
+.legacy-review-form .card-header strong {
+  color: #071844;
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+.legacy-review-form .card-body {
+  padding: 8px 0;
+}
+
+.legacy-review-form .card-body > .row > [class*="col-md-"] {
+  margin-bottom: 8px;
+  color: #071844;
+  font-size: 12px;
+  font-weight: 600;
+  min-height: 30px;
+  background: #d9d9d9;
+  border: 1px solid #d0d0d0;
+  padding: 5px 8px;
+}
+
+.legacy-review-form .card-body > .row > [class*="col-md-"] strong {
+  color: #071844;
+  font-weight: 700;
+}
+
+.legacy-form-page .table,
+.legacy-review-form .table {
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.legacy-form-page table.table thead tr,
+.legacy-form-page .table thead tr,
+.legacy-form-page table thead tr,
+.legacy-review-form table.table thead tr,
+.legacy-review-form .table thead tr,
+.legacy-review-form table thead tr {
+  background: #fff !important;
+}
+
+.legacy-form-page .table th,
+.legacy-review-form .table th {
+  background: #fff !important;
+  color: #4f4f6d !important;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.legacy-form-page .table th,
+.legacy-form-page .table td,
+.legacy-review-form .table th,
+.legacy-review-form .table td {
+  border: 1px solid #ddd !important;
+  padding: 3px 5px !important;
+  line-height: 1.2;
+  vertical-align: middle;
+  white-space: normal;
+}
+
+.legacy-review-form .legacy-bank-row {
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.legacy-review-form .legacy-bank-row label {
+  margin-bottom: 0;
+}
+
+.legacy-review-form .review-tab-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  padding-top: 12px;
+}
+
+.legacy-review-form .review-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0;
+  font-weight: 700;
+}
+
+.legacy-review-form .review-tab-nav {
+  display: flex;
+  gap: 8px;
+}
+
 /* Final broad form override: several legacy-migrated pages use div-based
    template-driven layouts instead of <form>/.page_form wrappers. */
 label sup,

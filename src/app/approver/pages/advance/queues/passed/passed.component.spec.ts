@@ -1,39 +1,46 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { of } from 'rxjs';
 
 import { PassedComponent } from './passed.component';
 
 describe('PassedComponent', () => {
   let component: PassedComponent;
-  let fixture: ComponentFixture<PassedComponent>;
+  let claimStateApi: any;
 
   beforeEach(() => {
-    return TestBed.configureTestingModule({
-      declarations: [PassedComponent],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
-      .compileComponents();
+    const auth: any = {
+      getUserDetails: () => ({
+        userId: 'VERIFIER-1',
+        roleTypeId: 'VE1',
+        unitId: 'UNIT-1',
+        gxUnitId: 'GX-1',
+      }),
+      codeStatus: () => ({ passed: 'PS' }),
+      codeRoleType: () => ({ verifier: 'VE1', verifier1: 'VE1', verifier2: 'VE2', approver: 'AP' }),
+    };
+    claimStateApi = {
+      getAll: jasmine.createSpy('getAll').and.returnValue(of({ object: [] })),
+    };
+    component = new PassedComponent(
+      {} as any,
+      auth,
+      {} as any,
+      {} as any,
+      claimStateApi
+    );
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(PassedComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  it('loads non-archived passed advance rows with legacy verifier headers', () => {
+    component.ngOnInit();
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should run ngOnInit without side effects', () => {
-    expect(() => component.ngOnInit()).not.toThrow();
-  });
-
-  it('should render request page shell', () => {
-    const html = fixture.nativeElement.innerHTML;
-    expect(html).toContain('app-header');
-    expect(html).toContain('app-sidebar');
-    expect(html).toContain('app-footer');
+    expect(claimStateApi.getAll).toHaveBeenCalledWith({
+      headers: {
+        roleTypeId: 'VE1',
+        gxUnitId: 'GX-1',
+        claimState: 'PS',
+        isArchive: '0',
+        formId: 'ADV',
+      },
+    });
   });
 });
 

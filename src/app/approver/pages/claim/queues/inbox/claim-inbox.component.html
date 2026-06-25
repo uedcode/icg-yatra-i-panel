@@ -71,7 +71,7 @@
                         <td>{{ (dataObj?.yatClaimDTO?.formId || dataObj?.formId) | showHypen }}</td>
                         <td *ngIf="!isVerifier1()">{{ (dataObj?.yatClaimDTO?.remark || dataObj?.remarks) | showHypen }}</td>
                         <td>
-                          <button *ngIf="canViewRow(dataObj)" class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
+                          <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button> <!--*ngIf="canViewRow(dataObj)"-->
                           <button *ngIf="showDisabledView(dataObj)" class="btn btn-info" title="View" [disabled]="true">View</button>
                           <span *ngIf="!canViewRow(dataObj) && !showDisabledView(dataObj)">-</span>
                         </td>

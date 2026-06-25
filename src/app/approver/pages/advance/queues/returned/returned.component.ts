@@ -56,6 +56,7 @@ export class ReturnedComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.queueState,
+        isArchive: '0',
         formId: 'ADV',
       }, codeRoleList),
     };
@@ -114,5 +115,4 @@ export class ReturnedComponent implements OnInit {
   }
 
 }
-
 

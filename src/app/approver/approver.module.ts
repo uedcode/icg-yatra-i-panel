@@ -34,11 +34,11 @@ import { WebDetailComponent } from './pages/support/web-detail/web-detail.compon
 import { NotPassedComponent } from './pages/advance/queues/not-passed/not-passed.component';
 import { PassedComponent } from './pages/advance/queues/passed/passed.component';
 import { FormClaimDetailComponent } from './pages/claim/detail/form-claim-detail.component';
-import { FormPmtDutyClaimComponent } from './pages/claim/reviews/pmt-duty-claim/form-pmt-duty-claim.component';
-import { FormTyDutyClaimComponent } from './pages/claim/reviews/ty-duty-claim/form-ty-duty-claim.component';
-import { FormFteClaimComponent } from './pages/claim/reviews/fte-claim/form-fte-claim.component';
-import { FormLtcClaimComponent } from './pages/claim/reviews/ltc-claim/form-ltc-claim.component';
-import { FormResettlementClaimComponent } from './pages/claim/reviews/resettlement-claim/form-resettlement-claim.component';
+import { ClaimFormPmtDutyComponent } from './pages/claim/reviews/pmt-duty-claim/claim-form-pmt-duty.component';
+import { ClaimFormTyDutyComponent } from './pages/claim/reviews/ty-duty-claim/claim-form-ty-duty.component';
+import { ClaimFormFteComponent } from './pages/claim/reviews/fte-claim/claim-form-fte.component';
+import { ClaimFormLtcComponent } from './pages/claim/reviews/ltc-claim/claim-form-ltc.component';
+import { ClaimFormResettlementComponent } from './pages/claim/reviews/resettlement-claim/claim-form-resettlement.component';
 import { PayInboxComponent } from './pages/payment/queues/inbox/pay-inbox.component';
 import { PayOutboxComponent } from './pages/payment/queues/outbox/pay-outbox.component';
 import { PayApprovedComponent } from './pages/payment/queues/approved/pay-approved.component';
@@ -63,17 +63,17 @@ import { ClaimPreviewTyDutyComponent } from './pages/claim/previews/ty-duty-clai
 import { ClaimPreviewFteComponent } from './pages/claim/previews/fte-claim/preview-fte-claim.component';
 import { ClaimPreviewLtcComponent } from './pages/claim/previews/ltc-claim/preview-ltc-claim.component';
 import { ClaimPreviewResettlementComponent } from './pages/claim/previews/resettlement-claim/preview-resettlement-claim.component';
-import { AdvanceFormPmtDutyComponent } from './pages/advance/reviews/pmt-duty/advance-form-pmt-duty.component';
+import { FormPmtDutyComponent } from './pages/advance/reviews/pmt-duty/form-pmt.component';
 import { AdvancePreviewPmtDutyComponent } from './pages/advance/previews/pmt-duty-advance/preview-pmt-duty-advance.component';
-import { AdvanceFormTyDutyComponent } from './pages/advance/reviews/ty-duty/advance-form-ty-duty.component';
+import { FormTydutyComponent } from './pages/advance/reviews/ty-duty/form-tyduty.component';
 import { AdvancePreviewTyDutyComponent } from './pages/advance/previews/ty-duty-advance/preview-ty-duty-advance.component';
-import { AdvanceFormFteComponent } from './pages/advance/reviews/fte/advance-form-fte.component';
+import { FormFteComponent } from './pages/advance/reviews/fte/form-fte.component';
 import { AdvancePreviewFteComponent } from './pages/advance/previews/fte-advance/preview-fte-advance.component';
-import { AdvanceFormLtcComponent } from './pages/advance/reviews/ltc/advance-form-ltc.component';
+import { FormLtcAdvanceComponent } from './pages/advance/reviews/ltc/form-ltc.component';
 import { AdvancePreviewLtcComponent } from './pages/advance/previews/ltc-advance/preview-ltc-advance.component';
-import { AdvanceFormManualComponent } from './pages/advance/reviews/manual/advance-form-manual.component';
+import { FormManualAdvComponent } from './pages/advance/reviews/manual/form-manual-adv.component';
 import { AdvancePreviewManualComponent } from './pages/advance/previews/manual-advance/preview-manual-advance.component';
-import { AdvanceFormLtcHistoryComponent } from './pages/advance/reviews/ltc-history/advance-form-ltc-history.component';
+import { FormLtcAvailedHistoryComponent } from './pages/advance/reviews/ltc-history/form-ltc-availed-history.component';
 import { AdvancePreviewLtcHistoryComponent } from './pages/advance/previews/ltc-availed-history/preview-ltc-availed-history.component';
 
 const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more options
@@ -99,11 +99,11 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         PassedComponent,
         NotPassedComponent,
         FormClaimDetailComponent,
-        FormPmtDutyClaimComponent,
-        FormTyDutyClaimComponent,
-        FormFteClaimComponent,
-        FormLtcClaimComponent,
-        FormResettlementClaimComponent,
+        ClaimFormPmtDutyComponent,
+        ClaimFormTyDutyComponent,
+        ClaimFormFteComponent,
+        ClaimFormLtcComponent,
+        ClaimFormResettlementComponent,
         PayInboxComponent,
         PayOutboxComponent,
         PayApprovedComponent,
@@ -128,17 +128,17 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         ClaimPreviewFteComponent,
         ClaimPreviewLtcComponent,
         ClaimPreviewResettlementComponent,
-        AdvanceFormPmtDutyComponent,
+        FormPmtDutyComponent,
         AdvancePreviewPmtDutyComponent,
-        AdvanceFormTyDutyComponent,
+        FormTydutyComponent,
         AdvancePreviewTyDutyComponent,
-        AdvanceFormFteComponent,
+        FormFteComponent,
         AdvancePreviewFteComponent,
-        AdvanceFormLtcComponent,
+        FormLtcAdvanceComponent,
         AdvancePreviewLtcComponent,
-        AdvanceFormManualComponent,
+        FormManualAdvComponent,
         AdvancePreviewManualComponent,
-        AdvanceFormLtcHistoryComponent,
+        FormLtcAvailedHistoryComponent,
         AdvancePreviewLtcHistoryComponent,
     ], imports: [RouterModule,
         CommonModule,

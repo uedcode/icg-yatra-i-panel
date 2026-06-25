@@ -48,6 +48,7 @@ export class ApprovedComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.codeStatus?.approved,
+        isArchive: '0',
         formId: 'ADV',
       }, codeRoleList),
     };
@@ -98,4 +99,3 @@ export class ApprovedComponent implements OnInit {
   }
 
 }
-

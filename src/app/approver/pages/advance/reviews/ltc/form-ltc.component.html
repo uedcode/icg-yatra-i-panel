@@ -1,0 +1,106 @@
+﻿<div class="page-header gov-page-toolbar">
+  <div class="page-leftheader"><h4 class="page-title">{{ pageTitle }}</h4></div>
+  <div class="detail-actions legacy-review-actions">
+    <button *ngIf="!previewMode" type="button" class="btn btn-info mr-2" (click)="openPreview()">Preview</button>
+    <button *ngIf="canTakeAction()" type="button" class="btn btn-info mr-2" [disabled]="actionLoading" (click)="openActionRemarkModal(codeStatus?.returned)">Return</button>
+    <button *ngIf="canTakeAction() && canReject" type="button" class="btn btn-info mr-2" [disabled]="actionLoading" (click)="openActionRemarkModal(codeStatus?.notApproved)">Reject</button>
+    <button *ngIf="canTakeAction()" type="button" class="btn btn-info mr-2" [disabled]="actionLoading || !allSectionsReviewed" (click)="openActionRemarkModal(codeStatus?.outbox)">{{ primaryActionLabel }}</button>
+    <button type="button" class="btn btn-dark request_view_back" (click)="goBack()"><i class="fa fa-chevron-left"></i></button>
+  </div>
+</div>
+
+<div class="legacy-review-form ltc-review-form">
+  <div class="panel_card">
+    <div class="row"><div class="col-md-12"><div class="panel panel-white"><div class="panel-body panel_head">
+      <ul class="nav nav-tabs custom-tabs legacy-review-tabs" role="tablist">
+        <li [class.active]="activeTab === 'ship'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship')">Personal Details</a></li>
+        <li [class.active]="activeTab === 'ship2'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship2')">Travel Details</a></li>
+        <li [class.active]="activeTab === 'ship3'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship3')">Financial Terms</a></li>
+        <li [class.active]="activeTab === 'ship4'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship4')">Bank Details</a></li>
+        <li *ngIf="formObj?.internalRemarks" [class.active]="activeTab === 'ship5'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship5')">Remarks</a></li>
+      </ul>
+
+      <div class="tab-content legacy-review-tab-content">
+        <div id="ship" class="tab-pane active show" *ngIf="activeTab === 'ship'">
+          <div class="legacy-sign-row"><label class="mr-3"><input type="radio" name="signRadio" [checked]="formObj?.signWith === codeSignType.inkSign" disabled /> Ink Sign</label><label><input type="radio" name="signRadio" [checked]="formObj?.signWith === codeSignType.eSign" disabled /> eSign</label></div>
+          <div class="row">
+            <div class="col-md-4 legacy-field"><label>Name</label><input class="form-control" [value]="display(advanceDetails?.name)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Rank</label><input class="form-control" [value]="display(advanceDetails?.rank)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Personnel Number</label><input class="form-control" [value]="display(advanceDetails?.pno)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Pay Level</label><input class="form-control" [value]="display(advanceDetails?.payLevel)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Basic Pay (In Rs)</label><input class="form-control" [value]="display(advanceDetails?.basicPay)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Date of Joining</label><input class="form-control" [value]="asDate(advanceDetails?.joiningDate)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Applied To</label><input class="form-control" [value]="display(advanceDetails?.appliedTo)" disabled /></div>
+            <div class="col-md-4 legacy-field" *ngIf="advanceDetails?.gxUnit"><label>Gx Unit</label><input class="form-control" [value]="display(advanceDetails?.gxUnit)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Gx Number</label><input class="form-control" [value]="display(advanceDetails?.gxNumber)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Gx Date</label><input class="form-control" [value]="asDate(advanceDetails?.gxDate)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>GX Form</label><button *ngIf="formObj?.gxFormFileUrl" type="button" class="btn btn-info" (click)="viewDocument(formObj?.gxFormFileUrl)">View</button><input *ngIf="!formObj?.gxFormFileUrl" class="form-control" value="-" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>LTC Type</label><input class="form-control" [value]="display(advanceDetails?.ltcType)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Block Year</label><input class="form-control" [value]="display(advanceDetails?.blockYear)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Place of Visit</label><input class="form-control" [value]="display(advanceDetails?.placeOfVisit)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>LTC Place</label><input class="form-control" [value]="display(advanceDetails?.ltcPlace)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Is DTS</label><input class="form-control" [value]="display(advanceDetails?.isDts)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Arrival Fare</label><input class="form-control" [value]="display(advanceDetails?.arrFare)" disabled /></div>
+            <div class="col-md-4 legacy-field"><label>Occurrence Date (Movement Date)</label><input class="form-control" [value]="asDate(formObj?.occDate)" disabled /></div>
+            <div class="col-md-4 legacy-field" *ngIf="formObj?.extendedAdvId"><label>Extended From</label><button type="button" class="btn btn-info" (click)="openRelatedPreview(formObj?.extendedAdvId)">View</button></div>
+          </div>
+          <div class="legacy-tab-footer"><label class="review-check"><input type="checkbox" [(ngModel)]="form1" name="form1" /> <span>Checked</span></label><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div>
+        </div>
+
+        <div id="ship2" class="tab-pane active show" *ngIf="activeTab === 'ship2'">
+          <label class="control-label">Family Details</label>
+          <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Name</th><th>Relation</th><th>Age</th><th>Gender</th></tr></thead><tbody><tr *ngFor="let row of formObj?.yatFamilyDetailDTOs"><td>{{ display(row?.name) }}</td><td>{{ display(row?.relation) }}</td><td>{{ display(row?.age) }}</td><td>{{ display(row?.gender) }}</td></tr><tr *ngIf="!formObj?.yatFamilyDetailDTOs?.length"><td colspan="4" class="text-center">No Record Found</td></tr></tbody></table></div>
+          <label class="control-label">Travel Details</label>
+          <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>From</th><th>To</th><th>Travel Mode</th><th>Amount (In Rs.)</th><th>DTS</th><th>Reasons for not booking</th></tr></thead><tbody><tr *ngFor="let row of formObj?.yatDtsDetailDTOs"><td>{{ display(row?.source) }}</td><td>{{ display(row?.destination) }}</td><td>{{ display(row?.modeOfTravel) }}</td><td>{{ display(row?.amount) }}</td><td>{{ display(row?.isDts) }}</td><td>{{ display(row?.reasonForNoDts) }}</td></tr><tr *ngIf="!formObj?.yatDtsDetailDTOs?.length"><td colspan="6" class="text-center">No Record Found</td></tr></tbody></table></div>
+          <div class="legacy-tab-footer"><button type="button" class="btn btn-info btn-sm" (click)="previousTabActive()">Previous</button><label class="review-check"><input type="checkbox" [(ngModel)]="form2" name="form2" /> <span>Checked</span></label><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div>
+        </div>
+
+        <div id="ship3" class="tab-pane active show" *ngIf="activeTab === 'ship3'">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-2 legacy-field"><label>Place</label><input class="form-control" [value]="display(advanceDetails?.place)" disabled /></div>
+            </div>
+          </div>
+          <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Advance Request</th><th>Advance Admissible</th><th>DTS Amount</th><th>Amount to be budgeted</th></tr></thead><tbody><tr><td>{{ display(advanceDetails?.totalAmt) }}</td><td>{{ displayedAdvanceAmount }}</td><td>{{ display(advanceDetails?.dtsAmount) }}</td><td>{{ displayedTotalBudgetedAmount }}</td></tr></tbody></table></div>
+          <div class="form-group" *ngIf="showAdvanceCeilingControls">
+            <div class="row">
+              <div class="col-md-2 legacy-field">
+                <label>Advance Ceiling(in %)</label>
+                <select class="form-control" [ngModel]="redPercentage" (ngModelChange)="setRecommendAmount($event)">
+                  <option [ngValue]="null">Select</option>
+                  <option *ngFor="let percentage of advanceCeilingOptions" [ngValue]="percentage">{{ percentage }}</option>
+                </select>
+              </div>
+              <div class="col-md-2 legacy-field" *ngIf="redPercentage !== null">
+                <label>Amount<sup>*</sup></label>
+                <input class="form-control" [ngModel]="redAmount" (ngModelChange)="updateAdmissibleAmt($event)" />
+              </div>
+              <div class="col-md-1 legacy-field" *ngIf="redPercentage !== null">
+                <label>&nbsp;</label>
+                <button type="button" class="btn btn-outline-secondary form-control" (click)="clearAdvanceCeiling()"><i class="fa fa-close"></i></button>
+              </div>
+            </div>
+            <div class="row" *ngIf="redPercentage !== null">
+              <div class="col-md-12 legacy-field"><label>Remarks</label><textarea class="form-control" [attr.maxLength]="advanceCeilingRemarksMaxLength" [(ngModel)]="redRemarks" placeholder="Remarks"></textarea></div>
+            </div>
+          </div>
+          <div class="legacy-tab-footer"><button type="button" class="btn btn-info btn-sm" (click)="previousTabActive()">Previous</button><label class="review-check"><input type="checkbox" [(ngModel)]="form3" name="form3" /> <span>Checked</span></label><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div>
+        </div>
+
+        <div id="ship4" class="tab-pane active show" *ngIf="activeTab === 'ship4'">
+          <div class="col-md-12">
+            <div class="row legacy-bank-row"><div class="col-md-2"><label>Bank Name</label></div><div class="col-md-3"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.bankName)" disabled /></div></div>
+            <div class="row legacy-bank-row"><div class="col-md-2"><label>IFSC Code</label></div><div class="col-md-3"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.ifscCode)" disabled /></div></div>
+            <div class="row legacy-bank-row"><div class="col-md-2"><label>Account Number</label></div><div class="col-md-3"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.bankAccNo)" disabled /></div></div>
+            <div class="row legacy-bank-row"><div class="col-md-2"><label>MICR Code</label></div><div class="col-md-3"><input class="form-control" [value]="display(formObj?.yatClaimBankDetailDTO?.micrCode)" disabled /></div></div>
+          </div>
+          <div class="legacy-tab-footer"><button type="button" class="btn btn-info btn-sm" (click)="previousTabActive()">Previous</button><label class="review-check"><input type="checkbox" [(ngModel)]="form6" name="form6" /> <span>Checked</span></label><button *ngIf="formObj?.internalRemarks" type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div>
+        </div>
+
+        <div id="ship5" class="tab-pane active show" *ngIf="activeTab === 'ship5' && formObj?.internalRemarks"><div class="form-group"><label class="control-label">Remarks</label><textarea rows="6" class="form-control" [value]="display(formObj?.internalRemarks)" disabled></textarea></div><div class="legacy-tab-footer"><button type="button" class="btn btn-info btn-sm" (click)="previousTabActive()">Previous</button></div></div>
+      </div>
+    </div></div></div></div>
+  </div>
+</div>
+
+<app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>

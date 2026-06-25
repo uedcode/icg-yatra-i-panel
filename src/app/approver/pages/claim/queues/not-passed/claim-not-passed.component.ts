@@ -58,6 +58,7 @@ export class ClaimNotPassedComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.codeStatus?.notPassed,
+        isArchive: '0',
         formId: this.resolveQueueFormId(),
       }, codeRoleList),
     };

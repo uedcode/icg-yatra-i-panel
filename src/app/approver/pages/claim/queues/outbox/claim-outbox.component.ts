@@ -68,6 +68,7 @@ export class ClaimOutboxComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.codeStatus?.outbox,
+        isArchive: '0',
         formId: this.resolveQueueFormId(),
       }, codeRoleList),
     };

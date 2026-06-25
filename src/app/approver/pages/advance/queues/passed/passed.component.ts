@@ -51,6 +51,7 @@ export class PassedComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.codeStatus?.passed,
+        isArchive: '0',
         formId: 'ADV',
       }, codeRoleList),
     };
@@ -139,4 +140,3 @@ export class PassedComponent implements OnInit {
   }
 
 }
-

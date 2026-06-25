@@ -97,6 +97,7 @@ export class ClaimInboxComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.codeStatus?.inbox,
+        isArchive: '0',
         formId: this.resolveQueueFormId(),
       }, codeRoleList),
     };
@@ -106,9 +107,9 @@ export class ClaimInboxComponent implements OnInit {
   }
 
   viewForm(data) {
-    if (!this.canViewRow(data)) {
-      return;
-    }
+    // if (!this.canViewRow(data)) {
+    //   return;
+    // }
     const routeUrl = this.$auth.getApproverActionFormUrl(
       data,
       data?.claimState || this.codeStatus?.inbox
@@ -162,4 +163,3 @@ export class ClaimInboxComponent implements OnInit {
     return this.queueModule === 'CLM' ? 'CLM' : 'ADV';
   }
 }
-

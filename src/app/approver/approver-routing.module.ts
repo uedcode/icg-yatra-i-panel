@@ -17,11 +17,11 @@ import { WebDetailComponent } from './pages/support/web-detail/web-detail.compon
 import { PassedComponent } from './pages/advance/queues/passed/passed.component';
 import { NotPassedComponent } from './pages/advance/queues/not-passed/not-passed.component';
 import { FormClaimDetailComponent } from './pages/claim/detail/form-claim-detail.component';
-import { FormPmtDutyClaimComponent } from './pages/claim/reviews/pmt-duty-claim/form-pmt-duty-claim.component';
-import { FormTyDutyClaimComponent } from './pages/claim/reviews/ty-duty-claim/form-ty-duty-claim.component';
-import { FormFteClaimComponent } from './pages/claim/reviews/fte-claim/form-fte-claim.component';
-import { FormLtcClaimComponent } from './pages/claim/reviews/ltc-claim/form-ltc-claim.component';
-import { FormResettlementClaimComponent } from './pages/claim/reviews/resettlement-claim/form-resettlement-claim.component';
+import { ClaimFormPmtDutyComponent } from './pages/claim/reviews/pmt-duty-claim/claim-form-pmt-duty.component';
+import { ClaimFormTyDutyComponent } from './pages/claim/reviews/ty-duty-claim/claim-form-ty-duty.component';
+import { ClaimFormFteComponent } from './pages/claim/reviews/fte-claim/claim-form-fte.component';
+import { ClaimFormLtcComponent } from './pages/claim/reviews/ltc-claim/claim-form-ltc.component';
+import { ClaimFormResettlementComponent } from './pages/claim/reviews/resettlement-claim/claim-form-resettlement.component';
 import { PayInboxComponent } from './pages/payment/queues/inbox/pay-inbox.component';
 import { PayOutboxComponent } from './pages/payment/queues/outbox/pay-outbox.component';
 import { PayApprovedComponent } from './pages/payment/queues/approved/pay-approved.component';
@@ -46,17 +46,17 @@ import { ClaimPreviewTyDutyComponent } from './pages/claim/previews/ty-duty-clai
 import { ClaimPreviewFteComponent } from './pages/claim/previews/fte-claim/preview-fte-claim.component';
 import { ClaimPreviewLtcComponent } from './pages/claim/previews/ltc-claim/preview-ltc-claim.component';
 import { ClaimPreviewResettlementComponent } from './pages/claim/previews/resettlement-claim/preview-resettlement-claim.component';
-import { AdvanceFormPmtDutyComponent } from './pages/advance/reviews/pmt-duty/advance-form-pmt-duty.component';
+import { FormPmtDutyComponent } from './pages/advance/reviews/pmt-duty/form-pmt.component';
 import { AdvancePreviewPmtDutyComponent } from './pages/advance/previews/pmt-duty-advance/preview-pmt-duty-advance.component';
-import { AdvanceFormTyDutyComponent } from './pages/advance/reviews/ty-duty/advance-form-ty-duty.component';
+import { FormTydutyComponent } from './pages/advance/reviews/ty-duty/form-tyduty.component';
 import { AdvancePreviewTyDutyComponent } from './pages/advance/previews/ty-duty-advance/preview-ty-duty-advance.component';
-import { AdvanceFormFteComponent } from './pages/advance/reviews/fte/advance-form-fte.component';
+import { FormFteComponent } from './pages/advance/reviews/fte/form-fte.component';
 import { AdvancePreviewFteComponent } from './pages/advance/previews/fte-advance/preview-fte-advance.component';
-import { AdvanceFormLtcComponent } from './pages/advance/reviews/ltc/advance-form-ltc.component';
+import { FormLtcAdvanceComponent } from './pages/advance/reviews/ltc/form-ltc.component';
 import { AdvancePreviewLtcComponent } from './pages/advance/previews/ltc-advance/preview-ltc-advance.component';
-import { AdvanceFormManualComponent } from './pages/advance/reviews/manual/advance-form-manual.component';
+import { FormManualAdvComponent } from './pages/advance/reviews/manual/form-manual-adv.component';
 import { AdvancePreviewManualComponent } from './pages/advance/previews/manual-advance/preview-manual-advance.component';
-import { AdvanceFormLtcHistoryComponent } from './pages/advance/reviews/ltc-history/advance-form-ltc-history.component';
+import { FormLtcAvailedHistoryComponent } from './pages/advance/reviews/ltc-history/form-ltc-availed-history.component';
 import { AdvancePreviewLtcHistoryComponent } from './pages/advance/previews/ltc-availed-history/preview-ltc-availed-history.component';
 import { CommonViewFileComponent } from '../components/common-view-file/common-view-file.component';
 
@@ -90,17 +90,17 @@ const routes: Routes = [
       { path: 'dashboard-back', component: DashboardComponent, canActivate: [AuthGuard], data: { title: 'Dashboard' } },
       { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard], data: { title: 'Change Password' } },
       { path: 'form-claim-detail', component: FormClaimDetailComponent, canActivate: [AuthGuard], data: { title: 'Claim Detail', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'form-pmt-duty-claim', component: FormPmtDutyClaimComponent, canActivate: [AuthGuard], data: { title: 'PMT Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'PMT' } },
-      { path: 'form-ty-duty-claim', component: FormTyDutyClaimComponent, canActivate: [AuthGuard], data: { title: 'TY Duty Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'TYD' } },
-      { path: 'form-fte-claim', component: FormFteClaimComponent, canActivate: [AuthGuard], data: { title: 'FTE Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'FTE' } },
-      { path: 'form-ltc-claim', component: FormLtcClaimComponent, canActivate: [AuthGuard], data: { title: 'LTC Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'LTC' } },
-      { path: 'form-resettlement-claim', component: FormResettlementClaimComponent, canActivate: [AuthGuard], data: { title: 'Resettlement Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'RS' } },
-      { path: 'form-pmt-duty', component: AdvanceFormPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'form-ty-duty', component: AdvanceFormTyDutyComponent, canActivate: [AuthGuard], data: { title: 'TY Duty Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'form-fte-advance', component: AdvanceFormFteComponent, canActivate: [AuthGuard], data: { title: 'FTE Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'form-ltc-advance', component: AdvanceFormLtcComponent, canActivate: [AuthGuard], data: { title: 'LTC Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'form-manual-adv', component: AdvanceFormManualComponent, canActivate: [AuthGuard], data: { title: 'Manual Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
-      { path: 'form-ltc-availed-history', component: AdvanceFormLtcHistoryComponent, canActivate: [AuthGuard], data: { title: 'LTC Availed History Review', roles: ['VE1', 'VE2', 'AP'] } },
+      { path: 'form-pmt-duty-claim', component: ClaimFormPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'PMT' } },
+      { path: 'form-ty-duty-claim', component: ClaimFormTyDutyComponent, canActivate: [AuthGuard], data: { title: 'TY Duty Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'TYD' } },
+      { path: 'form-fte-claim', component: ClaimFormFteComponent, canActivate: [AuthGuard], data: { title: 'FTE Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'FTE' } },
+      { path: 'form-ltc-claim', component: ClaimFormLtcComponent, canActivate: [AuthGuard], data: { title: 'LTC Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'LTC' } },
+      { path: 'form-resettlement-claim', component: ClaimFormResettlementComponent, canActivate: [AuthGuard], data: { title: 'Resettlement Claim Review', roles: ['VE1', 'VE2', 'AP'], subFormId: 'RS' } },
+      { path: 'form-pmt-duty', component: FormPmtDutyComponent, canActivate: [AuthGuard], data: { title: 'PMT Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
+      { path: 'form-ty-duty', component: FormTydutyComponent, canActivate: [AuthGuard], data: { title: 'TY Duty Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
+      { path: 'form-fte-advance', component: FormFteComponent, canActivate: [AuthGuard], data: { title: 'FTE Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
+      { path: 'form-ltc-advance', component: FormLtcAdvanceComponent, canActivate: [AuthGuard], data: { title: 'LTC Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
+      { path: 'form-manual-adv', component: FormManualAdvComponent, canActivate: [AuthGuard], data: { title: 'Manual Advance Review', roles: ['VE1', 'VE2', 'AP'] } },
+      { path: 'form-ltc-availed-history', component: FormLtcAvailedHistoryComponent, canActivate: [AuthGuard], data: { title: 'LTC Availed History Review', roles: ['VE1', 'VE2', 'AP'] } },
       { path: 'inbox', component: InboxComponent, canActivate: [AuthGuard], data: { title: 'Inbox', roles: ['VE1', 'VE2', 'AP'], queueModule: 'ADV', queueState: 'IB' } },
       { path: 'claim/inbox', component: ClaimInboxComponent, canActivate: [AuthGuard], data: { title: 'Claim Inbox', roles: ['VE1', 'VE2', 'AP'], queueModule: 'CLM', queueState: 'IB' } },
       { path: 'inbox-claim', redirectTo: 'claim/inbox', pathMatch: 'full' },

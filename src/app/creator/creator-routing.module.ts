@@ -28,7 +28,6 @@ import { PreviewFteAdvanceComponent } from './pages/advance/previews/fte-advance
 import { FormFteComponent } from './pages/advance/forms/fte/form-fte.component';
 import { PreviewPmtDutyComponent } from './pages/advance/previews/pmt-duty-advance/preview-pmt-duty-advance.component';
 import { FormPmtDutyComponent } from './pages/advance/forms/pmt/form-pmt.component';
-import { FormResettlementClaimComponent } from './pages/claim/forms/resettlement/form-resettlement-claim/form-resettlement-claim.component';
 import { FormResettlementPreviewComponent } from './pages/claim/previews/resettlement-advance/preview-resettlement-advance.component';
 import { PreviewLtcAdvanceComponent } from './pages/advance/previews/ltc-advance/preview-ltc-advance.component';
 import { FormLtcAdvanceComponent } from './pages/advance/forms/ltc/form-ltc.component';

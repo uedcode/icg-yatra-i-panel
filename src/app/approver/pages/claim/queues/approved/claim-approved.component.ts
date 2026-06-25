@@ -52,6 +52,7 @@ export class ClaimApprovedComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.codeStatus?.approved,
+        isArchive: '0',
         formId: this.resolveQueueFormId(),
       }, codeRoleList),
     };

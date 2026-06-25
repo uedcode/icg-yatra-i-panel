@@ -71,4 +71,40 @@ describe('legacy-api.util', () => {
       formId: 'CLM',
     });
   });
+
+  it('builds verifier claim-state list headers with archive zero and gx unit scope', () => {
+    expect(buildLegacyClaimStateHeaders({
+      userId: 'VERIFIER-1',
+      roleTypeId: 'VE1',
+      unitId: 'UNIT-1',
+      gxUnitId: 'GX-1',
+      claimState: 'PS',
+      isArchive: '0',
+      formId: 'CLM',
+    }, roles)).toEqual({
+      roleTypeId: 'VE1',
+      gxUnitId: 'GX-1',
+      claimState: 'PS',
+      isArchive: '0',
+      formId: 'CLM',
+    });
+  });
+
+  it('builds verifier archive headers with archive one and gx unit scope', () => {
+    expect(buildLegacyClaimStateHeaders({
+      userId: 'VERIFIER-1',
+      roleTypeId: 'VE1',
+      unitId: 'UNIT-1',
+      gxUnitId: 'GX-1',
+      claimState: '',
+      isArchive: '1',
+      formId: 'CLM',
+    }, roles)).toEqual({
+      roleTypeId: 'VE1',
+      gxUnitId: 'GX-1',
+      claimState: '',
+      isArchive: '1',
+      formId: 'CLM',
+    });
+  });
 });

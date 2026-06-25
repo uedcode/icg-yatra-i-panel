@@ -1,0 +1,61 @@
+<div
+  class="modal fade modal_index in"
+  id="approverActionRemarkModal"
+  role="dialog"
+  aria-hidden="false"
+  data-backdrop="static"
+  data-keyboard="false"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" aria-label="Close" (click)="cancel()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="center-box">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="text-left">
+                <div class="form-group">
+                  <label class="control-label">Remarks</label>
+                  <textarea rows="4" class="form-control" maxlength="250" [(ngModel)]="remark"></textarea>
+                </div>
+
+                <div class="form-group" *ngIf="shouldRequireForwardDeclarations">
+                  <label class="col-md-12 legacy-declaration-row">
+                    <span class="legacy-declaration-check">
+                      <input type="checkbox" [(ngModel)]="confirmCheckOne" class="enableInput" />
+                    </span>
+                    <span class="col-md-11">
+                      I, hereby, declare that, all the details on genform such as genform no, genform date are same as on requisition form.
+                    </span>
+                  </label>
+                  <label class="col-md-12 legacy-declaration-row legacy-declaration-row-last">
+                    <span class="legacy-declaration-check">
+                      <input type="checkbox" [(ngModel)]="confirmCheckTwo" class="enableInput" />
+                    </span>
+                    <span class="col-md-11">
+                      I, hereby, declare that, all the details on genform such as date of occurance and personal details are same as on requisition form.
+                    </span>
+                  </label>
+                </div>
+
+                <div class="legacy-dte-balance" *ngIf="config?.showDteBalance">
+                  <span class="col-md-12">
+                    Current DTE Balance:
+                    <span *ngIf="hasDteBalance">{{ config?.dteBalance }} Rs.</span>
+                    <span *ngIf="!hasDteBalance">No Budget Added</span>
+                  </span>
+                </div>
+
+                <button type="button" class="btn btn-info" [disabled]="!canSubmit" (click)="submit()">
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

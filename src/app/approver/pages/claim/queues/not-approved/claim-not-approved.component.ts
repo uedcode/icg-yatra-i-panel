@@ -59,6 +59,7 @@ export class ClaimNotApprovedComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.queueState,
+        isArchive: '0',
         formId: this.resolveQueueFormId(),
       }, codeRoleList),
     };
@@ -111,4 +112,3 @@ export class ClaimNotApprovedComponent implements OnInit {
   }
 
 }
-

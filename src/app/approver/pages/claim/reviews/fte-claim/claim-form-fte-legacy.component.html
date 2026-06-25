@@ -1,0 +1,135 @@
+<div class="page-header gov-page-toolbar">
+  <div class="page-leftheader">
+    <h4 class="page-title">{{ pageTitle }}</h4>
+  </div>
+  <div class="detail-actions legacy-review-actions">
+    <button *ngIf="!isLegacyPreviewContext" type="button" class="btn btn-info mr-2" (click)="openPreview()">Preview</button>
+    <button *ngIf="canTakeAction()" type="button" class="btn btn-info mr-2" [disabled]="actionLoading" (click)="openActionRemarkModal(codeStatus?.returned)">Return</button>
+    <button *ngIf="canTakeAction() && getTertiaryActionStatus()" type="button" class="btn btn-info mr-2" [disabled]="actionLoading" (click)="openActionRemarkModal(getTertiaryActionStatus())">{{ getTertiaryActionLabel() }}</button>
+    <button *ngIf="canTakeAction()" type="button" class="btn btn-info mr-2" [disabled]="actionLoading || !allSectionsReviewed" (click)="openActionRemarkModal(codeStatus?.outbox)">{{ primaryActionLabel }}</button>
+    <button type="button" class="btn btn-dark request_view_back" (click)="goBack()"><i class="fa fa-chevron-left"></i></button>
+  </div>
+</div>
+
+<div class="legacy-review-form claim-review-form fte-claim-review-form">
+  <div class="panel_card">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-white">
+          <div class="panel-body panel_head">
+            <ul class="nav nav-tabs custom-tabs legacy-review-tabs" role="tablist">
+              <li [class.active]="activeTab === 'ship'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship')">Personal Details</a></li>
+              <li [class.active]="activeTab === 'ship2'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship2')">Travel Details</a></li>
+              <li [class.active]="activeTab === 'ship4'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship4')">Financial Details</a></li>
+              <li [class.active]="activeTab === 'ship5'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship5')">Supporting Documents</a></li>
+              <li *ngIf="isBankVisible" [class.active]="activeTab === 'ship7'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship7')">Bank Details</a></li>
+              <li *ngIf="isRemarksVisible" [class.active]="activeTab === 'ship6'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship6')">Remarks</a></li>
+            </ul>
+
+            <div class="tab-content legacy-review-tab-content">
+              <div id="ship" class="tab-pane active show" *ngIf="activeTab === 'ship'">
+                <div class="legacy-sign-row">
+                  <label class="mr-3"><input type="radio" name="signRadio" [checked]="formObj?.signWith === codeSignType.inkSign" disabled /> Ink Sign</label>
+                  <label><input type="radio" name="signRadio" [checked]="formObj?.signWith === codeSignType.eSign" disabled /> eSign</label>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Name</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputValue(claimDetails?.name)" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Rank</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputValue(claimDetails?.rank)" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Personnel Number</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputValue(claimDetails?.pno)" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Pay Level</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputValue(claimDetails?.payLevel)" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Basic Pay (In Rs)</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputValue(claimDetails?.basicPay)" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Present Unit</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputValue(claimDetails?.presentUnit)" disabled /></div></div></div></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Applied To</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputValue(claimDetails?.appliedTo)" disabled /></div></div></div></div>
+                  <div class="col-md-4" *ngIf="showDutyStation"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Duty Station To</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputValue(claimDetails?.dutyStation)" disabled /></div></div></div></div>
+                  <div class="col-md-4" *ngIf="showStationProceedingTo"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Station proceeding to</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputValue(claimDetails?.stationProceedingTo)" disabled /></div></div></div></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Purpose Type</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="purposeTypeText" disabled /></div></div></div></div>
+                </div>
+
+                <div class="row" *ngIf="showPurposeOfDuty">
+                  <div class="col-md-12"><div class="form-group"><div class="row"><div class="col-md-1 padd_5" style="width: 11%;"><label class="control-label">Purpose of duty</label></div><div class="col-md-11 padd_5" style="width: 89%;"><textarea class="form-control" [value]="inputValue(claimDetails?.purpose)" disabled></textarea></div></div></div></div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Transfer Date</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputDate(claimDetails?.tyFromDate)" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Reporting Date</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputDate(claimDetails?.tyToDate)" disabled /></div></div></div></div>
+                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Duration of TY Duty (In days)</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputValue(claimDetails?.duration)" disabled /></div></div></div></div>
+                  <div class="col-md-4" *ngIf="claimDetails?.advVoucherNumber"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Advance Voucher Number</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputValue(claimDetails?.advVoucherNumber)" disabled /></div></div></div></div>
+                  <div class="col-md-4" *ngIf="claimDetails?.advVoucherNumber && formObj?.claimMode === 'Yatra'"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Advance Voucher</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview('preview-voucher', claimId, subFormId)">View</button></div></div></div></div>
+                  <div class="col-md-4" *ngIf="formObj?.claimMode === 'Yatra' && formObj?.advClaimId"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Linked Advance Form</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview('preview-fte-advance', formObj?.advClaimId)">View</button></div></div></div></div>
+                  <div class="col-md-4" *ngIf="formObj?.claimMode === 'Manual'"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Voucher Date</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputDate(formObj?.voucherDate)" disabled /></div></div></div></div>
+                  <div class="col-md-4" *ngIf="formObj?.claimMode === 'Manual'"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Drawn from</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="inputValue(formObj?.drawnFrom)" disabled /></div></div></div></div>
+                  <div class="col-md-4" *ngIf="formObj?.supClaimId"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Linked Claim Form</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview('preview-fte-claim', formObj?.supClaimId, subFormId)">View</button></div></div></div></div>
+                </div>
+
+                <div class="row" *ngIf="showGuestDetails">
+                  <div class="col-md-12">
+                    <label class="control-label">Guest Details</label>
+                    <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Name</th><th>Relation</th><th>Age</th><th>Gender</th></tr></thead><tbody><tr *ngFor="let row of familyDetails"><td>{{ displayNil(row?.memberName) }}</td><td>{{ displayNil(row?.relation) }}</td><td>{{ displayNil(row?.age) }}</td><td>{{ displayNil(row?.gender) }}</td></tr><tr *ngIf="!familyDetails.length"><td>Nil</td><td>Nil</td><td>Nil</td><td>Nil</td></tr></tbody></table></div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <p><b>Genform Details</b></p>
+                    <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Gx Type</th><th>Unit</th><th>Gx Number</th><th>Gx Date</th><th>Date of occurrence</th></tr></thead><tbody><tr *ngFor="let row of gxRows"><td>{{ display(row?.gxType) }}</td><td>{{ display(row?.unit) }}</td><td>{{ display(row?.gxNo) }}</td><td>{{ asDate(row?.gxDate) }}</td><td>{{ asDate(row?.dateOfTravel) }}</td></tr><tr *ngIf="!gxRows.length"><td colspan="5" class="text-center">No Records</td></tr></tbody></table></div>
+                  </div>
+                </div>
+
+                <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form1" name="form1" /><span class="che_ckmark"></span></label></div><div class="col-md-2"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
+              </div>
+
+              <div id="ship2" class="tab-pane active show" *ngIf="activeTab === 'ship2'">
+                <div *ngIf="roadMileageRows.length">
+                  <p><b>Road mileage from duty station to Rail/Air/Road and back</b></p>
+                  <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Type</th><th>Kms</th><th>Per Km</th><th>Rate</th><th>Grand Total</th></tr></thead><tbody><tr *ngFor="let row of roadMileageRows"><td>{{ display(row?.type) }}</td><td>{{ display(row?.kms) }}</td><td>{{ display(row?.perKm) }}</td><td>{{ display(row?.rate) }}</td><td>{{ display(row?.roadMileageAmt) }}</td></tr></tbody></table></div>
+                </div>
+
+                <p><b>Particulars of journey</b></p>
+                <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th colspan="2">From</th><th colspan="2">To</th><th rowspan="2">Mode of travel</th><th rowspan="2">DTS</th><th rowspan="2">Reason for not taking DTS</th><th colspan="2">Class of Travel</th><th rowspan="2">Sanction Details</th><th rowspan="2">Distance in KM</th><th rowspan="2">Amount (in Rs.)</th><th rowspan="2">Remarks</th></tr><tr><th>Place</th><th>Date &amp; time</th><th>Place</th><th>Date &amp; time</th><th>Entitled</th><th>Travelled</th></tr></thead><tbody><tr *ngFor="let row of travelDetails"><td>{{ display(row?.fromPlace) }}</td><td>{{ asDateTime(row?.fromDate) }}</td><td>{{ display(row?.toPlace) }}</td><td>{{ asDateTime(row?.toDate) }}</td><td>{{ display(row?.travelMode) }}</td><td>{{ display(row?.isDts) }}</td><td>{{ display(row?.reasonDts) }}</td><td>{{ display(row?.entitledClass) }}</td><td>{{ display(row?.travelClass) }}</td><td>{{ display(row?.sanctionDetails) }}</td><td>{{ display(row?.distance) }}</td><td>{{ display(row?.amount) }}</td><td>{{ display(row?.remarks) }}</td></tr><tr *ngIf="!travelDetails.length"><td colspan="13" class="text-center">No Record Found</td></tr></tbody></table></div>
+
+                <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form2" name="form2" /><span class="che_ckmark"></span></label></div><div class="col-md-2"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
+              </div>
+
+              <div id="ship4" class="tab-pane active show" *ngIf="activeTab === 'ship4'">
+                <div class="row" *ngIf="foreignTravelDetails.length"><div class="col-md-12"><div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Amount (In Rs.)</th><th>Remarks</th></tr></thead><tbody><tr *ngFor="let row of foreignTravelDetails"><td>{{ display(row?.amount) }}</td><td>{{ display(row?.descr) }}</td></tr></tbody></table></div></div></div>
+                <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Description</th><th>Amount Claimed &#8377;</th><th>Amount Permitted &#8377;</th></tr></thead><tbody><tr><td>Travel Details (All mode of travel excluding DTS Booking)</td><td></td><td><input class="form-control" [value]="inputValue(claimDetails?.travelDetailsAmt)" disabled /></td></tr><tr><td>Travel details (DTS bookings)</td><td></td><td><input class="form-control" [value]="inputValue(claimDetails?.travelDetailsDTSAmt)" disabled /></td></tr><tr><td>Foreign Travel Details</td><td></td><td><input class="form-control" [value]="inputValue(claimDetails?.travelDetailsFTEAmt)" disabled /></td></tr><tr><td>Grand Total</td><td></td><td><input class="form-control" [value]="inputValue(claimDetails?.grandTotal)" disabled /></td></tr><tr><td>Amount of advance. If any, drawn vide voucher No. <input [value]="inputValue(claimDetails?.advVoucherNumber)" disabled /> dated <input [value]="inputDate(claimDetails?.lessAmtVoucherDate)" disabled /></td><td></td><td><input class="form-control" [value]="inputValue(claimDetails?.lessAmtVoucherAmt)" disabled /></td></tr><tr><td>Excess TA advance paid through MRO. If any, paid via MRO No. <input [value]="inputValue(claimDetails?.mroNo)" disabled /> dated <input [value]="inputDate(claimDetails?.mroDate)" disabled /></td><td></td><td><input class="form-control" [value]="inputValue(claimDetails?.mroAmt)" disabled /></td></tr><tr *ngIf="claimDetails?.mroPiAmt && toNumber(claimDetails?.mroPiAmt) > 0"><td>MRO Penal Interest (From date) <input [value]="inputDate(claimDetails?.mroPiFromDate)" disabled /> to date <input [value]="inputDate(claimDetails?.mroPiToDate)" disabled /> <b>{{ display(claimDetails?.mroPiInterestRate) }}% Interest Rate</b></td><td></td><td><input class="form-control" [value]="inputValue(claimDetails?.mroPiAmt)" disabled /></td></tr><tr><td>Penal Interest (From date) <input [value]="inputDate(claimDetails?.piFromDate)" disabled /> to date <input [value]="inputDate(claimDetails?.piToDate)" disabled /> <b>{{ display(claimDetails?.piInterestRate) }}% Interest Rate</b></td><td></td><td><input class="form-control" [value]="inputValue(claimDetails?.piAmt)" disabled /></td></tr><tr><td>DTS Ticket Adjusted</td><td></td><td><input class="form-control" [value]="inputValue(claimDetails?.travelDetailsDTSAmt)" disabled /></td></tr><tr><td>Net Amount Due <span *ngIf="toNumber(claimDetails?.netDueAmt) < 0" class="text-danger float-right font-weight-bold">To Government</span><span *ngIf="toNumber(claimDetails?.netDueAmt) > 0" class="text-success float-right font-weight-bold">To Individual</span></td><td></td><td><input class="form-control" [value]="inputValue(claimDetails?.netDueAbsoluteAmt)" disabled /></td></tr></tbody></table></div>
+                <div class="col-md-12"><p>*The expenditure is debitable to domestic travel expenses</p><input type="checkbox" [checked]="claimDetails?.certify === 'Yes'" disabled /> Certified that the information, as given above, is true to the best of my knowledge and belief</div>
+                <div class="col-md-12"><div class="row"><div class="col-md-3"><div class="form-group"><div class="row"><div class="col-md-5"><label class="control-label">Place</label></div><div class="col-md-7 padd_5"><input class="form-control" [value]="inputValue(claimDetails?.currentPlace)" disabled /></div></div></div></div><div class="col-md-3"><div class="form-group"><div class="row"><div class="col-md-5 padd_5"><label class="control-label">Date</label></div><div class="col-md-7 padd_5"><input class="form-control" [value]="inputDate(claimDetails?.currentDate)" disabled /></div></div></div></div></div></div>
+                <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form5" name="form5" /><span class="che_ckmark"></span></label></div><div class="col-md-2"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
+              </div>
+
+              <div id="ship5" class="tab-pane active show" *ngIf="activeTab === 'ship5'">
+                <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th class="col-md-3">Document Name</th><th class="col-md-5">Description</th><th class="col-md-3">File <input type="checkbox" [(ngModel)]="parallelView" name="parallelView" /> Parallel View</th><th class="col-md-3">Verify</th></tr></thead><tbody><tr *ngFor="let doc of supportingDocuments"><td>{{ display(doc?.codeDocInfoDTO?.docName) }} <span *ngIf="doc?.docNo">({{ doc.docNo }})</span></td><td>{{ display(doc?.descr) }}</td><td><button *ngIf="doc?.url" type="button" class="btn btn-info btn-sm parallelViewBtn" (click)="viewSupportingDocument(doc)"><i class="fa fa-eye"></i></button></td><td><input type="checkbox" [(ngModel)]="doc.checkedIndicator" [disabled]="doc?.url && doc?.disableVal === false" /></td></tr><tr *ngIf="formObj?.signedFileUrl"><td>Signed Documents</td><td></td><td><button type="button" class="btn btn-info btn-sm parallelViewBtn" (click)="viewDocument(formObj?.signedFileUrl)"><i class="fa fa-eye"></i></button></td><td></td></tr><tr *ngIf="!supportingDocuments.length"><td colspan="4" class="text-center">No Record Found</td></tr></tbody></table></div>
+                <div class="table-responsive" *ngIf="shouldShowLostDocuments"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Lost Document</th></tr></thead><tbody><tr><td><div class="col-md-4 flex_text" *ngFor="let doc of lostDocumentRows"><div><input type="checkbox" [checked]="doc?.isLost === 1 || doc?.isLost === '1' || doc?.isLost === true" disabled /></div><div>{{ display(doc?.codeDocInfoDTO?.docName) }}</div></div></td></tr></tbody></table></div>
+                <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form4" name="form4" /><span class="che_ckmark"></span></label></div><div class="col-md-2" *ngIf="isBankVisible || isRemarksVisible"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
+              </div>
+
+              <div id="ship7" class="tab-pane active show" *ngIf="activeTab === 'ship7' && isBankVisible">
+                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">Bank Name</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="inputValue(formObj?.yatClaimBankDetailDTO?.bankName)" disabled /></div></div></div>
+                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">IFSC Code</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="inputValue(formObj?.yatClaimBankDetailDTO?.ifscCode)" disabled /></div></div></div>
+                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">Account Number</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="inputValue(formObj?.yatClaimBankDetailDTO?.bankAccNo)" disabled /></div></div></div>
+                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">MICR Code</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="inputValue(formObj?.yatClaimBankDetailDTO?.micrCode)" disabled /></div></div></div>
+                <div style="margin-top: 5px;"><label class="control-label"><code>Note:- In case of any change in the bank account details please contact SASTRA. The form should be submitted only when the account details are corrected.</code></label></div>
+                <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form7" name="form7" /><span class="che_ckmark"></span></label></div><div class="col-md-2" *ngIf="isRemarksVisible"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
+              </div>
+
+              <div id="ship6" class="tab-pane active show" *ngIf="activeTab === 'ship6' && isRemarksVisible">
+                <div class="form-group"><div class="row"><div class="col-md-12"><label class="control-label">Remarks</label></div></div><div class="row"><div class="col-md-12"><textarea rows="6" class="form-control" [value]="inputValue(formObj?.internalRemarks)" disabled></textarea></div></div></div>
+                <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form6" name="form6" /><span class="che_ckmark"></span></label></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>

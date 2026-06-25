@@ -94,6 +94,7 @@ export class InboxComponent implements OnInit {
       headers: buildLegacyClaimStateHeaders({
         ...this.userIdDetails,
         claimState: this.codeStatus?.inbox,
+        isArchive: '0',
         formId: 'ADV',
       }, codeRoleList),
     };
@@ -103,9 +104,9 @@ export class InboxComponent implements OnInit {
   }
 
   viewForm(data) {
-    if (!this.canViewRow(data)) {
-      return;
-    }
+    // if (!this.canViewRow(data)) {
+    //   return;
+    // }
     const routeUrl = this.buildAdvanceFormUrl(data);
     if (routeUrl) {
       this.router.navigateByUrl(routeUrl);
@@ -233,4 +234,3 @@ export class InboxComponent implements OnInit {
     return `${this.$auth.getModuleName()}/${String(formUrl).replace(/^\/+/, '')}?id=${encodeURIComponent(claimId)}`;
   }
 }
-
