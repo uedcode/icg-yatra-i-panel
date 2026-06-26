@@ -1,29 +1,16 @@
 export const environment = {
-  production: false,
+  production: true,
   dummyData: false,
 
-  baseApi: 'http://localhost:8084/yatra-i/',
-  api: 'http://localhost:8084/yatra-i/webapi/',
-  fileUrl: 'http://localhost:8084/yatra-i/',
+  baseApi: 'https://testing.uedeveloper.com/yatra-i-claim/',
+  api: 'https://testing.uedeveloper.com/yatra-i-claim/webapi/',
+  fileUrl: 'https://testing.uedeveloper.com/',
+  baseHref: '/icg-yatra-claim/',
 
-  // baseApi: 'http://119.42.158.216:8111/yatra-i/',
-  // api: 'http://119.42.158.216:8111/yatra-i/webapi/',
-  // fileUrl: 'http://119.42.158.216:8111/yatra-i/',
-
-  // baseApi: 'https://testing.uedeveloper.com/yatra-i-adv/',
-  // api: 'https://testing.uedeveloper.com/yatra-i-adv/webapi/',
-  // fileUrl: 'https://testing.uedeveloper.com/',
-
-  // baseApi: 'https://api.pilotage.in/',
-  // api: 'https://api.pilotage.in/webapi/',
-  // fileUrl: 'https://api.pilotage.in/',
-
-  baseHref: '/app/',
-  ipChecker: 'https://whatismyip.monstrkart.com/index.php',
-  // ipChecker : "https://test.aptimyst.com/whatismyip/index.php",
+  ipChecker: "https://whatismyip.monstrkart.com/index.php",
   recaptcha: {
     isEnabled: false,
-    textCaptchaEnabled: false,
+    textCaptchaEnabled: true,
     siteKey: '6LcWzLIkAAAAABYAhcISETEWai7sTdufc9nZQ6bW',
   },
   authConfig: {

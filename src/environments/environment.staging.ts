@@ -2,8 +2,8 @@ export const environment = {
   production: true,
   dummyData: false,
 
-  baseApi: 'https://testing.uedeveloper.com/yatra-i-pilotage/',
-  api: 'https://testing.uedeveloper.com/yatra-i-pilotage/webapi/',
+  baseApi: 'https://testing.uedeveloper.com/yatra-i-adv/',
+  api: 'https://testing.uedeveloper.com/yatra-i-adv/webapi/',
   fileUrl: 'https://testing.uedeveloper.com/',
   baseHref: '/pilotage/',
 
