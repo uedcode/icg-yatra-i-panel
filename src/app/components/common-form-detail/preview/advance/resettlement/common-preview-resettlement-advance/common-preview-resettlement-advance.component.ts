@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
@@ -13,6 +13,7 @@ import { legacySignLabel } from 'src/app/shared/utils/legacy-preview.util';
   selector: 'app-common-preview-resettlement-advance',
   templateUrl: './common-preview-resettlement-advance.component.html',
   styleUrls: ['./common-preview-resettlement-advance.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CommonPreviewResettlementAdvanceComponent implements OnInit {
@@ -41,7 +42,7 @@ export class CommonPreviewResettlementAdvanceComponent implements OnInit {
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.route.queryParams.subscribe((params) => {
-      this.claimId = params?.id || null;
+      this.claimId = params?.id || params?.claimId || params?.formId || null;
       this.supplementaryId = params?.supId || null;
       this.subFormId = this.normalizeSubFormId(
         params?.subFormId || this.route.snapshot.data?.['subFormId'] || this.defaultSubFormId

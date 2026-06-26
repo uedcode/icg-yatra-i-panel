@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, ViewChildren, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
@@ -11,6 +11,7 @@ import { OtpApiService } from 'src/app/service/api/security/otp-api.service';
     selector: 'app-forgot-password-modal',
     templateUrl: './forgot-password-modal.component.html',
     styleUrls: ['./forgot-password-modal.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ForgotPasswordModalComponent implements OnInit {
@@ -29,7 +30,6 @@ export class ForgotPasswordModalComponent implements OnInit {
   resetPasswordObj: any = {};
   passwordObj: any = {};
   otp;
-  isRecaptcha = environment.recaptcha.isEnabled;
   isTextCaptcha = environment.recaptcha.textCaptchaEnabled ?? true;
   
   showEnterPno: boolean = true;
@@ -70,9 +70,6 @@ export class ForgotPasswordModalComponent implements OnInit {
         return this.$common.showMessage("Please enter a valid captcha", 'danger');
       }
       const recaptchaToken = this.formObj?.captcha || '';
-      if (this.isRecaptcha && recaptchaToken?.length === 0) {
-        return this.$common.showMessage("Please enter a valid captcha", 'danger');
-      }
       this.$common.showLoader();
       let clientIp;
       try {
@@ -123,10 +120,6 @@ export class ForgotPasswordModalComponent implements OnInit {
       if (this.otp.length != 4) {
         return this.$common.showMessage('Please enter correct OTP', "danger");
       }
-      const recaptchaToken = this.passwordObj?.captcha || '';
-      if (this.isRecaptcha && recaptchaToken?.length === 0) {
-        return this.$common.showMessage("Please enter a valid captcha", 'danger');
-      }
       if (this.passwordObj.password != this.passwordObj.cPassword) {
         return this.$common.showMessage("Password not match", 'danger');
       }
@@ -148,7 +141,6 @@ export class ForgotPasswordModalComponent implements OnInit {
         "newPass": encodeURIComponent(crypto.AES.encrypt(this.passwordObj?.password, "newpassword").toString()),
         "otp": userOtpEncrypted,
         "type": type,
-        // "recaptchaToken": encodeURIComponent(crypto.AES.encrypt(recaptchaToken, "recaptchaToken").toString()),
         // "clientIp": encodeURIComponent(crypto.AES.encrypt(clientIp, "clientIp").toString()),
       }
       
@@ -173,7 +165,6 @@ export class ForgotPasswordModalComponent implements OnInit {
       this.$common.showLoader();
       let req = {
         "pNo": encodeURIComponent(crypto.AES.encrypt(this.formObj?.pNo, "pNo").toString()),
-        // "recaptchaToken": encodeURIComponent(crypto.AES.encrypt(recaptchaToken, "recaptchaToken").toString()),
         // "clientIp": encodeURIComponent(crypto.AES.encrypt(clientIp, "clientIp").toString()),
       }
       this.$otp.sendOtpByNumber(req).subscribe((response: any) => {

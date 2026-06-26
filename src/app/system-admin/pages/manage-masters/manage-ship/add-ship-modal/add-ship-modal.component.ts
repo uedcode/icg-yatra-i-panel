@@ -6,6 +6,7 @@ import {
   ViewChild,
   EventEmitter,
   SimpleChanges,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
@@ -17,6 +18,7 @@ import { MasterShipApiService } from 'src/app/service/api/masters/master-ship-ap
     selector: 'app-add-ship-modal',
     templateUrl: './add-ship-modal.component.html',
     styleUrls: ['./add-ship-modal.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddShipModalComponent implements OnInit {

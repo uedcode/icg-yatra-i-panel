@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { FaqApiService } from 'src/app/service/api/masters/faq-api.service';
@@ -8,6 +8,7 @@ declare var $: any;
     selector: 'app-common-faq',
     templateUrl: './common-faq.component.html',
     styleUrls: ['./common-faq.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CommonFaqComponent implements OnInit {

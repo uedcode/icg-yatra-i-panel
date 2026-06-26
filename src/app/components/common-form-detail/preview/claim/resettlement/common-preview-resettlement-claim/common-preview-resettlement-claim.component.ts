@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
@@ -7,12 +7,13 @@ import { CommonService } from 'src/app/service/core/common.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
 import { isLegacyBlank, legacyDate } from 'src/app/shared/utils/legacy-display.util';
 import { asArray, firstItem, isLegacyPresent, unwrapPreviewObject } from 'src/app/shared/utils/legacy-preview-data.util';
-import { legacySignLabel } from 'src/app/shared/utils/legacy-preview.util';
+import { legacySignLabel, normalizePreviewSubFormId } from 'src/app/shared/utils/legacy-preview.util';
 
 @Component({
   selector: 'app-common-preview-resettlement-claim',
   templateUrl: './common-preview-resettlement-claim.component.html',
   styleUrls: ['./common-preview-resettlement-claim.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CommonPreviewResettlementClaimComponent implements OnInit {
@@ -49,9 +50,9 @@ export class CommonPreviewResettlementClaimComponent implements OnInit {
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.route.queryParams.subscribe((params) => {
-      this.claimId = params?.id ?? null;
+      this.claimId = params?.id ?? params?.claimId ?? params?.formId ?? null;
       this.supplementaryId = params?.supId ?? null;
-      this.subFormId = String(params?.subFormId ?? this.route.snapshot.data?.['subFormId'] ?? this.defaultSubFormId).toUpperCase();
+      this.subFormId = normalizePreviewSubFormId(params?.subFormId ?? this.route.snapshot.data?.['subFormId'] ?? this.defaultSubFormId);
       this.getClaimDetails();
     });
   }

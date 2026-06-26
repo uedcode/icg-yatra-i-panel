@@ -1,100 +1,98 @@
 <div class="main-container legacy-form-page legacy-creator-form">
   <app-common-form-header [pageTitle]="pageTitle" sectionLabel="Advance" [sectionLink]="['../new']">
 
-            <div class="row mrg_btm_5">
-              <div class="col-md-3">
-                <button type="button" class="btn btn-info" [disabled]="isPreviewDisabled"
-                  (click)="navigatePreview('', '')">
-                  Preview
-                </button>
-              </div>
+    <div class="row mrg_btm_5">
+      <div class="col-md-3">
+        <button type="button" class="btn btn-info" [disabled]="isPreviewDisabled"
+          (click)="navigatePreview('', '')">
+          Preview
+        </button>
+      </div>
 
-              <div class="col-md-4">
-                <button type="button" class="btn btn-danger" (click)="validate(currentFormCode, '')">
-                  Form Validate
-                </button>
-              </div>
+      <div class="col-md-4">
+        <button type="button" class="btn btn-danger" (click)="validate(currentFormCode, '')">
+          Form Validate
+        </button>
+      </div>
 
-              <div class="col-md-4">
-                <button type="button" class="btn btn-dark request_view_back ml-4" title="Back to Page"
-                  (click)="goBack()">
-                  <i class="fa fa-chevron-left" style="display: inline-block;"></i>
-                </button>
-              </div>
-            </div>
-          </app-common-form-header>
-          <!-- MAIN CONTENT -->
-          <div class="content-wrap">
-            <div class="panel_card">
-              <div id="validateForm" (input)="clearLegacyInvalid($event)" (change)="clearLegacyInvalid($event)">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="panel panel-white">
-                      <div class="panel-body panel_head">
-                        <!-- TABS -->
-                        <ul class="nav nav-tabs custom-tabs" role="tablist">
-                          <li role="presentation" [class.active]="activeTab === 'ship'">
-                            <a href="javascript:void(0)" role="tab" (click)="setTab('ship')">
-                              Personal Details
-                            </a>
-                          </li>
-                          <li role="presentation" [class.active]="activeTab === 'ship2'">
-                            <a href="javascript:void(0)" role="tab" (click)="setTab('ship2')">
-                              Travel Details
-                            </a>
-                          </li>
-                          <li role="presentation" [class.active]="activeTab === 'ship3'">
-                            <a href="javascript:void(0)" role="tab" (click)="setTab('ship3')">
-                              Financial Terms
-                            </a>
-                          </li>
-                          <li role="presentation" [class.active]="activeTab === 'ship4'">
-                            <a href="javascript:void(0)" role="tab" (click)="setTab('ship4')">
-                              Bank Details
-                            </a>
-                          </li>
-                          <li role="presentation" [class.active]="activeTab === 'ship5'">
-                            <a href="javascript:void(0)" role="tab" (click)="setTab('ship5')">
-                              Remarks
-                            </a>
-                          </li>
-                        </ul>
+      <div class="col-md-4">
+        <button type="button" class="btn btn-dark request_view_back ml-4" title="Back to Page"
+          (click)="goBack()">
+          <i class="fa fa-chevron-left" style="display: inline-block;"></i>
+        </button>
+      </div>
+    </div>
+  </app-common-form-header>
+  <!-- MAIN CONTENT -->
+  <div class="content-wrap">
+    <div class="panel_card">
+      <div id="validateForm" (input)="clearLegacyInvalid($event)" (change)="clearLegacyInvalid($event)">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="panel panel-white">
+              <div class="panel-body panel_head">
+                <!-- TABS -->
+                <ul class="nav nav-tabs custom-tabs" role="tablist">
+                  <li role="presentation" [class.active]="activeTab === 'ship'">
+                    <a href="javascript:void(0)" role="tab" (click)="setTab('ship')">
+                      Personal Details
+                    </a>
+                  </li>
+                  <li role="presentation" [class.active]="activeTab === 'ship2'">
+                    <a href="javascript:void(0)" role="tab" (click)="setTab('ship2')">
+                      Travel Details
+                    </a>
+                  </li>
+                  <li role="presentation" [class.active]="activeTab === 'ship3'">
+                    <a href="javascript:void(0)" role="tab" (click)="setTab('ship3')">
+                      Financial Terms
+                    </a>
+                  </li>
+                  <li role="presentation" [class.active]="activeTab === 'ship4'">
+                    <a href="javascript:void(0)" role="tab" (click)="setTab('ship4')">
+                      Bank Details
+                    </a>
+                  </li>
+                  <li role="presentation" [class.active]="activeTab === 'ship5'">
+                    <a href="javascript:void(0)" role="tab" (click)="setTab('ship5')">
+                      Remarks
+                    </a>
+                  </li>
+                </ul>
 
-                        <div class="tab-content">
-                          <!-- ================= TAB 1: PERSONAL DETAILS ================= -->
-                          <div id="ship" class="tab-pane active show" *ngIf="activeTab === 'ship'">
-
-                            <!-- Sign Type -->
-                            <div class="mb-3">
-                              <label>
-                                <input type="radio" name="signRadio" [value]="codeSignType?.inkSign"
-                                  [(ngModel)]="claims.signWith"
-                                  (ngModelChange)="checkValidSignType(claims.signWith, claims?.yatForeignDutyAdvDTOs[0]?.appliedTo)" />
-                                Ink Sign
-                              </label>
-                              &nbsp;&nbsp;
-                              <label>
-                                <input type="radio" name="signRadio" [value]="codeSignType?.eSign"
-                                  [(ngModel)]="claims.signWith" (click)="checkEsignAvailability()"
-                                  (ngModelChange)="checkValidSignType(claims.signWith, claims?.yatForeignDutyAdvDTOs[0]?.appliedTo)" />
-                                eSign
-                              </label>
-                            </div>
-
-                            <div class="row">
-                              <!-- Name -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5"><label class="control-label">Name</label></div>
-                                    <div class="col-md-8 padd_5">
-                                      <input type="text" class="form-control" disabled required
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].name" name="fte_name" />
+                <div class="tab-content">
+                  <!-- ================= TAB 1: PERSONAL DETAILS ================= -->
+                  
+                    <div id="ship" class="tab-pane active show" *ngIf="activeTab === 'ship'">
+                      <!-- Sign Type -->
+                      <div class="mb-3">
+                        <label>
+                          <input type="radio" name="signRadio" [value]="codeSignType?.inkSign"
+                            [(ngModel)]="claims.signWith"
+                            (ngModelChange)="checkValidSignType(claims.signWith, claims?.yatForeignDutyAdvDTOs[0]?.appliedTo)" />
+                            Ink Sign
+                          </label>
+                          &nbsp;&nbsp;
+                          <label>
+                            <input type="radio" name="signRadio" [value]="codeSignType?.eSign"
+                              [(ngModel)]="claims.signWith" (click)="checkEsignAvailability()"
+                              (ngModelChange)="checkValidSignType(claims.signWith, claims?.yatForeignDutyAdvDTOs[0]?.appliedTo)" />
+                              eSign
+                            </label>
+                          </div>
+                          <div class="row">
+                            <!-- Name -->
+                            <div class="col-md-4">
+                              <div class="form-group">
+                                <div class="row">
+                                  <div class="col-md-4 padd_5"><label class="control-label">Name</label></div>
+                                  <div class="col-md-8 padd_5">
+                                    <input type="text" class="form-control" disabled required
+                                      [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].name" name="fte_name" />
                                     </div>
                                   </div>
                                 </div>
                               </div>
-
                               <!-- Rank -->
                               <div class="col-md-4">
                                 <div class="form-group">
@@ -103,862 +101,827 @@
                                     <div class="col-md-8 padd_5">
                                       <input type="text" class="form-control" disabled required
                                         [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].rank" name="fte_rank" />
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-
-                              <!-- Personnel Number -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5"><label class="control-label">Personnel Number</label>
+                                <!-- Personnel Number -->
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <div class="row">
+                                      <div class="col-md-4 padd_5"><label class="control-label">Personnel Number</label>
                                     </div>
                                     <div class="col-md-8 padd_5">
                                       <input type="text" class="form-control" disabled required
                                         [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].pno" name="fte_pno" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <!-- Pay Level -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5"><label class="control-label">Pay Level</label></div>
-                                    <div class="col-md-8 padd_5">
-                                      <input type="text" class="form-control" disabled required
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].payLevel" name="fte_payLevel" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <!-- Basic Pay -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5"><label class="control-label">Basic Pay (In Rs)</label>
-                                    </div>
-                                    <div class="col-md-8 padd_5">
-                                      <input type="text" class="form-control" disabled required numbers-only
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].basicPay" name="fte_basicPay" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <!-- Present Unit -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5"><label class="control-label">Present Unit</label></div>
-                                    <div class="col-md-8 padd_5">
-                                      <input type="text" class="form-control" disabled required
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].videPresentUnit"
-                                        name="fte_videPresentUnit" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <!-- Applied To -->
-                            <div class="row">
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5">
-                                      <label class="control-label">Applied To<sup>*</sup></label>
-                                    </div>
-                                    <div class="col-md-8 padd_5">
-                                      <select class="form-control" required
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].appliedTo" name="fte_appliedTo"
-                                        (ngModelChange)="checkValidSignType(claims.signWith, claims.yatForeignDutyAdvDTOs[0].appliedTo)">
-                                        <option value="" disabled>Select</option>
-                                        <option *ngFor="let unit of claims.yatForeignDutyAdvDTOs[0].unitList"
-                                          [ngValue]="unit">
-                                          {{ unit }}
-                                        </option>
-                                      </select>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <!-- Gx Unit -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5"><label class="control-label">Gx
-                                        Unit<sup>*</sup></label></div>
-                                    <div class="col-md-8 padd_5">
-                                      <ngx-select [items]="allUnits" optionTextField="descr" optionValueField="descr"
-                                        name="fte_gxUnit" [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].gxUnit"
-                                        [allowClear]="true" required placeholder="Select GX Unit">
-                                      </ngx-select>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <!-- Gx Number -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5"><label class="control-label">Gx
-                                        Number<sup>*</sup></label></div>
-                                    <div class="col-md-8 padd_5">
-                                      <input type="text" class="form-control" maxlength="50" required
-                                        placeholder="Enter Number"
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].gxNumber" name="fte_gxNumber" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <!-- Gx Date -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5"><label class="control-label">Gx
-                                        Date<sup>*</sup></label></div>
-                                    <div class="col-md-8 padd_5">
-                                      <input type="date" class="form-control" required
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].gxDate" name="fte_gxDate" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <!-- Gx Form -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5">
-                                      <label class="control-label">
-                                        Gx Form (PDF) <small class="text-info">(Upto 512 KB)</small><sup>*</sup>
-                                      </label>
-                                    </div>
-
-                                    <div class="col-md-8 padd_5" *ngIf="showGxFileBrowse || !claims?.gxFormFileUrl">
-                                      <input type="file" class="form-control" accept=".pdf" required
-                                        [(ngModel)]="gxFormModel" name="fte_gxFormModel" (change)="uploadGxForm($event)"
-                                        [ngClass]="{ 'is-invalid': showErrors && !claims?.gxFormFileUrl }" />
-                                      <div *ngIf="showErrors && !claims?.gxFormFileUrl">
-                                        <small class="text-danger">Gx Form is required.</small>
                                       </div>
                                     </div>
-
-                                    <div class="col-md-8 padd_5" *ngIf="!showGxFileBrowse && claims?.gxFormFileUrl">
-                                      <button type="button" class="btn btn-warning btn-sm py-2"
-                                        (click)="$auth.viewFile(claims?.gxFormFileUrl)">
-                                        <i class="fa fa-eye"></i> View
-                                      </button>
-                                      &nbsp;
-                                      <button type="button" class="btn btn-danger btn-sm py-2" (click)="deleteGxForm()">
-                                        <i class="fa fa-times"></i> Delete
-                                      </button>
-                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-
-                            <!-- Purpose Type -->
-                            <div class="row">
-                              <div class="col-md-8">
-                                <div class="form-group">
+                                <!-- Pay Level -->
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <div class="row">
+                                      <div class="col-md-4 padd_5"><label class="control-label">Pay Level</label></div>
+                                      <div class="col-md-8 padd_5">
+                                        <input type="text" class="form-control" disabled required
+                                          [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].payLevel" name="fte_payLevel" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <!-- Basic Pay -->
+                                  <div class="col-md-4">
+                                    <div class="form-group">
+                                      <div class="row">
+                                        <div class="col-md-4 padd_5"><label class="control-label">Basic Pay (In Rs)</label>
+                                      </div>
+                                      <div class="col-md-8 padd_5">
+                                        <input type="text" class="form-control" disabled required numbers-only
+                                          [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].basicPay" name="fte_basicPay" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <!-- Present Unit -->
+                                  <div class="col-md-4">
+                                    <div class="form-group">
+                                      <div class="row">
+                                        <div class="col-md-4 padd_5"><label class="control-label">Present Unit</label></div>
+                                        <div class="col-md-8 padd_5">
+                                          <input type="text" class="form-control" disabled required
+                                            [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].videPresentUnit"
+                                            name="fte_videPresentUnit" />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <!-- Applied To -->
                                   <div class="row">
-                                    <div class="col-md-2 padd_5">
-                                      <label class="control-label">
-                                        Purpose Type<sup>*</sup>
-                                      </label>
-                                    </div>
-
-                                    <div class="col-md-4 padd_5">
-                                      <select class="form-control" required name="purposeType"
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].purposeType"
-                                        (ngModelChange)="clearChangeData()">
-                                        <option [ngValue]="''" disabled>Select Type</option>
-                                        <option *ngFor="let dir of purposeTypes" [ngValue]="dir.descr">
-                                          {{ dir.descr }}
-                                        </option>
-                                      </select>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <!-- Purpose of FTE duty (shown when Purpose Type = Other) -->
-                            <div class="row"
-                              *ngIf="claims?.yatForeignDutyAdvDTOs[0]?.purposeType === purposeType?.other">
-                              <div class="col-md-8">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-2 padd_5">
-                                      <label class="control-label">
-                                        Purpose of FTE duty<sup>*</sup>
-                                      </label>
-                                    </div>
-                                    <div class="col-md-10 padd_5">
-                                      <input type="text" class="form-control" maxlength="255"
-                                        placeholder="Purpose of FTE Duty"
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].purpose" name="purpose"
-                                        [required]="claims?.yatForeignDutyAdvDTOs[0]?.purposeType === purposeType?.other" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <!-- Guest Details (shown when Purpose Type = Investiture Ceremony) -->
-                            <div class="row"
-                              *ngIf="claims?.yatForeignDutyAdvDTOs[0]?.purposeType === purposeType.investive">
-
-                              <!-- Name -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5">
-                                      <label class="control-label">Name<sup>*</sup></label>
-                                    </div>
-                                    <div class="col-md-8 padd_5">
-                                      <input type="text" class="form-control" name="personName" maxlength="50"
-                                        placeholder="eg. Name" required
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].personName"
-                                        (input)="allowOnlyAlphabets($event)" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <!-- Relation -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5">
-                                      <label class="control-label">Relation<sup>*</sup></label>
-                                    </div>
-                                    <div class="col-md-8 padd_5">
-                                      <input type="text" class="form-control" name="relation" maxlength="50"
-                                        placeholder="eg. Cousin" required
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].relation"
-                                        (input)="allowOnlyAlphabets($event)" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <!-- Age -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5">
-                                      <label class="control-label">Age<sup>*</sup></label>
-                                    </div>
-                                    <div class="col-md-8 padd_5">
-                                      <input type="text" class="form-control" maxlength="3" placeholder="eg. 25"
-                                        (keypress)="onlyNumberKey($event)"
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].age" name="age"
-                                        (ngModelChange)="validateAge()"
-                                        [required]="claims?.yatForeignDutyAdvDTOs[0]?.purposeType === purposeType?.investive" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <!-- Gender -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5">
-                                      <label class="control-label">Gender<sup>*</sup></label>
-                                    </div>
-                                    <div class="col-md-8 padd_5">
-                                      <select class="form-control" [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].gender"
-                                        name="gender"
-                                        [required]="claims?.yatForeignDutyAdvDTOs[0]?.purposeType === purposeType?.investive">
-                                        <option value="" disabled selected>Select</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Others">Others</option>
-                                      </select>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                            </div>
-
-
-                            <!-- Probable duration -->
-                            <div class="row">
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5">
-                                      <label class="control-label">Probable duration of duty (In
-                                        days)<sup>*</sup></label>
-                                    </div>
-                                    <div class="col-md-8 padd_5">
-                                      <input type="text" class="form-control" maxlength="3" required placeholder="Days"
-                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].duration" name="fte_duration"
-                                        (keypress)="onlyNumberKey($event)" (input)="validateDuration()" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <!-- Occurrence Date -->
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-4 padd_5">
-                                      <label class="control-label">Occurrence Date (Movement Date)<sup>*</sup></label>
-                                    </div>
-                                    <div class="col-md-8 padd_5">
-                                      <input type="date" class="form-control" required [(ngModel)]="claims.occDate"
-                                        name="fte_occDate" />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <!-- Bottom buttons -->
-                            <div style="margin-top: 5px;">
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="saveClaim(codeClaim?.fteAdv, codeClaimState?.draft, false)">
-                                Save as Draft
-                              </button>
-
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="nextTabActive()">
-                                Next
-                              </button>
-                            </div>
-
-                          </div>
-
-
-                          <!-- ================= TAB 2: TRAVEL DETAILS (FTE - TY style UI) ================= -->
-                          <div id="ship2" class="tab-pane active show" *ngIf="activeTab === 'ship2'">
-                            <div class="row">
-                              <div class="col-md-12">
-                                <div class="panel_head">
-                                  <div class="table-responsive" style="margin-top: 15px;">
-                                    <table class="table table-striped table-bordered table-hover">
-                                      <thead>
-                                        <tr>
-                                          <th>From<sup>*</sup></th>
-                                          <th>To<sup>*</sup></th>
-                                          <th>Mode of Travel<sup>*</sup></th>
-                                          <th *ngIf="fteOtherMode">Other Mode of Travel<sup>*</sup></th>
-                                          <th>DTS<sup>*</sup></th>
-                                          <th>Total Amount (In Rs.)<sup>*</sup></th>
-                                          <th>Reason for not using DTS</th>
-                                          <th>Remarks</th>
-                                        </tr>
-                                      </thead>
-
-                                      <tbody>
-                                        <tr>
-                                          <td>
-                                            <input type="text" class="form-control" maxlength="200" placeholder="From"
-                                              [(ngModel)]="tempFteTravel.source" name="fte_tdSource"
-                                              (input)="allowOnlyTravelAlphabets($event, 'source')" />
-                                          </td>
-
-                                          <td>
-                                            <input type="text" class="form-control" maxlength="200" placeholder="To"
-                                              [(ngModel)]="tempFteTravel.destination" name="fte_tdDestination"
-                                              (input)="allowOnlyTravelAlphabets($event, 'destination')" />
-                                          </td>
-
-                                          <td>
-                                            <select class="form-control" [(ngModel)]="tempFteTravel.modeOfTravel"
-                                              name="fte_tdModeOfTravel" (ngModelChange)="onFteModeChange()">
-                                              <option value="" disabled selected>Select</option>
-                                              <option value="Air">Air</option>
-                                              <option value="Road">Road</option>
-                                              <option value="Train">Train</option>
-                                              <option value="Ship">Ship</option>
-                                              <option value="Bus">Bus</option>
-                                              <option value="Taxi">Taxi</option>
-                                              <option value="Ferry">Ferry</option>
-                                              <option value="Service Vehicle">Service Vehicle</option>
-                                              <option value="Others">Others</option>
-                                            </select>
-                                          </td>
-
-                                          <td *ngIf="fteOtherMode">
-                                            <input type="text" class="form-control" maxlength="20"
-                                              placeholder="Other mode of travel"
-                                              [(ngModel)]="tempFteTravel.otherModeOfTravel"
-                                              name="fte_tdOtherModeOfTravel" />
-                                          </td>
-
-                                          <td>
-                                            <select class="form-control" [(ngModel)]="tempFteTravel.isDts"
-                                              name="fte_tdIsDts" [disabled]="fteIsDtsDisabled"
-                                              (ngModelChange)="onFteIsDtsChange()">
+                                    <div class="col-md-4">
+                                      <div class="form-group">
+                                        <div class="row">
+                                          <div class="col-md-4 padd_5">
+                                            <label class="control-label">Applied To<sup>*</sup></label>
+                                          </div>
+                                          <div class="col-md-8 padd_5">
+                                            <select class="form-control" required
+                                              [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].appliedTo" name="fte_appliedTo"
+                                              (ngModelChange)="checkValidSignType(claims.signWith, claims.yatForeignDutyAdvDTOs[0].appliedTo)">
                                               <option value="" disabled>Select</option>
-                                              <option value="Yes" *ngIf="fteBoolIsDts">Yes</option>
-                                              <option value="No" *ngIf="fteBoolIsDts">No</option>
-                                              <option value="NA" *ngIf="!fteBoolIsDts">NA</option>
+                                              
+                                                <option
+                                                  [ngValue]="unit" *ngFor="let unit of claims.yatForeignDutyAdvDTOs[0].unitList">
+                                                  {{ unit }}
+                                                </option>
+                                              
                                             </select>
-                                          </td>
-
-                                          <td>
-                                            <input type="text" class="form-control" maxlength="10" placeholder="Amount"
-                                              (keypress)="onlyNumberKey($event)" [(ngModel)]="tempFteTravel.amount"
-                                              name="fte_tdAmount" />
-                                          </td>
-
-                                          <td>
-                                            <input type="text" class="form-control" maxlength="100"
-                                              [disabled]="tempFteTravel.isDts === 'Yes' || tempFteTravel.isDts === 'NA'"
-                                              [(ngModel)]="tempFteTravel.reasonForNoDts" name="fte_tdReasonForNoDts"
-                                              (ngModelChange)="validateFteReason()"
-                                              [ngClass]="{'is-invalid': tempFteTravel._reasonError}" />
-
-                                            <div *ngIf="tempFteTravel._reasonError" class="text-danger"
-                                              style="font-size: 11px;">
-                                              Reason for not using DTS is required when DTS is No.
-                                            </div>
-                                          </td>
-
-                                          <td>
-                                            <input type="text" class="form-control" maxlength="500"
-                                              [(ngModel)]="tempFteTravel.remarks" name="fte_tdRemarks" />
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="col-md-8 padd_5 d-flex align-items-center gap-2">
-                                <button class="btn btn-info" [disabled]="fteTravelDetailsBtn"
-                                  (click)="addFteTravelDetails()">
-                                  {{ fteTravelBtnName }}
-                                </button>
-
-                                <button class="btn btn-danger" type="button" (click)="resetTempFteTravelDetails()">
-                                  Reset
-                                </button>
-                              </div>
-
-                              <div class="col-md-12">
-                                <div class="panel_head">
-                                  <div class="table-responsive" style="margin-top: 15px;">
-                                    <table class="table table-striped table-bordered table-hover">
-                                      <thead>
-                                        <tr>
-                                          <th>From</th>
-                                          <th>To</th>
-                                          <th>Travel Mode</th>
-                                          <th>DTS</th>
-                                          <th>Amount (In Rs.)</th>
-                                          <th>Reason for not using DTS</th>
-                                          <th>Remarks</th>
-                                          <th>Edit</th>
-                                          <th>Delete</th>
-                                        </tr>
-                                      </thead>
-
-                                      <tbody>
-                                        <tr *ngFor="let row of claims?.yatDtsDetailDTOs; let i = index">
-                                          <td>{{ row.source }}</td>
-                                          <td>{{ row.destination }}</td>
-                                          <td>
-                                            {{ row.modeOfTravel }}
-                                            <span *ngIf="row.otherModeOfTravel">({{ row.otherModeOfTravel }})</span>
-                                          </td>
-                                          <td>{{ row.isDts }}</td>
-
-                                          <td>
-                                            <input class="form-control" (keypress)="onlyNumberKey($event)"
-                                              [(ngModel)]="row.tempAmount" name="fte_travel_tempAmount{{i}}"
-                                              (ngModelChange)="onFteTravelAmountChange(row)" />
-                                          </td>
-
-                                          <td>{{ row.reasonForNoDts }}</td>
-                                          <td>{{ row.remarks }}</td>
-                                          <td>
-                                            <button type="button" class="btn btn-warning"
-                                              (click)="editFteTravelDetails(i)">
-                                              <i class="fa fa-pencil"></i>
-                                            </button>
-                                          </td>
-                                          <td>
-                                            <button type="button" class="btn btn-danger"
-                                              (click)="deleteFteTravelDetails(i)">
-                                              <i class="fa fa-trash"></i>
-                                            </button>
-                                          </td>
-                                        </tr>
-
-                                        <tr *ngIf="!claims?.yatDtsDetailDTOs?.length">
-                                          <td colspan="10" style="text-align: center;">No Record Found</td>
-                                        </tr>
-                                      </tbody>
-
-                                    </table>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div style="margin-top: 5px;">
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="previousTabActive()">
-                                Previous
-                              </button>
-
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="saveClaim(codeClaim?.fteAdv, codeClaimState?.draft, false)">
-                                Save as Draft
-                              </button>
-
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="nextTabActive()">
-                                Next
-                              </button>
-                            </div>
-                          </div>
-
-
-                          <!-- ================= TAB 3: FINANCIAL TERMS ================= -->
-                          <div id="ship3" class="tab-pane active show" *ngIf="activeTab === 'ship3'">
-
-                            <div class="row">
-                              <div class="col-md-12">
-                                <div class="panel_head">
-
-                                  <!-- ENTRY ROW TABLE (same style as Tab 2) -->
-                                  <div class="table-responsive" style="margin-top: 15px;">
-                                    <table class="table table-striped table-bordered table-hover">
-                                      <thead>
-                                        <tr>
-                                          <th>Amount (In Rs.)<sup>*</sup></th>
-                                          <th>Remarks</th>
-                                        </tr>
-                                      </thead>
-
-                                      <tbody>
-                                        <tr>
-                                          <td>
-                                            <input type="text" class="form-control" maxlength="10" placeholder="Amount"
-                                              (keypress)="onlyNumberKey($event)"
-                                              [(ngModel)]="tempForeignTravelDetail.amount" name="fte_ft_amount" />
-                                          </td>
-
-                                          <td>
-                                            <input type="text" class="form-control" maxlength="100"
-                                              [(ngModel)]="tempForeignTravelDetail.descr" name="fte_ft_descr" />
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-
-                                  <!-- BUTTONS -->
-                                  <div class="padd_5 d-flex align-items-center gap-2">
-                                    <button type="button" class="btn btn-info" [disabled]="foreignTravelBtnDisabled"
-                                      (click)="addForeignTravelDetail()">
-                                      {{ foreignTravelBtnName }}
-                                    </button>
-
-                                    <button type="button" class="btn btn-danger" (click)="resetForeignTravelDetail()">
-                                      Reset
-                                    </button>
-                                  </div>
-
-                                  <!-- LISTING TABLE (same style as Tab 2) -->
-                                  <div class="table-responsive" style="margin-top: 15px;">
-                                    <table class="table table-striped table-bordered table-hover">
-                                      <thead>
-                                        <tr>
-                                          <th>Amount (In Rs.)</th>
-                                          <th>Remarks</th>
-                                          <th>EDIT</th>
-                                          <th>DELETE</th>
-                                        </tr>
-                                      </thead>
-
-
-                                      <tbody>
-                                        <tr *ngFor="let row of claims?.yatForeignTravelDetailDTOs; let i = index">
-                                          <td>
-                                            <input type="text" class="form-control" maxlength="10"
-                                              (keypress)="onlyNumberKey($event)" [(ngModel)]="row.amount"
-                                              name="fte_ft_existing_amount{{i}}" (ngModelChange)="recalcFteTotals()"
-                                              disabled />
-                                          </td>
-
-                                          <td>{{ row.descr }}</td>
-
-                                          <td>
-                                            <button type="button" class="btn btn-warning"
-                                              (click)="editForeignTravelDetail(i)">
-                                              <i class="fa fa-pencil"></i>
-                                            </button>
-                                          </td>
-
-                                          <td>
-                                            <button type="button" class="btn btn-danger"
-                                              (click)="deleteForeignTravelDetail(i)">
-                                              <i class="fa fa-trash"></i>
-                                            </button>
-                                          </td>
-                                        </tr>
-
-                                        <tr *ngIf="!claims?.yatForeignTravelDetailDTOs?.length">
-                                          <td colspan="4" style="text-align:center;">No Record Found</td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-
-                                  <!-- Summary Table -->
-                                  <table class="table">
-                                    <thead>
-                                      <tr>
-                                        <th>Advance Request</th>
-                                        <th>Advance Admissible</th>
-                                        <th>DTS Amount</th>
-                                        <th>No DTS Amount</th>
-                                        <th>Amount to be budgeted</th>
-                                      </tr>
-                                    </thead>
-
-                                    <tbody>
-                                      <tr>
-                                        <td>{{ claims?.yatForeignDutyAdvDTOs[0]?.totalAmt | showZero }}</td>
-                                        <td>{{ claims?.yatForeignDutyAdvDTOs[0]?.advAmt | showZero }}</td>
-                                        <td>{{ claims?.yatForeignDutyAdvDTOs[0]?.dtsAmount | showZero }}</td>
-                                        <td>{{ noDtsAmount | showZero }}</td>
-                                        <td>{{ claims?.yatForeignDutyAdvDTOs[0]?.totalBudgetedAmt | showZero }}</td>
-                                      </tr>
-                                    </tbody>
-
-                                  </table>
-
-                                </div>
-                              </div>
-                            </div>
-
-                            <!-- Place -->
-                            <div class="form-group">
-                              <div class="row">
-                                <div class="col-md-1 padd_5">
-                                  <label class="control-label">
-                                    Place<sup>*</sup>
-                                  </label>
-                                </div>
-                                <div class="col-md-2 padd_5">
-                                  <input type="text" class="form-control" maxlength="200" placeholder="Place"
-                                    uppercase-only required [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].place"
-                                    name="place" />
-                                </div>
-                              </div>
-                            </div>
-
-                            <!-- Bottom Buttons (Tab 3) -->
-                            <div style="margin-top: 5px;">
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="previousTabActive()">
-                                Previous
-                              </button>
-
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="saveClaim(codeClaim?.fteAdv, codeClaimState?.draft, false)">
-                                Save as Draft
-                              </button>
-
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="nextTabActive()">
-                                Next
-                              </button>
-                            </div>
-
-                          </div>
-
-                          <!-- ================= TAB 4: BANK DETAILS ================= -->
-                          <div id="ship4" class="tab-pane active show" *ngIf="activeTab === 'ship4'">
-                            <div class="form-group">
-                              <div class="row">
-                                <div class="col-md-2 padd_5">
-                                  <label class="control-label">Bank Name</label>
-                                </div>
-                                <div class="col-md-3 padd_5">
-                                  <input type="text" class="form-control" [disabled]="true"
-                                    [(ngModel)]="claims.yatClaimBankDetailDTO.bankName" name="fte_bankName" />
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-group">
-                              <div class="row">
-                                <div class="col-md-2 padd_5">
-                                  <label class="control-label">IFSC Code</label>
-                                </div>
-                                <div class="col-md-3 padd_5">
-                                  <input type="text" class="form-control" maxlength="11" ifsc-filter
-                                    [disabled]="isIfscNull" required [(ngModel)]="claims.yatClaimBankDetailDTO.ifscCode"
-                                    name="fte_ifscCode" />
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-group">
-                              <div class="row">
-                                <div class="col-md-2 padd_5">
-                                  <label class="control-label">Account Number</label>
-                                </div>
-                                <div class="col-md-3 padd_5">
-                                  <input type="text" class="form-control" [disabled]="true" required
-                                    [(ngModel)]="claims.yatClaimBankDetailDTO.bankAccNo" name="fte_bankAccNo" />
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-group">
-                              <div class="row">
-                                <div class="col-md-2 padd_5">
-                                  <label class="control-label">MICR Code</label>
-                                </div>
-                                <div class="col-md-3 padd_5">
-                                  <input type="text" class="form-control" [disabled]="true"
-                                    [(ngModel)]="claims.yatClaimBankDetailDTO.micrCode" name="fte_micrCode" />
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-group" style="margin-top: 10px;">
-                              <div class="row">
-                                <div class="col-md-2 padd_5">
-                                  <button class="btn btn-info" (click)="openIfscModal()">
-                                    Update IFSC Code
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-
-                            <!-- IFSC Modal -->
-                            <div class="modal fade ifsc-modal-backdrop" tabindex="-1" role="dialog"
-                              [ngClass]="{ 'show d-block': showIfscModal }" *ngIf="showIfscModal">
-                              <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                                <div class="modal-content shadow-lg border-0">
-                                  <div class="modal-header py-2 bg-primary text-white">
-                                    <h5 class="modal-title mb-0">Update IFSC Code</h5>
-                                    <button type="button" class="close text-white" (click)="closeIfscModal()">
-                                      <span>&times;</span>
-                                    </button>
-                                  </div>
-
-                                  <div class="modal-body">
-                                    <div class="form-group mb-2">
-                                      <label class="font-weight-semibold mb-1">
-                                        IFSC Code<span class="text-danger">*</span>
-                                      </label>
-                                      <input type="text" class="form-control form-control-sm" maxlength="11"
-                                        [(ngModel)]="newIfscCode" placeholder="e.g. SBIN0013242" />
-                                      <small class="text-muted">
-                                        Please enter 11 character IFSC code for your bank branch.
-                                      </small>
+                                          </div>
+                                        </div>
+                                      </div>
                                     </div>
-                                  </div>
+                                    <!-- Gx Unit -->
+                                    <div class="col-md-4">
+                                      <div class="form-group">
+                                        <div class="row">
+                                          <div class="col-md-4 padd_5"><label class="control-label">Gx
+                                            Unit<sup>*</sup></label></div>
+                                            <div class="col-md-8 padd_5">
+                                              <ngx-select [items]="allUnits" optionTextField="descr" optionValueField="descr"
+                                                name="fte_gxUnit" [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].gxUnit"
+                                                [allowClear]="true" required placeholder="Select GX Unit">
+                                            </ngx-select>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!-- Gx Number -->
+                                    <div class="col-md-4">
+                                      <div class="form-group">
+                                        <div class="row">
+                                          <div class="col-md-4 padd_5"><label class="control-label">Gx
+                                            Number<sup>*</sup></label></div>
+                                            <div class="col-md-8 padd_5">
+                                              <input type="text" class="form-control" maxlength="50" required
+                                                placeholder="Enter Number"
+                                                [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].gxNumber" name="fte_gxNumber" />
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <!-- Gx Date -->
+                                        <div class="col-md-4">
+                                          <div class="form-group">
+                                            <div class="row">
+                                              <div class="col-md-4 padd_5"><label class="control-label">Gx
+                                                Date<sup>*</sup></label></div>
+                                                <div class="col-md-8 padd_5">
+                                                  <input type="date" class="form-control" required
+                                                    [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].gxDate" name="fte_gxDate" />
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <!-- Gx Form -->
+                                            <div class="col-md-4">
+                                              <div class="form-group">
+                                                <div class="row">
+                                                  <div class="col-md-4 padd_5">
+                                                    <label class="control-label">
+                                                      Gx Form (PDF) <small class="text-info">(Upto 512 KB)</small><sup>*</sup>
+                                                    </label>
+                                                  </div>
+                                                  
+                                                    <div class="col-md-8 padd_5" *ngIf="showGxFileBrowse || !claims?.gxFormFileUrl">
+                                                      <input type="file" class="form-control" accept=".pdf" required
+                                                        [(ngModel)]="gxFormModel" name="fte_gxFormModel" (change)="uploadGxForm($event)"
+                                                        [ngClass]="{ 'is-invalid': showErrors && !claims?.gxFormFileUrl }" />
+                                                      
+                                                        <div *ngIf="showErrors &amp;&amp; !claims?.gxFormFileUrl">
+                                                          <small class="text-danger">Gx Form is required.</small>
+                                                        </div>
+                                                      
+                                                    </div>
+                                                  
+                                                  
+                                                    <div class="col-md-8 padd_5" *ngIf="!showGxFileBrowse &amp;&amp; claims?.gxFormFileUrl">
+                                                      <button type="button" class="btn btn-warning btn-sm py-2"
+                                                        (click)="$auth.viewFile(claims?.gxFormFileUrl)">
+                                                        <i class="fa fa-eye"></i> View
+                                                      </button>
+                                                      &nbsp;
+                                                      <button type="button" class="btn btn-danger btn-sm py-2" (click)="deleteGxForm()">
+                                                        <i class="fa fa-times"></i> Delete
+                                                      </button>
+                                                    </div>
+                                                  
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <!-- Purpose Type -->
+                                          <div class="row">
+                                            <div class="col-md-8">
+                                              <div class="form-group">
+                                                <div class="row">
+                                                  <div class="col-md-2 padd_5">
+                                                    <label class="control-label">
+                                                      Purpose Type<sup>*</sup>
+                                                    </label>
+                                                  </div>
+                                                  <div class="col-md-4 padd_5">
+                                                    <select class="form-control" required name="purposeType"
+                                                      [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].purposeType"
+                                                      (ngModelChange)="clearChangeData()">
+                                                      <option [ngValue]="''" disabled>Select Type</option>
+                                                      
+                                                        <option [ngValue]="dir.descr" *ngFor="let dir of purposeTypes">
+                                                          {{ dir.descr }}
+                                                        </option>
+                                                      
+                                                    </select>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <!-- Purpose of FTE duty (shown when Purpose Type = Other) -->
+                                          
+                                            <div class="row"
+                                               *ngIf="claims?.yatForeignDutyAdvDTOs[0]?.purposeType === purposeType?.other">
+                                              <div class="col-md-8">
+                                                <div class="form-group">
+                                                  <div class="row">
+                                                    <div class="col-md-2 padd_5">
+                                                      <label class="control-label">
+                                                        Purpose of FTE duty<sup>*</sup>
+                                                      </label>
+                                                    </div>
+                                                    <div class="col-md-10 padd_5">
+                                                      <input type="text" class="form-control" maxlength="255"
+                                                        placeholder="Purpose of FTE Duty"
+                                                        [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].purpose" name="purpose"
+                                                        [required]="claims?.yatForeignDutyAdvDTOs[0]?.purposeType === purposeType?.other" />
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            
+                                            <!-- Guest Details (shown when Purpose Type = Investiture Ceremony) -->
+                                            
+                                              <div class="row"
+                                                 *ngIf="claims?.yatForeignDutyAdvDTOs[0]?.purposeType === purposeType.investive">
+                                                <!-- Name -->
+                                                <div class="col-md-4">
+                                                  <div class="form-group">
+                                                    <div class="row">
+                                                      <div class="col-md-4 padd_5">
+                                                        <label class="control-label">Name<sup>*</sup></label>
+                                                      </div>
+                                                      <div class="col-md-8 padd_5">
+                                                        <input type="text" class="form-control" name="personName" maxlength="50"
+                                                          placeholder="eg. Name" required
+                                                          [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].personName"
+                                                          (input)="allowOnlyAlphabets($event)" />
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                  <!-- Relation -->
+                                                  <div class="col-md-4">
+                                                    <div class="form-group">
+                                                      <div class="row">
+                                                        <div class="col-md-4 padd_5">
+                                                          <label class="control-label">Relation<sup>*</sup></label>
+                                                        </div>
+                                                        <div class="col-md-8 padd_5">
+                                                          <input type="text" class="form-control" name="relation" maxlength="50"
+                                                            placeholder="eg. Cousin" required
+                                                            [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].relation"
+                                                            (input)="allowOnlyAlphabets($event)" />
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <!-- Age -->
+                                                    <div class="col-md-4">
+                                                      <div class="form-group">
+                                                        <div class="row">
+                                                          <div class="col-md-4 padd_5">
+                                                            <label class="control-label">Age<sup>*</sup></label>
+                                                          </div>
+                                                          <div class="col-md-8 padd_5">
+                                                            <input type="text" class="form-control" maxlength="3" placeholder="eg. 25"
+                                                              (keypress)="onlyNumberKey($event)"
+                                                              [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].age" name="age"
+                                                              (ngModelChange)="validateAge()"
+                                                              [required]="claims?.yatForeignDutyAdvDTOs[0]?.purposeType === purposeType?.investive" />
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                      <!-- Gender -->
+                                                      <div class="col-md-4">
+                                                        <div class="form-group">
+                                                          <div class="row">
+                                                            <div class="col-md-4 padd_5">
+                                                              <label class="control-label">Gender<sup>*</sup></label>
+                                                            </div>
+                                                            <div class="col-md-8 padd_5">
+                                                              <select class="form-control" [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].gender"
+                                                                name="gender"
+                                                                [required]="claims?.yatForeignDutyAdvDTOs[0]?.purposeType === purposeType?.investive">
+                                                                <option value="" disabled selected>Select</option>
+                                                                <option value="Male">Male</option>
+                                                                <option value="Female">Female</option>
+                                                                <option value="Others">Others</option>
+                                                              </select>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  
+                                                  <!-- Probable duration -->
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <div class="form-group">
+                                                        <div class="row">
+                                                          <div class="col-md-4 padd_5">
+                                                            <label class="control-label">Probable duration of duty (In
+                                                              days)<sup>*</sup></label>
+                                                            </div>
+                                                            <div class="col-md-8 padd_5">
+                                                              <input type="text" class="form-control" maxlength="3" required placeholder="Days"
+                                                                [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].duration" name="fte_duration"
+                                                                (keypress)="onlyNumberKey($event)" (input)="validateDuration()" />
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                        <!-- Occurrence Date -->
+                                                        <div class="col-md-4">
+                                                          <div class="form-group">
+                                                            <div class="row">
+                                                              <div class="col-md-4 padd_5">
+                                                                <label class="control-label">Occurrence Date (Movement Date)<sup>*</sup></label>
+                                                              </div>
+                                                              <div class="col-md-8 padd_5">
+                                                                <input type="date" class="form-control" required [(ngModel)]="claims.occDate"
+                                                                  name="fte_occDate" />
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                        <!-- Bottom buttons -->
+                                                        <div style="margin-top: 5px;">
+                                                          <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                            (click)="saveClaim(codeClaim?.fteAdv, codeClaimState?.draft, false)">
+                                                            Save as Draft
+                                                          </button>
+                                                          <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                            (click)="nextTabActive()">
+                                                            Next
+                                                          </button>
+                                                        </div>
+                                                      </div>
+                                                    
 
-                                  <div class="modal-footer py-2">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm"
-                                      (click)="closeIfscModal()">
-                                      Cancel
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-sm" (click)="submitIFSCUpdate()">
-                                      Submit
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
 
-                            <div style="margin-top: 5px;">
-                              <label class="control-label">
-                                <code>
-                                  Note:- In case of any change in the bank account details please contact SASTRA. The form
-                                  should be submitted only when the account details are corrected.
-                                </code>
-                              </label>
-                            </div>
+                                                    <!-- ================= TAB 2: TRAVEL DETAILS (FTE - TY style UI) ================= -->
+                                                    
+                                                      <div id="ship2" class="tab-pane active show" *ngIf="activeTab === 'ship2'">
+                                                        <div class="row">
+                                                          <div class="col-md-12">
+                                                            <div class="panel_head">
+                                                              <div class="table-responsive" style="margin-top: 15px;">
+                                                                <table class="table table-striped table-bordered table-hover">
+                                                                  <thead>
+                                                                    <tr>
+                                                                      <th>From<sup>*</sup></th>
+                                                                      <th>To<sup>*</sup></th>
+                                                                      <th>Mode of Travel<sup>*</sup></th>
+                                                                      
+                                                                        <th *ngIf="fteOtherMode">Other Mode of Travel<sup>*</sup></th>
+                                                                      
+                                                                      <th>DTS<sup>*</sup></th>
+                                                                      <th>Total Amount (In Rs.)<sup>*</sup></th>
+                                                                      <th>Reason for not using DTS</th>
+                                                                      <th>Remarks</th>
+                                                                    </tr>
+                                                                  </thead>
+                                                                  <tbody>
+                                                                    <tr>
+                                                                      <td>
+                                                                        <input type="text" class="form-control" maxlength="200" placeholder="From"
+                                                                          [(ngModel)]="tempFteTravel.source" name="fte_tdSource"
+                                                                          (input)="allowOnlyTravelAlphabets($event, 'source')" />
+                                                                      </td>
+                                                                      <td>
+                                                                        <input type="text" class="form-control" maxlength="200" placeholder="To"
+                                                                          [(ngModel)]="tempFteTravel.destination" name="fte_tdDestination"
+                                                                          (input)="allowOnlyTravelAlphabets($event, 'destination')" />
+                                                                      </td>
+                                                                      <td>
+                                                                        <select class="form-control" [(ngModel)]="tempFteTravel.modeOfTravel"
+                                                                          name="fte_tdModeOfTravel" (ngModelChange)="onFteModeChange()">
+                                                                          <option value="" disabled selected>Select</option>
+                                                                          <option value="Air">Air</option>
+                                                                          <option value="Road">Road</option>
+                                                                          <option value="Train">Train</option>
+                                                                          <option value="Ship">Ship</option>
+                                                                          <option value="Bus">Bus</option>
+                                                                          <option value="Taxi">Taxi</option>
+                                                                          <option value="Ferry">Ferry</option>
+                                                                          <option value="Service Vehicle">Service Vehicle</option>
+                                                                          <option value="Others">Others</option>
+                                                                        </select>
+                                                                      </td>
+                                                                      
+                                                                        <td *ngIf="fteOtherMode">
+                                                                          <input type="text" class="form-control" maxlength="20"
+                                                                            placeholder="Other mode of travel"
+                                                                            [(ngModel)]="tempFteTravel.otherModeOfTravel"
+                                                                            name="fte_tdOtherModeOfTravel" />
+                                                                          </td>
+                                                                        
+                                                                        <td>
+                                                                          <select class="form-control" [(ngModel)]="tempFteTravel.isDts"
+                                                                            name="fte_tdIsDts" [disabled]="fteIsDtsDisabled"
+                                                                            (ngModelChange)="onFteIsDtsChange()">
+                                                                          <option value="" disabled>Select</option>
+                                                                          
+                                                                            <option value="Yes" *ngIf="fteBoolIsDts">Yes</option>
+                                                                          
+                                                                          
+                                                                            <option value="No" *ngIf="fteBoolIsDts">No</option>
+                                                                          
+                                                                          
+                                                                            <option value="NA" *ngIf="!fteBoolIsDts">NA</option>
+                                                                          
+                                                                        </select>
+                                                                      </td>
+                                                                      <td>
+                                                                        <input type="text" class="form-control" maxlength="10" placeholder="Amount"
+                                                                          (keypress)="onlyNumberKey($event)" [(ngModel)]="tempFteTravel.amount"
+                                                                          name="fte_tdAmount" />
+                                                                        </td>
+                                                                        <td>
+                                                                          <input type="text" class="form-control" maxlength="100"
+                                                                            [disabled]="tempFteTravel.isDts === 'Yes' || tempFteTravel.isDts === 'NA'"
+                                                                            [(ngModel)]="tempFteTravel.reasonForNoDts" name="fte_tdReasonForNoDts"
+                                                                            (ngModelChange)="validateFteReason()"
+                                                                            [ngClass]="{'is-invalid': tempFteTravel._reasonError}" />
+                                                                            
+                                                                              <div class="text-danger"
+                                                                                style="font-size: 11px;" *ngIf="tempFteTravel._reasonError">
+                                                                                Reason for not using DTS is required when DTS is No.
+                                                                              </div>
+                                                                            
+                                                                          </td>
+                                                                          <td>
+                                                                            <input type="text" class="form-control" maxlength="500"
+                                                                              [(ngModel)]="tempFteTravel.remarks" name="fte_tdRemarks" />
+                                                                            </td>
+                                                                          </tr>
+                                                                        </tbody>
+                                                                      </table>
+                                                                    </div>
+                                                                  </div>
+                                                                </div>
+                                                                <div class="col-md-8 padd_5 d-flex align-items-center gap-2">
+                                                                  <button class="btn btn-info" [disabled]="fteTravelDetailsBtn"
+                                                                    (click)="addFteTravelDetails()">
+                                                                    {{ fteTravelBtnName }}
+                                                                  </button>
+                                                                  <button class="btn btn-danger" type="button" (click)="resetTempFteTravelDetails()">
+                                                                    Reset
+                                                                  </button>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                  <div class="panel_head">
+                                                                    <div class="table-responsive" style="margin-top: 15px;">
+                                                                      <table class="table table-striped table-bordered table-hover">
+                                                                        <thead>
+                                                                          <tr>
+                                                                            <th>From</th>
+                                                                            <th>To</th>
+                                                                            <th>Travel Mode</th>
+                                                                            <th>DTS</th>
+                                                                            <th>Amount (In Rs.)</th>
+                                                                            <th>Reason for not using DTS</th>
+                                                                            <th>Remarks</th>
+                                                                            <th>Edit</th>
+                                                                            <th>Delete</th>
+                                                                          </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                          
+                                                                            <tr *ngFor="let row of claims?.yatDtsDetailDTOs; let i = index">
+                                                                              <td>{{ row.source }}</td>
+                                                                              <td>{{ row.destination }}</td>
+                                                                              <td>
+                                                                                {{ row.modeOfTravel }}
+                                                                                
+                                                                                  <span *ngIf="row.otherModeOfTravel">({{ row.otherModeOfTravel }})</span>
+                                                                                
+                                                                              </td>
+                                                                              <td>{{ row.isDts }}</td>
+                                                                              <td>
+                                                                                <input class="form-control" (keypress)="onlyNumberKey($event)"
+                                                                                  [(ngModel)]="row.tempAmount" name="fte_travel_tempAmount{{i}}"
+                                                                                  (ngModelChange)="onFteTravelAmountChange(row)" />
+                                                                              </td>
+                                                                              <td>{{ row.reasonForNoDts }}</td>
+                                                                              <td>{{ row.remarks }}</td>
+                                                                              <td>
+                                                                                <button type="button" class="btn btn-warning"
+                                                                                  (click)="editFteTravelDetails(i)">
+                                                                                  <i class="fa fa-pencil"></i>
+                                                                                </button>
+                                                                              </td>
+                                                                              <td>
+                                                                                <button type="button" class="btn btn-danger"
+                                                                                  (click)="deleteFteTravelDetails(i)">
+                                                                                  <i class="fa fa-trash"></i>
+                                                                                </button>
+                                                                              </td>
+                                                                            </tr>
+                                                                          
+                                                                          
+                                                                            <tr *ngIf="!claims?.yatDtsDetailDTOs?.length">
+                                                                              <td colspan="10" style="text-align: center;">No Record Found</td>
+                                                                            </tr>
+                                                                          
+                                                                        </tbody>
+                                                                      </table>
+                                                                    </div>
+                                                                  </div>
+                                                                </div>
+                                                              </div>
+                                                              <div style="margin-top: 5px;">
+                                                                <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                                  (click)="previousTabActive()">
+                                                                  Previous
+                                                                </button>
+                                                                <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                                  (click)="saveClaim(codeClaim?.fteAdv, codeClaimState?.draft, false)">
+                                                                  Save as Draft
+                                                                </button>
+                                                                <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                                  (click)="nextTabActive()">
+                                                                  Next
+                                                                </button>
+                                                              </div>
+                                                            </div>
+                                                          
 
-                            <div style="margin-top: 5px;">
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="previousTabActive()">
-                                Previous
-                              </button>
 
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="saveClaim(codeClaim?.fteAdv, codeClaimState?.draft, false)">
-                                Save as Draft
-                              </button>
+                                                          <!-- ================= TAB 3: FINANCIAL TERMS ================= -->
+                                                          
+                                                            <div id="ship3" class="tab-pane active show" *ngIf="activeTab === 'ship3'">
+                                                              <div class="row">
+                                                                <div class="col-md-12">
+                                                                  <div class="panel_head">
+                                                                    <!-- ENTRY ROW TABLE (same style as Tab 2) -->
+                                                                    <div class="table-responsive" style="margin-top: 15px;">
+                                                                      <table class="table table-striped table-bordered table-hover">
+                                                                        <thead>
+                                                                          <tr>
+                                                                            <th>Amount (In Rs.)<sup>*</sup></th>
+                                                                            <th>Remarks</th>
+                                                                          </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                          <tr>
+                                                                            <td>
+                                                                              <input type="text" class="form-control" maxlength="10" placeholder="Amount"
+                                                                                (keypress)="onlyNumberKey($event)"
+                                                                                [(ngModel)]="tempForeignTravelDetail.amount" name="fte_ft_amount" />
+                                                                            </td>
+                                                                            <td>
+                                                                              <input type="text" class="form-control" maxlength="100"
+                                                                                [(ngModel)]="tempForeignTravelDetail.descr" name="fte_ft_descr" />
+                                                                            </td>
+                                                                          </tr>
+                                                                        </tbody>
+                                                                      </table>
+                                                                    </div>
+                                                                    <!-- BUTTONS -->
+                                                                    <div class="padd_5 d-flex align-items-center gap-2">
+                                                                      <button type="button" class="btn btn-info" [disabled]="foreignTravelBtnDisabled"
+                                                                        (click)="addForeignTravelDetail()">
+                                                                        {{ foreignTravelBtnName }}
+                                                                      </button>
+                                                                      <button type="button" class="btn btn-danger" (click)="resetForeignTravelDetail()">
+                                                                        Reset
+                                                                      </button>
+                                                                    </div>
+                                                                    <!-- LISTING TABLE (same style as Tab 2) -->
+                                                                    <div class="table-responsive" style="margin-top: 15px;">
+                                                                      <table class="table table-striped table-bordered table-hover">
+                                                                        <thead>
+                                                                          <tr>
+                                                                            <th>Amount (In Rs.)</th>
+                                                                            <th>Remarks</th>
+                                                                            <th>EDIT</th>
+                                                                            <th>DELETE</th>
+                                                                          </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                          
+                                                                            <tr *ngFor="let row of claims?.yatForeignTravelDetailDTOs; let i = index">
+                                                                              <td>
+                                                                                <input type="text" class="form-control" maxlength="10"
+                                                                                  (keypress)="onlyNumberKey($event)" [(ngModel)]="row.amount"
+                                                                                  name="fte_ft_existing_amount{{i}}" (ngModelChange)="recalcFteTotals()"
+                                                                                  disabled />
+                                                                              </td>
+                                                                              <td>{{ row.descr }}</td>
+                                                                              <td>
+                                                                                <button type="button" class="btn btn-warning"
+                                                                                  (click)="editForeignTravelDetail(i)">
+                                                                                  <i class="fa fa-pencil"></i>
+                                                                                </button>
+                                                                              </td>
+                                                                              <td>
+                                                                                <button type="button" class="btn btn-danger"
+                                                                                  (click)="deleteForeignTravelDetail(i)">
+                                                                                  <i class="fa fa-trash"></i>
+                                                                                </button>
+                                                                              </td>
+                                                                            </tr>
+                                                                          
+                                                                          
+                                                                            <tr *ngIf="!claims?.yatForeignTravelDetailDTOs?.length">
+                                                                              <td colspan="4" style="text-align:center;">No Record Found</td>
+                                                                            </tr>
+                                                                          
+                                                                        </tbody>
+                                                                      </table>
+                                                                    </div>
+                                                                    <!-- Summary Table -->
+                                                                    <table class="table">
+                                                                      <thead>
+                                                                        <tr>
+                                                                          <th>Advance Request</th>
+                                                                          <th>Advance Admissible</th>
+                                                                          <th>DTS Amount</th>
+                                                                          <th>No DTS Amount</th>
+                                                                          <th>Amount to be budgeted</th>
+                                                                        </tr>
+                                                                      </thead>
+                                                                      <tbody>
+                                                                        <tr>
+                                                                          <td>{{ claims?.yatForeignDutyAdvDTOs[0]?.totalAmt | showZero }}</td>
+                                                                          <td>{{ claims?.yatForeignDutyAdvDTOs[0]?.advAmt | showZero }}</td>
+                                                                          <td>{{ claims?.yatForeignDutyAdvDTOs[0]?.dtsAmount | showZero }}</td>
+                                                                          <td>{{ noDtsAmount | showZero }}</td>
+                                                                          <td>{{ claims?.yatForeignDutyAdvDTOs[0]?.totalBudgetedAmt | showZero }}</td>
+                                                                        </tr>
+                                                                      </tbody>
+                                                                    </table>
+                                                                  </div>
+                                                                </div>
+                                                              </div>
+                                                              <!-- Place -->
+                                                              <div class="form-group">
+                                                                <div class="row">
+                                                                  <div class="col-md-1 padd_5">
+                                                                    <label class="control-label">
+                                                                      Place<sup>*</sup>
+                                                                    </label>
+                                                                  </div>
+                                                                  <div class="col-md-2 padd_5">
+                                                                    <input type="text" class="form-control" maxlength="200" placeholder="Place"
+                                                                      uppercase-only required [(ngModel)]="claims.yatForeignDutyAdvDTOs[0].place"
+                                                                      name="place" />
+                                                                    </div>
+                                                                  </div>
+                                                                </div>
+                                                                <!-- Bottom Buttons (Tab 3) -->
+                                                                <div style="margin-top: 5px;">
+                                                                  <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                                    (click)="previousTabActive()">
+                                                                    Previous
+                                                                  </button>
+                                                                  <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                                    (click)="saveClaim(codeClaim?.fteAdv, codeClaimState?.draft, false)">
+                                                                    Save as Draft
+                                                                  </button>
+                                                                  <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                                    (click)="nextTabActive()">
+                                                                    Next
+                                                                  </button>
+                                                                </div>
+                                                              </div>
+                                                            
 
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="nextTabActive()">
-                                Next
-                              </button>
-                            </div>
-                          </div>
+                                                            <!-- ================= TAB 4: BANK DETAILS ================= -->
+                                                            
+                                                              <div id="ship4" class="tab-pane active show" *ngIf="activeTab === 'ship4'">
+                                                                <div class="form-group">
+                                                                  <div class="row">
+                                                                    <div class="col-md-2 padd_5">
+                                                                      <label class="control-label">Bank Name</label>
+                                                                    </div>
+                                                                    <div class="col-md-3 padd_5">
+                                                                      <input type="text" class="form-control" [disabled]="true"
+                                                                        [(ngModel)]="claims.yatClaimBankDetailDTO.bankName" name="fte_bankName" />
+                                                                      </div>
+                                                                    </div>
+                                                                  </div>
+                                                                  <div class="form-group">
+                                                                    <div class="row">
+                                                                      <div class="col-md-2 padd_5">
+                                                                        <label class="control-label">IFSC Code</label>
+                                                                      </div>
+                                                                      <div class="col-md-3 padd_5">
+                                                                        <input type="text" class="form-control" maxlength="11" ifsc-filter
+                                                                          [disabled]="isIfscNull" required [(ngModel)]="claims.yatClaimBankDetailDTO.ifscCode"
+                                                                          name="fte_ifscCode" />
+                                                                        </div>
+                                                                      </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                      <div class="row">
+                                                                        <div class="col-md-2 padd_5">
+                                                                          <label class="control-label">Account Number</label>
+                                                                        </div>
+                                                                        <div class="col-md-3 padd_5">
+                                                                          <input type="text" class="form-control" [disabled]="true" required
+                                                                            [(ngModel)]="claims.yatClaimBankDetailDTO.bankAccNo" name="fte_bankAccNo" />
+                                                                          </div>
+                                                                        </div>
+                                                                      </div>
+                                                                      <div class="form-group">
+                                                                        <div class="row">
+                                                                          <div class="col-md-2 padd_5">
+                                                                            <label class="control-label">MICR Code</label>
+                                                                          </div>
+                                                                          <div class="col-md-3 padd_5">
+                                                                            <input type="text" class="form-control" [disabled]="true"
+                                                                              [(ngModel)]="claims.yatClaimBankDetailDTO.micrCode" name="fte_micrCode" />
+                                                                            </div>
+                                                                          </div>
+                                                                        </div>
+                                                                        <div class="form-group" style="margin-top: 10px;">
+                                                                          <div class="row">
+                                                                            <div class="col-md-2 padd_5">
+                                                                              <button class="btn btn-info" (click)="openIfscModal()">
+                                                                                Update IFSC Code
+                                                                              </button>
+                                                                            </div>
+                                                                          </div>
+                                                                        </div>
+                                                                        <!-- IFSC Modal -->
+                                                                        
+                                                                          <div class="modal fade ifsc-modal-backdrop" tabindex="-1" role="dialog"
+                                                                            [ngClass]="{ 'show d-block': showIfscModal }" *ngIf="showIfscModal">
+                                                                            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                                                              <div class="modal-content shadow-lg border-0">
+                                                                                <div class="modal-header py-2 bg-primary text-white">
+                                                                                  <h5 class="modal-title mb-0">Update IFSC Code</h5>
+                                                                                  <button type="button" class="close text-white" (click)="closeIfscModal()">
+                                                                                    <span>&times;</span>
+                                                                                  </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                  <div class="form-group mb-2">
+                                                                                    <label class="font-weight-semibold mb-1">
+                                                                                      IFSC Code<span class="text-danger">*</span>
+                                                                                    </label>
+                                                                                    <input type="text" class="form-control form-control-sm" maxlength="11"
+                                                                                      [(ngModel)]="newIfscCode" placeholder="e.g. SBIN0013242" />
+                                                                                      <small class="text-muted">
+                                                                                        Please enter 11 character IFSC code for your bank branch.
+                                                                                      </small>
+                                                                                    </div>
+                                                                                  </div>
+                                                                                  <div class="modal-footer py-2">
+                                                                                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                                                                                      (click)="closeIfscModal()">
+                                                                                      Cancel
+                                                                                    </button>
+                                                                                    <button type="button" class="btn btn-primary btn-sm" (click)="submitIFSCUpdate()">
+                                                                                      Submit
+                                                                                    </button>
+                                                                                  </div>
+                                                                                </div>
+                                                                              </div>
+                                                                            </div>
+                                                                          
+                                                                          <div style="margin-top: 5px;">
+                                                                            <label class="control-label">
+                                                                              <code>
+                                                                                Note:- In case of any change in the bank account details please contact SASTRA. The form
+                                                                                should be submitted only when the account details are corrected.
+                                                                              </code>
+                                                                            </label>
+                                                                          </div>
+                                                                          <div style="margin-top: 5px;">
+                                                                            <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                                              (click)="previousTabActive()">
+                                                                              Previous
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                                              (click)="saveClaim(codeClaim?.fteAdv, codeClaimState?.draft, false)">
+                                                                              Save as Draft
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                                              (click)="nextTabActive()">
+                                                                              Next
+                                                                            </button>
+                                                                          </div>
+                                                                        </div>
+                                                                      
 
-                          <!-- ================= TAB 5: REMARKS ================= -->
-                          <div id="ship5" class="tab-pane active show" *ngIf="activeTab === 'ship5'">
-                            <div class="form-group">
-                              <div class="row">
-                                <div class="col-md-12">
-                                  <label class="control-label">Remarks</label>
-                                </div>
-                              </div>
-                              <div class="row">
-                                <div class="col-md-12">
-                                  <textarea id="internalRemarks" rows="6" cols="225" maxlength="500" class="form-control"
-                                    [(ngModel)]="claims.internalRemarks" name="fte_internalRemarks"
-                                    (ngModelChange)="removeEmoji()"></textarea>
-                                </div>
-                              </div>
-                            </div>
+                                                                      <!-- ================= TAB 5: REMARKS ================= -->
+                                                                      
+                                                                        <div id="ship5" class="tab-pane active show" *ngIf="activeTab === 'ship5'">
+                                                                          <div class="form-group">
+                                                                            <div class="row">
+                                                                              <div class="col-md-12">
+                                                                                <label class="control-label">Remarks</label>
+                                                                              </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                              <div class="col-md-12">
+                                                                                <textarea id="internalRemarks" rows="6" cols="225" maxlength="500" class="form-control"
+                                                                                  [(ngModel)]="claims.internalRemarks" name="fte_internalRemarks"
+                                                                                (ngModelChange)="removeEmoji()"></textarea>
+                                                                              </div>
+                                                                            </div>
+                                                                          </div>
+                                                                          <div style="margin-top: 10px;">
+                                                                            <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                                              (click)="previousTabActive()">
+                                                                              Previous
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-info" [disabled]="disableBtn"
+                                                                              (click)="saveClaim(codeClaim?.fteAdv, codeClaimState?.draft, false)">
+                                                                              Save as Draft
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-info" [disabled]="disableBtn" (click)="submitFte()">
+                                                                              Submit
+                                                                            </button>
+                                                                          </div>
+                                                                        </div>
+                                                                      
+                                                                      <!-- =============== END TABS ================= -->
+                                                                    </div>
+                                                                  </div>
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div><!-- /#validateForm -->
+                                                        </div><!-- /.panel_card -->
+                                                      </div><!-- /.content-wrap -->
+                                                    </div><!-- /.main-container -->
 
-                            <div style="margin-top: 10px;">
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="previousTabActive()">
-                                Previous
-                              </button>
-
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn"
-                                (click)="saveClaim(codeClaim?.fteAdv, codeClaimState?.draft, false)">
-                                Save as Draft
-                              </button>
-
-                              <button type="button" class="btn btn-info" [disabled]="disableBtn" (click)="submitFte()">
-                                Submit
-                              </button>
-                            </div>
-                          </div>
-                          <!-- =============== END TABS ================= -->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div><!-- /#validateForm -->
-            </div><!-- /.panel_card -->
-          </div><!-- /.content-wrap -->
-        </div><!-- /.main-container -->
-
-        <app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>
+                                                    <app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>
 
 

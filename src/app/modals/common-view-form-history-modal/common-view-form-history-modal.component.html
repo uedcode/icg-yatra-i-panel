@@ -9,63 +9,74 @@
       </div>
       <div class="modal-body form_modal_body">
         <div class="table-responsive">
-          <table id="exportData" class="table table-bordered" style="width:100%" *ngIf="isClaimHistoryMode(); else workflowHistoryTable">
-            <thead>
-              <tr>
-                <th>FormId</th>
-                <th>Submission Date</th>
-                <th>View</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="let dataObj of stateList | filterComplex : searchObj | paginate: { itemsPerPage: noOfPage, currentPage: p }"
-              >
-                <td>{{ dataObj?.formId | showHypen }}</td>
-                <td>{{ dataObj?.subDate | legacyDate:'queueDate' }}</td>
-                <td>
-                  <button
-                    *ngIf="dataObj?.codeSubFormDTO?.viewUrl && dataObj?.claimId"
-                    type="button"
-                    class="btn btn-info"
-                    title="View"
-                    (click)="openClaimHistoryItem(dataObj)"
-                  >
-                    View
-                  </button>
-                  <span *ngIf="!(dataObj?.codeSubFormDTO?.viewUrl && dataObj?.claimId)">-</span>
-                </td>
-              </tr>
-              <tr *ngIf="!stateList.length" class="text-center">
-                <td colspan="20">No Records Available</td>
-              </tr>
-            </tbody>
-          </table>
-          <ng-template #workflowHistoryTable>
-          <table id="exportData" class="table table-bordered" style="width:100%">
-            <thead>
-              <tr>
-                <th class="wd-5p">S.No.</th>
-                <th class="wd-20p">Role Name</th>
-                <th class="wd-20p">State</th>
-                <th class="wd-20p">Unit Name</th>
-                <th class="wd-20p">Created On</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="let dataObj of stateList |  filterComplex : searchObj  |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
-                <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
-                <td>{{(dataObj?.roleTypeName || dataObj?.aclRoleDTO?.roleName || dataObj?.aclRoleDTO?.descr) | showHypen}}</td>
-                <td>{{ (dataObj?.formState || dataObj?.claimState || dataObj?.codeStatusDTO?.descr) | codeStatus:'-' }}</td>
-                <td>{{(dataObj?.unitName || dataObj?.yatClaimDTO?.codeUnitDTO?.descr || dataObj?.yatClaimDTO?.codeUnitDTO?.unit) | showHypen }}</td>
-                <td>{{dataObj?.createdOn | showDate:"medium"}}</td>
-              </tr>
-              <tr *ngIf="!stateList.length" class="text-center">
-                <td colspan="20">No Records Available</td>
-              </tr>
-            </tbody>
-          </table>
+          <ng-container *ngIf="isClaimHistoryMode(); else legacyElse1">
+            <table id="exportData" class="table table-bordered" style="width:100%">
+              <thead>
+                <tr>
+                  <th>FormId</th>
+                  <th>Submission Date</th>
+                  <th>View</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr
+                     *ngFor="let dataObj of stateList | filterComplex : searchObj | paginate: { itemsPerPage: noOfPage, currentPage: p }">
+                    <td>{{ dataObj?.formId | showHypen }}</td>
+                    <td>{{ dataObj?.subDate | legacyDate:'queueDate' }}</td>
+                    <td>
+                      
+                        <button
+                          type="button"
+                          class="btn btn-info"
+                          title="View"
+                          (click)="openClaimHistoryItem(dataObj)"
+                           *ngIf="dataObj?.codeSubFormDTO?.viewUrl &amp;&amp; dataObj?.claimId">
+                          View
+                        </button>
+                      
+                      
+                        <span *ngIf="!(dataObj?.codeSubFormDTO?.viewUrl &amp;&amp; dataObj?.claimId)">-</span>
+                      
+                    </td>
+                  </tr>
+                
+                
+                  <tr class="text-center" *ngIf="!stateList.length">
+                    <td colspan="20">No Records Available</td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          </ng-container><ng-template #legacyElse1>
+            <table id="exportData" class="table table-bordered" style="width:100%">
+              <thead>
+                <tr>
+                  <th class="wd-5p">S.No.</th>
+                  <th class="wd-20p">Role Name</th>
+                  <th class="wd-20p">State</th>
+                  <th class="wd-20p">Unit Name</th>
+                  <th class="wd-20p">Created On</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr
+                     *ngFor="let dataObj of stateList |  filterComplex : searchObj  |paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                    <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
+                    <td>{{(dataObj?.roleTypeName || dataObj?.aclRoleDTO?.roleName || dataObj?.aclRoleDTO?.descr) | showHypen}}</td>
+                    <td>{{ (dataObj?.formState || dataObj?.claimState || dataObj?.codeStatusDTO?.descr) | codeStatus:'-' }}</td>
+                    <td>{{(dataObj?.unitName || dataObj?.yatClaimDTO?.codeUnitDTO?.descr || dataObj?.yatClaimDTO?.codeUnitDTO?.unit) | showHypen }}</td>
+                    <td>{{dataObj?.createdOn | showDate:"medium"}}</td>
+                  </tr>
+                
+                
+                  <tr class="text-center" *ngIf="!stateList.length">
+                    <td colspan="20">No Records Available</td>
+                  </tr>
+                
+              </tbody>
+            </table>
           </ng-template>
         </div>
       </div>

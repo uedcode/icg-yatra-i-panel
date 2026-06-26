@@ -1,6 +1,6 @@
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { Component, Input, OnInit, Output, ViewChild, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, Output, ViewChild, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { FaqApiService } from 'src/app/service/api/masters/faq-api.service';
@@ -11,6 +11,7 @@ declare var $: any;
     selector: 'app-add-faq-modal',
     templateUrl: './add-faq-modal.component.html',
     styleUrls: ['./add-faq-modal.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddFaqModalComponent implements OnInit {

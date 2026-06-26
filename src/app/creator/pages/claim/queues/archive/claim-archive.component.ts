@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -11,6 +11,7 @@ declare var $: any;
   selector: 'app-claim-archive',
   templateUrl: './claim-archive.component.html',
   styleUrls: ['./claim-archive.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ClaimArchiveComponent implements OnInit {

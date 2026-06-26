@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { TyDutyPurposeApiService } from 'src/app/service/api/masters/ty-duty-purpose-api.service';
 
@@ -8,6 +8,7 @@ declare var $: any;
   selector: 'app-ty-duty-purpose',
   templateUrl: './ty-duty-purpose.component.html',
   styleUrls: ['./ty-duty-purpose.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class TyDutyPurposeComponent implements OnInit {

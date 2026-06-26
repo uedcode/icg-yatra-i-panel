@@ -7,99 +7,102 @@
             <div class="legacy-preview-actions text-right">
               <button type="button" class="btn btn-sm btn-warning mr-2" (click)="goBack()">Back</button>
             </div>
-            <h4 class="legacy-preview-heading"><strong>Requisition for FTE Advance</strong> <span
-                *ngIf="claims?.formId">- {{ claims.formId }}</span></h4>
-            <div class="level_1">
-              <label class="mr-3"><input type="radio" name="fteSignRadio" [checked]="isInkSign" disabled />Ink
-                Sign</label>
-              <label><input type="radio" name="fteSignRadio" [checked]="isESign" disabled />eSign</label>
-              <h4 class="legacy-preview-heading">(a)<strong>Personal Details</strong></h4>
-              <div class="row">
-                <div class="col-md-3">
-                  <p><strong>Name</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.name | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Rank</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.rank | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Personnel Number</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.pno | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Pay Level</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.payLevel | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Basic Pay (In Rs.)</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.basicPay | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Probable duration of duty(In days)</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.duration | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>wef (Date) </strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.wefDate | legacyDate:'previewDate') }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Present Unit</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.videPresentUnit | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Applied To</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.appliedTo | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Gx Unit</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.gxUnit | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>{{ gxLabelPrefix }} Number</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.gxNumber | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>{{ gxLabelPrefix }} Date</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.gxDate | legacyDate:'previewDate') }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>{{ gxFormLabel }}</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ claims?.gxFormFileUrl ? 'Attached' : 'Not Attached' }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Purpose Type</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ ((fte?.purposeType || 'Other') | legacyValue) }}</p>
-                </div>
+            <h4 class="legacy-preview-heading"><strong>Requisition for FTE Advance</strong> 
+            <span
+             *ngIf="claims?.formId">- {{ claims.formId }}</span>
+          </h4>
+          <div class="level_1">
+            <label class="mr-3"><input type="radio" name="fteSignRadio" [checked]="isInkSign" disabled />Ink
+            Sign</label>
+            <label><input type="radio" name="fteSignRadio" [checked]="isESign" disabled />eSign</label>
+            <h4 class="legacy-preview-heading">(a)<strong>Personal Details</strong></h4>
+            <div class="row">
+              <div class="col-md-3">
+                <p><strong>Name</strong></p>
               </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.name | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Rank</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.rank | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Personnel Number</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.pno | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Pay Level</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.payLevel | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Basic Pay (In Rs.)</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.basicPay | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Probable duration of duty(In days)</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.duration | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>wef (Date) </strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.wefDate | legacyDate:'previewDate') }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Present Unit</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.videPresentUnit | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Applied To</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.appliedTo | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Gx Unit</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.gxUnit | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>{{ gxLabelPrefix }} Number</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.gxNumber | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>{{ gxLabelPrefix }} Date</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.gxDate | legacyDate:'previewDate') }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>{{ gxFormLabel }}</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ claims?.gxFormFileUrl ? 'Attached' : 'Not Attached' }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Purpose Type</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ ((fte?.purposeType || 'Other') | legacyValue) }}</p>
+              </div>
+            </div>
+            
               <div class="row" *ngIf="fte?.purpose">
                 <div class="col-md-3">
                   <p><strong>Purpose of duty</strong></p>
@@ -108,7 +111,9 @@
                   <p>{{ (fte?.purpose | legacyValue) }}</p>
                 </div>
               </div>
-              <div class="row" *ngIf="fte?.tempTransTo && fte?.stationProceedingTo">
+            
+            
+              <div class="row" *ngIf="fte?.tempTransTo &amp;&amp; fte?.stationProceedingTo">
                 <div class="col-md-3">
                   <p><strong>Name of Unit</strong></p>
                 </div>
@@ -122,33 +127,45 @@
                   <p>{{ (fte?.stationProceedingTo | legacyValue) }}</p>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-md-3">
-                  <p><strong>Occurrence Date (Movement Date)</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (claims?.occDate | legacyDate:'previewDate') }}</p>
-                </div>
+            
+            <div class="row">
+              <div class="col-md-3">
+                <p><strong>Occurrence Date (Movement Date)</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (claims?.occDate | legacyDate:'previewDate') }}</p>
+              </div>
+              
                 <div class="col-md-3" *ngIf="fte?.dutyStation">
                   <p><strong>Duty Station to</strong></p>
                 </div>
+              
+              
                 <div class="col-md-3" *ngIf="fte?.dutyStation">
                   <p>{{ (fte?.dutyStation | legacyValue) }}</p>
                 </div>
+              
+              
                 <div class="col-md-3" *ngIf="claims?.extendedAdvId">
                   <p><strong>Extended From</strong></p>
                 </div>
+              
+              
                 <div class="col-md-3" *ngIf="claims?.extendedAdvId"><button type="button" class="btn btn-info btn-sm"
-                    (click)="previewWindow.openRelatedPreview($auth.getModuleName(), 'preview-ty-duty', claims?.extendedAdvId)">View</button></div>
-              </div>
+                (click)="previewWindow.openRelatedPreview($auth.getModuleName(), 'preview-ty-duty', claims?.extendedAdvId)">View</button></div>
+              
+            </div>
+            
               <div class="row" *ngIf="claims?.refExtendedAdvId">
                 <div class="col-md-3">
                   <p><strong>Extended Duty</strong></p>
                 </div>
                 <div class="col-md-3"><button type="button" class="btn btn-info btn-sm"
-                    (click)="previewWindow.openRelatedPreview($auth.getModuleName(), 'preview-ty-duty', claims?.refExtendedAdvId)">View</button></div>
+                (click)="previewWindow.openRelatedPreview($auth.getModuleName(), 'preview-ty-duty', claims?.refExtendedAdvId)">View</button></div>
               </div>
-            </div>
+            
+          </div>
+          
             <div class="level_1" *ngIf="!fte?.purpose">
               <h4><strong style="text-decoration: underline;">Guest Details</strong></h4>
               <div class="table-responsive">
@@ -172,22 +189,24 @@
                 </table>
               </div>
             </div>
-            <div class="level_1">
-              <h4 class="legacy-preview-heading">(b)<strong>Travel Details</strong></h4>
-              <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th>From</th>
-                      <th>To</th>
-                      <th>Travel Mode</th>
-                      <th>DTS</th>
-                      <th>Amount (In Rs.)</th>
-                      <th>Reason for not using DTS</th>
-                      <th>Remarks</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+          
+          <div class="level_1">
+            <h4 class="legacy-preview-heading">(b)<strong>Travel Details</strong></h4>
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Travel Mode</th>
+                    <th>DTS</th>
+                    <th>Amount (In Rs.)</th>
+                    <th>Reason for not using DTS</th>
+                    <th>Remarks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
                     <tr *ngFor="let row of travelRows">
                       <td>{{ (row?.source | legacyValue) }}</td>
                       <td>{{ (row?.destination | legacyValue) }}</td>
@@ -197,107 +216,114 @@
                       <td>{{ (row?.reasonForNoDts | legacyValue) }}</td>
                       <td>{{ (row?.remarks | legacyValue) }}</td>
                     </tr>
+                  
+                  
                     <tr *ngIf="!travelRows.length">
                       <td colspan="7" class="text-center">No Record Found</td>
                     </tr>
-                  </tbody>
-                </table>
-              </div>
+                  
+                </tbody>
+              </table>
             </div>
-            <div class="level_1">
-              <h4 class="legacy-preview-heading">(c)<strong>Financial Terms</strong></h4>
-              <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th>Amount (In Rs.)</th>
-                      <th>Remarks</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+          </div>
+          <div class="level_1">
+            <h4 class="legacy-preview-heading">(c)<strong>Financial Terms</strong></h4>
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th>Amount (In Rs.)</th>
+                    <th>Remarks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
                     <tr *ngFor="let row of foreignTravelRows">
                       <td>{{ (row?.amount | legacyValue) }}</td>
                       <td>{{ (row?.descr | legacyValue) }}</td>
                     </tr>
+                  
+                  
                     <tr *ngIf="!foreignTravelRows.length">
                       <td colspan="2" class="text-center">No Record Found</td>
                     </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="row">
-                <div class="col-md-3">
-                  <p><strong>Place</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.place | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Date</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (fte?.date | legacyDate:'previewDate') }}</p>
-                </div>
-              </div>
+                  
+                </tbody>
+              </table>
             </div>
-            <div class="level_1">
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Advance Request</th>
-                      <th>Advance Admissible</th>
-                      <th>DTS Amount</th>
-                      <th>Amount to be budgeted</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{ fte?.totalAmt | legacyZero }}</td>
-                      <td>{{ fte?.advAmt | legacyZero }}</td>
-                      <td>{{ fte?.dtsAmount | legacyZero }}</td>
-                      <td>{{ fte?.totalBudgetedAmt | legacyZero }}</td>
-                    </tr>
-                  </tbody>
-                </table>
+            <div class="row">
+              <div class="col-md-3">
+                <p><strong>Place</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.place | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Date</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (fte?.date | legacyDate:'previewDate') }}</p>
               </div>
             </div>
-            <div class="level_1">
-              <h4 class="legacy-preview-heading">(d)<strong>Bank Details</strong></h4>
-              <div class="row">
-                <div class="col-md-3">
-                  <p><strong>Bank Name</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (bankDetails?.bankName | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>IFSC Code</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (bankDetails?.ifscCode | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Account Number</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (bankDetails?.bankAccNo | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>MICR Code</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (bankDetails?.micrCode | legacyValue) }}</p>
-                </div>
+          </div>
+          <div class="level_1">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Advance Request</th>
+                    <th>Advance Admissible</th>
+                    <th>DTS Amount</th>
+                    <th>Amount to be budgeted</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ fte?.totalAmt | legacyZero }}</td>
+                    <td>{{ fte?.advAmt | legacyZero }}</td>
+                    <td>{{ fte?.dtsAmount | legacyZero }}</td>
+                    <td>{{ fte?.totalBudgetedAmt | legacyZero }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="level_1">
+            <h4 class="legacy-preview-heading">(d)<strong>Bank Details</strong></h4>
+            <div class="row">
+              <div class="col-md-3">
+                <p><strong>Bank Name</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (bankDetails?.bankName | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>IFSC Code</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (bankDetails?.ifscCode | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Account Number</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (bankDetails?.bankAccNo | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>MICR Code</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (bankDetails?.micrCode | legacyValue) }}</p>
               </div>
             </div>
-            <div class="level_1">
-              <h4 class="legacy-preview-heading">(e)<strong>Remarks</strong></h4>
-              <p>{{ (claims?.internalRemarks | legacyValue) }}</p>
-            </div>
+          </div>
+          <div class="level_1">
+            <h4 class="legacy-preview-heading">(e)<strong>Remarks</strong></h4>
+            <p>{{ (claims?.internalRemarks | legacyValue) }}</p>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 </div>

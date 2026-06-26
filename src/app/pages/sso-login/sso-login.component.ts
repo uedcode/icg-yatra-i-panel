@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import * as crypto from 'crypto-js';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
     selector: 'app-sso-login',
     templateUrl: './sso-login.component.html',
     styleUrls: ['./sso-login.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SsoLoginComponent implements OnInit {

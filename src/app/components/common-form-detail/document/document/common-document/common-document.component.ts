@@ -1,5 +1,5 @@
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CodeDocInfoApiService } from 'src/app/service/api/code/code-doc-info-api.service';
@@ -12,6 +12,7 @@ import { environment } from 'src/environments/environment';
     selector: 'app-common-document',
     templateUrl: './common-document.component.html',
     styleUrls: ['./common-document.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CommonDocumentComponent implements OnInit {

@@ -6,6 +6,7 @@ import {
   ViewChild,
   EventEmitter,
   SimpleChanges,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 declare var $: any;
@@ -17,6 +18,7 @@ import { CodeDocInfoApiService } from 'src/app/service/api/code/code-doc-info-ap
     selector: 'app-add-documents-modal',
     templateUrl: './add-documents-modal.component.html',
     styleUrls: ['./add-documents-modal.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddDocumentsModalComponent implements OnInit {

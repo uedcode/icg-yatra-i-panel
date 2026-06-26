@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -11,6 +11,7 @@ import { firstItem, unwrapPreviewObject } from 'src/app/shared/utils/legacy-prev
   selector: 'app-common-preview-manual-advance',
   templateUrl: './common-preview-manual-advance.component.html',
   styleUrls: ['./common-preview-manual-advance.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CommonPreviewManualAdvanceComponent implements OnInit {
@@ -30,7 +31,7 @@ export class CommonPreviewManualAdvanceComponent implements OnInit {
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.route.queryParamMap.subscribe((params) => {
-      const claimId = params.get('id') || '';
+      const claimId = params.get('id') || params.get('claimId') || params.get('formId') || '';
       if (!claimId) return;
       const config = {
         headers: {

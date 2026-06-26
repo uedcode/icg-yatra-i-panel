@@ -1,93 +1,99 @@
 ﻿<!--Page header-->
-        <div class="page-header gov-page-toolbar">
-          <div class="page-leftheader">
-            <h4 class="page-title">INBOX</h4>
-            <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Yatra</a></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Inbox
-              </li>
-            </ol>
-          </div>
-          <div>
-            <div>
-              <!-- <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
-                  class="fa fa-chevron-left" style="display: inline-block;"></i></button> -->
-              <button type="button" class="btn btn-danger request_view_back" title="Delete Selected" (click)="deleteClaim()">Delete Selected</button>
-              <button type="button" class="btn btn-info request_view_back" title="Export Selected" (click)="exportAudit('Selected')">Export Selected</button>
-              <button type="button" class="btn btn-info request_view_back" title="Back to Page" (click)="exportAudit('All')">Export All</button>
+<div class="page-header gov-page-toolbar">
+  <div class="page-leftheader">
+    <h4 class="page-title">INBOX</h4>
+    <ol class="breadcrumb pl-0">
+      <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Yatra</a></li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Inbox
+      </li>
+    </ol>
+  </div>
+  <div>
+    <div>
+      <!-- <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
+    class="fa fa-chevron-left" style="display: inline-block;"></i></button> -->
+    <button type="button" class="btn btn-danger request_view_back" title="Delete Selected" (click)="deleteClaim()">Delete Selected</button>
+    <button type="button" class="btn btn-info request_view_back" title="Export Selected" (click)="exportAudit('Selected')">Export Selected</button>
+    <button type="button" class="btn btn-info request_view_back" title="Back to Page" (click)="exportAudit('All')">Export All</button>
+  </div>
+  <!-- <div class="breadcrumb_right">
+  <button  type="submit" title="Submit" class="btn btn-dark"  (click)="openAddMapping()">+</button>
+</div> -->
+</div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <div class="dataTables_length">
+              <label>Show</label>
+              <!-- Show entries -->
+              <select class="form-control" name="noOfPage" aria-controls="example"
+                [(ngModel)]="noOfPage" (ngModelChange)="p = 1">
+                <option [ngValue]="10">10</option>
+                <option [ngValue]="100">100</option>
+              </select>
+              <label>entries</label>
             </div>
-            <!-- <div class="breadcrumb_right">
-              <button  type="submit" title="Submit" class="btn btn-dark"  (click)="openAddMapping()">+</button>
-            </div> -->
+          </div>
+
+          <div class="col-sm-12 col-md-3 offset-3">
+            <div class="dataTables_filter"  title="Search">
+              <i class="fa fa-search"></i>
+              <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
+                [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+            <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
+              <thead>
+                <tr>
+                  <th>S.No.</th>
+                  <th>Form ID</th>
+                  <th>Unit</th>
+                  <th>PNO/Name/Rank</th>
+                  <th>Occurrence/ Submission Date</th>
+                  <th>Form Name</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- iterate filtered + paginated list -->
+                
+                  <tr *ngFor="let obj of filteredAdminForm | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                    <!-- global serial number -->
+                    <td>{{ ((p - 1) * noOfPage) + i + 1 }}</td>
+                    <td>{{ obj?.formId | showHypen }}</td>
+                    <td>{{ obj?.codeUnitDTO?.descr | showHypen }}</td>
+                    <td>{{ obj?.fullName | showHypen }}</td>
+                    <td>{{ obj?.occDate | showDate:'medium' }}</td>
+                    <td>{{ obj?.codeSubFormDTO?.descr | showHypen }}</td>
+                    <td><input type="checkbox" [(ngModel)]="obj.checked"></td>
+                  </tr>
+                
+
+                
+                  <tr class="text-center table-empty-state gov-table-empty-state" *ngIf="!(filteredAdminForm?.length)">
+                    <td colspan="20">No Records</td>
+                  </tr>
+                
+
+                
+                  <tr class="noExl pagination_area" *ngIf="filteredAdminForm?.length">
+                    <td colspan="20">
+                      <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </div><app-export-form-modal [changeData]="exportType" (changeStatusConfirmed)="createExportFinally($event)"></app-export-form-modal>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-12 col-lg-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-sm-12 col-md-6">
-                    <div class="dataTables_length">
-                      <label>Show</label>
-                      <!-- Show entries -->
-                      <select class="form-control" name="noOfPage" aria-controls="example"
-                              [(ngModel)]="noOfPage" (ngModelChange)="p = 1">
-                        <option [ngValue]="10">10</option>
-                        <option [ngValue]="100">100</option>
-                      </select>
-                      <label>entries</label>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-12 col-md-3 offset-3">
-                    <div class="dataTables_filter"  title="Search">
-                      <i class="fa fa-search"></i>
-                      <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
-                        [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
-                    </div>
-                  </div>
-                </div>
-                <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
-                  <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
-                    <thead>
-                     <tr>
-														<th>S.No.</th>
-														<th>Form ID</th>
-														<th>Unit</th>
-														<th>PNO/Name/Rank</th>
-														<th>Occurrence/ Submission Date</th>
-														<th>Form Name</th>
-														<th></th>
-													</tr>
-                    </thead>
-                    <tbody>
-                    <!-- iterate filtered + paginated list -->
-                    <tr *ngFor="let obj of filteredAdminForm | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
-                      <!-- global serial number -->
-                      <td>{{ ((p - 1) * noOfPage) + i + 1 }}</td>
-                      <td>{{ obj?.formId | showHypen }}</td>
-                      <td>{{ obj?.codeUnitDTO?.descr | showHypen }}</td>
-                      <td>{{ obj?.fullName | showHypen }}</td>
-                      <td>{{ obj?.occDate | showDate:'medium' }}</td>
-                      <td>{{ obj?.codeSubFormDTO?.descr | showHypen }}</td>
-                      <td><input type="checkbox" [(ngModel)]="obj.checked"></td>
-                    </tr>
-
-                    <tr *ngIf="!(filteredAdminForm?.length)" class="text-center table-empty-state gov-table-empty-state">
-                      <td colspan="20">No Records</td>
-                    </tr>
-
-                    <tr class="noExl pagination_area" *ngIf="filteredAdminForm?.length">
-                      <td colspan="20">
-                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
-                      </td>
-                    </tr>
-                  </tbody>
-                  </table>
-                </div><app-export-form-modal [changeData]="exportType" (changeStatusConfirmed)="createExportFinally($event)"></app-export-form-modal>
-</div>
-</div>
-</div>
-</div>
+      </div>
+    </div>
 

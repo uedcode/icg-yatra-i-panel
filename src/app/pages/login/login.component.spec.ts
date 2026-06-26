@@ -120,7 +120,6 @@ describe('LoginComponent', () => {
 
   it('starts the login request only after captcha validation passes', () => {
     spyOn(component, 'mainLogin');
-    component.isRecaptcha = false;
     component.yourCaptcha = 'ABC123';
     component.loginForm = {
       username: 'creator',
@@ -133,26 +132,6 @@ describe('LoginComponent', () => {
     expect(commonService.showLoader).toHaveBeenCalled();
     expect(component.disableBtn).toBeTrue();
     expect(component.mainLogin).toHaveBeenCalled();
-  });
-
-  it('blocks login when recaptcha is enabled and captcha value is empty', () => {
-    spyOn(component, 'mainLogin');
-    component.isRecaptcha = true;
-    component.yourCaptcha = '';
-    component.loginForm = {
-      username: 'creator',
-      password: 'secret',
-      captcha: ''
-    };
-
-    component.login();
-
-    expect(commonService.showLoader).not.toHaveBeenCalled();
-    expect(commonService.showMessage).toHaveBeenCalledWith(
-      'Please enter a valid captcha',
-      'danger'
-    );
-    expect(component.mainLogin).not.toHaveBeenCalled();
   });
 
   it('submits encrypted OAuth password grant params and creates a login session on success', () => {
@@ -391,26 +370,6 @@ describe('LoginComponent', () => {
     expect(component.disableBtn).toBeFalse();
   });
 
-  it('sendOtp should not call OTP API when recaptcha is enabled and captcha is empty', async () => {
-    component.isRecaptcha = true;
-    component.yourCaptcha = '';
-    component.loginForm = {
-      username: 'creator',
-      password: 'secret',
-      loginType: 'SMS',
-      captcha: ''
-    };
-
-    await component.sendOtp();
-
-    expect(commonService.showMessage).toHaveBeenCalledWith(
-      'Please enter a valid captcha',
-      'danger'
-    );
-    expect(otpService.sendOtp).not.toHaveBeenCalled();
-    expect(commonService.showLoader).not.toHaveBeenCalled();
-  });
-
   it('generates a new six character captcha and clears the entered captcha', () => {
     component.loginForm.captcha = 'OLD';
 
@@ -420,9 +379,9 @@ describe('LoginComponent', () => {
     expect(component.yourCaptcha.length).toBe(6);
   });
 
-  it('login should proceed when recaptcha is enabled but both captchas are undefined', () => {
+  it('login should proceed when text captcha is disabled and captcha is undefined', () => {
     spyOn(component, 'mainLogin');
-    component.isRecaptcha = true;
+    component.isTextCaptcha = false;
     component.loginForm = {
       username: 'creator',
       password: 'secret'

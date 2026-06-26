@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TyDutyPurposeApiService } from 'src/app/service/api/masters/ty-duty-purpose-api.service';
@@ -122,6 +122,7 @@ interface ClaimsFteAdv {
   selector: 'app-form-fte',
   templateUrl: './form-fte.component.html',
   styleUrls: ['./form-fte.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class FormFteComponent implements OnInit {

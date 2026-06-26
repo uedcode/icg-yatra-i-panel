@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { PortRateApiService } from 'src/app/service/api/masters/port-rate-api.service';
@@ -8,6 +8,7 @@ declare var $: any;
     selector: 'app-port-rate',
     templateUrl: './port-rate.component.html',
     styleUrls: ['./port-rate.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class PortRateComponent implements OnInit {

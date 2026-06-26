@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as crypto from 'crypto-js';
@@ -15,6 +15,7 @@ declare var $: any;
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class LoginComponent implements OnInit {
@@ -33,7 +34,6 @@ export class LoginComponent implements OnInit {
   };
 
   disableBtn: boolean = false;
-  isRecaptcha = environment.recaptcha.isEnabled;
   isTextCaptcha = environment.recaptcha.textCaptchaEnabled ?? true;
   config;
   userIdDetails;
@@ -64,10 +64,6 @@ export class LoginComponent implements OnInit {
       this.captchaGenerate();
       return this.$common.showMessage("Please enter a valid captcha", 'danger');
     }
-    const recaptchaToken = this.loginForm?.captcha;
-    if (this.isRecaptcha && recaptchaToken?.length === 0) {
-      return this.$common.showMessage("Please enter a valid captcha", 'danger');
-    }
     this.$common.showLoader();
     this.disableBtn = true;
 
@@ -79,10 +75,6 @@ export class LoginComponent implements OnInit {
     try {
       if (this.isTextCaptcha && this.yourCaptcha != this.loginForm?.captcha) {
         this.captchaGenerate();
-        return this.$common.showMessage("Please enter a valid captcha", 'danger');
-      }
-      const recaptchaToken = this.loginForm?.captcha;
-      if (this.isRecaptcha && recaptchaToken?.length === 0) {
         return this.$common.showMessage("Please enter a valid captcha", 'danger');
       }
       this.$common.showLoader();

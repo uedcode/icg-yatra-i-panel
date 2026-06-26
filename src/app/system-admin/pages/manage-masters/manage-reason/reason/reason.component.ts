@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { ReasonApiService } from 'src/app/service/api/masters/reason-api.service';
 
@@ -8,6 +8,7 @@ declare var $: any;
   selector: 'app-reason',
   templateUrl: './reason.component.html',
   styleUrls: ['./reason.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ReasonComponent implements OnInit {

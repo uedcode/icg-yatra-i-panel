@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { ComponentModule } from '../app-component.module';
 import { DirectiveModule } from '../app-directive.module';
 import { PipeModule } from '../app-pipe.module';
@@ -43,7 +43,7 @@ import { ClaimPreviewComponent } from './pages/claim-preview/claim-preview.compo
       useClass: HeaderInterceptor,
       multi: true,
     },
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
   ],
 })
 export class ExecutorModule {}

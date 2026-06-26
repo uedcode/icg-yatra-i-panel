@@ -48,9 +48,13 @@
               <input type="text" class="form-control xss-skip" [(ngModel)]="loginForm.username" name="username"
                 #username="ngModel" placeholder="Enter Username" maxlength="70" required />
             </div>
-            <div *ngIf="username.touched || loginValidation.submitted">
-              <div *ngIf="username.errors?.required" class="invalid-msg">Username is required</div>
-            </div>
+            
+              <div *ngIf="username.touched || loginValidation.submitted">
+                
+                  <div class="invalid-msg" *ngIf="username.errors?.required">Username is required</div>
+                
+              </div>
+            
           </div>
 
           <div class="form-group bm-field">
@@ -60,43 +64,45 @@
               <input type="password" appShowHidePassword class="form-control xss-skip" [(ngModel)]="loginForm.password"
                 name="password" #password="ngModel" minlength="4" maxlength="30" placeholder="Enter Password" required />
             </div>
-            <div *ngIf="password.touched || loginValidation.submitted">
-              <div *ngIf="password.errors?.required" class="invalid-msg">Password is required</div>
-            </div>
-            <div *ngIf="loginForm.password && password.invalid" class="invalid-msg">
-              Password must be between 4 and 30 characters
-            </div>
-          </div>
-
-          <div class="form-group bm-field" *ngIf="isTextCaptcha">
-            <label class="bm-label">Captcha</label>
-            <div class="captcha-row">
-              <div class="captcha-box">
-                <span class="captcha-text">{{yourCaptcha}}</span>
-                <button type="button" class="captcha-refresh" title="Refresh" (click)="captchaGenerate()">
-                  <i class="fa fa-refresh"></i>
-                </button>
+            
+              <div *ngIf="password.touched || loginValidation.submitted">
+                
+                  <div class="invalid-msg" *ngIf="password.errors?.required">Password is required</div>
+                
               </div>
-
-              <div class="bm-input captcha-input">
-                <i class="fa fa-key"></i>
-                <input type="text" class="form-control xss-skip" [(ngModel)]="loginForm.captcha" name="captcha"
-                  #captcha="ngModel" maxlength="20" placeholder="Enter Captcha" (paste)="onPaste($event)" [attr.required]="isTextCaptcha ? '' : null" />
+            
+            
+              <div class="invalid-msg" *ngIf="loginForm.password &amp;&amp; password.invalid">
+                Password must be between 4 and 30 characters
               </div>
-            </div>
-            <div *ngIf="captcha.touched || loginValidation.submitted">
-              <div *ngIf="captcha.errors?.required" class="invalid-msg">Captcha is required</div>
-            </div>
+            
           </div>
 
-          <div class="form-group bm-field" *ngIf="isRecaptcha">
-            <re-captcha id="recaptcha" name="recaptcha" #recaptcha="ngModel" [(ngModel)]="loginForm.captcha" required
-              [class.is-invalid]="recaptcha.invalid && (recaptcha.dirty || recaptcha.touched)">
-            </re-captcha>
-            <div *ngIf="recaptcha.touched || loginValidation.submitted">
-              <div *ngIf="recaptcha.errors?.required" class="invalid-msg">Captcha is required</div>
+          
+            <div class="form-group bm-field" *ngIf="isTextCaptcha">
+              <label class="bm-label">Captcha</label>
+              <div class="captcha-row">
+                <div class="captcha-box">
+                  <span class="captcha-text">{{yourCaptcha}}</span>
+                  <button type="button" class="captcha-refresh" title="Refresh" (click)="captchaGenerate()">
+                    <i class="fa fa-refresh"></i>
+                  </button>
+                </div>
+                <div class="bm-input captcha-input">
+                  <i class="fa fa-key"></i>
+                  <input type="text" class="form-control xss-skip" [(ngModel)]="loginForm.captcha" name="captcha"
+                    #captcha="ngModel" maxlength="20" placeholder="Enter Captcha" (paste)="onPaste($event)" [attr.required]="isTextCaptcha ? '' : null" />
+                </div>
+              </div>
+              
+                <div *ngIf="captcha.touched || loginValidation.submitted">
+                  
+                    <div class="invalid-msg" *ngIf="captcha.errors?.required">Captcha is required</div>
+                  
+                </div>
+              
             </div>
-          </div>
+          
 
           <button type="submit" class="btn btn-primary btn-block bm-btn" [disabled]="disableBtn">Login</button>
         </form>

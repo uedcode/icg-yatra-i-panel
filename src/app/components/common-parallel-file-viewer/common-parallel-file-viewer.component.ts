@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
   selector: 'app-common-parallel-file-viewer',
   templateUrl: './common-parallel-file-viewer.component.html',
   styleUrls: ['./common-parallel-file-viewer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CommonParallelFileViewerComponent {

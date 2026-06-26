@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { CodeHrPayApiService } from 'src/app/service/api/code/code-hr-pay-api.service';
@@ -9,6 +9,7 @@ import { UserApiService } from 'src/app/service/api/admin/user-api.service';
   selector: 'app-manage-paylevel-transaction',
   templateUrl: './manage-paylevel-transaction.component.html',
   styleUrls: ['./manage-paylevel-transaction.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ManagePaylevelTransactionComponent implements OnInit {

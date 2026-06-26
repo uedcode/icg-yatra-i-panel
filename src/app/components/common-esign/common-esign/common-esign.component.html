@@ -4,26 +4,36 @@
       <div class="card shadow-sm">
         <div class="card-body text-center p-4">
           <h3 class="mb-3">eSign Redirect</h3>
-          <p *ngIf="gateway" class="mb-3">
-            You are being redirected to the eMudhra authentication page.
-          </p>
-          <p *ngIf="!gateway" class="mb-3 text-danger">
-            eSign transaction reference is missing.
-          </p>
+          
+            <p class="mb-3" *ngIf="gateway">
+              You are being redirected to the eMudhra authentication page.
+            </p>
+          
+          
+            <p class="mb-3 text-danger" *ngIf="!gateway">
+              eSign transaction reference is missing.
+            </p>
+          
 
-          <div *ngIf="gateway" class="mb-3">
-            <div class="spinner-border text-primary" role="status">
-              <span class="sr-only">Loading...</span>
+          
+            <div class="mb-3" *ngIf="gateway">
+              <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
             </div>
-          </div>
+          
 
-          <p *ngIf="gateway" class="text-muted small mb-4">
-            If the redirect does not start automatically, use the button below.
-          </p>
+          
+            <p class="text-muted small mb-4" *ngIf="gateway">
+              If the redirect does not start automatically, use the button below.
+            </p>
+          
 
-          <button *ngIf="gateway" type="button" class="btn btn-primary mr-2" (click)="submitForm()">
-            Continue To eSign
-          </button>
+          
+            <button type="button" class="btn btn-primary mr-2" (click)="submitForm()" *ngIf="gateway">
+              Continue To eSign
+            </button>
+          
           <button type="button" class="btn btn-outline-secondary" (click)="backToModule()">
             Back
           </button>

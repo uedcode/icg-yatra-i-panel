@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
@@ -14,6 +14,7 @@ declare var $: any;
     selector: 'app-outbox',
     templateUrl: './outbox.component.html',
     styleUrls: ['./outbox.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class OutboxComponent implements OnInit {

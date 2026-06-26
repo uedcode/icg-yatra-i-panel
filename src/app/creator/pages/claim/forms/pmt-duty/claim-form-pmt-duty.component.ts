@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UtilService } from 'src/app/service/core/util.service';
@@ -170,6 +170,7 @@ interface Claims {
   selector: 'app-claim-form-pmt-duty',
   templateUrl: './claim-form-pmt-duty.component.html',
   styleUrls: ['./claim-form-pmt-duty.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ClaimFormPmtDutyComponent implements OnInit {

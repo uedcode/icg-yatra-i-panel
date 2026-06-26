@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-public-paramvt',
   templateUrl: './public-paramvt.component.html',
   styleUrls: ['./public-paramvt.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PublicParamvtComponent {

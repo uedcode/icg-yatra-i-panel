@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -8,6 +8,7 @@ import { RoleApiService } from 'src/app/service/api/admin/role-api.service';
   selector: 'app-unit-admin-archive',
   templateUrl: './archive.component.html',
   styleUrls: ['./archive.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ArchiveComponent implements OnInit {

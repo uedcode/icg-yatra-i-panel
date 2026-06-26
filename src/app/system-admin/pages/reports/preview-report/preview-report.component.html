@@ -22,21 +22,25 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let obj of reportObject?.dashboardList">
-            <td>{{ obj?.slNo }}</td>
-            <td>{{ obj?.title }}{{ obj?.occDate | showDate:'short' }}</td>
-            <td>{{ obj?.draft }}</td>
-            <td>{{ obj?.submitted }}</td>
-            <td>{{ obj?.approved }}</td>
-            <td>{{ obj?.notApproved }}</td>
-            <td>{{ obj?.rejected }}</td>
-            <td>{{ obj?.pendingCda }}</td>
-            <td>{{ obj?.passed }}</td>
-            <td>{{ obj?.notPassed }}</td>
-          </tr>
-          <tr *ngIf="!reportObject?.dashboardList?.length">
-            <td colspan="20" class="text-center">No Records</td>
-          </tr>
+          
+            <tr *ngFor="let obj of reportObject?.dashboardList">
+              <td>{{ obj?.slNo }}</td>
+              <td>{{ obj?.title }}{{ obj?.occDate | showDate:'short' }}</td>
+              <td>{{ obj?.draft }}</td>
+              <td>{{ obj?.submitted }}</td>
+              <td>{{ obj?.approved }}</td>
+              <td>{{ obj?.notApproved }}</td>
+              <td>{{ obj?.rejected }}</td>
+              <td>{{ obj?.pendingCda }}</td>
+              <td>{{ obj?.passed }}</td>
+              <td>{{ obj?.notPassed }}</td>
+            </tr>
+          
+          
+            <tr *ngIf="!reportObject?.dashboardList?.length">
+              <td colspan="20" class="text-center">No Records</td>
+            </tr>
+          
         </tbody>
       </table>
     </div>
@@ -61,23 +65,27 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let obj of reportObject?.advList">
-            <td>{{ obj?.slNo }}</td>
-            <td>{{ obj?.title }}</td>
-            <td>{{ obj?.draft }}</td>
-            <td>{{ obj?.submitted }}</td>
-            <td>{{ obj?.approved }}</td>
-            <td>{{ obj?.notApproved }}</td>
-            <td>{{ obj?.rejected }}</td>
-            <td>{{ obj?.pendingCda }}</td>
-            <td>{{ obj?.passed }}</td>
-            <td>{{ obj?.notPassed }}</td>
-            <td>{{ obj?.requestAmt }}</td>
-            <td>{{ obj?.payment }}</td>
-          </tr>
-          <tr *ngIf="!reportObject?.advList?.length">
-            <td colspan="20" class="text-center">No Records</td>
-          </tr>
+          
+            <tr *ngFor="let obj of reportObject?.advList">
+              <td>{{ obj?.slNo }}</td>
+              <td>{{ obj?.title }}</td>
+              <td>{{ obj?.draft }}</td>
+              <td>{{ obj?.submitted }}</td>
+              <td>{{ obj?.approved }}</td>
+              <td>{{ obj?.notApproved }}</td>
+              <td>{{ obj?.rejected }}</td>
+              <td>{{ obj?.pendingCda }}</td>
+              <td>{{ obj?.passed }}</td>
+              <td>{{ obj?.notPassed }}</td>
+              <td>{{ obj?.requestAmt }}</td>
+              <td>{{ obj?.payment }}</td>
+            </tr>
+          
+          
+            <tr *ngIf="!reportObject?.advList?.length">
+              <td colspan="20" class="text-center">No Records</td>
+            </tr>
+          
         </tbody>
       </table>
     </div>
@@ -100,21 +108,25 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let obj of reportObject?.claimList">
-            <td>{{ obj?.slNo }}</td>
-            <td>{{ obj?.title }}</td>
-            <td>{{ obj?.draft }}</td>
-            <td>{{ obj?.submitted }}</td>
-            <td>{{ obj?.approved }}</td>
-            <td>{{ obj?.notApproved }}</td>
-            <td>{{ obj?.rejected }}</td>
-            <td>{{ obj?.pendingCda }}</td>
-            <td>{{ obj?.passed }}</td>
-            <td>{{ obj?.notPassed }}</td>
-          </tr>
-          <tr *ngIf="!reportObject?.claimList?.length">
-            <td colspan="20" class="text-center">No Records</td>
-          </tr>
+          
+            <tr *ngFor="let obj of reportObject?.claimList">
+              <td>{{ obj?.slNo }}</td>
+              <td>{{ obj?.title }}</td>
+              <td>{{ obj?.draft }}</td>
+              <td>{{ obj?.submitted }}</td>
+              <td>{{ obj?.approved }}</td>
+              <td>{{ obj?.notApproved }}</td>
+              <td>{{ obj?.rejected }}</td>
+              <td>{{ obj?.pendingCda }}</td>
+              <td>{{ obj?.passed }}</td>
+              <td>{{ obj?.notPassed }}</td>
+            </tr>
+          
+          
+            <tr *ngIf="!reportObject?.claimList?.length">
+              <td colspan="20" class="text-center">No Records</td>
+            </tr>
+          
         </tbody>
       </table>
     </div>

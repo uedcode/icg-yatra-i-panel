@@ -7,173 +7,182 @@
             <div class="legacy-preview-actions text-right">
               <button type="button" class="btn btn-sm btn-warning mr-2" (click)="goBack()">Back</button>
             </div>
-            <h4 class="legacy-preview-heading"><strong>Requisition for PMT Duty Advance </strong><span
-                *ngIf="claims?.formId">- {{ claims.formId }}</span></h4>
-            <div class="level_1">
-              <label class="mr-3"><input type="radio" name="pmtSignRadio" [checked]="isInkSign" disabled />Ink
-                Sign</label>
-              <label><input type="radio" name="pmtSignRadio" [checked]="isESign" disabled />eSign</label>
-              <h4 class="legacy-preview-heading">(a)<strong>Personal Details</strong></h4>
-              <div class="row">
-                <div class="col-md-3">
-                  <p><strong>Name</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.name | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Rank</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.rank | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Personnel Number</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.pno | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Pay Level</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.payLevel | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Basic Pay (In Rs.)</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.basicPay | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>wef (Date) </strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.wefDate | legacyDate:'previewDate') }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Permanent Transfer To</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.permTransTo | legacyValue) }} <span *ngIf="pmt?.permTransTo === 'Others'">({{
-                      (pmt?.otherUnit | legacyValue) }})</span></p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>PMT Type</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.pmtType | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Family Type</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.familyType | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Present Unit</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.videPresentUnit | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Applied To</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.appliedTo | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>From Station</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.stnFrom | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>To Station</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.stnTo | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Distance between stations</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.distance | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Occurrence Date (Movement Date)</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (claims?.occDate | legacyDate:'previewDate') }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Gx Unit</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.gxUnit | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Gx Number</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.gxNumber | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Gx Date</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.gxDate | legacyDate:'previewDate') }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Gx Form</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ claims?.gxFormFileUrl ? 'Attached' : 'Not Attached' }}</p>
-                </div>
+            <h4 class="legacy-preview-heading"><strong>Requisition for PMT Duty Advance </strong>
+            <span
+             *ngIf="claims?.formId">- {{ claims.formId }}</span>
+          </h4>
+          <div class="level_1">
+            <label class="mr-3"><input type="radio" name="pmtSignRadio" [checked]="isInkSign" disabled />Ink
+            Sign</label>
+            <label><input type="radio" name="pmtSignRadio" [checked]="isESign" disabled />eSign</label>
+            <h4 class="legacy-preview-heading">(a)<strong>Personal Details</strong></h4>
+            <div class="row">
+              <div class="col-md-3">
+                <p><strong>Name</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.name | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Rank</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.rank | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Personnel Number</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.pno | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Pay Level</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.payLevel | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Basic Pay (In Rs.)</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.basicPay | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>wef (Date) </strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.wefDate | legacyDate:'previewDate') }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Permanent Transfer To</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.permTransTo | legacyValue) }} 
+                  <span *ngIf="pmt?.permTransTo === 'Others'">({{
+                  (pmt?.otherUnit | legacyValue) }})</span>
+                </p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>PMT Type</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.pmtType | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Family Type</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.familyType | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Present Unit</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.videPresentUnit | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Applied To</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.appliedTo | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>From Station</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.stnFrom | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>To Station</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.stnTo | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Distance between stations</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.distance | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Occurrence Date (Movement Date)</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (claims?.occDate | legacyDate:'previewDate') }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Gx Unit</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.gxUnit | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Gx Number</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.gxNumber | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Gx Date</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.gxDate | legacyDate:'previewDate') }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Gx Form</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ claims?.gxFormFileUrl ? 'Attached' : 'Not Attached' }}</p>
               </div>
             </div>
-            <div class="level_1">
-              <h4 class="legacy-preview-heading"><b>Family Details</b></h4>
-              <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Age</th>
-                      <th>Relation</th>
-                      <th>Occupation</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+          </div>
+          <div class="level_1">
+            <h4 class="legacy-preview-heading"><b>Family Details</b></h4>
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Relation</th>
+                    <th>Occupation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
                     <tr *ngFor="let family of familyRows">
                       <td>{{ (family?.memberName | legacyValue) }}</td>
                       <td>{{ (family?.age | legacyValue) }}</td>
                       <td>{{ (family?.relation | legacyValue) }}</td>
                       <td>{{ (family?.occupation | legacyValue) }}</td>
                     </tr>
+                  
+                  
                     <tr *ngIf="!familyRows.length">
                       <td colspan="4" class="text-center">No Records</td>
                     </tr>
-                  </tbody>
-                </table>
-              </div>
+                  
+                </tbody>
+              </table>
             </div>
-            <div class="level_1">
-              <h4 class="legacy-preview-heading">(b)<strong>Travel Details</strong></h4>
-              <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th>From</th>
-                      <th>To</th>
-                      <th>Travel Mode</th>
-                      <th>DTS</th>
-                      <th>Amount (In Rs.)</th>
-                      <th>Reason for not using DTS</th>
-                      <th>Remarks</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+          </div>
+          <div class="level_1">
+            <h4 class="legacy-preview-heading">(b)<strong>Travel Details</strong></h4>
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Travel Mode</th>
+                    <th>DTS</th>
+                    <th>Amount (In Rs.)</th>
+                    <th>Reason for not using DTS</th>
+                    <th>Remarks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
                     <tr *ngFor="let row of travelRows">
                       <td>{{ (row?.source | legacyValue) }}</td>
                       <td>{{ (row?.destination | legacyValue) }}</td>
@@ -183,145 +192,148 @@
                       <td>{{ (row?.reasonForNoDts | legacyValue) }}</td>
                       <td>{{ (row?.remarks | legacyValue) }}</td>
                     </tr>
+                  
+                  
                     <tr *ngIf="!travelRows.length">
                       <td colspan="7" class="text-center">No Record Found</td>
                     </tr>
-                  </tbody>
-                </table>
+                  
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="level_1">
+            <h4 class="legacy-preview-heading">(c)<strong>Financial Terms</strong></h4>
+            <div class="row">
+              <div class="col-md-3">
+                <p><strong>Area Type:</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.areaType | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Composite Transfer Grant:</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ pmt?.isAvailComposite === true ? 'Availing' : 'Not Availing' }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Composite Transfer Grant (80% of Basic Pay In Rs.)</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.compositeGrant | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Composite Transfer Grant in case of any island (100% of Basic Pay In Rs.)</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.compositeGrantIsland | legacyValue) }}</p>
               </div>
             </div>
-            <div class="level_1">
-              <h4 class="legacy-preview-heading">(c)<strong>Financial Terms</strong></h4>
-              <div class="row">
-                <div class="col-md-3">
-                  <p><strong>Area Type:</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.areaType | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Composite Transfer Grant:</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ pmt?.isAvailComposite === true ? 'Availing' : 'Not Availing' }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Composite Transfer Grant (80% of Basic Pay In Rs.)</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.compositeGrant | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Composite Transfer Grant in case of any island (100% of Basic Pay In Rs.)</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.compositeGrantIsland | legacyValue) }}</p>
-                </div>
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered table-hover">
+                <tbody>
+                  <tr>
+                    <td>Transportation of personal effect for</td>
+                    <td>{{ (pmt?.transPerEffectKg | legacyValue) }} Kg</td>
+                    <td>{{ (pmt?.transPerEffectKgRs | legacyValue) }} In Rs.</td>
+                    <td>{{ (pmt?.transPerEffectKms | legacyValue) }} km</td>
+                    <td>{{ (pmt?.transPerEffectKmsRs | legacyValue) }}</td>
+                  </tr>
+                  <tr>
+                    <td>Transportation of personal effect by ship</td>
+                    <td>{{ (pmt?.transPerEffectShipKgRs | legacyValue) }} Cubic meter</td>
+                    <td>{{ (pmt?.transPerEffectShipKms | legacyValue) }} Rate</td>
+                    <td>{{ (pmt?.transPerEffectShipKmsRs | legacyValue) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <p><strong>Transportation charge for conveyance (In Rs.)</strong></p>
               </div>
-              <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover">
-                  <tbody>
-                    <tr>
-                      <td>Transportation of personal effect for</td>
-                      <td>{{ (pmt?.transPerEffectKg | legacyValue) }} Kg</td>
-                      <td>{{ (pmt?.transPerEffectKgRs | legacyValue) }} In Rs.</td>
-                      <td>{{ (pmt?.transPerEffectKms | legacyValue) }} km</td>
-                      <td>{{ (pmt?.transPerEffectKmsRs | legacyValue) }}</td>
-                    </tr>
-                    <tr>
-                      <td>Transportation of personal effect by ship</td>
-                      <td>{{ (pmt?.transPerEffectShipKgRs | legacyValue) }} Cubic meter</td>
-                      <td>{{ (pmt?.transPerEffectShipKms | legacyValue) }} Rate</td>
-                      <td>{{ (pmt?.transPerEffectShipKmsRs | legacyValue) }}</td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div class="col-md-3">
+                <p>{{ (pmt?.transChargeRs | legacyValue) }}</p>
               </div>
-              <div class="row">
-                <div class="col-md-3">
-                  <p><strong>Transportation charge for conveyance (In Rs.)</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.transChargeRs | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Transportation of conveyance by ship (In Rs.)</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.transChargeShipRs | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Place</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.place | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Date</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (pmt?.date | legacyDate:'previewDate') }}</p>
-                </div>
+              <div class="col-md-3">
+                <p><strong>Transportation of conveyance by ship (In Rs.)</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.transChargeShipRs | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Place</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.place | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Date</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (pmt?.date | legacyDate:'previewDate') }}</p>
               </div>
             </div>
-            <div class="level_1">
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Advance Request</th>
-                      <th>Advance Admissible</th>
-                      <th>DTS Amount</th>
-                      <th>Amount to be budgeted</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{ pmt?.totalAmt | legacyZero }}</td>
-                      <td>{{ pmt?.advAmt | legacyZero }}</td>
-                      <td>{{ pmt?.dtsAmount | legacyZero }}</td>
-                      <td>{{ pmt?.totalBudgetedAmt | legacyZero }}</td>
-                    </tr>
-                  </tbody>
-                </table>
+          </div>
+          <div class="level_1">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Advance Request</th>
+                    <th>Advance Admissible</th>
+                    <th>DTS Amount</th>
+                    <th>Amount to be budgeted</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ pmt?.totalAmt | legacyZero }}</td>
+                    <td>{{ pmt?.advAmt | legacyZero }}</td>
+                    <td>{{ pmt?.dtsAmount | legacyZero }}</td>
+                    <td>{{ pmt?.totalBudgetedAmt | legacyZero }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="level_1">
+            <h4 class="legacy-preview-heading">(d)<strong>Bank Details</strong></h4>
+            <div class="row">
+              <div class="col-md-3">
+                <p><strong>Bank Name</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (bankDetails?.bankName | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>IFSC Code</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (bankDetails?.ifscCode | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>Account Number</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (bankDetails?.bankAccNo | legacyValue) }}</p>
+              </div>
+              <div class="col-md-3">
+                <p><strong>MICR Code</strong></p>
+              </div>
+              <div class="col-md-3">
+                <p>{{ (bankDetails?.micrCode | legacyValue) }}</p>
               </div>
             </div>
-            <div class="level_1">
-              <h4 class="legacy-preview-heading">(d)<strong>Bank Details</strong></h4>
-              <div class="row">
-                <div class="col-md-3">
-                  <p><strong>Bank Name</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (bankDetails?.bankName | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>IFSC Code</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (bankDetails?.ifscCode | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>Account Number</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (bankDetails?.bankAccNo | legacyValue) }}</p>
-                </div>
-                <div class="col-md-3">
-                  <p><strong>MICR Code</strong></p>
-                </div>
-                <div class="col-md-3">
-                  <p>{{ (bankDetails?.micrCode | legacyValue) }}</p>
-                </div>
-              </div>
-            </div>
-            <div class="level_1">
-              <h4 class="legacy-preview-heading">(e)<strong>Remarks</strong></h4>
-              <p>{{ (claims?.internalRemarks | legacyValue) }}</p>
-            </div>
+          </div>
+          <div class="level_1">
+            <h4 class="legacy-preview-heading">(e)<strong>Remarks</strong></h4>
+            <p>{{ (claims?.internalRemarks | legacyValue) }}</p>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 </div>

@@ -16,16 +16,6 @@
             <ng-otp-input (onInputChange)="onOtpChange($event)"
               [config]="{length:6, allowNumbersOnly:true, isPasswordInput:true}"></ng-otp-input>
 
-            <!-- <div class="form-group">
-              <div class="row">
-                <div class="col-md-12">
-                  <re-captcha id="recaptcha" name="recaptcha" #recaptcha="ngModel" [(ngModel)]="captcha" required
-                    [class.is-invalid]="recaptcha.invalid && (recaptcha.dirty || recaptcha.touched)"></re-captcha>
-                  <div *ngIf="captchaError" class="invalid-msg mb-3">Captcha is required.</div>
-                </div>
-              </div>
-            </div> -->
-
             <!-- <div class="reset_otp">
               <p>
                 <span *ngIf="seconds" class="timer">Resend in 00:{{seconds}} Seconds</span>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { VersionHistoryApiService } from 'src/app/service/api/masters/version-history-api.service';
 
@@ -6,6 +6,7 @@ import { VersionHistoryApiService } from 'src/app/service/api/masters/version-hi
   selector: 'app-public-version-history',
   templateUrl: './public-version-history.component.html',
   styleUrls: ['./public-version-history.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PublicVersionHistoryComponent implements OnInit {

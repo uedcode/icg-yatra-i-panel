@@ -6,6 +6,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -17,6 +18,7 @@ declare var $: any;
   selector: 'app-add-pay-level-modal',
   templateUrl: './add-pay-level-modal.component.html',
   styleUrls: ['./add-pay-level-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class AddPayLevelModalComponent implements OnInit {

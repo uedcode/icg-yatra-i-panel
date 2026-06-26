@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
@@ -12,6 +12,7 @@ import { unwrapNullablePreviewObject } from 'src/app/shared/utils/legacy-preview
   selector: 'app-common-preview-movement-update-claim',
   templateUrl: './common-preview-movement-update-claim.component.html',
   styleUrls: ['./common-preview-movement-update-claim.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CommonPreviewMovementUpdateClaimComponent implements OnInit {
@@ -41,7 +42,7 @@ export class CommonPreviewMovementUpdateClaimComponent implements OnInit {
     this.userIdDetails = this.$auth.getUserDetails();
 
     this.route.queryParamMap.subscribe((params) => {
-      this.claimId = params.get('id') ?? '';
+      this.claimId = params.get('id') || params.get('claimId') || params.get('formId') || '';
       this.subFormId = params.get('subFormId') ?? '';
       this.movement = null;
       this.gxDetails = [];
@@ -111,7 +112,7 @@ export class CommonPreviewMovementUpdateClaimComponent implements OnInit {
     return legacyValue(subFormId);
   }
 
-  trackByIndex(index: number): number {
+  trackByIndex(index: number, _item?: unknown): number {
     return index;
   }
 }

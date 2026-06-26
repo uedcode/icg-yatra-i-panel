@@ -15,9 +15,13 @@
                 <div class="form-group">
                   <label class="form-label">Document Name<sup class="required-msg">*</sup></label>
                   <input type="text" class="form-control" placeholder="eg. Proceeding Gx of the parent unit" maxlength="300" [(ngModel)]="formObj.docName" #docName="ngModel" name="docName" required>
-                  <div *ngIf="docName.touched || (mainForm.submitted && docName.invalid)">
-                    <div *ngIf="docName.errors?.required" class="invalid-msg">Document Name is required</div>
-                  </div>
+                  
+                    <div *ngIf="docName.touched || (mainForm.submitted &amp;&amp; docName.invalid)">
+                      
+                        <div class="invalid-msg" *ngIf="docName.errors?.required">Document Name is required</div>
+                      
+                    </div>
+                  
                 </div>
               </div>
 

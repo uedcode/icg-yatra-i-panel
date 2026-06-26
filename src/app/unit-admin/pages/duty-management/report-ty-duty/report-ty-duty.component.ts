@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { MarkTyApiService } from 'src/app/service/api/admin/mark-ty-api.service';
@@ -8,6 +8,7 @@ import { MarkTyApiService } from 'src/app/service/api/admin/mark-ty-api.service'
   selector: 'app-report-ty-duty',
   templateUrl: './report-ty-duty.component.html',
   styleUrls: ['./report-ty-duty.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ReportTyDutyComponent implements OnInit {

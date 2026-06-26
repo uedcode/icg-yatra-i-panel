@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,6 +12,7 @@ declare var $: any;
   selector: 'app-approver-claim-archive',
   templateUrl: './claim-archive.component.html',
   styleUrls: ['./claim-archive.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ClaimArchiveComponent implements OnInit {

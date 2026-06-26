@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
@@ -13,6 +13,7 @@ import { isESign, isInkSign, isYatraClaimMode } from 'src/app/shared/utils/legac
   selector: 'app-common-preview-ltc-advance',
   templateUrl: './common-preview-ltc-advance.component.html',
   styleUrls: ['./common-preview-ltc-advance.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CommonPreviewLtcAdvanceComponent implements OnInit {

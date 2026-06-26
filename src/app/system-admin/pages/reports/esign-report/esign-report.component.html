@@ -37,7 +37,7 @@
             placeholder="Search"
             [(ngModel)]="searchObj"
             (keyup)="p = 1"
-          />
+            />
         </div>
       </div>
     </div>
@@ -57,26 +57,31 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            *ngFor="let detail of list | filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p }"
-          >
-            <td>{{ detail?.sl | showHypen }}</td>
-            <td>{{ detail?.formType | showHypen }}</td>
-            <td>{{ detail?.writerCount | showHypen }}</td>
-            <td>{{ detail?.logoCount | showHypen }}</td>
-            <td>{{ detail?.coCount | showHypen }}</td>
-            <td>{{ detail?.pendingCda | showHypen }}</td>
-            <td>{{ detail?.passedCda | showHypen }}</td>
-            <td>{{ detail?.totalCda | showHypen }}</td>
-          </tr>
-          <tr *ngIf="!list?.length">
-            <td colspan="20" class="text-center table-empty-state gov-table-empty-state">No Records</td>
-          </tr>
-          <tr class="noExl pagination_area" *ngIf="list?.length">
-            <td colspan="20">
-              <pagination-controls (pageChange)="p = $event"></pagination-controls>
-            </td>
-          </tr>
+          
+            <tr
+               *ngFor="let detail of list | filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p }">
+              <td>{{ detail?.sl | showHypen }}</td>
+              <td>{{ detail?.formType | showHypen }}</td>
+              <td>{{ detail?.writerCount | showHypen }}</td>
+              <td>{{ detail?.logoCount | showHypen }}</td>
+              <td>{{ detail?.coCount | showHypen }}</td>
+              <td>{{ detail?.pendingCda | showHypen }}</td>
+              <td>{{ detail?.passedCda | showHypen }}</td>
+              <td>{{ detail?.totalCda | showHypen }}</td>
+            </tr>
+          
+          
+            <tr *ngIf="!list?.length">
+              <td colspan="20" class="text-center table-empty-state gov-table-empty-state">No Records</td>
+            </tr>
+          
+          
+            <tr class="noExl pagination_area" *ngIf="list?.length">
+              <td colspan="20">
+                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+              </td>
+            </tr>
+          
         </tbody>
       </table>
     </div>

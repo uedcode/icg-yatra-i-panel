@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
 import { FormStateApiService } from 'src/app/service/api/form/form-state-api.service';
@@ -12,6 +12,7 @@ declare var $: any;
   selector: 'app-common-view-form-history-modal',
   templateUrl: './common-view-form-history-modal.component.html',
   styleUrls: ['./common-view-form-history-modal.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CommonViewFormHistoryModalComponent implements OnInit {

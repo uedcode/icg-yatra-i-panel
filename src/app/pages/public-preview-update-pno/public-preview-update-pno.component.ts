@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonService } from 'src/app/service/core/common.service';
 
@@ -6,6 +6,7 @@ import { CommonService } from 'src/app/service/core/common.service';
   selector: 'app-public-preview-update-pno',
   templateUrl: './public-preview-update-pno.component.html',
   styleUrls: ['./public-preview-update-pno.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PublicPreviewUpdatePnoComponent implements OnInit {

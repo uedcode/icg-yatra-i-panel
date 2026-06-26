@@ -24,14 +24,18 @@
           <option value="custom">Custom</option>
         </select>
       </div>
-      <div class="col-md-2" *ngIf="selectedOpt === 'custom'">
-        <label class="form-label">From Date<sup class="required-msg">*</sup></label>
-        <input class="form-control" type="date" [(ngModel)]="customFromDate" (ngModelChange)="customToDate=''" />
-      </div>
-      <div class="col-md-2" *ngIf="selectedOpt === 'custom'">
-        <label class="form-label">To Date<sup class="required-msg">*</sup></label>
-        <input class="form-control" type="date" [(ngModel)]="customToDate" [min]="customFromDate" />
-      </div>
+      
+        <div class="col-md-2" *ngIf="selectedOpt === 'custom'">
+          <label class="form-label">From Date<sup class="required-msg">*</sup></label>
+          <input class="form-control" type="date" [(ngModel)]="customFromDate" (ngModelChange)="customToDate=''" />
+        </div>
+      
+      
+        <div class="col-md-2" *ngIf="selectedOpt === 'custom'">
+          <label class="form-label">To Date<sup class="required-msg">*</sup></label>
+          <input class="form-control" type="date" [(ngModel)]="customToDate" [min]="customFromDate" />
+        </div>
+      
       <div class="col-md-2">
         <button class="btn btn-info" type="button" (click)="applyFilter()">Filter</button>
       </div>
@@ -46,21 +50,15 @@
   <div class="card-body">
     <h3 class="statistics-chart-title">Total Claims</h3>
     <div class="statistics-chart-frame">
-    <ngx-charts-pie-chart
-      [view]="totalChartView"
-      [scheme]="totalColorScheme"
-      [results]="totalChartData"
-      [legend]="true"
-      [legendTitle]="'Legend'"
-      [legendPosition]="legendPosition"
-      [labels]="true"
-      [trimLabels]="trimLabels"
-      [maxLabelLength]="maxLabelLength"
-      [explodeSlices]="explodeSlices"
-      [margins]="totalChartMargins"
-      [doughnut]="false"
-      (select)="onTotalSelect($event)">
-    </ngx-charts-pie-chart>
+      <canvas
+        baseChart
+        class="statistics-chart-canvas statistics-chart-canvas--wide"
+        [type]="pieChartType"
+        [data]="totalChartData"
+        [options]="pieChartOptions"
+        [legend]="true"
+        (chartClick)="onTotalSelect($event)">
+      </canvas>
     </div>
   </div>
 </div>
@@ -71,21 +69,15 @@
       <div class="card-body">
         <h3 class="statistics-chart-title">Advance</h3>
         <div class="statistics-chart-frame">
-        <ngx-charts-pie-chart
-          [view]="halfChartView"
-          [scheme]="advanceColorScheme"
-          [results]="advanceChartData"
-          [legend]="true"
-          [legendTitle]="'Legend'"
-          [legendPosition]="legendPosition"
-          [labels]="true"
-          [trimLabels]="trimLabels"
-          [maxLabelLength]="maxLabelLength"
-          [explodeSlices]="explodeSlices"
-          [margins]="halfChartMargins"
-          [doughnut]="false"
-          (select)="onAdvanceSelect($event)">
-        </ngx-charts-pie-chart>
+          <canvas
+            baseChart
+            class="statistics-chart-canvas"
+            [type]="pieChartType"
+            [data]="advanceChartData"
+            [options]="pieChartOptions"
+            [legend]="true"
+            (chartClick)="onAdvanceSelect($event)">
+          </canvas>
         </div>
       </div>
     </div>
@@ -95,21 +87,15 @@
       <div class="card-body">
         <h3 class="statistics-chart-title">Claims</h3>
         <div class="statistics-chart-frame">
-        <ngx-charts-pie-chart
-          [view]="halfChartView"
-          [scheme]="claimColorScheme"
-          [results]="claimChartData"
-          [legend]="true"
-          [legendTitle]="'Legend'"
-          [legendPosition]="legendPosition"
-          [labels]="true"
-          [trimLabels]="trimLabels"
-          [maxLabelLength]="maxLabelLength"
-          [explodeSlices]="explodeSlices"
-          [margins]="halfChartMargins"
-          [doughnut]="false"
-          (select)="onClaimSelect($event)">
-        </ngx-charts-pie-chart>
+          <canvas
+            baseChart
+            class="statistics-chart-canvas"
+            [type]="pieChartType"
+            [data]="claimChartData"
+            [options]="pieChartOptions"
+            [legend]="true"
+            (chartClick)="onClaimSelect($event)">
+          </canvas>
         </div>
       </div>
     </div>
@@ -120,7 +106,9 @@
   <div class="col-md-6">
     <div class="card">
       <div class="card-body">
-        <p *ngIf="advList.length" class="mb-2"><strong>{{ advHead }}</strong></p>
+        
+          <p class="mb-2" *ngIf="advList.length"><strong>{{ advHead }}</strong></p>
+        
         <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
           <table class="table table-bordered gov-table-sticky-first table-sticky-first">
             <thead>
@@ -131,14 +119,18 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let obj of advList">
-                <td>{{ obj?.title | showHypen }}</td>
-                <td>{{ obj?.slNo | showHypen }}</td>
-                <td>{{ obj?.payment | showHypen }}</td>
-              </tr>
-              <tr *ngIf="!advList?.length">
-                <td colspan="3" class="text-center table-empty-state gov-table-empty-state">No Records</td>
-              </tr>
+              
+                <tr *ngFor="let obj of advList">
+                  <td>{{ obj?.title | showHypen }}</td>
+                  <td>{{ obj?.slNo | showHypen }}</td>
+                  <td>{{ obj?.payment | showHypen }}</td>
+                </tr>
+              
+              
+                <tr *ngIf="!advList?.length">
+                  <td colspan="3" class="text-center table-empty-state gov-table-empty-state">No Records</td>
+                </tr>
+              
             </tbody>
           </table>
         </div>
@@ -148,7 +140,9 @@
   <div class="col-md-6">
     <div class="card">
       <div class="card-body">
-        <p *ngIf="claimList.length" class="mb-2"><strong>{{ clmHead }}</strong></p>
+        
+          <p class="mb-2" *ngIf="claimList.length"><strong>{{ clmHead }}</strong></p>
+        
         <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
           <table class="table table-bordered gov-table-sticky-first table-sticky-first">
             <thead>
@@ -159,14 +153,18 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let obj of claimList">
-                <td>{{ obj?.title | showHypen }}</td>
-                <td>{{ obj?.slNo | showHypen }}</td>
-                <td>{{ obj?.payment | showHypen }}</td>
-              </tr>
-              <tr *ngIf="!claimList?.length">
-                <td colspan="3" class="text-center table-empty-state gov-table-empty-state">No Records</td>
-              </tr>
+              
+                <tr *ngFor="let obj of claimList">
+                  <td>{{ obj?.title | showHypen }}</td>
+                  <td>{{ obj?.slNo | showHypen }}</td>
+                  <td>{{ obj?.payment | showHypen }}</td>
+                </tr>
+              
+              
+                <tr *ngIf="!claimList?.length">
+                  <td colspan="3" class="text-center table-empty-state gov-table-empty-state">No Records</td>
+                </tr>
+              
             </tbody>
           </table>
         </div>

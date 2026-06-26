@@ -1,75 +1,89 @@
 <div class="page-header gov-page-toolbar">
-          <h4 class="page-title">Update Pay Details</h4>
-        </div>
+  <h4 class="page-title">Update Pay Details</h4>
+</div>
 
-        <div class="card">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-4 mb-3">
-                <label>Name</label>
-                <input type="text" class="form-control" [(ngModel)]="claims.name" name="name" [disabled]="fullFormDisabled" />
-              </div>
-              <div class="col-md-4 mb-3">
-                <label>Rank</label>
-                <input type="text" class="form-control" [(ngModel)]="claims.rank" name="rank" [disabled]="fullFormDisabled" />
-              </div>
-              <div class="col-md-4 mb-3">
-                <label>Personnel Number</label>
-                <input type="text" class="form-control" [(ngModel)]="claims.pno" name="pno" [disabled]="fullFormDisabled" />
-              </div>
-              <div class="col-md-4 mb-3">
-                <label>Current Pay Level</label>
-                <input type="text" class="form-control" [(ngModel)]="claims.payLevel" name="payLevel" [disabled]="fullFormDisabled" />
-              </div>
-              <div class="col-md-4 mb-3">
-                <label>Current Basic Pay (In Rs)</label>
-                <input type="text" class="form-control" [(ngModel)]="claims.basicPay" name="basicPay" [disabled]="fullFormDisabled" />
-              </div>
-              <div class="col-md-4 mb-3">
-                <label>Present Unit</label>
-                <input type="text" class="form-control" [(ngModel)]="claims.videPresentUnit" name="videPresentUnit" [disabled]="fullFormDisabled" />
-              </div>
-              <div class="col-md-4 mb-3">
-                <label>New Pay Level <span class="text-danger">*</span></label>
-                <select class="form-control" [(ngModel)]="claims.newPayLevel" name="newPayLevel" [disabled]="isPreview">
-                  <option value="">Select</option>
-                  <option *ngFor="let level of payLevelOptions" [value]="level">Level {{ level }}</option>
-                </select>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label>New Basic Pay(In Rs) <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" [(ngModel)]="claims.newBasicPay" name="newBasicPay" [disabled]="isPreview" />
-              </div>
-              <div class="col-md-4 mb-3">
-                <label>From Date <span class="text-danger">*</span></label>
-                <input type="date" class="form-control" [(ngModel)]="claims.fromDt" name="fromDt" [disabled]="isPreview" />
-              </div>
-              <div class="col-md-4 mb-3">
-                <label>Reason For Change <span class="text-danger">*</span></label>
-                <select class="form-control" [(ngModel)]="claims.reason" name="reason" (change)="setDocName(claims.reason)" [disabled]="isPreview">
-                  <option value="">Select</option>
-                  <option value="On Increment">On Increment</option>
-                  <option value="Pay Fixation">Pay Fixation</option>
-                </select>
-              </div>
-              <div class="col-md-8 mb-3" *ngIf="claims.reason">
-                <label>{{ fileLabel }} <span class="text-danger">*</span></label>
-                <div *ngIf="showFileBrowse">
-                  <input type="file" class="form-control" accept="application/pdf" (change)="onDocFileChange($event)" [disabled]="isPreview || docUploading" />
-                  <small *ngIf="docUploading" class="text-muted">Uploading document...</small>
-                </div>
-                <div *ngIf="!showFileBrowse" class="d-flex align-items-center gap-2">
-                  <button type="button" class="btn btn-info btn-sm mr-2" (click)="viewDocument()">View</button>
-                  <button *ngIf="!isPreview" type="button" class="btn btn-danger btn-sm" (click)="removeExistingDocument()">Delete</button>
-                </div>
-              </div>
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label>Name</label>
+        <input type="text" class="form-control" [(ngModel)]="claims.name" name="name" [disabled]="fullFormDisabled" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Rank</label>
+        <input type="text" class="form-control" [(ngModel)]="claims.rank" name="rank" [disabled]="fullFormDisabled" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Personnel Number</label>
+        <input type="text" class="form-control" [(ngModel)]="claims.pno" name="pno" [disabled]="fullFormDisabled" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Current Pay Level</label>
+        <input type="text" class="form-control" [(ngModel)]="claims.payLevel" name="payLevel" [disabled]="fullFormDisabled" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Current Basic Pay (In Rs)</label>
+        <input type="text" class="form-control" [(ngModel)]="claims.basicPay" name="basicPay" [disabled]="fullFormDisabled" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Present Unit</label>
+        <input type="text" class="form-control" [(ngModel)]="claims.videPresentUnit" name="videPresentUnit" [disabled]="fullFormDisabled" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>New Pay Level <span class="text-danger">*</span></label>
+        <select class="form-control" [(ngModel)]="claims.newPayLevel" name="newPayLevel" [disabled]="isPreview">
+          <option value="">Select</option>
+          
+            <option [value]="level" *ngFor="let level of payLevelOptions">Level {{ level }}</option>
+          
+        </select>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>New Basic Pay(In Rs) <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" [(ngModel)]="claims.newBasicPay" name="newBasicPay" [disabled]="isPreview" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>From Date <span class="text-danger">*</span></label>
+        <input type="date" class="form-control" [(ngModel)]="claims.fromDt" name="fromDt" [disabled]="isPreview" />
+      </div>
+      <div class="col-md-4 mb-3">
+        <label>Reason For Change <span class="text-danger">*</span></label>
+        <select class="form-control" [(ngModel)]="claims.reason" name="reason" (change)="setDocName(claims.reason)" [disabled]="isPreview">
+          <option value="">Select</option>
+          <option value="On Increment">On Increment</option>
+          <option value="Pay Fixation">Pay Fixation</option>
+        </select>
+      </div>
+      
+        <div class="col-md-8 mb-3" *ngIf="claims.reason">
+          <label>{{ fileLabel }} <span class="text-danger">*</span></label>
+          
+            <div *ngIf="showFileBrowse">
+              <input type="file" class="form-control" accept="application/pdf" (change)="onDocFileChange($event)" [disabled]="isPreview || docUploading" />
+              
+                <small class="text-muted" *ngIf="docUploading">Uploading document...</small>
+              
             </div>
-
-            <div class="d-flex gap-2" *ngIf="!isPreview">
-              <button class="btn btn-primary" [disabled]="submitBtn || docUploading" (click)="openSubmitModal()">Submit</button>
+          
+          
+            <div class="d-flex align-items-center gap-2" *ngIf="!showFileBrowse">
+              <button type="button" class="btn btn-info btn-sm mr-2" (click)="viewDocument()">View</button>
+              
+                <button type="button" class="btn btn-danger btn-sm" (click)="removeExistingDocument()" *ngIf="!isPreview">Delete</button>
+              
             </div>
-          </div>
+          
         </div>
+      
+    </div>
+
+    
+      <div class="d-flex gap-2" *ngIf="!isPreview">
+        <button class="btn btn-primary" [disabled]="submitBtn || docUploading" (click)="openSubmitModal()">Submit</button>
+      </div>
+    
+  </div>
+</div>
 
 <div class="modal fade modal_index in" id="submitModal" role="dialog" aria-hidden="false">
   <div class="modal-dialog modal-sm cancel_modal_width">

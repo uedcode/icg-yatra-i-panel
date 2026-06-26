@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -10,6 +10,7 @@ import { CodeDirApiService } from 'src/app/service/api/code/code-dir-api.service
   selector: 'app-budget-allocation',
   templateUrl: './budget-allocation.component.html',
   styleUrls: ['./budget-allocation.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class BudgetAllocationComponent implements OnInit {

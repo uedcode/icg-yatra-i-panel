@@ -16,28 +16,30 @@
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
         [routerLink]="['manage-unit-admin']"><i class="side-menu__icon fa fa-user"></i><span
-          class="side-menu__label">Manage Unit Admin </span></a>
+      class="side-menu__label">Manage Unit Admin </span></a>
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
         [routerLink]="['manage-role']"><i class="side-menu__icon fa fa-users"></i><span
-          class="side-menu__label">Manage Role </span></a>
+      class="side-menu__label">Manage Role </span></a>
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
         [routerLink]="['archive']"><i class="side-menu__icon fa fa-archive"></i><span
-          class="side-menu__label">Archive </span>
-        <span class="counts" *ngIf="archiveCount != 0">{{archiveCount}}</span></a>
+      class="side-menu__label">Archive </span>
+      
+        <span class="counts" *ngIf="archiveCount != 0">{{archiveCount}}</span>
+      </a>
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
         [routerLink]="['report-ty-duty']"><i class="side-menu__icon fa fa-file"></i><span
-          class="side-menu__label">Report TY Duty </span></a>
+      class="side-menu__label">Report TY Duty </span></a>
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current"
         [routerLink]="['update-pmt-unit']"><i class="side-menu__icon fa fa-refresh"></i><span
-          class="side-menu__label">Update PMT Unit </span></a>
+      class="side-menu__label">Update PMT Unit </span></a>
     </li>
 
   </ul>

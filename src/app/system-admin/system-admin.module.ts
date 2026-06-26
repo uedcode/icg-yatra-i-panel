@@ -4,10 +4,10 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ComponentModule } from '../app-component.module';
 import { DirectiveModule } from '../app-directive.module';
 import { PipeModule } from '../app-pipe.module';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { INgxSelectOptions, NgxSelectModule } from 'ngx-select-ex';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
@@ -119,7 +119,7 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         AdminRoutingModule,
         FormsModule,
         NgxPaginationModule,
-        NgxChartsModule,
+        BaseChartDirective,
         NgxSpinnerModule,
         NgxSelectModule.forRoot(CustomSelectOptions),
         NgMultiSelectDropDownModule.forRoot(),
@@ -136,6 +136,7 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         },
         [DatePipe],
         [FileExcelService],
-        provideHttpClient(withInterceptorsFromDi())
+        provideCharts(withDefaultRegisterables()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi())
     ] })
 export class SystemAdminModule { }

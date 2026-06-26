@@ -12,7 +12,7 @@
   <div>
     <div>
       <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
-          class="fa fa-chevron-left" style="display: inline-block;"></i></button>
+      class="fa fa-chevron-left" style="display: inline-block;"></i></button>
 
 
       <!-- <button  type="submit" title="Submit" class="btn btn-dark" title="Add" (click)="openAddMapping()"><i class="fa fa-plus" aria-hidden="true"></i></button> -->
@@ -33,14 +33,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let dataObj of dataList;let i=index">
-                <td>{{i+1}}</td>
-                <td>{{dataObj?.descr}}</td>
-                <td>
-                  <button class="btn btn-primary" (click)="actionPage(dataObj)" title="Create"
+              
+                <tr *ngFor="let dataObj of dataList; let i = index">
+                  <td>{{i+1}}</td>
+                  <td>{{dataObj?.descr}}</td>
+                  <td>
+                    <button class="btn btn-primary" (click)="actionPage(dataObj)" title="Create"
                     [disabled]="dataObj?.isAllowed == 0">Create</button>
-                </td>
-              </tr>
+                  </td>
+                </tr>
+              
             </tbody>
           </table>
         </div>
@@ -49,72 +51,80 @@
   </div>
 </div>
 
-<div class="modal-backdrop fade show" *ngIf="showLtcFamilyModal || showUpdateFamilyModal"></div>
 
-<div class="modal fade show d-block modal_index" tabindex="-1" role="dialog" *ngIf="showLtcFamilyModal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-        <button type="button" class="close family_close" aria-label="Close" (click)="closeLtcFamilyModal()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <div class="form-group">
-          <div class="row">
-            <div class="col-md-12">
-              <label class="control-label">Family Details</label>
-              <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Age</th>
-                      <th>Relation</th>
-                      <th>Occupation</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let family of ltcFamilyDetails">
-                      <td>{{ family?.memberName }}</td>
-                      <td>{{ family?.age }}</td>
-                      <td>{{ family?.relation }}</td>
-                      <td>{{ family?.occupation }}</td>
-                    </tr>
-                    <tr *ngIf="ltcFamilyDetails.length === 0">
-                      <td colspan="4" class="text-center">No Records</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div class="col-md-12">
-              <div class="form-group row">
-                <div class="col-md-3">
-                  <label class="control-label">Home Town<sup>*</sup></label>
+  <div class="modal-backdrop fade show" *ngIf="showLtcFamilyModal || showUpdateFamilyModal"></div>
+
+
+
+  <div class="modal fade show d-block modal_index" tabindex="-1" role="dialog" *ngIf="showLtcFamilyModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <button type="button" class="close family_close" aria-label="Close" (click)="closeLtcFamilyModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-12">
+                <label class="control-label">Family Details</label>
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Relation</th>
+                        <th>Occupation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                        <tr *ngFor="let family of ltcFamilyDetails">
+                          <td>{{ family?.memberName }}</td>
+                          <td>{{ family?.age }}</td>
+                          <td>{{ family?.relation }}</td>
+                          <td>{{ family?.occupation }}</td>
+                        </tr>
+                      
+                      
+                        <tr *ngIf="ltcFamilyDetails.length === 0">
+                          <td colspan="4" class="text-center">No Records</td>
+                        </tr>
+                      
+                    </tbody>
+                  </table>
                 </div>
-                <div class="col-md-9">
-                  <input [(ngModel)]="ltcHomeTown" type="text" maxlength="50" class="form-control" placeholder="eg. Sonipat">
+              </div>
+              <div class="col-md-12">
+                <div class="form-group row">
+                  <div class="col-md-3">
+                    <label class="control-label">Home Town<sup>*</sup></label>
+                  </div>
+                  <div class="col-md-9">
+                    <input [(ngModel)]="ltcHomeTown" type="text" maxlength="50" class="form-control" placeholder="eg. Sonipat">
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="col-md-12">
-              <div class="form-group">
-                <label class="font-weight-normal">
-                  <input [(ngModel)]="ltcCertify" type="radio" name="certifyRadio" [value]="1">
-                  I Certify the above particulars are true to the best of knowledge and belief.
-                </label>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="font-weight-normal">
+                    <input [(ngModel)]="ltcCertify" type="radio" name="certifyRadio" [value]="1">
+                    I Certify the above particulars are true to the best of knowledge and belief.
+                  </label>
+                </div>
               </div>
-            </div>
-            <div class="col-md-12">
-              <div class="form-group">
-                <label class="font-weight-normal">
-                  <input [(ngModel)]="ltcCertify" type="radio" name="certifyRadio" [value]="0">
-                  The particular need to be updated.
-                </label>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="font-weight-normal">
+                    <input [(ngModel)]="ltcCertify" type="radio" name="certifyRadio" [value]="0">
+                    The particular need to be updated.
+                  </label>
+                </div>
               </div>
-            </div>
-            <div class="col-md-4 offset-md-4">
-              <div class="form-group">
-                <button type="button" class="btn btn-info btn-block" (click)="submitLtcFamilyConfirmation()">Submit</button>
+              <div class="col-md-4 offset-md-4">
+                <div class="form-group">
+                  <button type="button" class="btn btn-info btn-block" (click)="submitLtcFamilyConfirmation()">Submit</button>
+                </div>
               </div>
             </div>
           </div>
@@ -122,49 +132,51 @@
       </div>
     </div>
   </div>
-</div>
 
-<div class="modal fade show d-block modal_index" tabindex="-1" role="dialog" *ngIf="showUpdateFamilyModal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-        <button type="button" class="close" aria-label="Close" (click)="closeUpdateFamilyModal()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <div class="form-group">
-          <div class="row">
-            <div class="col-md-12">
-              <label class="control-label">
-                Please update the family records through proper channel and then you will be permitted to fill the form
-              </label>
-              <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover">
-                  <thead>
-                    <tr>
-                      <th>Cadre</th>
-                      <th>Place</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Officers</td>
-                      <td>Directorate Personnel, CGHQ</td>
-                    </tr>
-                    <tr>
-                      <td>Enrolled Personnels</td>
-                      <td>BUVIK</td>
-                    </tr>
-                    <tr>
-                      <td>Civilian Staffs</td>
-                      <td>Directorate Personnel, CGHQ</td>
-                    </tr>
-                  </tbody>
-                </table>
+
+
+  <div class="modal fade show d-block modal_index" tabindex="-1" role="dialog" *ngIf="showUpdateFamilyModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <button type="button" class="close" aria-label="Close" (click)="closeUpdateFamilyModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-12">
+                <label class="control-label">
+                  Please update the family records through proper channel and then you will be permitted to fill the form
+                </label>
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>Cadre</th>
+                        <th>Place</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Officers</td>
+                        <td>Directorate Personnel, CGHQ</td>
+                      </tr>
+                      <tr>
+                        <td>Enrolled Personnels</td>
+                        <td>BUVIK</td>
+                      </tr>
+                      <tr>
+                        <td>Civilian Staffs</td>
+                        <td>Directorate Personnel, CGHQ</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-            <div class="col-md-4 offset-md-4">
-              <div class="form-group">
-                <button type="button" class="btn btn-info btn-block" (click)="closeUpdateFamilyModal()">I Acknowledge</button>
+              <div class="col-md-4 offset-md-4">
+                <div class="form-group">
+                  <button type="button" class="btn btn-info btn-block" (click)="closeUpdateFamilyModal()">I Acknowledge</button>
+                </div>
               </div>
             </div>
           </div>
@@ -172,4 +184,4 @@
       </div>
     </div>
   </div>
-</div>
+

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UtilService } from 'src/app/service/core/util.service';
@@ -170,6 +170,7 @@ interface Claims {
   selector: 'app-form-pmt',
   templateUrl: './form-pmt.component.html',
   styleUrls: ['./form-pmt.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class FormPmtDutyComponent implements OnInit {

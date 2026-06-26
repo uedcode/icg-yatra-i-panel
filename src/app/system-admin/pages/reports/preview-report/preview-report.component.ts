@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CodeMiscApiService } from 'src/app/service/api/code/code-misc-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -7,6 +7,7 @@ import { CommonService } from 'src/app/service/core/common.service';
   selector: 'app-preview-report',
   templateUrl: './preview-report.component.html',
   styleUrls: ['./preview-report.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class PreviewReportComponent implements OnInit {

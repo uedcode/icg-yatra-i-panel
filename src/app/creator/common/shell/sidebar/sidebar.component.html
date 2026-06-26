@@ -14,68 +14,92 @@
   </div>
 
   <!-- ADV module style (legacy advModule block) -->
-  <ul *ngIf="$auth.isRuntimeAdv()" class="side-menu sidebar_page_scroll">
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['new']">
-        <i class="side-menu__icon fa fa-plus"></i><span class="side-menu__label">New</span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['inbox']">
-        <i class="side-menu__icon fa fa-inbox"></i><span class="side-menu__label">Inbox <span *ngIf="countObj?.inboxCount > 0" class="counts">{{ countObj?.inboxCount }}</span></span>
+  
+    <ul class="side-menu sidebar_page_scroll" *ngIf="$auth.isRuntimeAdv()">
+      <li>
+        <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['new']">
+          <i class="side-menu__icon fa fa-plus"></i><span class="side-menu__label">New</span>
+        </a>
+      </li>
+      <li>
+        <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['inbox']">
+          <i class="side-menu__icon fa fa-inbox"></i><span class="side-menu__label">Inbox 
+          <span class="counts" *ngIf="countObj?.inboxCount > 0">{{ countObj?.inboxCount }}</span>
+        </span>
       </a>
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['outbox']">
-        <i class="side-menu__icon fa fa-reply-all"></i><span class="side-menu__label">Outbox <span *ngIf="countObj?.outboxCount > 0" class="counts">{{ countObj?.outboxCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['draft']">
-        <i class="side-menu__icon fa fa-file"></i><span class="side-menu__label">Draft <span *ngIf="countObj?.draftCount > 0" class="counts">{{ countObj?.draftCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['approved']">
-        <i class="side-menu__icon fa fa-check-square"></i><span class="side-menu__label">Approved <span *ngIf="countObj?.approvedCount > 0" class="counts">{{ countObj?.approvedCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['not-approved']">
-        <i class="side-menu__icon fa fa-times-circle"></i><span class="side-menu__label">Not Approved <span *ngIf="countObj?.notApprovedCount > 0" class="counts">{{ countObj?.notApprovedCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['passed']">
-        <i class="side-menu__icon fa fa-check"></i><span class="side-menu__label">Passed <span *ngIf="countObj?.passedCount > 0" class="counts">{{ countObj?.passedCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['not-passed']">
-        <i class="side-menu__icon fa fa-times"></i><span class="side-menu__label">Not Passed <span *ngIf="countObj?.notPassedCount > 0" class="counts">{{ countObj?.notPassedCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['archive']">
-        <i class="side-menu__icon fa fa-archive"></i><span class="side-menu__label">Archive <span *ngIf="countObj?.archiveCount > 0" class="counts">{{ countObj?.archiveCount }}</span></span>
-      </a>
-    </li>
-
-    <li routerLinkActive="is-expanded" class="slide">
-      <a class="side-menu__item" data-toggle="slide">
-        <i class="side-menu__icon fa fa-money"></i><span class="side-menu__label">Update Pay Details</span><i class="angle fa fa-angle-right"></i>
-      </a>
-      <ul class="slide-menu">
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['form-pay-details']">New</a></li>
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['pay-outbox']">Outbox <span *ngIf="countObj?.payObCount > 0" class="counts">{{ countObj?.payObCount }}</span></a></li>
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['pay-approved']">Approved <span *ngIf="countObj?.payApCount > 0" class="counts">{{ countObj?.payApCount }}</span></a></li>
-        <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['pay-not-approved']">Not Approved <span *ngIf="countObj?.payNapCount > 0" class="counts">{{ countObj?.payNapCount }}</span></a></li>
-      </ul>
-    </li>
+        <i class="side-menu__icon fa fa-reply-all"></i><span class="side-menu__label">Outbox 
+        <span class="counts" *ngIf="countObj?.outboxCount > 0">{{ countObj?.outboxCount }}</span>
+      </span>
+    </a>
+  </li>
+  <li>
+    <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['draft']">
+      <i class="side-menu__icon fa fa-file"></i><span class="side-menu__label">Draft 
+      <span class="counts" *ngIf="countObj?.draftCount > 0">{{ countObj?.draftCount }}</span>
+    </span>
+  </a>
+</li>
+<li>
+  <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['approved']">
+    <i class="side-menu__icon fa fa-check-square"></i><span class="side-menu__label">Approved 
+    <span class="counts" *ngIf="countObj?.approvedCount > 0">{{ countObj?.approvedCount }}</span>
+  </span>
+</a>
+</li>
+<li>
+  <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['not-approved']">
+    <i class="side-menu__icon fa fa-times-circle"></i><span class="side-menu__label">Not Approved 
+    <span class="counts" *ngIf="countObj?.notApprovedCount > 0">{{ countObj?.notApprovedCount }}</span>
+  </span>
+</a>
+</li>
+<li>
+  <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['passed']">
+    <i class="side-menu__icon fa fa-check"></i><span class="side-menu__label">Passed 
+    <span class="counts" *ngIf="countObj?.passedCount > 0">{{ countObj?.passedCount }}</span>
+  </span>
+</a>
+</li>
+<li>
+  <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['not-passed']">
+    <i class="side-menu__icon fa fa-times"></i><span class="side-menu__label">Not Passed 
+    <span class="counts" *ngIf="countObj?.notPassedCount > 0">{{ countObj?.notPassedCount }}</span>
+  </span>
+</a>
+</li>
+<li>
+  <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['archive']">
+    <i class="side-menu__icon fa fa-archive"></i><span class="side-menu__label">Archive 
+    <span class="counts" *ngIf="countObj?.archiveCount > 0">{{ countObj?.archiveCount }}</span>
+  </span>
+</a>
+</li>
+<li routerLinkActive="is-expanded" class="slide">
+  <a class="side-menu__item" data-toggle="slide">
+    <i class="side-menu__icon fa fa-money"></i><span class="side-menu__label">Update Pay Details</span><i class="angle fa fa-angle-right"></i>
+  </a>
+  <ul class="slide-menu">
+    <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['form-pay-details']">New</a></li>
+    <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['pay-outbox']">Outbox 
+      <span class="counts" *ngIf="countObj?.payObCount > 0">{{ countObj?.payObCount }}</span>
+    </a></li>
+    <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['pay-approved']">Approved 
+      <span class="counts" *ngIf="countObj?.payApCount > 0">{{ countObj?.payApCount }}</span>
+    </a></li>
+    <li><a (click)="$auth.closeSidebar()" class="slide-item" routerLinkActive="active current" [routerLink]="['pay-not-approved']">Not Approved 
+      <span class="counts" *ngIf="countObj?.payNapCount > 0">{{ countObj?.payNapCount }}</span>
+    </a></li>
   </ul>
+</li>
+</ul>
 
-  <!-- CLM module style (legacy clmModule block) -->
-  <ul *ngIf="$auth.isRuntimeClm()" class="side-menu sidebar_page_scroll">
+
+<!-- CLM module style (legacy clmModule block) -->
+
+  <ul class="side-menu sidebar_page_scroll" *ngIf="$auth.isRuntimeClm()">
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['movement-update-claim']">
         <i class="side-menu__icon fa fa-plus"></i><span class="side-menu__label">Movement Update</span>
@@ -83,49 +107,68 @@
     </li>
     <li>
       <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['new-claim']">
-        <i class="side-menu__icon fa fa-plus"></i><span class="side-menu__label">New <span *ngIf="countObj?.newClaimCount > 0" class="counts">{{ countObj?.newClaimCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['inbox-claim']">
-        <i class="side-menu__icon fa fa-inbox"></i><span class="side-menu__label">Inbox <span *ngIf="countObj?.inboxClaimCount > 0" class="counts">{{ countObj?.inboxClaimCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['outbox-claim']">
-        <i class="side-menu__icon fa fa-reply-all"></i><span class="side-menu__label">Outbox <span *ngIf="countObj?.outboxClaimCount > 0" class="counts">{{ countObj?.outboxClaimCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['draft-claim']">
-        <i class="side-menu__icon fa fa-file"></i><span class="side-menu__label">Draft <span *ngIf="countObj?.draftClaimCount > 0" class="counts">{{ countObj?.draftClaimCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['approved-claim']">
-        <i class="side-menu__icon fa fa-check-square"></i><span class="side-menu__label">Approved <span *ngIf="countObj?.approvedClaimCount > 0" class="counts">{{ countObj?.approvedClaimCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['not-approved-claim']">
-        <i class="side-menu__icon fa fa-times-circle"></i><span class="side-menu__label">Not Approved <span *ngIf="countObj?.notApprovedClaimCount > 0" class="counts">{{ countObj?.notApprovedClaimCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['passed-claim']">
-        <i class="side-menu__icon fa fa-check"></i><span class="side-menu__label">Passed <span *ngIf="countObj?.passedClaimCount > 0" class="counts">{{ countObj?.passedClaimCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['not-passed-claim']">
-        <i class="side-menu__icon fa fa-times"></i><span class="side-menu__label">Not Passed <span *ngIf="countObj?.notPassedClaimCount > 0" class="counts">{{ countObj?.notPassedClaimCount }}</span></span>
-      </a>
-    </li>
-    <li>
-      <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['archive-claim']">
-        <i class="side-menu__icon fa fa-archive"></i><span class="side-menu__label">Archive <span *ngIf="countObj?.archiveClaimCount > 0" class="counts">{{ countObj?.archiveClaimCount }}</span></span>
-      </a>
-    </li>
-  </ul>
+        <i class="side-menu__icon fa fa-plus"></i><span class="side-menu__label">New 
+        <span class="counts" *ngIf="countObj?.newClaimCount > 0">{{ countObj?.newClaimCount }}</span>
+      </span>
+    </a>
+  </li>
+  <li>
+    <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['inbox-claim']">
+      <i class="side-menu__icon fa fa-inbox"></i><span class="side-menu__label">Inbox 
+      <span class="counts" *ngIf="countObj?.inboxClaimCount > 0">{{ countObj?.inboxClaimCount }}</span>
+    </span>
+  </a>
+</li>
+<li>
+  <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['outbox-claim']">
+    <i class="side-menu__icon fa fa-reply-all"></i><span class="side-menu__label">Outbox 
+    <span class="counts" *ngIf="countObj?.outboxClaimCount > 0">{{ countObj?.outboxClaimCount }}</span>
+  </span>
+</a>
+</li>
+<li>
+  <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['draft-claim']">
+    <i class="side-menu__icon fa fa-file"></i><span class="side-menu__label">Draft 
+    <span class="counts" *ngIf="countObj?.draftClaimCount > 0">{{ countObj?.draftClaimCount }}</span>
+  </span>
+</a>
+</li>
+<li>
+  <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['approved-claim']">
+    <i class="side-menu__icon fa fa-check-square"></i><span class="side-menu__label">Approved 
+    <span class="counts" *ngIf="countObj?.approvedClaimCount > 0">{{ countObj?.approvedClaimCount }}</span>
+  </span>
+</a>
+</li>
+<li>
+  <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['not-approved-claim']">
+    <i class="side-menu__icon fa fa-times-circle"></i><span class="side-menu__label">Not Approved 
+    <span class="counts" *ngIf="countObj?.notApprovedClaimCount > 0">{{ countObj?.notApprovedClaimCount }}</span>
+  </span>
+</a>
+</li>
+<li>
+  <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['passed-claim']">
+    <i class="side-menu__icon fa fa-check"></i><span class="side-menu__label">Passed 
+    <span class="counts" *ngIf="countObj?.passedClaimCount > 0">{{ countObj?.passedClaimCount }}</span>
+  </span>
+</a>
+</li>
+<li>
+  <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['not-passed-claim']">
+    <i class="side-menu__icon fa fa-times"></i><span class="side-menu__label">Not Passed 
+    <span class="counts" *ngIf="countObj?.notPassedClaimCount > 0">{{ countObj?.notPassedClaimCount }}</span>
+  </span>
+</a>
+</li>
+<li>
+  <a (click)="$auth.closeSidebar()" class="side-menu__item" routerLinkActive="active current" [routerLink]="['archive-claim']">
+    <i class="side-menu__icon fa fa-archive"></i><span class="side-menu__label">Archive 
+    <span class="counts" *ngIf="countObj?.archiveClaimCount > 0">{{ countObj?.archiveClaimCount }}</span>
+  </span>
+</a>
+</li>
+</ul>
+
 </aside>
 <!--aside closed-->

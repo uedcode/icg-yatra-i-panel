@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -10,6 +10,7 @@ declare var $: any;
     selector: 'app-common-change-status-action',
     templateUrl: './common-change-status-action.component.html',
     styleUrls: ['./common-change-status-action.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CommonChangeStatusActionComponent implements OnInit {

@@ -1,9 +1,10 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-approver-preview-resettlement-claim',
   templateUrl: './preview-resettlement-claim.component.html',
   styleUrls: ['./preview-resettlement-claim.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ClaimPreviewResettlementComponent {}

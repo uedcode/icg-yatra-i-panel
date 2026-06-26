@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -10,6 +10,7 @@ import { UpdatePmtApiService } from 'src/app/service/api/admin/update-pmt-api.se
   selector: 'app-update-pmt-unit',
   templateUrl: './update-pmt-unit.component.html',
   styleUrls: ['./update-pmt-unit.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class UpdatePmtUnitComponent implements OnInit {

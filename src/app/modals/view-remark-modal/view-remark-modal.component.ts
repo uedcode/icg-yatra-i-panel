@@ -1,10 +1,11 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 
 @Component({
     selector: 'app-view-remark-modal',
     templateUrl: './view-remark-modal.component.html',
     styleUrls: ['./view-remark-modal.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ViewRemarkModalComponent implements OnInit {

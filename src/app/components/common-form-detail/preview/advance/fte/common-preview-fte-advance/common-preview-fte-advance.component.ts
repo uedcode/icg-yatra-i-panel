@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
@@ -12,6 +12,7 @@ import { isESign, isInkSign } from 'src/app/shared/utils/legacy-preview.util';
   selector: 'app-common-preview-fte-advance',
   templateUrl: './common-preview-fte-advance.component.html',
   styleUrls: ['./common-preview-fte-advance.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CommonPreviewFteAdvanceComponent implements OnInit {
@@ -31,7 +32,7 @@ export class CommonPreviewFteAdvanceComponent implements OnInit {
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.route.queryParams.subscribe((params) => {
-      this.claimId = params?.id || null;
+      this.claimId = params?.id || params?.claimId || params?.formId || null;
       this.loadPreview();
     });
   }

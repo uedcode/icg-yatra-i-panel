@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { CommonService } from 'src/app/service/core/common.service';
 import { ImportExportApiService } from 'src/app/service/api/batch/import-export-api.service';
@@ -9,6 +9,7 @@ declare var $: any;
 @Component({
   selector: 'app-sys-admin-excel-import',
   templateUrl: './excel-import.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SysAdminExcelImportComponent {

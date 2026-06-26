@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
@@ -25,6 +25,7 @@ type LtcBucketGroup = {
   selector: 'app-approver-form-ltc-availed-history',
   templateUrl: './form-ltc-availed-history.component.html',
   styleUrls: ['./form-ltc-availed-history.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class FormLtcAvailedHistoryComponent implements OnInit {

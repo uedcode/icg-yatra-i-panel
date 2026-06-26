@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { NgOtpInputComponent } from 'ng-otp-input';
@@ -10,6 +10,7 @@ declare var $: any;
     selector: 'app-verify-otp-modal',
     templateUrl: './verify-otp-modal.component.html',
     styleUrls: ['./verify-otp-modal.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class VerifyOtpModalComponent implements OnInit {

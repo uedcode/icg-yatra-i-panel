@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import * as crypto from 'crypto-js';
@@ -11,6 +11,7 @@ declare var $: any;
     selector: 'app-verify-totp-modal',
     templateUrl: './verify-totp-modal.component.html',
     styleUrls: ['./verify-totp-modal.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class VerifyTotpModalComponent implements OnInit {

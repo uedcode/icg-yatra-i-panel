@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
@@ -13,6 +13,7 @@ declare var $: any;
     selector: 'app-not-passed',
     templateUrl: './not-passed.component.html',
     styleUrls: ['./not-passed.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class NotPassedComponent implements OnInit {

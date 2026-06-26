@@ -1,94 +1,105 @@
 <app-common-form-header [pageTitle]="pageTitle" sectionLabel="Advance">
-          <div class="detail-actions">
-            <button
-              *ngIf="!previewMode"
-              type="button"
-              class="btn btn-info mr-2"
-              (click)="openPreview()"
-            >
-              Preview
-            </button>
-            <button type="button" class="btn btn-dark request_view_back" (click)="goBack()">
-              <i class="fa fa-chevron-left"></i>
-            </button>
-          </div>
-        </app-common-form-header>
+  <div class="detail-actions">
+    
+      <button
+        type="button"
+        class="btn btn-info mr-2"
+        (click)="openPreview()"
+         *ngIf="!previewMode">
+        Preview
+      </button>
+    
+    <button type="button" class="btn btn-dark request_view_back" (click)="goBack()">
+      <i class="fa fa-chevron-left"></i>
+    </button>
+  </div>
+</app-common-form-header>
 
 
 
-        <div class="card mb-3" *ngIf="canTakeAction()">
-          <div class="card-header">
-            <strong>Verification / Approval Action</strong>
-          </div>
+
+  <div class="card mb-3" *ngIf="canTakeAction()">
+    <div class="card-header">
+      <strong>Verification / Approval Action</strong>
+    </div>
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label d-block mb-2"><strong>Review Checklist</strong></label>
+        <div class="review-checklist">
+          
+            <label class="review-check" *ngFor="let section of reviewSections">
+              <input type="checkbox" [(ngModel)]="section.checked" [name]="section.key" />
+              <span>{{ section.label }}</span>
+            </label>
+          
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Remark</label>
+        <textarea
+          class="form-control"
+          rows="4"
+          [(ngModel)]="remark"
+          name="remark"
+          [placeholder]="getActionPreviewRemark(codeStatus?.outbox) || 'Enter remark'"
+        ></textarea>
+      </div>
+      
+        <div class="text-muted mt-2" *ngIf="!remark">
+          Default remark will be used based on the selected action.
+        </div>
+      
+      
+        <div class="advance-ceiling card mt-3" *ngIf="showAdvanceCeilingControls">
           <div class="card-body">
-            <div class="mb-3">
-              <label class="form-label d-block mb-2"><strong>Review Checklist</strong></label>
-              <div class="review-checklist">
-                <label class="review-check" *ngFor="let section of reviewSections">
-                  <input type="checkbox" [(ngModel)]="section.checked" [name]="section.key" />
-                  <span>{{ section.label }}</span>
-                </label>
+            <div class="row align-items-end">
+              <div class="col-md-4">
+                <label class="form-label">Advance Ceiling (in %)</label>
+                <select
+                  class="form-control"
+                  [ngModel]="redPercentage"
+                  (ngModelChange)="setRecommendAmount($event)"
+                  name="redPercentage"
+                  >
+                  <option [ngValue]="null" disabled>Select</option>
+                  
+                    <option [ngValue]="option" *ngFor="let option of advanceCeilingOptions">
+                      {{ option }}
+                    </option>
+                  
+                </select>
+                <small class="form-text text-muted">
+                  Advance Ceiling Amount will affect Advance Admissible Amount.
+                </small>
               </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Remark</label>
-              <textarea
-                class="form-control"
-                rows="4"
-                [(ngModel)]="remark"
-                name="remark"
-                [placeholder]="getActionPreviewRemark(codeStatus?.outbox) || 'Enter remark'"
-              ></textarea>
-            </div>
-            <div class="text-muted mt-2" *ngIf="!remark">
-              Default remark will be used based on the selected action.
-            </div>
-
-            <div class="advance-ceiling card mt-3" *ngIf="showAdvanceCeilingControls">
-              <div class="card-body">
-                <div class="row align-items-end">
-                  <div class="col-md-4">
-                    <label class="form-label">Advance Ceiling (in %)</label>
-                    <select
-                      class="form-control"
-                      [ngModel]="redPercentage"
-                      (ngModelChange)="setRecommendAmount($event)"
-                      name="redPercentage"
-                    >
-                      <option [ngValue]="null" disabled>Select</option>
-                      <option *ngFor="let option of advanceCeilingOptions" [ngValue]="option">
-                        {{ option }}
-                      </option>
-                    </select>
-                    <small class="form-text text-muted">
-                      Advance Ceiling Amount will affect Advance Admissible Amount.
-                    </small>
-                  </div>
-
-                  <div class="col-md-2" *ngIf="redPercentage !== null">
-                    <button type="button" class="btn btn-outline-secondary mt-2 mt-md-0" (click)="clearAdvanceCeiling()">
-                      Clear
-                    </button>
-                  </div>
-
-                  <div class="col-md-3" *ngIf="redPercentage !== null">
-                    <label class="form-label">Advance Ceiling Amount</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      [ngModel]="redAmount"
-                      (ngModelChange)="updateAdmissibleAmt($event)"
-                      [max]="maxRedAmt || null"
-                      min="0"
-                      maxlength="10"
-                      name="redAmount"
+              
+                <div class="col-md-2" *ngIf="redPercentage !== null">
+                  <button type="button" class="btn btn-outline-secondary mt-2 mt-md-0" (click)="clearAdvanceCeiling()">
+                    Clear
+                  </button>
+                </div>
+              
+              
+                <div class="col-md-3" *ngIf="redPercentage !== null">
+                  <label class="form-label">Advance Ceiling Amount</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    [ngModel]="redAmount"
+                    (ngModelChange)="updateAdmissibleAmt($event)"
+                    [max]="maxRedAmt || null"
+                    min="0"
+                    maxlength="10"
+                    name="redAmount"
                     />
-                    <small class="form-text text-muted" *ngIf="maxRedAmt !== null">
-                      Max allowed: {{ maxRedAmt }}
-                    </small>
+                    
+                      <small class="form-text text-muted" *ngIf="maxRedAmt !== null">
+                        Max allowed: {{ maxRedAmt }}
+                      </small>
+                    
                   </div>
-
+                
+                
                   <div class="col-md-3" *ngIf="redPercentage !== null">
                     <label class="form-label">Advance Ceiling Remarks</label>
                     <textarea
@@ -100,316 +111,341 @@
                       placeholder="Remarks"
                     ></textarea>
                   </div>
-                </div>
+                
               </div>
             </div>
-
-            <div class="mt-3">
-              <button
-                type="button"
-                class="btn btn-primary mr-2"
-                [disabled]="actionLoading || !allSectionsReviewed"
-                (click)="submitAction(codeStatus?.outbox)"
-              >
-                {{ primaryActionLabel }}
-              </button>
-              <button
-                type="button"
-                class="btn btn-warning mr-2"
-                [disabled]="actionLoading || !allSectionsReviewed"
-                (click)="submitAction(codeStatus?.returned)"
-              >
-                Return
-              </button>
-              <button
-                *ngIf="canReject"
-                type="button"
-                class="btn btn-danger"
-                [disabled]="actionLoading || !allSectionsReviewed"
-                (click)="submitAction(codeStatus?.notApproved)"
-              >
-                Reject
-              </button>
-            </div>
-
-            <div class="text-muted mt-2" *ngIf="!allSectionsReviewed">
-              Complete all review checkboxes before taking action.
-            </div>
-            <div class="text-danger mt-2" *ngIf="pendingUploadedDocumentCount > 0">
-              {{ pendingUploadedDocumentCount }} uploaded document(s) still need verification before forward.
-            </div>
-            <div class="text-info mt-2" *ngIf="requiresESignForForward">
-              This advance is marked for eSign and will continue through the eSign flow on forward.
-            </div>
           </div>
+        
+        <div class="mt-3">
+          <button
+            type="button"
+            class="btn btn-primary mr-2"
+            [disabled]="actionLoading || !allSectionsReviewed"
+            (click)="submitAction(codeStatus?.outbox)"
+            >
+            {{ primaryActionLabel }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning mr-2"
+            [disabled]="actionLoading || !allSectionsReviewed"
+            (click)="submitAction(codeStatus?.returned)"
+            >
+            Return
+          </button>
+          
+            <button
+              type="button"
+              class="btn btn-danger"
+              [disabled]="actionLoading || !allSectionsReviewed"
+              (click)="submitAction(codeStatus?.notApproved)"
+               *ngIf="canReject">
+              Reject
+            </button>
+          
         </div>
-
-
-
-        <div class="card mb-3">
-          <div class="card-header">
-            <strong>Form Summary</strong>
+        
+          <div class="text-muted mt-2" *ngIf="!allSectionsReviewed">
+            Complete all review checkboxes before taking action.
           </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-3"><strong>Claim ID:</strong> {{ ((formObj?.claimId || claimId) | legacyValue) }}</div>
-              <div class="col-md-3"><strong>Sub Form:</strong> {{ (subFormId | legacyValue) }}</div>
-              <div class="col-md-3"><strong>State:</strong> {{ (formObj?.claimState || statusId) | codeStatus:'-' }}</div>
-              <div class="col-md-3"><strong>Sign With:</strong> {{ (formObj?.signWith | legacyValue) }}</div>
-            </div>
+        
+        
+          <div class="text-danger mt-2" *ngIf="pendingUploadedDocumentCount > 0">
+            {{ pendingUploadedDocumentCount }} uploaded document(s) still need verification before forward.
           </div>
-        </div>
-
-
-
-        <div class="card mb-3" *ngIf="reviewSections.length">
-          <div class="card-header">
-            <strong>Review Tabs</strong>
+        
+        
+          <div class="text-info mt-2" *ngIf="requiresESignForForward">
+            This advance is marked for eSign and will continue through the eSign flow on forward.
           </div>
-          <div class="card-body">
-            <div class="review-tab-list">
-              <button
-                type="button"
-                class="review-tab-btn"
-                *ngFor="let section of reviewSections"
-                [class.active]="isActiveSection(section.key)"
-                [class.reviewed]="section.checked"
-                (click)="selectReviewSection(section.key)"
-              >
-                <span>{{ section.label }}</span>
+        
+      </div>
+    </div>
+  
+
+
+
+  <div class="card mb-3">
+    <div class="card-header">
+      <strong>Form Summary</strong>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-3"><strong>Claim ID:</strong> {{ ((formObj?.claimId || claimId) | legacyValue) }}</div>
+        <div class="col-md-3"><strong>Sub Form:</strong> {{ (subFormId | legacyValue) }}</div>
+        <div class="col-md-3"><strong>State:</strong> {{ (formObj?.claimState || statusId) | codeStatus:'-' }}</div>
+        <div class="col-md-3"><strong>Sign With:</strong> {{ (formObj?.signWith | legacyValue) }}</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  
+    <div class="card mb-3" *ngIf="reviewSections.length">
+      <div class="card-header">
+        <strong>Review Tabs</strong>
+      </div>
+      <div class="card-body">
+        <div class="review-tab-list">
+          
+            <button
+              type="button"
+              class="review-tab-btn"
+              [class.active]="isActiveSection(section.key)"
+              [class.reviewed]="section.checked"
+              (click)="selectReviewSection(section.key)"
+               *ngFor="let section of reviewSections">
+              <span>{{ section.label }}</span>
+              
                 <small *ngIf="section.checked">Reviewed</small>
-              </button>
-            </div>
+              
+            </button>
+          
+        </div>
+      </div>
+    </div>
+  
+
+  <ng-container *ngIf="!isLtcHistory()">
+    
+      <div class="card mb-3" *ngIf="showPersonalSection()">
+        <div class="card-header">
+          <strong>Personal Details</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3"><strong>Name:</strong> {{ (primaryAdvanceDetails?.name | legacyValue) }}</div>
+            <div class="col-md-3"><strong>Rank:</strong> {{ (primaryAdvanceDetails?.rank | legacyValue) }}</div>
+            <div class="col-md-3"><strong>PNO:</strong> {{ (primaryAdvanceDetails?.pno | legacyValue) }}</div>
+            <div class="col-md-3"><strong>Pay Level:</strong> {{ (primaryAdvanceDetails?.payLevel | legacyValue) }}</div>
+            <div class="col-md-3"><strong>Basic Pay:</strong> {{ (primaryAdvanceDetails?.basicPay | legacyValue) }}</div>
+            <div class="col-md-3"><strong>Applied To:</strong> {{ (primaryAdvanceDetails?.appliedTo | legacyValue) }}</div>
+            <div class="col-md-3"><strong>GX No:</strong> {{ (primaryAdvanceDetails?.gxNumber | legacyValue) }}</div>
+            <div class="col-md-3"><strong>GX Date:</strong> {{ (primaryAdvanceDetails?.gxDate | legacyDate) }}</div>
+            <div class="col-md-3"><strong>Occurrence Date:</strong> {{ (formObj?.occDate | legacyDate) }}</div>
+            <div class="col-md-3"><strong>Present Unit:</strong> {{ (primaryAdvanceDetails?.videPresentUnit | legacyValue) }}</div>
           </div>
         </div>
-
-        <ng-container *ngIf="!isLtcHistory()">
-          <div class="card mb-3" *ngIf="showPersonalSection()">
-            <div class="card-header">
-              <strong>Personal Details</strong>
+      </div>
+    
+    
+      <div class="card mb-3" *ngIf="showTravelSection()">
+        <div class="card-header">
+          <strong>Travel / Form Details</strong>
+        </div>
+        <div class="card-body">
+          
+            <div class="row" *ngIf="subFormId === 'P'">
+              <div class="col-md-3"><strong>PMT Type:</strong> {{ (primaryAdvanceDetails?.pmtType | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Transfer To:</strong> {{ (primaryAdvanceDetails?.permTransTo | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Station From:</strong> {{ ((primaryAdvanceDetails?.stnFrom || primaryAdvanceDetails?.stationFrom) | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Station To:</strong> {{ ((primaryAdvanceDetails?.stnTo || primaryAdvanceDetails?.stationTo) | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Distance:</strong> {{ (primaryAdvanceDetails?.distance | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Area Type:</strong> {{ (primaryAdvanceDetails?.areaType | legacyValue) }}</div>
             </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-3"><strong>Name:</strong> {{ (primaryAdvanceDetails?.name | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Rank:</strong> {{ (primaryAdvanceDetails?.rank | legacyValue) }}</div>
-                <div class="col-md-3"><strong>PNO:</strong> {{ (primaryAdvanceDetails?.pno | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Pay Level:</strong> {{ (primaryAdvanceDetails?.payLevel | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Basic Pay:</strong> {{ (primaryAdvanceDetails?.basicPay | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Applied To:</strong> {{ (primaryAdvanceDetails?.appliedTo | legacyValue) }}</div>
-                <div class="col-md-3"><strong>GX No:</strong> {{ (primaryAdvanceDetails?.gxNumber | legacyValue) }}</div>
-                <div class="col-md-3"><strong>GX Date:</strong> {{ (primaryAdvanceDetails?.gxDate | legacyDate) }}</div>
-                <div class="col-md-3"><strong>Occurrence Date:</strong> {{ (formObj?.occDate | legacyDate) }}</div>
-                <div class="col-md-3"><strong>Present Unit:</strong> {{ (primaryAdvanceDetails?.videPresentUnit | legacyValue) }}</div>
-              </div>
+          
+          
+            <div class="row" *ngIf="subFormId === 'T'">
+              <div class="col-md-3"><strong>Purpose:</strong> {{ (primaryAdvanceDetails?.purpose | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Purpose Type:</strong> {{ (primaryAdvanceDetails?.purposeType | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Proceeding To:</strong> {{ (primaryAdvanceDetails?.stationProceedingTo | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Duration:</strong> {{ (primaryAdvanceDetails?.duration | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Temporary Duty To:</strong> {{ ((primaryAdvanceDetails?.tempTransTo || primaryAdvanceDetails?.tempTransferToType) | legacyValue) }}</div>
+              <div class="col-md-3"><strong>GX Unit:</strong> {{ (primaryAdvanceDetails?.gxUnit | legacyValue) }}</div>
             </div>
+          
+          
+            <div class="row" *ngIf="subFormId === 'F'">
+              <div class="col-md-3"><strong>Purpose:</strong> {{ (primaryAdvanceDetails?.purpose | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Purpose Type:</strong> {{ (primaryAdvanceDetails?.purposeType | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Proceeding To:</strong> {{ (primaryAdvanceDetails?.stationProceedingTo | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Country:</strong> {{ (primaryAdvanceDetails?.country | legacyValue) }}</div>
+              <div class="col-md-3"><strong>GX Unit:</strong> {{ (primaryAdvanceDetails?.gxUnit | legacyValue) }}</div>
+            </div>
+          
+          
+            <div class="row" *ngIf="subFormId === 'L'">
+              <div class="col-md-3"><strong>LTC Type:</strong> {{ (primaryAdvanceDetails?.ltcType | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Block Year:</strong> {{ (primaryAdvanceDetails?.blockYear | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Place Of Visit:</strong> {{ (primaryAdvanceDetails?.placeOfVisit | legacyValue) }}</div>
+              <div class="col-md-3"><strong>LTC Place:</strong> {{ (primaryAdvanceDetails?.ltcPlace | legacyValue) }}</div>
+              <div class="col-md-3"><strong>GX Unit:</strong> {{ (primaryAdvanceDetails?.gxUnit | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Joining Date:</strong> {{ (primaryAdvanceDetails?.joiningDate | legacyDate) }}</div>
+              <div class="col-md-3"><strong>Is DTS:</strong> {{ (primaryAdvanceDetails?.isDts | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Arrival Fare:</strong> {{ (primaryAdvanceDetails?.arrFare | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Place:</strong> {{ (primaryAdvanceDetails?.place | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Date:</strong> {{ (primaryAdvanceDetails?.date | legacyDate) }}</div>
+            </div>
+          
+          
+            <div class="row" *ngIf="subFormId === 'M'">
+              <div class="col-md-3"><strong>Unit:</strong> {{ (primaryAdvanceDetails?.codeUnitDTO?.descr | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Form Type:</strong> {{ (primaryAdvanceDetails?.formType | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Reason:</strong> {{ (primaryAdvanceDetails?.reason | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Amount:</strong> {{ (primaryAdvanceDetails?.amount | legacyValue) }}</div>
+              <div class="col-md-3"><strong>Admissible:</strong> {{ (primaryAdvanceDetails?.admissibleAmt | legacyValue) }}</div>
+            </div>
+          
+        </div>
+      </div>
+    
+    
+      <div class="card mb-3" *ngIf="subFormId === 'M' &amp;&amp; manualAdvanceDetails?.manualFormUrl &amp;&amp; showTravelSection()">
+        <div class="card-header">
+          <strong>Manual Signed Form</strong>
+        </div>
+        <div class="card-body">
+          <button type="button" class="btn btn-info" (click)="viewManualSignedForm()">
+            View Manual Signed Form
+          </button>
+        </div>
+      </div>
+    
+    
+      <div class="card mb-3" *ngIf="subFormId === 'L' &amp;&amp; hasFamilyDetails &amp;&amp; showTravelSection()">
+        <div class="card-header">
+          <strong>Family Details</strong>
+        </div>
+        <div class="card-body table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Relation</th>
+                <th>Occupation</th>
+                <th>Selected</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+                <tr *ngFor="let row of formObj?.yatFamilyDetailDTOs">
+                  <td>{{ (row?.memberName | legacyValue) }}</td>
+                  <td>{{ (row?.age | legacyValue) }}</td>
+                  <td>{{ (row?.relation | legacyValue) }}</td>
+                  <td>{{ (row?.occupation | legacyValue) }}</td>
+                  <td>{{ (row?.checkedIndicator ? 'Yes' : 'No' | legacyValue) }}</td>
+                </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+    
+      <div class="card mb-3" *ngIf="showFinancialSection()">
+        <div class="card-header">
+          <strong>Financial / Travel Breakdown</strong>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-3"><strong>Advance Amt:</strong> {{ displayedAdvanceAmount }}</div>
+            <div class="col-md-3"><strong>DTS Amt:</strong> {{ (primaryAdvanceDetails?.dtsAmount | legacyValue) }}</div>
+            <div class="col-md-3"><strong>Total Budgeted:</strong> {{ displayedTotalBudgetedAmount }}</div>
+            <div class="col-md-3"><strong>Total Amt:</strong> {{ (primaryAdvanceDetails?.totalAmt | legacyValue) }}</div>
           </div>
-
-
-
-          <div class="card mb-3" *ngIf="showTravelSection()">
-            <div class="card-header">
-              <strong>Travel / Form Details</strong>
+          
+            <div class="alert alert-warning py-2" *ngIf="redPercentage !== null">
+              Recommended ceiling applied at <strong>{{ redPercentage }}%</strong>
+              with admissible advance amount <strong>{{ redAmount || '-' }}</strong>.
             </div>
-            <div class="card-body">
-              <div class="row" *ngIf="subFormId === 'P'">
-                <div class="col-md-3"><strong>PMT Type:</strong> {{ (primaryAdvanceDetails?.pmtType | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Transfer To:</strong> {{ (primaryAdvanceDetails?.permTransTo | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Station From:</strong> {{ ((primaryAdvanceDetails?.stnFrom || primaryAdvanceDetails?.stationFrom) | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Station To:</strong> {{ ((primaryAdvanceDetails?.stnTo || primaryAdvanceDetails?.stationTo) | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Distance:</strong> {{ (primaryAdvanceDetails?.distance | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Area Type:</strong> {{ (primaryAdvanceDetails?.areaType | legacyValue) }}</div>
-              </div>
-
-              <div class="row" *ngIf="subFormId === 'T'">
-                <div class="col-md-3"><strong>Purpose:</strong> {{ (primaryAdvanceDetails?.purpose | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Purpose Type:</strong> {{ (primaryAdvanceDetails?.purposeType | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Proceeding To:</strong> {{ (primaryAdvanceDetails?.stationProceedingTo | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Duration:</strong> {{ (primaryAdvanceDetails?.duration | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Temporary Duty To:</strong> {{ ((primaryAdvanceDetails?.tempTransTo || primaryAdvanceDetails?.tempTransferToType) | legacyValue) }}</div>
-                <div class="col-md-3"><strong>GX Unit:</strong> {{ (primaryAdvanceDetails?.gxUnit | legacyValue) }}</div>
-              </div>
-
-              <div class="row" *ngIf="subFormId === 'F'">
-                <div class="col-md-3"><strong>Purpose:</strong> {{ (primaryAdvanceDetails?.purpose | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Purpose Type:</strong> {{ (primaryAdvanceDetails?.purposeType | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Proceeding To:</strong> {{ (primaryAdvanceDetails?.stationProceedingTo | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Country:</strong> {{ (primaryAdvanceDetails?.country | legacyValue) }}</div>
-                <div class="col-md-3"><strong>GX Unit:</strong> {{ (primaryAdvanceDetails?.gxUnit | legacyValue) }}</div>
-              </div>
-
-              <div class="row" *ngIf="subFormId === 'L'">
-                <div class="col-md-3"><strong>LTC Type:</strong> {{ (primaryAdvanceDetails?.ltcType | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Block Year:</strong> {{ (primaryAdvanceDetails?.blockYear | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Place Of Visit:</strong> {{ (primaryAdvanceDetails?.placeOfVisit | legacyValue) }}</div>
-                <div class="col-md-3"><strong>LTC Place:</strong> {{ (primaryAdvanceDetails?.ltcPlace | legacyValue) }}</div>
-                <div class="col-md-3"><strong>GX Unit:</strong> {{ (primaryAdvanceDetails?.gxUnit | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Joining Date:</strong> {{ (primaryAdvanceDetails?.joiningDate | legacyDate) }}</div>
-                <div class="col-md-3"><strong>Is DTS:</strong> {{ (primaryAdvanceDetails?.isDts | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Arrival Fare:</strong> {{ (primaryAdvanceDetails?.arrFare | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Place:</strong> {{ (primaryAdvanceDetails?.place | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Date:</strong> {{ (primaryAdvanceDetails?.date | legacyDate) }}</div>
-              </div>
-
-              <div class="row" *ngIf="subFormId === 'M'">
-                <div class="col-md-3"><strong>Unit:</strong> {{ (primaryAdvanceDetails?.codeUnitDTO?.descr | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Form Type:</strong> {{ (primaryAdvanceDetails?.formType | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Reason:</strong> {{ (primaryAdvanceDetails?.reason | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Amount:</strong> {{ (primaryAdvanceDetails?.amount | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Admissible:</strong> {{ (primaryAdvanceDetails?.admissibleAmt | legacyValue) }}</div>
-              </div>
-            </div>
-          </div>
-
-
-
-          <div class="card mb-3" *ngIf="subFormId === 'M' && manualAdvanceDetails?.manualFormUrl && showTravelSection()">
-            <div class="card-header">
-              <strong>Manual Signed Form</strong>
-            </div>
-            <div class="card-body">
-              <button type="button" class="btn btn-info" (click)="viewManualSignedForm()">
-                View Manual Signed Form
-              </button>
-            </div>
-          </div>
-
-
-
-          <div class="card mb-3" *ngIf="subFormId === 'L' && hasFamilyDetails && showTravelSection()">
-            <div class="card-header">
-              <strong>Family Details</strong>
-            </div>
-            <div class="card-body table-responsive">
+          
+          
+            <div class="table-responsive" *ngIf="formObj?.yatDtsDetailDTOs?.length">
               <table class="table table-bordered">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Relation</th>
-                    <th>Occupation</th>
-                    <th>Selected</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Mode</th>
+                    <th>DTS</th>
+                    <th>Amount</th>
+                    <th>Reason</th>
+                    <th>Remarks</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let row of formObj?.yatFamilyDetailDTOs">
-                    <td>{{ (row?.memberName | legacyValue) }}</td>
-                    <td>{{ (row?.age | legacyValue) }}</td>
-                    <td>{{ (row?.relation | legacyValue) }}</td>
-                    <td>{{ (row?.occupation | legacyValue) }}</td>
-                    <td>{{ (row?.checkedIndicator ? 'Yes' : 'No' | legacyValue) }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-
-
-          <div class="card mb-3" *ngIf="showFinancialSection()">
-            <div class="card-header">
-              <strong>Financial / Travel Breakdown</strong>
-            </div>
-            <div class="card-body">
-              <div class="row mb-3">
-                <div class="col-md-3"><strong>Advance Amt:</strong> {{ displayedAdvanceAmount }}</div>
-                <div class="col-md-3"><strong>DTS Amt:</strong> {{ (primaryAdvanceDetails?.dtsAmount | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Total Budgeted:</strong> {{ displayedTotalBudgetedAmount }}</div>
-                <div class="col-md-3"><strong>Total Amt:</strong> {{ (primaryAdvanceDetails?.totalAmt | legacyValue) }}</div>
-              </div>
-
-              <div class="alert alert-warning py-2" *ngIf="redPercentage !== null">
-                Recommended ceiling applied at <strong>{{ redPercentage }}%</strong>
-                with admissible advance amount <strong>{{ redAmount || '-' }}</strong>.
-              </div>
-
-              <div class="table-responsive" *ngIf="formObj?.yatDtsDetailDTOs?.length">
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>From</th>
-                      <th>To</th>
-                      <th>Mode</th>
-                      <th>DTS</th>
-                      <th>Amount</th>
-                      <th>Reason</th>
-                      <th>Remarks</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                  
                     <tr *ngFor="let row of formObj?.yatDtsDetailDTOs">
                       <td>{{ (row?.source | legacyValue) }}</td>
                       <td>{{ (row?.destination | legacyValue) }}</td>
                       <td>
                         {{ (row?.modeOfTravel | legacyValue) }}
-                        <span *ngIf="row?.otherModeOfTravel">({{ (row?.otherModeOfTravel | legacyValue) }})</span>
+                        
+                          <span *ngIf="row?.otherModeOfTravel">({{ (row?.otherModeOfTravel | legacyValue) }})</span>
+                        
                       </td>
                       <td>{{ (row?.isDts | legacyValue) }}</td>
                       <td>{{ ((row?.amount || row?.tempAmount) | legacyValue) }}</td>
                       <td>{{ ((row?.reasonForNoDts || row?.reasonDts) | legacyValue) }}</td>
                       <td>{{ (row?.remarks | legacyValue) }}</td>
                     </tr>
-                  </tbody>
-                </table>
-              </div>
+                  
+                </tbody>
+              </table>
             </div>
+          
+        </div>
+      </div>
+    
+    
+      <div class="card mb-3" *ngIf="showBankSection()">
+        <div class="card-header">
+          <strong>Bank Details</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3"><strong>Bank Name:</strong> {{ (formObj?.yatClaimBankDetailDTO?.bankName | legacyValue) }}</div>
+            <div class="col-md-3"><strong>IFSC:</strong> {{ (formObj?.yatClaimBankDetailDTO?.ifscCode | legacyValue) }}</div>
+            <div class="col-md-3"><strong>Account No:</strong> {{ (formObj?.yatClaimBankDetailDTO?.bankAccNo | legacyValue) }}</div>
+            <div class="col-md-3"><strong>MICR:</strong> {{ (formObj?.yatClaimBankDetailDTO?.micrCode | legacyValue) }}</div>
           </div>
-
-
-
-          <div class="card mb-3" *ngIf="showBankSection()">
-            <div class="card-header">
-              <strong>Bank Details</strong>
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-3"><strong>Bank Name:</strong> {{ (formObj?.yatClaimBankDetailDTO?.bankName | legacyValue) }}</div>
-                <div class="col-md-3"><strong>IFSC:</strong> {{ (formObj?.yatClaimBankDetailDTO?.ifscCode | legacyValue) }}</div>
-                <div class="col-md-3"><strong>Account No:</strong> {{ (formObj?.yatClaimBankDetailDTO?.bankAccNo | legacyValue) }}</div>
-                <div class="col-md-3"><strong>MICR:</strong> {{ (formObj?.yatClaimBankDetailDTO?.micrCode | legacyValue) }}</div>
-              </div>
-            </div>
-          </div>
-
-
-
-          <div class="card mb-3" *ngIf="currentReviewSection && !isLtcHistory()">
-            <div class="card-body review-tab-footer">
-              <label class="review-check mb-0">
-                <input
-                  type="checkbox"
-                  [(ngModel)]="currentReviewSection.checked"
-                  [name]="'reviewed-' + currentReviewSection.key"
-                />
-                <span>Mark "{{ currentReviewSection.label }}" as reviewed</span>
-              </label>
-              <div class="review-tab-nav">
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary btn-sm"
-                  (click)="goToPreviousSection()"
-                  [disabled]="!canGoToPreviousSection"
+        </div>
+      </div>
+    
+    
+      <div class="card mb-3" *ngIf="currentReviewSection &amp;&amp; !isLtcHistory()">
+        <div class="card-body review-tab-footer">
+          <label class="review-check mb-0">
+            <input
+              type="checkbox"
+              [(ngModel)]="currentReviewSection.checked"
+              [name]="'reviewed-' + currentReviewSection.key"
+              />
+              <span>Mark "{{ currentReviewSection.label }}" as reviewed</span>
+            </label>
+            <div class="review-tab-nav">
+              <button
+                type="button"
+                class="btn btn-outline-secondary btn-sm"
+                (click)="goToPreviousSection()"
+                [disabled]="!canGoToPreviousSection"
                 >
-                  Previous
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-info btn-sm"
-                  (click)="goToNextSection()"
-                  [disabled]="!canGoToNextSection"
+                Previous
+              </button>
+              <button
+                type="button"
+                class="btn btn-info btn-sm"
+                (click)="goToNextSection()"
+                [disabled]="!canGoToNextSection"
                 >
-                  Next
-                </button>
-              </div>
+                Next
+              </button>
             </div>
           </div>
-        </ng-container>
+        </div>
+      
+    </ng-container>
 
-        <div class="card mb-3" *ngIf="isLtcHistory()">
-          <div class="card-header">
-            <strong>LTC Availed History</strong>
-          </div>
-          <div class="card-body">
-            <div *ngFor="let bucket of visibleLtcBucketGroups" class="ltc-bucket mb-4">
+    
+      <div class="card mb-3" *ngIf="isLtcHistory()">
+        <div class="card-header">
+          <strong>LTC Availed History</strong>
+        </div>
+        <div class="card-body">
+          
+            <div class="ltc-bucket mb-4" *ngFor="let bucket of visibleLtcBucketGroups">
               <h5 class="ltc-bucket-title">{{ bucket.label }}</h5>
               <div class="table-responsive">
                 <table class="table table-bordered">
@@ -427,73 +463,86 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let row of bucket.rows">
-                      <td>{{ (row?.year | legacyValue) }}</td>
-                      <td>{{ yesNo(row?.availed) }}</td>
-                      <td>{{ (row?.ltcType | legacyValue) }}</td>
-                      <td>{{ (row?.ltcSubType | legacyValue) }}</td>
-                      <td>{{ (row?.frmLocation | legacyValue) }}</td>
-                      <td>{{ (row?.toLocation | legacyValue) }}</td>
-                      <td>{{ (row?.occDate | legacyDate) }}</td>
-                      <td>{{ (row?.reason | legacyValue) }}</td>
-                      <td>
-                        <div *ngIf="row?._selectedFamilyMembers?.length; else noFamilyMembers">
-                          <div
-                            class="family-member"
-                            *ngFor="let family of row?._selectedFamilyMembers"
-                          >
-                            <strong>{{ (family?.memberName | legacyValue) }}</strong>
-                            <span>
-                              ({{ (family?.relation | legacyValue) }}, Age {{ (family?.age | legacyValue) }})
-                            </span>
-                            <span class="d-block text-muted">
-                              Occurrence: {{ (family?.occDate | legacyDate) }}
-                            </span>
-                          </div>
-                        </div>
-                        <ng-template #noFamilyMembers>-</ng-template>
-                      </td>
-                    </tr>
+                    
+                      <tr *ngFor="let row of bucket.rows">
+                        <td>{{ (row?.year | legacyValue) }}</td>
+                        <td>{{ yesNo(row?.availed) }}</td>
+                        <td>{{ (row?.ltcType | legacyValue) }}</td>
+                        <td>{{ (row?.ltcSubType | legacyValue) }}</td>
+                        <td>{{ (row?.frmLocation | legacyValue) }}</td>
+                        <td>{{ (row?.toLocation | legacyValue) }}</td>
+                        <td>{{ (row?.occDate | legacyDate) }}</td>
+                        <td>{{ (row?.reason | legacyValue) }}</td>
+                        <td>
+                          <ng-container *ngIf="row?._selectedFamilyMembers?.length; else legacyElse1">
+                            <div>
+                              
+                                <div
+                                  class="family-member"
+                                   *ngFor="let family of row?._selectedFamilyMembers">
+                                  <strong>{{ (family?.memberName | legacyValue) }}</strong>
+                                  <span>
+                                    ({{ (family?.relation | legacyValue) }}, Age {{ (family?.age | legacyValue) }})
+                                  </span>
+                                  <span class="d-block text-muted">
+                                    Occurrence: {{ (family?.occDate | legacyDate) }}
+                                  </span>
+                                </div>
+                              
+                            </div>
+                          </ng-container><ng-template #legacyElse1>
+                            -
+                          </ng-template>
+                        </td>
+                      </tr>
+                    
                   </tbody>
                 </table>
               </div>
             </div>
+          
+          
             <div class="review-tab-footer" *ngIf="currentReviewSection">
               <label class="review-check mb-0">
                 <input
                   type="checkbox"
                   [(ngModel)]="currentReviewSection.checked"
                   [name]="'reviewed-' + currentReviewSection.key"
-                />
-                <span>Mark "{{ currentReviewSection.label }}" as reviewed</span>
-              </label>
-              <div class="review-tab-nav">
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary btn-sm"
-                  (click)="goToPreviousSection()"
-                  [disabled]="!canGoToPreviousSection"
-                >
-                  Previous
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-info btn-sm"
-                  (click)="goToNextSection()"
-                  [disabled]="!canGoToNextSection"
-                >
-                  Next
-                </button>
+                  />
+                  <span>Mark "{{ currentReviewSection.label }}" as reviewed</span>
+                </label>
+                <div class="review-tab-nav">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary btn-sm"
+                    (click)="goToPreviousSection()"
+                    [disabled]="!canGoToPreviousSection"
+                    >
+                    Previous
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-info btn-sm"
+                    (click)="goToNextSection()"
+                    [disabled]="!canGoToNextSection"
+                    >
+                    Next
+                  </button>
+                </div>
               </div>
-            </div>
-            <div *ngIf="!visibleLtcBucketGroups.length" class="text-center">
-              No LTC availed history rows found.
-            </div>
+            
+            
+              <div class="text-center" *ngIf="!visibleLtcBucketGroups.length">
+                No LTC availed history rows found.
+              </div>
+            
           </div>
         </div>
+      
 
 
 
+      
         <div class="card mb-3" *ngIf="documentDtos?.length">
           <div class="card-header">
             <strong>Documents</strong>
@@ -509,69 +558,83 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let doc of documentDtos">
-                  <td>{{ (doc?.codeDocInfoDTO?.docName | legacyValue) }}</td>
-                  <td>{{ ((doc?.descr || doc?.otherDocName) | legacyValue) }}</td>
-                  <td>{{ (doc?.checkedIndicator ? 'Yes' : 'No' | legacyValue) }}</td>
-                  <td>
-                    <button
-                      *ngIf="doc?.url || doc?.fileUrl || doc?.docUrl"
-                      type="button"
-                      class="btn btn-warning btn-sm"
-                      (click)="viewSupportingDocument(doc)"
-                    >
-                      <i class="fa fa-eye"></i> View
-                    </button>
-                    <span *ngIf="!(doc?.url || doc?.fileUrl || doc?.docUrl)">-</span>
-                  </td>
-                </tr>
+                
+                  <tr *ngFor="let doc of documentDtos">
+                    <td>{{ (doc?.codeDocInfoDTO?.docName | legacyValue) }}</td>
+                    <td>{{ ((doc?.descr || doc?.otherDocName) | legacyValue) }}</td>
+                    <td>{{ (doc?.checkedIndicator ? 'Yes' : 'No' | legacyValue) }}</td>
+                    <td>
+                      
+                        <button
+                          type="button"
+                          class="btn btn-warning btn-sm"
+                          (click)="viewSupportingDocument(doc)"
+                           *ngIf="doc?.url || doc?.fileUrl || doc?.docUrl">
+                          <i class="fa fa-eye"></i> View
+                        </button>
+                      
+                      
+                        <span *ngIf="!(doc?.url || doc?.fileUrl || doc?.docUrl)">-</span>
+                      
+                    </td>
+                  </tr>
+                
               </tbody>
             </table>
           </div>
         </div>
+      
 
 
 
+      
         <div class="card mb-3" *ngIf="shouldShowRemarksCard()">
           <div class="card-header">
             <strong>Remarks</strong>
           </div>
           <div class="card-body">
             <div class="mb-2"><strong>Internal Remark:</strong> {{ (formObj?.internalRemarks | legacyValue) }}</div>
-            <div *ngIf="claimRemarkSummary">
-              <strong>Latest Workflow Remark:</strong> {{ (claimRemarkSummary?.title | legacyValue) }}
-            </div>
+            
+              <div *ngIf="claimRemarkSummary">
+                <strong>Latest Workflow Remark:</strong> {{ (claimRemarkSummary?.title | legacyValue) }}
+              </div>
+            
           </div>
         </div>
+      
 
-        <div class="card">
-          <div class="card-header">
-            <strong>Workflow History</strong>
-          </div>
-          <div class="card-body table-responsive">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Role</th>
-                  <th>State</th>
-                  <th>Unit</th>
-                  <th>Created On</th>
-                </tr>
-              </thead>
-              <tbody>
+      <div class="card">
+        <div class="card-header">
+          <strong>Workflow History</strong>
+        </div>
+        <div class="card-body table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>State</th>
+                <th>Unit</th>
+                <th>Created On</th>
+              </tr>
+            </thead>
+            <tbody>
+              
                 <tr *ngFor="let row of stateHistory">
                   <td>{{ ((row?.roleTypeName || row?.aclCodeRoleTypeDTO?.roleTypeName || row?.aclCodeRoleTypeDTO?.descr) | legacyValue) }}</td>
                   <td>{{ (row?.formState || row?.claimState || row?.statusId) | codeStatus:'-' }}</td>
                   <td>{{ ((row?.unitName || row?.yatClaimDTO?.codeUnitDTO?.descr || row?.yatClaimDTO?.codeUnitDTO?.unit) | legacyValue) }}</td>
                   <td>{{ (row?.createdOn | legacyDate) }}</td>
                 </tr>
+              
+              
                 <tr *ngIf="!stateHistory?.length">
                   <td colspan="4" class="text-center">No workflow history available.</td>
                 </tr>
-              </tbody>
+              
+            </tbody>
             </table><app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>
-  </div>
-</div>
+          </div>
+        </div>
 
 
 

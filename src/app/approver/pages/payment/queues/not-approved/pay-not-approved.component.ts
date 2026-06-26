@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { PayStateApiService } from 'src/app/service/api/payment/pay-state-api.service';
@@ -8,6 +8,7 @@ import { CommonService } from 'src/app/service/core/common.service';
   selector: 'app-pay-not-approved',
   templateUrl: './pay-not-approved.component.html',
   styleUrls: ['./pay-not-approved.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class PayNotApprovedComponent implements OnInit {

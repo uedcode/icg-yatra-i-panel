@@ -11,9 +11,9 @@
       </div>
       <div>
         <button type="button" class="btn btn-primary" (click)="openAddModal()"><i
-            class="fa fa-plus" aria-hidden="true" data-toggle="tooltip" title="Add"></i></button>
+        class="fa fa-plus" aria-hidden="true" data-toggle="tooltip" title="Add"></i></button>
         <!-- <button type="button" class="btn btn-info" (click)="downloadReport()" data-toggle="tooltip"
-          title="Download"><i class="fa fa-download" aria-hidden="true"></i></button> -->
+        title="Download"><i class="fa fa-download" aria-hidden="true"></i></button> -->
       </div>
     </div>
 
@@ -24,72 +24,78 @@
             <div class="row">
               <div class="col-sm-12 col-md-6">
                 <div class="dataTables_length"><label>Show <select name="noOfPage" aria-controls="example"
-                      class="display_inline_block form-control form-control-sm selectLength" [(ngModel)]="noOfPage"
-                      (ngModelChange)="p=1">
-                      <option value="10">10</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                      <option value="1000">1000</option>
-                    </select> entries</label></div>
+                  class="display_inline_block form-control form-control-sm selectLength" [(ngModel)]="noOfPage"
+                  (ngModelChange)="p=1">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="1000">1000</option>
+                </select> entries</label></div>
               </div>
               <div class="col-sm-12 col-md-3 offset-3">
                 <div class="dataTables_filter"  title="Search">
                   <i class="fa fa-search"></i>
                   <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
                     [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
+                  </div>
                 </div>
               </div>
+              <div class="table-responsive">
+                <table id="exportData" class="table table-striped table-bordered" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th class="wd-15p">SL</th>
+                      <th class="wd-15p">Question <i class="fa fa-sort" (click)="sort('ques')"></i></th>
+                      <th class="wd-15p">Answer <i class="fa fa-sort" (click)="sort('ans')"></i></th>
+                      <th class="wd-15p noExl" style="width: 150px">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                      <tr
+                         *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                        <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
+                        <td>{{dataObj?.ques | showHypen}}</td>
+                        <td>
+                          <div [innerHTML]="dataObj?.ans"></div>
+                        </td>
+                        <td class="noExl">
+                          <button [disabled]="dataObj.isFixed==1" class="btn btn-primary" (click)="editRecord(dataObj)"
+                            data-toggle="tooltip" title="Edit"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+                            <button [disabled]="dataObj.isFixed==1" class="btn btn-danger" (click)="primaryId=dataObj.faqId"
+                              data-toggle="modal" data-target="#delete_modal" title="Delete"><i class="fa fa-trash"
+                            aria-hidden="true" data-toggle="tooltip"></i></button>
+                          </td>
+                        </tr>
+                      
+                      
+                        <tr class="text-center noExl" *ngIf="!dataList.length">
+                          <td colspan="10"> No Records</td>
+                        </tr>
+                      
+                      
+                        <tr class="pagination_area noExl" *ngIf="dataList.length">
+                          <td colspan="20">
+                            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                          </td>
+                        </tr>
+                      
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- table-wrapper -->
             </div>
-            <div class="table-responsive">
-              <table id="exportData" class="table table-striped table-bordered" style="width:100%">
-                <thead>
-                  <tr>
-                    <th class="wd-15p">SL</th>
-                    <th class="wd-15p">Question <i class="fa fa-sort" (click)="sort('ques')"></i></th>
-                    <th class="wd-15p">Answer <i class="fa fa-sort" (click)="sort('ans')"></i></th>
-                    <th class="wd-15p noExl" style="width: 150px">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
-                    <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
-                    <td>{{dataObj?.ques | showHypen}}</td>
-                    <td>
-                      <div [innerHTML]="dataObj?.ans"></div>
-                    </td>
-                    <td class="noExl">
-                      <button [disabled]="dataObj.isFixed==1" class="btn btn-primary" (click)="editRecord(dataObj)"
-                        data-toggle="tooltip" title="Edit"><i class="fa fa-pencil" aria-hidden="true"></i></button>
-                      <button [disabled]="dataObj.isFixed==1" class="btn btn-danger" (click)="primaryId=dataObj.faqId"
-                        data-toggle="modal" data-target="#delete_modal" title="Delete"><i class="fa fa-trash"
-                          aria-hidden="true" data-toggle="tooltip"></i></button>
-                    </td>
-                  </tr>
-                  <tr *ngIf="!dataList.length" class="text-center noExl">
-                    <td colspan="10"> No Records</td>
-                  </tr>
-                  <tr class="pagination_area noExl" *ngIf="dataList.length">
-                    <td colspan="20">
-                      <pagination-controls (pageChange)="p = $event"></pagination-controls>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <!-- section-wrapper -->
+
           </div>
-          <!-- table-wrapper -->
         </div>
-        <!-- section-wrapper -->
+
+        <app-delete-modal [deleteData]="primaryId" (deleteConfirmed)="deleteRecord($event)"></app-delete-modal>
+        <app-common-add-faq-modal [editRecord]="recordObj" [dataList]="dataList" (setRecordData)="dataList = $event">
+        </app-common-add-faq-modal>
 
       </div>
     </div>
-
-    <app-delete-modal [deleteData]="primaryId" (deleteConfirmed)="deleteRecord($event)"></app-delete-modal>
-    <app-common-add-faq-modal [editRecord]="recordObj" [dataList]="dataList" (setRecordData)="dataList = $event">
-    </app-common-add-faq-modal>
-
-  </div>
-</div>
 

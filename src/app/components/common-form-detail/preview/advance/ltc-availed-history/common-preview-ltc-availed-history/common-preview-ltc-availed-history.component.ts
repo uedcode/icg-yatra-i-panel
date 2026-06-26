@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -10,6 +10,7 @@ import { PreviewWindowService } from 'src/app/service/core/preview-window.servic
   selector: 'app-common-preview-ltc-availed-history',
   templateUrl: './common-preview-ltc-availed-history.component.html',
   styleUrls: ['./common-preview-ltc-availed-history.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CommonPreviewLtcAvailedHistoryComponent implements OnInit {
@@ -29,7 +30,7 @@ export class CommonPreviewLtcAvailedHistoryComponent implements OnInit {
   ngOnInit(): void {
     this.userIdDetails = this.$auth.getUserDetails ? this.$auth.getUserDetails() : null;
     this.route.queryParamMap.subscribe((params) => {
-      this.claimId = params.get('id') || '';
+      this.claimId = params.get('id') || params.get('claimId') || params.get('formId') || '';
       if (!this.claimId) return;
       this.loadData();
     });

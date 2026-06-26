@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -11,6 +11,7 @@ declare var $: any;
     selector: 'app-approver-claim-approved',
     templateUrl: './claim-approved.component.html',
     styleUrls: ['./claim-approved.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ClaimApprovedComponent implements OnInit {

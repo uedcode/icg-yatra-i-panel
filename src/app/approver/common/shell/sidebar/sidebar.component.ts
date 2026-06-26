@@ -1,5 +1,5 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 import { Subscription } from 'rxjs';
@@ -11,6 +11,7 @@ declare var $: any;
     selector: 'app-approver-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {

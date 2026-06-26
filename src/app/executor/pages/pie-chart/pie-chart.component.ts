@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CodeMiscApiService } from 'src/app/service/api/code/code-misc-api.service';
 import { AuthService } from 'src/app/service/auth/auth.service';
 
@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/service/auth/auth.service';
   selector: 'app-executor-pie-chart',
   templateUrl: './pie-chart.component.html',
   styleUrls: ['./pie-chart.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class PieChartComponent implements OnInit {

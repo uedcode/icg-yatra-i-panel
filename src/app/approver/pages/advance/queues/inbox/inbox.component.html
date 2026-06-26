@@ -1,103 +1,125 @@
 <!--Page header-->
-        <div class="page-header gov-page-toolbar">
-          <div class="page-leftheader">
-            <h4 class="page-title">Inbox</h4>
-            <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item active" aria-current="page">
-                Inbox
-              </li>
-            </ol>
-          </div>
-          <div>
-            <div>
-              <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
-                  class="fa fa-chevron-left" style="display: inline-block;"></i></button>
-            </div>
+<div class="page-header gov-page-toolbar">
+  <div class="page-leftheader">
+    <h4 class="page-title">Inbox</h4>
+    <ol class="breadcrumb pl-0">
+      <li class="breadcrumb-item active" aria-current="page">
+        Inbox
+      </li>
+    </ol>
+  </div>
+  <div>
+    <div>
+      <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
+      class="fa fa-chevron-left" style="display: inline-block;"></i></button>
+    </div>
 
-            <!-- <div class="breadcrumb_right">
-              <button  type="submit" title="Submit" class="btn btn-dark" title="Submit"  (click)="openAddMapping()">+</button>
-            </div> -->
-          </div>
-        </div>
+    <!-- <div class="breadcrumb_right">
+    <button  type="submit" title="Submit" class="btn btn-dark" title="Submit"  (click)="openAddMapping()">+</button>
+  </div> -->
+</div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+    <div class="card">
+      <div class="card-body">
         <div class="row">
-          <div class="col-md-12 col-lg-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-sm-12 col-md-6">
-                    <div class="dataTables_length">
-                      <label>Show</label>
-                      <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
-                        (ngModelChange)="p=1">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                      </select>
-                      <label>entries</label>
-                    </div>
-                  </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="dataTables_length">
+              <label>Show</label>
+              <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
+                (ngModelChange)="p=1">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              <label>entries</label>
+            </div>
+          </div>
 
-                  <div class="col-sm-12 col-md-3 offset-3">
-                    <div class="dataTables_filter"  title="Search">
-                      <i class="fa fa-search"></i>
-                      <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
-                        [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
-                    </div>
-                  </div>
-                </div>
-                <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
-                  <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
-                    <thead>
-                      <tr>
-                        <th>S.No.</th>
-                        <th>PNO/ Name/ Rank</th>
-                        <th>Occurrence Date</th>
-                        <th>Form Name</th>
-                        <th>Form ID</th>
-                        <th *ngIf="!isVerifier1()">Remarks</th>
-                        <th>Action</th>
-                        <th>Previous Advance</th>
-                        </tr>
-                        </thead>
-                    <tbody>
-                      <tr
-                        *ngFor="let dataObj of dataList |  filterComplex : searchObj  | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
-                        <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
-                        <td>{{ dataObj?.fullName | showHypen }}</td>
-                        <td>{{ dataObj?.yatClaimDTO?.occDate | legacyDate:'queueDate' }}</td>
-                        <td>{{ dataObj?.yatClaimDTO?.codeSubFormDTO?.descr | showHypen }}</td>
-                        <td>{{ dataObj?.yatClaimDTO?.formId | showHypen }}</td>
-                        <td *ngIf="!isVerifier1()">{{ dataObj?.yatClaimDTO?.remark | showHypen }}</td>
-                        <td>
-                          <button  class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button> <!-- *ngIf="canViewRow(dataObj)" -->
-                          <button *ngIf="showDisabledView(dataObj)" class="btn btn-info" title="View" [disabled]="true">View</button>
-                          <button *ngIf="canMoveToDraft(dataObj)" class="btn btn-warning" title="Move To Draft" (click)="moveToDraft(dataObj)">Move To Draft</button>
-                          <button *ngIf="showDisabledMoveToDraft(dataObj)" class="btn btn-warning" title="Move To Draft" [disabled]="true">Move To Draft</button>
-                          <span *ngIf="!canMoveToDraft(dataObj) && !showDisabledMoveToDraft(dataObj)">-</span>
-                        </td>
-                        <td>
-                          <button *ngIf="canShowPreviousAdvance(dataObj)" class="btn btn-primary" title="Previous Advance" (click)="openPreviousAdvance(dataObj)">Remarks</button>
-                          <span *ngIf="!canShowPreviousAdvance(dataObj)">-</span>
-                        </td>
-                      </tr>
-
-                      <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                        <td [attr.colspan]="!isVerifier1() ? 8 : 7">No Records</td>
-                      </tr>
-                      <tr class="noExl pagination_area" *ngIf="dataList?.length">
-                        <td [attr.colspan]="!isVerifier1() ? 8 : 7">
-                          <pagination-controls (pageChange)="p = $event"></pagination-controls>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+          <div class="col-sm-12 col-md-3 offset-3">
+            <div class="dataTables_filter"  title="Search">
+              <i class="fa fa-search"></i>
+              <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
+                [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
               </div>
             </div>
           </div>
+          <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+            <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
+              <thead>
+                <tr>
+                  <th>S.No.</th>
+                  <th>PNO/ Name/ Rank</th>
+                  <th>Occurrence Date</th>
+                  <th>Form Name</th>
+                  <th>Form ID</th>
+                  
+                    <th *ngIf="!isVerifier1()">Remarks</th>
+                  
+                  <th>Action</th>
+                  <th>Previous Advance</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr
+                     *ngFor="let dataObj of dataList |  filterComplex : searchObj  | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                    <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
+                    <td>{{ dataObj?.fullName | showHypen }}</td>
+                    <td>{{ dataObj?.yatClaimDTO?.occDate | legacyDate:'queueDate' }}</td>
+                    <td>{{ dataObj?.yatClaimDTO?.codeSubFormDTO?.descr | showHypen }}</td>
+                    <td>{{ dataObj?.yatClaimDTO?.formId | showHypen }}</td>
+                    
+                      <td *ngIf="!isVerifier1()">{{ dataObj?.yatClaimDTO?.remark | showHypen }}</td>
+                    
+                    <td>
+                      <button  class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button> <!-- *ngIf="canViewRow(dataObj)" -->
+                      
+                        <button class="btn btn-info" title="View" [disabled]="true" *ngIf="showDisabledView(dataObj)">View</button>
+                      
+                      
+                        <button class="btn btn-warning" title="Move To Draft" (click)="moveToDraft(dataObj)" *ngIf="canMoveToDraft(dataObj)">Move To Draft</button>
+                      
+                      
+                        <button class="btn btn-warning" title="Move To Draft" [disabled]="true" *ngIf="showDisabledMoveToDraft(dataObj)">Move To Draft</button>
+                      
+                      
+                        <span *ngIf="!canMoveToDraft(dataObj) &amp;&amp; !showDisabledMoveToDraft(dataObj)">-</span>
+                      
+                    </td>
+                    <td>
+                      
+                        <button class="btn btn-primary" title="Previous Advance" (click)="openPreviousAdvance(dataObj)" *ngIf="canShowPreviousAdvance(dataObj)">Remarks</button>
+                      
+                      
+                        <span *ngIf="!canShowPreviousAdvance(dataObj)">-</span>
+                      
+                    </td>
+                  </tr>
+                
+
+                
+                  <tr class="text-center table-empty-state gov-table-empty-state" *ngIf="!dataList.length">
+                    <td [attr.colspan]="!isVerifier1() ? 8 : 7">No Records</td>
+                  </tr>
+                
+                
+                  <tr class="noExl pagination_area" *ngIf="dataList?.length">
+                    <td [attr.colspan]="!isVerifier1() ? 8 : 7">
+                      <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          </div>
         </div>
-<app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>
+      </div>
+    </div>
+  </div>
+  <app-common-view-form-history-modal [formId]="formId" [claimId]="claimId"></app-common-view-form-history-modal>
 
 
 

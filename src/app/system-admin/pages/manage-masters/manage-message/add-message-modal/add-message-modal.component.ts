@@ -6,6 +6,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -17,6 +18,7 @@ declare var $: any;
   selector: 'app-add-message-modal',
   templateUrl: './add-message-modal.component.html',
   styleUrls: ['./add-message-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class AddMessageModalComponent implements OnInit {

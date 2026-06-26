@@ -15,27 +15,37 @@
             <div class="col-md-4">
               <label>Transportation of personal effect (Kg)<span class="text-danger">*</span></label>
               <input class="form-control" type="text" maxlength="10" name="pmtKg" [(ngModel)]="formObj.pmtKg" #pmtKg="ngModel" required />
-              <div *ngIf="pmtKg.invalid && (pmtKg.dirty || pmtKg.touched || mainForm.submitted)" class="invalid-msg">Pmt Kg is required.</div>
+              
+                <div class="invalid-msg" *ngIf="pmtKg.invalid &amp;&amp; (pmtKg.dirty || pmtKg.touched || mainForm.submitted)">Pmt Kg is required.</div>
+              
             </div>
             <div class="col-md-4">
               <label>Transportation of personal effect (Per Kg)<span class="text-danger">*</span></label>
               <input class="form-control" type="text" maxlength="10" name="pmtPerKg" [(ngModel)]="formObj.pmtPerKg" #pmtPerKg="ngModel" required />
-              <div *ngIf="pmtPerKg.invalid && (pmtPerKg.dirty || pmtPerKg.touched || mainForm.submitted)" class="invalid-msg">Pmt per Kg is required.</div>
+              
+                <div class="invalid-msg" *ngIf="pmtPerKg.invalid &amp;&amp; (pmtPerKg.dirty || pmtPerKg.touched || mainForm.submitted)">Pmt per Kg is required.</div>
+              
             </div>
             <div class="col-md-4 mt-3">
               <label>Accommodation rate per day<span class="text-danger">*</span></label>
               <input class="form-control" type="text" maxlength="10" name="tyAccommodation" [(ngModel)]="formObj.tyAccommodation" #tyAccommodation="ngModel" required />
-              <div *ngIf="tyAccommodation.invalid && (tyAccommodation.dirty || tyAccommodation.touched || mainForm.submitted)" class="invalid-msg">Accommodation rate is required.</div>
+              
+                <div class="invalid-msg" *ngIf="tyAccommodation.invalid &amp;&amp; (tyAccommodation.dirty || tyAccommodation.touched || mainForm.submitted)">Accommodation rate is required.</div>
+              
             </div>
             <div class="col-md-4 mt-3">
               <label>Food rate per day<span class="text-danger">*</span></label>
               <input class="form-control" type="text" maxlength="10" name="tyFood" [(ngModel)]="formObj.tyFood" #tyFood="ngModel" required />
-              <div *ngIf="tyFood.invalid && (tyFood.dirty || tyFood.touched || mainForm.submitted)" class="invalid-msg">Food rate is required.</div>
+              
+                <div class="invalid-msg" *ngIf="tyFood.invalid &amp;&amp; (tyFood.dirty || tyFood.touched || mainForm.submitted)">Food rate is required.</div>
+              
             </div>
             <div class="col-md-4 mt-3">
               <label>Travel within city<span class="text-danger">*</span></label>
               <input class="form-control" type="text" maxlength="10" name="tyTravel" [(ngModel)]="formObj.tyTravel" #tyTravel="ngModel" required />
-              <div *ngIf="tyTravel.invalid && (tyTravel.dirty || tyTravel.touched || mainForm.submitted)" class="invalid-msg">Travel within city is required.</div>
+              
+                <div class="invalid-msg" *ngIf="tyTravel.invalid &amp;&amp; (tyTravel.dirty || tyTravel.touched || mainForm.submitted)">Travel within city is required.</div>
+              
             </div>
             <div class="col-md-4 mt-3">
               <label>Availed Category<span class="text-danger">*</span></label>
@@ -45,7 +55,9 @@
                 <option [ngValue]="1">1</option>
                 <option [ngValue]="2">2</option>
               </select>
-              <div *ngIf="availedCategory.invalid && (availedCategory.dirty || availedCategory.touched || mainForm.submitted)" class="invalid-msg">Availed Category is required.</div>
+              
+                <div class="invalid-msg" *ngIf="availedCategory.invalid &amp;&amp; (availedCategory.dirty || availedCategory.touched || mainForm.submitted)">Availed Category is required.</div>
+              
             </div>
             <div class="col-md-4 mt-3">
               <label>Air Class<span class="text-danger">*</span></label>
@@ -55,7 +67,9 @@
                 <option value="Economy Class">Economy Class</option>
                 <option value="Business Class">Business Class</option>
               </select>
-              <div *ngIf="airClass.invalid && (airClass.dirty || airClass.touched || mainForm.submitted)" class="invalid-msg">Air Class is required.</div>
+              
+                <div class="invalid-msg" *ngIf="airClass.invalid &amp;&amp; (airClass.dirty || airClass.touched || mainForm.submitted)">Air Class is required.</div>
+              
             </div>
             <div class="col-md-4 mt-3">
               <label>Ship Class<span class="text-danger">*</span></label>
@@ -64,7 +78,9 @@
                 <option value="Bunk Class">Bunk Class</option>
                 <option value="Cabin Class">Cabin Class</option>
               </select>
-              <div *ngIf="shipClass.invalid && (shipClass.dirty || shipClass.touched || mainForm.submitted)" class="invalid-msg">Ship Class is required.</div>
+              
+                <div class="invalid-msg" *ngIf="shipClass.invalid &amp;&amp; (shipClass.dirty || shipClass.touched || mainForm.submitted)">Ship Class is required.</div>
+              
             </div>
             <div class="col-md-4 mt-3">
               <label>Train Class<span class="text-danger">*</span></label>
@@ -74,7 +90,9 @@
                 <option value="AC 2nd Class">AC 2nd Class</option>
                 <option value="AC 3rd Class">AC 3rd Class</option>
               </select>
-              <div *ngIf="trainClass.invalid && (trainClass.dirty || trainClass.touched || mainForm.submitted)" class="invalid-msg">Train Class is required.</div>
+              
+                <div class="invalid-msg" *ngIf="trainClass.invalid &amp;&amp; (trainClass.dirty || trainClass.touched || mainForm.submitted)">Train Class is required.</div>
+              
             </div>
           </div>
         </div>

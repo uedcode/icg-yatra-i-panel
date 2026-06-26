@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="manage_admin">{{formObj.verHisId ? 'Update' :
-          'Add'}} Yatra Version</h5>
+        'Add'}} Yatra Version</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="reset()">
           <span aria-hidden="true">×</span>
         </button>
@@ -18,34 +18,42 @@
                   <label class="form-label">Title<sup class="required-msg">*</sup></label>
                   <input type="text" class="form-control" placeholder="eg. Yatra" maxlength="100" [(ngModel)]="formObj.title"
                     #title="ngModel" name="title" required>
-                  <div *ngIf="title.touched || (mainForm.submitted && title.invalid)">
-                    <div *ngIf="title.errors?.required" class="invalid-msg">Title
-                      is
-                      required
-                    </div>
+                    
+                      <div *ngIf="title.touched || (mainForm.submitted &amp;&amp; title.invalid)">
+                        
+                          <div class="invalid-msg" *ngIf="title.errors?.required">Title
+                            is
+                            required
+                          </div>
+                        
+                      </div>
+                    
                   </div>
                 </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="form-label">Description<sup class="required-msg">*</sup></label>
-                  <textarea rows="6" class="form-control" placeholder="eg. Best Software" maxlength="999"
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">Description<sup class="required-msg">*</sup></label>
+                    <textarea rows="6" class="form-control" placeholder="eg. Best Software" maxlength="999"
                     [(ngModel)]="formObj.descr" #descr="ngModel" name="descr" required></textarea>
-                  <div *ngIf="descr.touched || (mainForm.submitted && descr.invalid)">
-                    <div *ngIf="descr.errors?.required" class="invalid-msg">Description
-                      is required
-                    </div>
+                    
+                      <div *ngIf="descr.touched || (mainForm.submitted &amp;&amp; descr.invalid)">
+                        
+                          <div class="invalid-msg" *ngIf="descr.errors?.required">Description
+                            is required
+                          </div>
+                        
+                      </div>
+                    
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <div class="text-right">
+            <div class="modal-footer">
+              <div class="text-right">
               <button  type="submit" [disabled]="disableBtn" title="Submit" class="btn btn-primary" title="{{formObj.verHisId ? 'Update' :
               'Submit'}}">{{formObj.verHisId ? 'Update' :
                 'Submit'}}</button>
-              <button type="button" class="btn btn-danger" title="Reset" (click)="reset()"  title="Reset">Reset</button>
+                <button type="button" class="btn btn-danger" title="Reset" (click)="reset()"  title="Reset">Reset</button>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>

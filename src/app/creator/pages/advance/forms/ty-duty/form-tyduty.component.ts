@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TyDutyPurposeApiService } from 'src/app/service/api/masters/ty-duty-purpose-api.service';
@@ -170,6 +170,7 @@ declare var $: any;
   selector: 'app-form-tyduty',
   templateUrl: './form-tyduty.component.html',
   styleUrls: ['./form-tyduty.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class FormTydutyComponent implements OnInit {

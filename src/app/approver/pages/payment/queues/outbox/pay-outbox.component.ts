@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { PayStateApiService } from 'src/app/service/api/payment/pay-state-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -7,6 +7,7 @@ import { CommonService } from 'src/app/service/core/common.service';
   selector: 'app-pay-outbox',
   templateUrl: './pay-outbox.component.html',
   styleUrls: ['./pay-outbox.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class PayOutboxComponent implements OnInit {

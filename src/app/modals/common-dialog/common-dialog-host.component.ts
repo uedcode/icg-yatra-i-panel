@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommonDialogService, CommonDialogState } from 'src/app/service/core/common-dialog.service';
 
@@ -6,6 +6,7 @@ import { CommonDialogService, CommonDialogState } from 'src/app/service/core/com
   selector: 'app-common-dialog-host',
   templateUrl: './common-dialog-host.component.html',
   styleUrls: ['./common-dialog-host.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CommonDialogHostComponent implements OnInit, OnDestroy {

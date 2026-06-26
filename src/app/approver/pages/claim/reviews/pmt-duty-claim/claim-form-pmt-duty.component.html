@@ -1,9 +1,17 @@
 <app-common-form-header [pageTitle]="pageTitle" sectionLabel="Claim">
   <div class="detail-actions legacy-review-actions">
-    <button *ngIf="!isLegacyPreviewContext" type="button" class="btn btn-info mr-2" (click)="openPreview()">Preview</button>
-    <button *ngIf="canTakeAction()" type="button" class="btn btn-info mr-2" [disabled]="actionLoading" (click)="openActionRemarkModal(codeStatus?.returned)">Return</button>
-    <button *ngIf="canTakeAction() && getTertiaryActionStatus()" type="button" class="btn btn-info mr-2" [disabled]="actionLoading" (click)="openActionRemarkModal(getTertiaryActionStatus())">{{ getTertiaryActionLabel() }}</button>
-    <button *ngIf="canTakeAction()" type="button" class="btn btn-info mr-2" [disabled]="actionLoading || !allSectionsReviewed" (click)="openActionRemarkModal(codeStatus?.outbox)">{{ primaryActionLabel }}</button>
+    
+      <button type="button" class="btn btn-info mr-2" (click)="openPreview()" *ngIf="!isLegacyPreviewContext">Preview</button>
+    
+    
+      <button type="button" class="btn btn-info mr-2" [disabled]="actionLoading" (click)="openActionRemarkModal(codeStatus?.returned)" *ngIf="canTakeAction()">Return</button>
+    
+    
+      <button type="button" class="btn btn-info mr-2" [disabled]="actionLoading" (click)="openActionRemarkModal(getTertiaryActionStatus())" *ngIf="canTakeAction() &amp;&amp; getTertiaryActionStatus()">{{ getTertiaryActionLabel() }}</button>
+    
+    
+      <button type="button" class="btn btn-info mr-2" [disabled]="actionLoading || !allSectionsReviewed" (click)="openActionRemarkModal(codeStatus?.outbox)" *ngIf="canTakeAction()">{{ primaryActionLabel }}</button>
+    
     <button type="button" class="btn btn-dark request_view_back" (click)="goBack()"><i class="fa fa-chevron-left"></i></button>
   </div>
 </app-common-form-header>
@@ -21,129 +29,209 @@
               <li [class.active]="activeTab === 'ship2'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship2')">Travel Details</a></li>
               <li [class.active]="activeTab === 'ship4'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship4')">Financial Details</a></li>
               <li [class.active]="activeTab === 'ship5'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship5')">Supporting Documents</a></li>
-              <li *ngIf="isBankVisible" [class.active]="activeTab === 'ship7'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship7')">Bank Details</a></li>
-              <li *ngIf="isRemarksVisible" [class.active]="activeTab === 'ship6'" role="presentation"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship6')">Remarks</a></li>
+              
+                <li [class.active]="activeTab === 'ship7'" role="presentation" *ngIf="isBankVisible"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship7')">Bank Details</a></li>
+              
+              
+                <li [class.active]="activeTab === 'ship6'" role="presentation" *ngIf="isRemarksVisible"><a href="javascript:void(0)" role="tab" (click)="setTabFromClick($event, 'ship6')">Remarks</a></li>
+              
             </ul>
 
             <div class="tab-content legacy-review-tab-content">
-              <div id="ship" class="tab-pane active show" *ngIf="activeTab === 'ship'">
-                <div class="legacy-sign-row">
-                  <label class="mr-3"><input type="radio" name="signRadio" [checked]="formObj?.signWith === codeSignType.inkSign" disabled /> Ink Sign</label>
-                  <label><input type="radio" name="signRadio" [checked]="formObj?.signWith === codeSignType.eSign" disabled /> eSign</label>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Name</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.name | legacyValue:'')" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Rank</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.rank | legacyValue:'')" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Personnel Number</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.pno | legacyValue:'')" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Pay Level</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.payLevel | legacyValue:'')" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Basic Pay (In Rs) (At the time of transfer)</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.basicPay | legacyValue:'')" disabled /></div></div></div></div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Transfer from</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.transferFrom | legacyValue:'')" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Applied To</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.appliedTo | legacyValue:'')" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Transfer to</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.transferTo | legacyValue:'')" disabled /></div></div></div></div>
-                  <div class="col-md-4" *ngIf="claimDetails?.otherUnit"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Other Unit</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.otherUnit | legacyValue:'')" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">From Station</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.stnFrom | legacyValue:'')" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">To Station</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.stnTo | legacyValue:'')" disabled /></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Distance between stations</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.distance | legacyValue:'')" disabled /></div></div></div></div>
-                  <div class="col-md-4" *ngIf="claimDetails?.advVoucherNumber"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Advance Voucher Number</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.advVoucherNumber | legacyValue:'')" disabled /></div></div></div></div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-4" *ngIf="claimDetails?.advVoucherNumber && isYatraClaimMode()"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Advance Voucher</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview('preview-voucher', claimId, subFormId)">View</button></div></div></div></div>
-                  <div class="col-md-4" *ngIf="isYatraClaimMode() && formObj?.advClaimId"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Linked Advance Form</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview('preview-pmt-duty', formObj?.advClaimId)">View</button></div></div></div></div>
-                  <div class="col-md-4" *ngIf="isManualClaimMode()"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Voucher Date</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(formObj?.voucherDate | legacyDate:'dd-MMM-yyyy':'')" disabled /></div></div></div></div>
-                  <div class="col-md-4" *ngIf="isManualClaimMode()"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Drawn from</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(formObj?.drawnFrom | legacyValue:'')" disabled /></div></div></div></div>
-                  <div class="col-md-4" *ngIf="formObj?.supClaimId"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Linked Claim Form</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview('preview-pmt-duty-claim', formObj?.supClaimId, subFormId)">View</button></div></div></div></div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">PMT Type</label></div><div class="col-md-8 padd_5"><label class="mr-3"><input type="radio" [checked]="claimDetails?.pmtType === 'Part'" disabled /> Part</label><label><input type="radio" [checked]="claimDetails?.pmtType === 'Full'" disabled /> Full</label></div></div></div></div>
-                  <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Family Type</label></div><div class="col-md-8 padd_5"><label class="mr-3"><input type="radio" [checked]="claimDetails?.familyType === 'Self'" disabled /> Self</label><label><input type="radio" [checked]="claimDetails?.familyType === 'Self and Family'" disabled /> Self and Family</label></div></div></div></div>
-                  <div class="col-md-4" *ngIf="claimDetails?.pmtTypeClaimId"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Link Part</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview('preview-pmt-duty-claim', claimDetails?.pmtTypeClaimId, subFormId)">View</button></div></div></div></div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-12">
-                    <label class="control-label">Family Details</label>
-                    <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Name</th><th>Age</th><th>Relation</th><th>Occupation</th></tr></thead><tbody><tr *ngFor="let row of familyDetails"><td>{{ (row?.memberName | legacyValue) }}</td><td>{{ (row?.age | legacyValue) }}</td><td>{{ (row?.relation | legacyValue) }}</td><td>{{ (row?.occupation | legacyValue) }}</td></tr><tr *ngIf="!familyDetails.length"><td colspan="4" class="text-center">No Records</td></tr></tbody></table></div>
+              
+                <div id="ship" class="tab-pane active show" *ngIf="activeTab === 'ship'">
+                  <div class="legacy-sign-row">
+                    <label class="mr-3"><input type="radio" name="signRadio" [checked]="formObj?.signWith === codeSignType.inkSign" disabled /> Ink Sign</label>
+                    <label><input type="radio" name="signRadio" [checked]="formObj?.signWith === codeSignType.eSign" disabled /> eSign</label>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Name</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.name | legacyValue:'')" disabled /></div></div></div></div>
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Rank</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.rank | legacyValue:'')" disabled /></div></div></div></div>
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Personnel Number</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.pno | legacyValue:'')" disabled /></div></div></div></div>
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Pay Level</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.payLevel | legacyValue:'')" disabled /></div></div></div></div>
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Basic Pay (In Rs) (At the time of transfer)</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.basicPay | legacyValue:'')" disabled /></div></div></div></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Transfer from</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.transferFrom | legacyValue:'')" disabled /></div></div></div></div>
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Applied To</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.appliedTo | legacyValue:'')" disabled /></div></div></div></div>
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Transfer to</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.transferTo | legacyValue:'')" disabled /></div></div></div></div>
+                    
+                      <div class="col-md-4" *ngIf="claimDetails?.otherUnit"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Other Unit</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.otherUnit | legacyValue:'')" disabled /></div></div></div></div>
+                    
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">From Station</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.stnFrom | legacyValue:'')" disabled /></div></div></div></div>
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">To Station</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.stnTo | legacyValue:'')" disabled /></div></div></div></div>
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Distance between stations</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.distance | legacyValue:'')" disabled /></div></div></div></div>
+                    
+                      <div class="col-md-4" *ngIf="claimDetails?.advVoucherNumber"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Advance Voucher Number</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(claimDetails?.advVoucherNumber | legacyValue:'')" disabled /></div></div></div></div>
+                    
+                  </div>
+                  <div class="row">
+                    
+                      <div class="col-md-4" *ngIf="claimDetails?.advVoucherNumber &amp;&amp; isYatraClaimMode()"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Advance Voucher</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview('preview-voucher', claimId, subFormId)">View</button></div></div></div></div>
+                    
+                    
+                      <div class="col-md-4" *ngIf="isYatraClaimMode() &amp;&amp; formObj?.advClaimId"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Linked Advance Form</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview('preview-pmt-duty', formObj?.advClaimId)">View</button></div></div></div></div>
+                    
+                    
+                      <div class="col-md-4" *ngIf="isManualClaimMode()"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Voucher Date</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(formObj?.voucherDate | legacyDate:'dd-MMM-yyyy':'')" disabled /></div></div></div></div>
+                    
+                    
+                      <div class="col-md-4" *ngIf="isManualClaimMode()"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Drawn from</label></div><div class="col-md-8 padd_5"><input class="form-control" [value]="(formObj?.drawnFrom | legacyValue:'')" disabled /></div></div></div></div>
+                    
+                    
+                      <div class="col-md-4" *ngIf="formObj?.supClaimId"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Linked Claim Form</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview('preview-pmt-duty-claim', formObj?.supClaimId, subFormId)">View</button></div></div></div></div>
+                    
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">PMT Type</label></div><div class="col-md-8 padd_5"><label class="mr-3"><input type="radio" [checked]="claimDetails?.pmtType === 'Part'" disabled /> Part</label><label><input type="radio" [checked]="claimDetails?.pmtType === 'Full'" disabled /> Full</label></div></div></div></div>
+                    <div class="col-md-4"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Family Type</label></div><div class="col-md-8 padd_5"><label class="mr-3"><input type="radio" [checked]="claimDetails?.familyType === 'Self'" disabled /> Self</label><label><input type="radio" [checked]="claimDetails?.familyType === 'Self and Family'" disabled /> Self and Family</label></div></div></div></div>
+                    
+                      <div class="col-md-4" *ngIf="claimDetails?.pmtTypeClaimId"><div class="form-group"><div class="row"><div class="col-md-4 padd_5"><label class="control-label">Link Part</label></div><div class="col-md-8 padd_5"><button type="button" class="btn btn-info" (click)="openRelatedPreview('preview-pmt-duty-claim', claimDetails?.pmtTypeClaimId, subFormId)">View</button></div></div></div></div>
+                    
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <label class="control-label">Family Details</label>
+                      <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Name</th><th>Age</th><th>Relation</th><th>Occupation</th></tr></thead><tbody>
+                      <tr *ngFor="let row of familyDetails"><td>{{ (row?.memberName | legacyValue) }}</td><td>{{ (row?.age | legacyValue) }}</td><td>{{ (row?.relation | legacyValue) }}</td><td>{{ (row?.occupation | legacyValue) }}</td></tr>
+                      
+                      <tr *ngIf="!familyDetails.length"><td colspan="4" class="text-center">No Records</td></tr>
+                    </tbody></table></div>
                   </div>
                   <div class="col-md-12">
                     <p><b>Genform Details</b></p>
-                    <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Gx Type</th><th>Unit</th><th>Gx Number</th><th>Gx Date</th><th>Date of occurrence</th></tr></thead><tbody><tr *ngFor="let row of gxRows"><td>{{ (row?.gxType | legacyValue) }}</td><td>{{ (row?.unit | legacyValue) }}</td><td>{{ (row?.gxNo | legacyValue) }}</td><td>{{ (row?.gxDate | legacyDate) }}</td><td>{{ (row?.dateOfTravel | legacyDate) }}</td></tr><tr *ngIf="!gxRows.length"><td colspan="5" class="text-center">No Records</td></tr></tbody></table></div>
-                  </div>
+                    <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Gx Type</th><th>Unit</th><th>Gx Number</th><th>Gx Date</th><th>Date of occurrence</th></tr></thead><tbody>
+                    <tr *ngFor="let row of gxRows"><td>{{ (row?.gxType | legacyValue) }}</td><td>{{ (row?.unit | legacyValue) }}</td><td>{{ (row?.gxNo | legacyValue) }}</td><td>{{ (row?.gxDate | legacyDate) }}</td><td>{{ (row?.dateOfTravel | legacyDate) }}</td></tr>
+                    
+                    <tr *ngIf="!gxRows.length"><td colspan="5" class="text-center">No Records</td></tr>
+                  </tbody></table></div>
                 </div>
-
-                <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form1" name="form1" /><span class="che_ckmark"></span></label></div><div class="col-md-2"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
               </div>
-
-              <div id="ship2" class="tab-pane active show" *ngIf="activeTab === 'ship2'">
-                <p><b>Particulars of journey</b></p>
-                <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th colspan="2">From</th><th colspan="2">To</th><th rowspan="2">Mode of travel</th><th rowspan="2">DTS</th><th rowspan="2">Reason for not taking DTS</th><th colspan="2">Class of Travel</th><th rowspan="2">Sanction Details</th><th rowspan="2">Distance in KM</th><th rowspan="2">Amount (in Rs.)</th><th rowspan="2">Remarks</th></tr><tr><th>Place</th><th>Date &amp; time</th><th>Place</th><th>Date &amp; time</th><th>Entitled</th><th>Travelled</th></tr></thead><tbody><tr *ngFor="let row of travelDetails"><td>{{ (row?.fromPlace | legacyValue) }}</td><td>{{ (row?.fromDate | legacyDate:'dd-MMM-yyyy HH:mm') }}</td><td>{{ (row?.toPlace | legacyValue) }}</td><td>{{ (row?.toDate | legacyDate:'dd-MMM-yyyy HH:mm') }}</td><td>{{ (row?.travelMode | legacyValue) }}</td><td>{{ (row?.isDts | legacyValue) }}</td><td>{{ (row?.reasonDts | legacyValue) }}</td><td>{{ (row?.entitledClass | legacyValue) }}</td><td>{{ (row?.travelClass | legacyValue) }}</td><td>{{ (row?.sanctionDetails | legacyValue) }}</td><td>{{ (row?.distance | legacyValue) }}</td><td>{{ (row?.amount | legacyValue) }}</td><td>{{ (row?.remarks | legacyValue) }}</td></tr><tr *ngIf="!travelDetails.length"><td colspan="13" class="text-center">No Record Found</td></tr></tbody></table></div>
-
-                <p><b>Transportation of personal effect</b></p>
-                <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th rowspan="2">Date</th><th colspan="2">Station</th><th rowspan="2">Mode of travel</th><th rowspan="2">Weight (In Kgs)</th><th rowspan="2">KM</th><th colspan="2">Paid per Kg (Excluding taxes)</th><th colspan="2">Tax (%)</th><th colspan="2">Total Claimed</th><th colspan="2">Total Permitted</th></tr><tr><th>From</th><th>To</th><th>Max Allowed</th><th>Actual</th><th>GST</th><th>Cess</th><th>Excluding Taxes</th><th>Including Taxes</th><th>Excluding Taxes</th><th>Including Taxes</th></tr></thead><tbody><tr *ngFor="let row of transportRows"><td>{{ (row?.date | legacyDate) }}</td><td>{{ (row?.stnFrom | legacyValue) }}</td><td>{{ (row?.stnTo | legacyValue) }}</td><td>{{ (row?.mode | legacyValue) }}</td><td>{{ (row?.weight | legacyValue) }}</td><td>{{ (row?.kilometer | legacyValue) }}</td><td>{{ (row?.dailyRate | legacyValue) }}</td><td>{{ (row?.dailyRatePaid | legacyValue) }}</td><td>{{ (row?.gst | legacyValue) }}</td><td>{{ (row?.cess | legacyValue) }}</td><td>{{ (row?.totalClaimed | legacyValue) }}</td><td>{{ (row?.totalClaimedWithGst | legacyValue) }}</td><td>{{ (row?.totalPermitted | legacyValue) }}</td><td>{{ (row?.totAmt | legacyValue) }}</td></tr><tr *ngIf="!transportRows.length"><td colspan="14" class="text-center">No Record Found</td></tr></tbody></table></div>
-
-                <div *ngIf="shipEffectRows.length">
-                  <p><b>Transportation of personal effect by ship</b></p>
-                  <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th rowspan="2">Date</th><th colspan="2">Port</th><th rowspan="2">Cubic meter</th><th rowspan="2">Rate</th><th colspan="2">Tax (%)</th><th colspan="2">Total</th></tr><tr><th>From</th><th>To</th><th>GST</th><th>Cess</th><th>Excluding Taxes</th><th>Including Taxes</th></tr></thead><tbody><tr *ngFor="let row of shipEffectRows"><td>{{ (row?.date | legacyDate) }}</td><td>{{ (row?.stnFrom | legacyValue) }}</td><td>{{ (row?.stnTo | legacyValue) }}</td><td>{{ (row?.weight | legacyValue) }}</td><td>{{ (row?.dailyRatePaid | legacyValue) }}</td><td>{{ (row?.gst | legacyValue) }}</td><td>{{ (row?.cess | legacyValue) }}</td><td>{{ (row?.totalClaimed | legacyValue) }}</td><td>{{ (row?.totAmt | legacyValue) }}</td></tr></tbody></table></div>
-                </div>
-
-                <p><b>Transportation charge of personal conveyance</b></p>
-                <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th rowspan="2">Date</th><th colspan="2">Station</th><th rowspan="2">Mode of travel</th><th rowspan="2">Type of Good</th><th rowspan="2">UnLaden Weight (In Kgs)</th><th rowspan="2">KM</th><th colspan="2">Paid per Kg (Excluding taxes)</th><th colspan="2">Tax (%)</th><th colspan="2">Total Claimed</th><th colspan="2">Total Permitted</th></tr><tr><th>From</th><th>To</th><th>Max Allowed</th><th>Actual</th><th>GST</th><th>Cess</th><th>Excluding Taxes</th><th>Including Taxes</th><th>Excluding Taxes</th><th>Including Taxes</th></tr></thead><tbody><tr *ngFor="let row of transportConveyanceRows"><td>{{ (row?.date | legacyDate) }}</td><td>{{ (row?.stnFrom | legacyValue) }}</td><td>{{ (row?.stnTo | legacyValue) }}</td><td>{{ (row?.mode | legacyValue) }}</td><td>{{ (row?.typeOfLoad | legacyValue) }}</td><td>{{ (row?.weight | legacyValue) }}</td><td>{{ (row?.kilometer | legacyValue) }}</td><td>{{ (row?.dailyRate | legacyValue) }}</td><td>{{ (row?.dailyRatePaid | legacyValue) }}</td><td>{{ (row?.gst | legacyValue) }}</td><td>{{ (row?.cess | legacyValue) }}</td><td>{{ (row?.totalClaimed | legacyValue) }}</td><td>{{ (row?.totalClaimedWithGst | legacyValue) }}</td><td>{{ (row?.totalPermitted | legacyValue) }}</td><td>{{ (row?.totAmt | legacyValue) }}</td></tr><tr *ngIf="!transportConveyanceRows.length"><td colspan="15" class="text-center">No Record Found</td></tr></tbody></table></div>
-
-                <div *ngIf="shipConveyanceRows.length">
-                  <p><b>Transportation charge of personal conveyance by ship</b></p>
-                  <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th rowspan="2">Date</th><th colspan="2">Port</th><th rowspan="2">Weight (in Quintal)</th><th rowspan="2">Rate per Quintal</th><th colspan="2">Tax (%)</th><th colspan="2">Total</th></tr><tr><th>From</th><th>To</th><th>GST</th><th>Cess</th><th>Excluding Taxes</th><th>Including Taxes</th></tr></thead><tbody><tr *ngFor="let row of shipConveyanceRows"><td>{{ (row?.date | legacyDate) }}</td><td>{{ (row?.stnFrom | legacyValue) }}</td><td>{{ (row?.stnTo | legacyValue) }}</td><td>{{ (row?.weight | legacyValue) }}</td><td>{{ (row?.dailyRatePaid | legacyValue) }}</td><td>{{ (row?.gst | legacyValue) }}</td><td>{{ (row?.cess | legacyValue) }}</td><td>{{ (row?.totalClaimed | legacyValue) }}</td><td>{{ (row?.totAmt | legacyValue) }}</td></tr></tbody></table></div>
-                </div>
-
-                <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form2" name="form2" /><span class="che_ckmark"></span></label></div><div class="col-md-2"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
-              </div>
-
-              <div id="ship4" class="tab-pane active show" *ngIf="activeTab === 'ship4'">
-                <div class="row" *ngIf="foreignTravelDetails.length"><div class="col-md-12"><div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Amount (In Rs.)</th><th>Remarks</th></tr></thead><tbody><tr *ngFor="let row of foreignTravelDetails"><td>{{ (row?.amount | legacyValue) }}</td><td>{{ (row?.descr | legacyValue) }}</td></tr></tbody></table></div></div></div>
-                <div class="form-group"><label><input type="checkbox" [checked]="claimDetails?.isAvailComposite === 'Yes'" disabled /> Include Composite Transfer Grant</label></div>
-                <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Description</th><th>Amount Claimed &#8377;</th><th>Amount Permitted &#8377;</th></tr></thead><tbody><tr><td>Travel Details (All mode of travel excluding DTS Booking)</td><td></td><td><input class="form-control" [value]="(claimDetails?.travelDetailsAmt | legacyValue:'')" disabled /></td></tr><tr><td>Travel details (DTS bookings)</td><td></td><td><input class="form-control" [value]="(claimDetails?.travelDetailsDTSAmt | legacyValue:'')" disabled /></td></tr><tr *ngIf="claimDetails?.otherChargeAmt"><td>Other Charges</td><td></td><td><input class="form-control" [value]="(claimDetails?.otherChargeAmt | legacyValue:'')" disabled /></td></tr><tr><td>Composite Transfer Grant</td><td></td><td><input class="form-control" [value]="(claimDetails?.composite | legacyValue:'')" disabled /></td></tr><tr><td>Transportation of personal effect</td><td><input class="form-control" [value]="(claimDetails?.effectsClaimed | legacyValue:'')" disabled /></td><td><input class="form-control" [value]="(claimDetails?.effects | legacyValue:'')" disabled /></td></tr><tr><td>Transportation of personal effect by ship</td><td></td><td><input class="form-control" [value]="(claimDetails?.effShip | legacyValue:'')" disabled /></td></tr><tr><td>Transportation charge for conveyance</td><td></td><td><input class="form-control" [value]="(claimDetails?.conveyance | legacyValue:'')" disabled /></td></tr><tr><td>Transportation charge for conveyance by ship</td><td></td><td><input class="form-control" [value]="(claimDetails?.conveyanceShip | legacyValue:'')" disabled /></td></tr><tr><td>Grand Total</td><td></td><td><input class="form-control" [value]="(claimDetails?.total | legacyValue:'')" disabled /></td></tr><tr><td>Amount of advance. If any, drawn vide voucher No. <input [value]="(claimDetails?.advVoucherNumber | legacyValue:'')" disabled /> dated <input [value]="(claimDetails?.lessAmtVoucherDate | legacyDate:'dd-MMM-yyyy':'')" disabled /></td><td></td><td><input class="form-control" [value]="(claimDetails?.lessAmtVoucherAmt | legacyValue:'')" disabled /></td></tr><tr><td>Excess TA advance paid through MRO. If any, paid via MRO No. <input [value]="(claimDetails?.mroNo | legacyValue:'')" disabled /> dated <input [value]="(claimDetails?.mroDate | legacyDate:'dd-MMM-yyyy':'')" disabled /></td><td></td><td><input class="form-control" [value]="(claimDetails?.mroAmt | legacyValue:'')" disabled /></td></tr><tr *ngIf="claimDetails?.mroPiAmt && toNumber(claimDetails?.mroPiAmt) > 0"><td>MRO Penal Interest (From date) <input [value]="(claimDetails?.mroPiFromDate | legacyDate:'dd-MMM-yyyy':'')" disabled /> to date <input [value]="(claimDetails?.mroPiToDate | legacyDate:'dd-MMM-yyyy':'')" disabled /> <b>{{ (claimDetails?.mroPiInterestRate | legacyValue) }}% Interest Rate</b></td><td></td><td><input class="form-control" [value]="(claimDetails?.mroPiAmt | legacyValue:'')" disabled /></td></tr><tr><td>Penal Interest (From date) <input [value]="(claimDetails?.piFromDate | legacyDate:'dd-MMM-yyyy':'')" disabled /> to date <input [value]="(claimDetails?.piToDate | legacyDate:'dd-MMM-yyyy':'')" disabled /> <b>{{ (claimDetails?.piInterestRate | legacyValue) }}% Interest Rate</b></td><td></td><td><input class="form-control" [value]="(claimDetails?.piAmt | legacyValue:'')" disabled /></td></tr><tr><td>DTS Ticket Adjusted</td><td></td><td><input class="form-control" [value]="(claimDetails?.travelDetailsDTSAmt | legacyValue:'')" disabled /></td></tr><tr><td>Net Amount Due <span *ngIf="toNumber(claimDetails?.netDueAmt) < 0" class="text-danger float-right font-weight-bold">To Government</span><span *ngIf="toNumber(claimDetails?.netDueAmt) > 0" class="text-success float-right font-weight-bold">To Individual</span></td><td></td><td><input class="form-control" [value]="(claimDetails?.netDueAbsoluteAmt | legacyValue:'')" disabled /></td></tr></tbody></table></div>
-                <div class="col-md-12"><p>*The expenditure is debitable to domestic travel expenses</p><input type="checkbox" [checked]="claimDetails?.certify === 'Yes'" disabled /> Certified that the information, as given above, is true to the best of my knowledge and belief</div>
-                <div class="col-md-12"><div class="row"><div class="col-md-3"><div class="form-group"><div class="row"><div class="col-md-5"><label class="control-label">Place</label></div><div class="col-md-7 padd_5"><input class="form-control" [value]="(claimDetails?.currentPlace | legacyValue:'')" disabled /></div></div></div></div><div class="col-md-3"><div class="form-group"><div class="row"><div class="col-md-5 padd_5"><label class="control-label">Date</label></div><div class="col-md-7 padd_5"><input class="form-control" [value]="(claimDetails?.currentDate | legacyDate:'dd-MMM-yyyy':'')" disabled /></div></div></div></div></div></div>
-                <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form3" name="form3" /><span class="che_ckmark"></span></label></div><div class="col-md-2"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
-              </div>
-
-              <div id="ship5" class="tab-pane active show" *ngIf="activeTab === 'ship5'">
-                <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th class="col-md-3">Document Name</th><th class="col-md-5">Description</th><th class="col-md-3">File <input type="checkbox" [(ngModel)]="parallelView" name="parallelView" /> Parallel View</th><th class="col-md-3">Verify</th></tr></thead><tbody><tr *ngFor="let doc of supportingDocuments"><td>{{ ((doc?.codeDocInfoDTO?.docName || doc?.documentName) | legacyValue) }} <span *ngIf="doc?.docNo">({{ doc.docNo }})</span></td><td>{{ (doc?.descr | legacyValue) }}</td><td><button *ngIf="doc?.url" type="button" class="btn btn-info btn-sm parallelViewBtn" (click)="viewSupportingDocument(doc)"><i class="fa fa-eye"></i></button></td><td><input type="checkbox" [(ngModel)]="doc.checkedIndicator" [disabled]="doc?.url && doc?.disableVal === false" /></td></tr><tr *ngIf="formObj?.signedFileUrl"><td>Signed Documents</td><td></td><td><button type="button" class="btn btn-info btn-sm parallelViewBtn" (click)="viewDocument(formObj?.signedFileUrl)"><i class="fa fa-eye"></i></button></td><td></td></tr><tr *ngIf="!supportingDocuments.length"><td colspan="4" class="text-center">No Record Found</td></tr></tbody></table></div>
-                <div class="table-responsive" *ngIf="shouldShowLostDocuments"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Lost Document</th></tr></thead><tbody><tr><td><div class="col-md-4 flex_text" *ngFor="let doc of lostDocumentRows"><div><input type="checkbox" [checked]="doc?.isLost === 1 || doc?.isLost === '1' || doc?.isLost === true" disabled /></div><div>{{ ((doc?.codeDocInfoDTO?.docName || doc?.documentName) | legacyValue) }}</div></div></td></tr></tbody></table></div>
-                <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form4" name="form4" /><span class="che_ckmark"></span></label></div><div class="col-md-2" *ngIf="isBankVisible || isRemarksVisible"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
-              </div>
-
-              <div id="ship7" class="tab-pane active show" *ngIf="activeTab === 'ship7' && isBankVisible">
-                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">Bank Name</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.bankName | legacyValue:'')" disabled /></div></div></div>
-                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">IFSC Code</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.ifscCode | legacyValue:'')" disabled /></div></div></div>
-                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">Account Number</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.bankAccNo | legacyValue:'')" disabled /></div></div></div>
-                <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">MICR Code</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.micrCode | legacyValue:'')" disabled /></div></div></div>
-                <div style="margin-top: 5px;"><label class="control-label"><code>Note:- In case of any change in the bank account details please contact SASTRA. The form should be submitted only when the account details are corrected.</code></label></div>
-                <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form7" name="form7" /><span class="che_ckmark"></span></label></div><div class="col-md-2" *ngIf="isRemarksVisible"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
-              </div>
-
-              <div id="ship6" class="tab-pane active show" *ngIf="activeTab === 'ship6' && isRemarksVisible">
-                <div class="form-group"><div class="row"><div class="col-md-12"><label class="control-label">Remarks</label></div></div><div class="row"><div class="col-md-12"><textarea rows="6" class="form-control" [value]="(formObj?.internalRemarks | legacyValue:'')" disabled></textarea></div></div></div>
-                <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form6" name="form6" /><span class="che_ckmark"></span></label></div></div></div>
-              </div>
+              <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form1" name="form1" /><span class="che_ckmark"></span></label></div><div class="col-md-2"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
             </div>
+          
+
+          
+            <div id="ship2" class="tab-pane active show" *ngIf="activeTab === 'ship2'">
+              <p><b>Particulars of journey</b></p>
+              <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th colspan="2">From</th><th colspan="2">To</th><th rowspan="2">Mode of travel</th><th rowspan="2">DTS</th><th rowspan="2">Reason for not taking DTS</th><th colspan="2">Class of Travel</th><th rowspan="2">Sanction Details</th><th rowspan="2">Distance in KM</th><th rowspan="2">Amount (in Rs.)</th><th rowspan="2">Remarks</th></tr><tr><th>Place</th><th>Date &amp; time</th><th>Place</th><th>Date &amp; time</th><th>Entitled</th><th>Travelled</th></tr></thead><tbody>
+              <tr *ngFor="let row of travelDetails"><td>{{ (row?.fromPlace | legacyValue) }}</td><td>{{ (row?.fromDate | legacyDate:'dd-MMM-yyyy HH:mm') }}</td><td>{{ (row?.toPlace | legacyValue) }}</td><td>{{ (row?.toDate | legacyDate:'dd-MMM-yyyy HH:mm') }}</td><td>{{ (row?.travelMode | legacyValue) }}</td><td>{{ (row?.isDts | legacyValue) }}</td><td>{{ (row?.reasonDts | legacyValue) }}</td><td>{{ (row?.entitledClass | legacyValue) }}</td><td>{{ (row?.travelClass | legacyValue) }}</td><td>{{ (row?.sanctionDetails | legacyValue) }}</td><td>{{ (row?.distance | legacyValue) }}</td><td>{{ (row?.amount | legacyValue) }}</td><td>{{ (row?.remarks | legacyValue) }}</td></tr>
+              
+              <tr *ngIf="!travelDetails.length"><td colspan="13" class="text-center">No Record Found</td></tr>
+            </tbody></table></div>
+            <p><b>Transportation of personal effect</b></p>
+            <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th rowspan="2">Date</th><th colspan="2">Station</th><th rowspan="2">Mode of travel</th><th rowspan="2">Weight (In Kgs)</th><th rowspan="2">KM</th><th colspan="2">Paid per Kg (Excluding taxes)</th><th colspan="2">Tax (%)</th><th colspan="2">Total Claimed</th><th colspan="2">Total Permitted</th></tr><tr><th>From</th><th>To</th><th>Max Allowed</th><th>Actual</th><th>GST</th><th>Cess</th><th>Excluding Taxes</th><th>Including Taxes</th><th>Excluding Taxes</th><th>Including Taxes</th></tr></thead><tbody>
+            <tr *ngFor="let row of transportRows"><td>{{ (row?.date | legacyDate) }}</td><td>{{ (row?.stnFrom | legacyValue) }}</td><td>{{ (row?.stnTo | legacyValue) }}</td><td>{{ (row?.mode | legacyValue) }}</td><td>{{ (row?.weight | legacyValue) }}</td><td>{{ (row?.kilometer | legacyValue) }}</td><td>{{ (row?.dailyRate | legacyValue) }}</td><td>{{ (row?.dailyRatePaid | legacyValue) }}</td><td>{{ (row?.gst | legacyValue) }}</td><td>{{ (row?.cess | legacyValue) }}</td><td>{{ (row?.totalClaimed | legacyValue) }}</td><td>{{ (row?.totalClaimedWithGst | legacyValue) }}</td><td>{{ (row?.totalPermitted | legacyValue) }}</td><td>{{ (row?.totAmt | legacyValue) }}</td></tr>
+            
+            <tr *ngIf="!transportRows.length"><td colspan="14" class="text-center">No Record Found</td></tr>
+          </tbody></table></div>
+          
+            <div *ngIf="shipEffectRows.length">
+              <p><b>Transportation of personal effect by ship</b></p>
+              <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th rowspan="2">Date</th><th colspan="2">Port</th><th rowspan="2">Cubic meter</th><th rowspan="2">Rate</th><th colspan="2">Tax (%)</th><th colspan="2">Total</th></tr><tr><th>From</th><th>To</th><th>GST</th><th>Cess</th><th>Excluding Taxes</th><th>Including Taxes</th></tr></thead><tbody>
+              <tr *ngFor="let row of shipEffectRows"><td>{{ (row?.date | legacyDate) }}</td><td>{{ (row?.stnFrom | legacyValue) }}</td><td>{{ (row?.stnTo | legacyValue) }}</td><td>{{ (row?.weight | legacyValue) }}</td><td>{{ (row?.dailyRatePaid | legacyValue) }}</td><td>{{ (row?.gst | legacyValue) }}</td><td>{{ (row?.cess | legacyValue) }}</td><td>{{ (row?.totalClaimed | legacyValue) }}</td><td>{{ (row?.totAmt | legacyValue) }}</td></tr>
+            </tbody></table></div>
           </div>
-        </div>
+        
+        <p><b>Transportation charge of personal conveyance</b></p>
+        <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th rowspan="2">Date</th><th colspan="2">Station</th><th rowspan="2">Mode of travel</th><th rowspan="2">Type of Good</th><th rowspan="2">UnLaden Weight (In Kgs)</th><th rowspan="2">KM</th><th colspan="2">Paid per Kg (Excluding taxes)</th><th colspan="2">Tax (%)</th><th colspan="2">Total Claimed</th><th colspan="2">Total Permitted</th></tr><tr><th>From</th><th>To</th><th>Max Allowed</th><th>Actual</th><th>GST</th><th>Cess</th><th>Excluding Taxes</th><th>Including Taxes</th><th>Excluding Taxes</th><th>Including Taxes</th></tr></thead><tbody>
+        <tr *ngFor="let row of transportConveyanceRows"><td>{{ (row?.date | legacyDate) }}</td><td>{{ (row?.stnFrom | legacyValue) }}</td><td>{{ (row?.stnTo | legacyValue) }}</td><td>{{ (row?.mode | legacyValue) }}</td><td>{{ (row?.typeOfLoad | legacyValue) }}</td><td>{{ (row?.weight | legacyValue) }}</td><td>{{ (row?.kilometer | legacyValue) }}</td><td>{{ (row?.dailyRate | legacyValue) }}</td><td>{{ (row?.dailyRatePaid | legacyValue) }}</td><td>{{ (row?.gst | legacyValue) }}</td><td>{{ (row?.cess | legacyValue) }}</td><td>{{ (row?.totalClaimed | legacyValue) }}</td><td>{{ (row?.totalClaimedWithGst | legacyValue) }}</td><td>{{ (row?.totalPermitted | legacyValue) }}</td><td>{{ (row?.totAmt | legacyValue) }}</td></tr>
+        
+        <tr *ngIf="!transportConveyanceRows.length"><td colspan="15" class="text-center">No Record Found</td></tr>
+      </tbody></table></div>
+      
+        <div *ngIf="shipConveyanceRows.length">
+          <p><b>Transportation charge of personal conveyance by ship</b></p>
+          <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th rowspan="2">Date</th><th colspan="2">Port</th><th rowspan="2">Weight (in Quintal)</th><th rowspan="2">Rate per Quintal</th><th colspan="2">Tax (%)</th><th colspan="2">Total</th></tr><tr><th>From</th><th>To</th><th>GST</th><th>Cess</th><th>Excluding Taxes</th><th>Including Taxes</th></tr></thead><tbody>
+          <tr *ngFor="let row of shipConveyanceRows"><td>{{ (row?.date | legacyDate) }}</td><td>{{ (row?.stnFrom | legacyValue) }}</td><td>{{ (row?.stnTo | legacyValue) }}</td><td>{{ (row?.weight | legacyValue) }}</td><td>{{ (row?.dailyRatePaid | legacyValue) }}</td><td>{{ (row?.gst | legacyValue) }}</td><td>{{ (row?.cess | legacyValue) }}</td><td>{{ (row?.totalClaimed | legacyValue) }}</td><td>{{ (row?.totAmt | legacyValue) }}</td></tr>
+        </tbody></table></div>
       </div>
-    </div>
+    
+    <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form2" name="form2" /><span class="che_ckmark"></span></label></div><div class="col-md-2"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
   </div>
+
+
+
+  <div id="ship4" class="tab-pane active show" *ngIf="activeTab === 'ship4'">
+    
+      <div class="row" *ngIf="foreignTravelDetails.length"><div class="col-md-12"><div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Amount (In Rs.)</th><th>Remarks</th></tr></thead><tbody>
+      <tr *ngFor="let row of foreignTravelDetails"><td>{{ (row?.amount | legacyValue) }}</td><td>{{ (row?.descr | legacyValue) }}</td></tr>
+    </tbody></table></div></div></div>
+  
+  <div class="form-group"><label><input type="checkbox" [checked]="claimDetails?.isAvailComposite === 'Yes'" disabled /> Include Composite Transfer Grant</label></div>
+  <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Description</th><th>Amount Claimed &#8377;</th><th>Amount Permitted &#8377;</th></tr></thead><tbody><tr><td>Travel Details (All mode of travel excluding DTS Booking)</td><td></td><td><input class="form-control" [value]="(claimDetails?.travelDetailsAmt | legacyValue:'')" disabled /></td></tr><tr><td>Travel details (DTS bookings)</td><td></td><td><input class="form-control" [value]="(claimDetails?.travelDetailsDTSAmt | legacyValue:'')" disabled /></td></tr>
+  <tr *ngIf="claimDetails?.otherChargeAmt"><td>Other Charges</td><td></td><td><input class="form-control" [value]="(claimDetails?.otherChargeAmt | legacyValue:'')" disabled /></td></tr>
+  <tr><td>Composite Transfer Grant</td><td></td><td><input class="form-control" [value]="(claimDetails?.composite | legacyValue:'')" disabled /></td></tr><tr><td>Transportation of personal effect</td><td><input class="form-control" [value]="(claimDetails?.effectsClaimed | legacyValue:'')" disabled /></td><td><input class="form-control" [value]="(claimDetails?.effects | legacyValue:'')" disabled /></td></tr><tr><td>Transportation of personal effect by ship</td><td></td><td><input class="form-control" [value]="(claimDetails?.effShip | legacyValue:'')" disabled /></td></tr><tr><td>Transportation charge for conveyance</td><td></td><td><input class="form-control" [value]="(claimDetails?.conveyance | legacyValue:'')" disabled /></td></tr><tr><td>Transportation charge for conveyance by ship</td><td></td><td><input class="form-control" [value]="(claimDetails?.conveyanceShip | legacyValue:'')" disabled /></td></tr><tr><td>Grand Total</td><td></td><td><input class="form-control" [value]="(claimDetails?.total | legacyValue:'')" disabled /></td></tr><tr><td>Amount of advance. If any, drawn vide voucher No. <input [value]="(claimDetails?.advVoucherNumber | legacyValue:'')" disabled /> dated <input [value]="(claimDetails?.lessAmtVoucherDate | legacyDate:'dd-MMM-yyyy':'')" disabled /></td><td></td><td><input class="form-control" [value]="(claimDetails?.lessAmtVoucherAmt | legacyValue:'')" disabled /></td></tr><tr><td>Excess TA advance paid through MRO. If any, paid via MRO No. <input [value]="(claimDetails?.mroNo | legacyValue:'')" disabled /> dated <input [value]="(claimDetails?.mroDate | legacyDate:'dd-MMM-yyyy':'')" disabled /></td><td></td><td><input class="form-control" [value]="(claimDetails?.mroAmt | legacyValue:'')" disabled /></td></tr>
+  <tr *ngIf="claimDetails?.mroPiAmt &amp;&amp; toNumber(claimDetails?.mroPiAmt) > 0"><td>MRO Penal Interest (From date) <input [value]="(claimDetails?.mroPiFromDate | legacyDate:'dd-MMM-yyyy':'')" disabled /> to date <input [value]="(claimDetails?.mroPiToDate | legacyDate:'dd-MMM-yyyy':'')" disabled /> <b>{{ (claimDetails?.mroPiInterestRate | legacyValue) }}% Interest Rate</b></td><td></td><td><input class="form-control" [value]="(claimDetails?.mroPiAmt | legacyValue:'')" disabled /></td></tr>
+  <tr><td>Penal Interest (From date) <input [value]="(claimDetails?.piFromDate | legacyDate:'dd-MMM-yyyy':'')" disabled /> to date <input [value]="(claimDetails?.piToDate | legacyDate:'dd-MMM-yyyy':'')" disabled /> <b>{{ (claimDetails?.piInterestRate | legacyValue) }}% Interest Rate</b></td><td></td><td><input class="form-control" [value]="(claimDetails?.piAmt | legacyValue:'')" disabled /></td></tr><tr><td>DTS Ticket Adjusted</td><td></td><td><input class="form-control" [value]="(claimDetails?.travelDetailsDTSAmt | legacyValue:'')" disabled /></td></tr><tr><td>Net Amount Due 
+  <span class="text-danger float-right font-weight-bold" *ngIf="toNumber(claimDetails?.netDueAmt) < 0">To Government</span>
+  
+  <span class="text-success float-right font-weight-bold" *ngIf="toNumber(claimDetails?.netDueAmt) > 0">To Individual</span>
+  </td><td></td><td><input class="form-control" [value]="(claimDetails?.netDueAbsoluteAmt | legacyValue:'')" disabled /></td></tr></tbody></table></div>
+  <div class="col-md-12"><p>*The expenditure is debitable to domestic travel expenses</p><input type="checkbox" [checked]="claimDetails?.certify === 'Yes'" disabled /> Certified that the information, as given above, is true to the best of my knowledge and belief</div>
+  <div class="col-md-12"><div class="row"><div class="col-md-3"><div class="form-group"><div class="row"><div class="col-md-5"><label class="control-label">Place</label></div><div class="col-md-7 padd_5"><input class="form-control" [value]="(claimDetails?.currentPlace | legacyValue:'')" disabled /></div></div></div></div><div class="col-md-3"><div class="form-group"><div class="row"><div class="col-md-5 padd_5"><label class="control-label">Date</label></div><div class="col-md-7 padd_5"><input class="form-control" [value]="(claimDetails?.currentDate | legacyDate:'dd-MMM-yyyy':'')" disabled /></div></div></div></div></div></div>
+  <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form3" name="form3" /><span class="che_ckmark"></span></label></div><div class="col-md-2"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div></div></div>
 </div>
 
-<app-common-parallel-file-viewer
-  *ngIf="parallelViewerUrl"
-  [fileUrl]="parallelViewerUrl"
-  [title]="parallelViewerTitle"
-  (closeViewer)="closeParallelViewer()">
-</app-common-parallel-file-viewer>
+
+
+  <div id="ship5" class="tab-pane active show" *ngIf="activeTab === 'ship5'">
+    <div class="table-responsive"><table class="table table-striped table-bordered table-hover"><thead><tr><th class="col-md-3">Document Name</th><th class="col-md-5">Description</th><th class="col-md-3">File <input type="checkbox" [(ngModel)]="parallelView" name="parallelView" /> Parallel View</th><th class="col-md-3">Verify</th></tr></thead><tbody>
+    <tr *ngFor="let doc of supportingDocuments"><td>{{ ((doc?.codeDocInfoDTO?.docName || doc?.documentName) | legacyValue) }} 
+      <span *ngIf="doc?.docNo">({{ doc.docNo }})</span>
+      </td><td>{{ (doc?.descr | legacyValue) }}</td><td>
+      <button type="button" class="btn btn-info btn-sm parallelViewBtn" (click)="viewSupportingDocument(doc)" *ngIf="doc?.url"><i class="fa fa-eye"></i></button>
+      </td><td><input type="checkbox" [(ngModel)]="doc.checkedIndicator" [disabled]="doc?.url && doc?.disableVal === false" /></td></tr>
+      
+      <tr *ngIf="formObj?.signedFileUrl"><td>Signed Documents</td><td></td><td><button type="button" class="btn btn-info btn-sm parallelViewBtn" (click)="viewDocument(formObj?.signedFileUrl)"><i class="fa fa-eye"></i></button></td><td></td></tr>
+      
+      <tr *ngIf="!supportingDocuments.length"><td colspan="4" class="text-center">No Record Found</td></tr>
+    </tbody></table></div>
+    
+      <div class="table-responsive" *ngIf="shouldShowLostDocuments"><table class="table table-striped table-bordered table-hover"><thead><tr><th>Lost Document</th></tr></thead><tbody><tr><td>
+      <div class="col-md-4 flex_text" *ngFor="let doc of lostDocumentRows"><div><input type="checkbox" [checked]="doc?.isLost === 1 || doc?.isLost === '1' || doc?.isLost === true" disabled /></div><div>{{ ((doc?.codeDocInfoDTO?.docName || doc?.documentName) | legacyValue) }}</div></div>
+    </td></tr></tbody></table></div>
+  
+  <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form4" name="form4" /><span class="che_ckmark"></span></label></div>
+  <div class="col-md-2" *ngIf="isBankVisible || isRemarksVisible"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div>
+</div></div>
+</div>
+
+
+
+  <div id="ship7" class="tab-pane active show" *ngIf="activeTab === 'ship7' &amp;&amp; isBankVisible">
+    <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">Bank Name</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.bankName | legacyValue:'')" disabled /></div></div></div>
+    <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">IFSC Code</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.ifscCode | legacyValue:'')" disabled /></div></div></div>
+    <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">Account Number</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.bankAccNo | legacyValue:'')" disabled /></div></div></div>
+    <div class="form-group"><div class="row"><div class="col-md-2 padd_5"><label class="control-label">MICR Code</label></div><div class="col-md-3 padd_5"><input class="form-control" [value]="(formObj?.yatClaimBankDetailDTO?.micrCode | legacyValue:'')" disabled /></div></div></div>
+    <div style="margin-top: 5px;"><label class="control-label"><code>Note:- In case of any change in the bank account details please contact SASTRA. The form should be submitted only when the account details are corrected.</code></label></div>
+    <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form7" name="form7" /><span class="che_ckmark"></span></label></div>
+    <div class="col-md-2" *ngIf="isRemarksVisible"><button type="button" class="btn btn-info btn-sm" (click)="nextTabActive()">Next</button></div>
+  </div></div>
+</div>
+
+
+
+  <div id="ship6" class="tab-pane active show" *ngIf="activeTab === 'ship6' &amp;&amp; isRemarksVisible">
+    <div class="form-group"><div class="row"><div class="col-md-12"><label class="control-label">Remarks</label></div></div><div class="row"><div class="col-md-12"><textarea rows="6" class="form-control" [value]="(formObj?.internalRemarks | legacyValue:'')" disabled></textarea></div></div></div>
+    <div class="legacy-verifier-footer"><div class="row"><div class="col-lg-6 col-md-6 col-sm-6"><label class="con_tainer">Checked <input type="checkbox" [(ngModel)]="form6" name="form6" /><span class="che_ckmark"></span></label></div></div></div>
+  </div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+  <app-common-parallel-file-viewer
+    [fileUrl]="parallelViewerUrl"
+    [title]="parallelViewerTitle"
+    (closeViewer)="closeParallelViewer()" *ngIf="parallelViewerUrl">
+  </app-common-parallel-file-viewer>
+
 
 <app-common-esign-modal [tempFormObj]="eSignTempFormObj"></app-common-esign-modal>
 

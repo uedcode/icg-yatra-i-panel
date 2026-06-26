@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
     selector: 'app-common-redirect',
     templateUrl: './common-redirect.component.html',
     styleUrls: ['./common-redirect.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CommonRedirectComponent implements OnInit {

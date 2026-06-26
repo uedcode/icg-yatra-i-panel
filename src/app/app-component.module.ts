@@ -17,7 +17,6 @@ import { ViewRemarkModalComponent } from './modals/view-remark-modal/view-remark
 import { PipeModule } from './app-pipe.module';
 import { DirectiveModule } from './app-directive.module';
 import { RouterModule } from '@angular/router';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
 
@@ -95,7 +94,6 @@ const CustomSelectOptions: INgxSelectOptions = {
 
     DirectiveModule,
     PipeModule,
-    NgxChartsModule,
     NgxExtendedPdfViewerModule,
     NgxDocViewerModule,
   ],

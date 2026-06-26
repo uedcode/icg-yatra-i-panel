@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -12,6 +12,7 @@ declare var $: any;
     selector: 'app-common-change-password',
     templateUrl: './common-change-password.component.html',
     styleUrls: ['./common-change-password.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CommonChangePasswordComponent implements OnInit {

@@ -2,7 +2,7 @@
 
 import 'zone.js/testing';
 import { CommonModule, DatePipe } from '@angular/common';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -196,7 +196,7 @@ testBedAny.configureTestingModule = (moduleDef: any = {}) => {
       ...(moduleDef.imports || [])
     ],
     providers: [
-      provideHttpClient(),
+      provideHttpClient(withXhr()),
       provideHttpClientTesting(),
       DatePipe,
       { provide: ActivatedRoute, useValue: activatedRouteStub },

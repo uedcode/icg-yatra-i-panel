@@ -9,9 +9,11 @@
         <div class="modal-body">
           <label>Purpose <span class="text-danger">*</span></label>
           <input class="form-control" type="text" maxlength="100" placeholder="eg. Investiture Ceremony" name="descr" [(ngModel)]="formObj.descr" #descr="ngModel" required />
-          <div *ngIf="descr.invalid && (descr.dirty || descr.touched || mainForm.submitted)" class="invalid-msg">
-            Purpose is required.
-          </div>
+          
+            <div class="invalid-msg" *ngIf="descr.invalid &amp;&amp; (descr.dirty || descr.touched || mainForm.submitted)">
+              Purpose is required.
+            </div>
+          
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="reset()">Close</button>

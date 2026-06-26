@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
@@ -7,6 +7,7 @@ import { PreviewWindowService } from 'src/app/service/core/preview-window.servic
   selector: 'app-claim-form-shell',
   templateUrl: './claim-form-shell.component.html',
   styleUrls: ['./claim-form-shell.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ClaimFormShellComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { NgForm } from '@angular/forms';
 
@@ -13,6 +13,7 @@ import { UserApiService } from 'src/app/service/api/admin/user-api.service';
   selector: 'app-manage-role',
   standalone: false,
   templateUrl: './manage-role.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./manage-role.component.css']
 })
 export class ManageRoleComponent implements OnInit {

@@ -49,30 +49,36 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let dataObj of dataList | filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
-              <td>{{ (i + 1) + (p - 1) * noOfPage }}.</td>
-              <td>{{ dataObj?.from | showHypen }}</td>
-              <td>{{ dataObj?.to | showHypen }}</td>
-              <td>{{ dataObj?.rate | showHypen }}</td>
-              <td>
-                <button class="btn btn-primary" title="Edit" (click)="editRecord(dataObj)">
-                  <i class="fa fa-edit"></i>
-                </button>
-              </td>
-              <td>
-                <button class="btn btn-danger" title="Delete" data-toggle="modal" data-target="#delete_modal" (click)="id=dataObj.yatPortRateId">
-                  <i class="fa fa-trash"></i>
-                </button>
-              </td>
-            </tr>
-            <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-              <td colspan="20">No Records</td>
-            </tr>
-            <tr class="noExl pagination_area" *ngIf="dataList?.length">
-              <td colspan="20">
-                <pagination-controls (pageChange)="p = $event"></pagination-controls>
-              </td>
-            </tr>
+            
+              <tr *ngFor="let dataObj of dataList | filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                <td>{{ (i + 1) + (p - 1) * noOfPage }}.</td>
+                <td>{{ dataObj?.from | showHypen }}</td>
+                <td>{{ dataObj?.to | showHypen }}</td>
+                <td>{{ dataObj?.rate | showHypen }}</td>
+                <td>
+                  <button class="btn btn-primary" title="Edit" (click)="editRecord(dataObj)">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                </td>
+                <td>
+                  <button class="btn btn-danger" title="Delete" data-toggle="modal" data-target="#delete_modal" (click)="id=dataObj.yatPortRateId">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            
+            
+              <tr class="text-center table-empty-state gov-table-empty-state" *ngIf="!dataList.length">
+                <td colspan="20">No Records</td>
+              </tr>
+            
+            
+              <tr class="noExl pagination_area" *ngIf="dataList?.length">
+                <td colspan="20">
+                  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                </td>
+              </tr>
+            
           </tbody>
         </table>
         <app-add-port-rate-modal [record]="dataObj" [dataList]="dataList" (setRecordData)="dataList = $event"></app-add-port-rate-modal>

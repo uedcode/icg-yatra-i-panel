@@ -26,9 +26,13 @@
                     required
                     placeholder="Select Station">
                   </ngx-select>
-                  <div *ngIf="from.touched || (mainForm.submitted && from.invalid)">
-                    <div *ngIf="from.errors?.required" class="invalid-msg">From Station is required</div>
-                  </div>
+                  
+                    <div *ngIf="from.touched || (mainForm.submitted &amp;&amp; from.invalid)">
+                      
+                        <div class="invalid-msg" *ngIf="from.errors?.required">From Station is required</div>
+                      
+                    </div>
+                  
                 </div>
               </div>
 
@@ -46,9 +50,13 @@
                     required
                     placeholder="Select Station">
                   </ngx-select>
-                  <div *ngIf="to.touched || (mainForm.submitted && to.invalid)">
-                    <div *ngIf="to.errors?.required" class="invalid-msg">To Station is required</div>
-                  </div>
+                  
+                    <div *ngIf="to.touched || (mainForm.submitted &amp;&amp; to.invalid)">
+                      
+                        <div class="invalid-msg" *ngIf="to.errors?.required">To Station is required</div>
+                      
+                    </div>
+                  
                 </div>
               </div>
 
@@ -65,9 +73,13 @@
                     name="rate"
                     required
                     appNegativeDecimaNumber />
-                  <div *ngIf="rate.touched || (mainForm.submitted && rate.invalid)">
-                    <div *ngIf="rate.errors?.required" class="invalid-msg">Rate per quintal is required</div>
-                  </div>
+                  
+                    <div *ngIf="rate.touched || (mainForm.submitted &amp;&amp; rate.invalid)">
+                      
+                        <div class="invalid-msg" *ngIf="rate.errors?.required">Rate per quintal is required</div>
+                      
+                    </div>
+                  
                 </div>
               </div>
             </div>

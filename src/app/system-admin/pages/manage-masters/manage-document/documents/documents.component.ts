@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -9,6 +9,7 @@ declare var $: any;
     selector: 'app-documents',
     templateUrl: './documents.component.html',
     styleUrls: ['./documents.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class DocumentsComponent implements OnInit {

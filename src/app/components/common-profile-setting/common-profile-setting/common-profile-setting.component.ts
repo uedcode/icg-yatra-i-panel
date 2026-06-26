@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { TotpApiService } from 'src/app/service/api/security/totp-api.service';
@@ -8,6 +8,7 @@ declare var $: any;
     selector: 'app-common-profile-setting',
     templateUrl: './common-profile-setting.component.html',
     styleUrls: ['./common-profile-setting.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CommonProfileSettingComponent implements OnInit {

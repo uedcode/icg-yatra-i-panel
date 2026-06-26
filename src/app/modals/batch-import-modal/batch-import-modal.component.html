@@ -6,7 +6,7 @@
   role="dialog"
   aria-labelledby="addAgent"
   aria-hidden="true"
->
+  >
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
@@ -18,7 +18,7 @@
             data-dismiss="modal"
             aria-label="Close"
             (click)="resetForm()"
-          >
+            >
             <span aria-hidden="true">×</span>
           </button>
         </div>
@@ -29,43 +29,45 @@
               <div class="form-group">
                 <label class="form-label"
                   >Choose File<sup class="required-msg">*</sup></label
-                >
-                <input
-                  type="file"
-                  class="form-control"
-                  name="batchZipFile"
-                  id="batchZipFile"
-                  accept="application/zip,.zip"
-                  (change)="onBatchFileChange($event)"
-                />
-                <div class="invalid-msg" *ngIf="fileError">{{ fileError }}</div>
+                  >
+                  <input
+                    type="file"
+                    class="form-control"
+                    name="batchZipFile"
+                    id="batchZipFile"
+                    accept="application/zip,.zip"
+                    (change)="onBatchFileChange($event)"
+                    />
+                  
+                    <div class="invalid-msg" *ngIf="fileError">{{ fileError }}</div>
+                  
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="modal-footer modal_footer_download">
-          <div class="float_right">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              (click)="resetForm()"
-              title="Cancel"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              [disabled]="disableBtn || !!fileError"
-              class="btn btn-primary"
-              (click)="uploadBatchZip()"
-            >
-              Submit
-            </button>
+          <div class="modal-footer modal_footer_download">
+            <div class="float_right">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="resetForm()"
+                title="Cancel"
+                >
+                Cancel
+              </button>
+              <button
+                type="button"
+                [disabled]="disableBtn || !!fileError"
+                class="btn btn-primary"
+                (click)="uploadBatchZip()"
+                >
+                Submit
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<!-- Change Status Modal Ends -->
+  <!-- Change Status Modal Ends -->

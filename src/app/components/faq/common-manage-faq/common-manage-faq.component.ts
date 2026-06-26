@@ -1,5 +1,5 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { FaqApiService } from 'src/app/service/api/masters/faq-api.service';
 declare var $: any;
@@ -8,6 +8,7 @@ declare var $: any;
     selector: 'app-common-manage-faq',
     templateUrl: './common-manage-faq.component.html',
     styleUrls: ['./common-manage-faq.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CommonManageFaqComponent implements OnInit {

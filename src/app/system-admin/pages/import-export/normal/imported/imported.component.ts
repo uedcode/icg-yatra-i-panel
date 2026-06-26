@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { Location } from '@angular/common';
 
@@ -11,6 +11,7 @@ declare var $: any;
     selector: 'app-imported',
     templateUrl: './imported.component.html',
     styleUrls: ['./imported.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ImportedComponent implements OnInit {

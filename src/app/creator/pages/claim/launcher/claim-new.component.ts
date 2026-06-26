@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
@@ -9,6 +9,7 @@ import { CommonService } from 'src/app/service/core/common.service';
   selector: 'app-claim-new',
   templateUrl: './claim-new.component.html',
   styleUrls: ['./claim-new.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ClaimNewComponent implements OnInit {

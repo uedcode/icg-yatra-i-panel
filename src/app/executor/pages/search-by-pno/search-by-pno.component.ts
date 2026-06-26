@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
+import { normalizePreviewSubFormId } from 'src/app/shared/utils/legacy-preview.util';
 
 @Component({
   selector: 'app-search-by-pno',
   templateUrl: './search-by-pno.component.html',
   styleUrls: ['./search-by-pno.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class SearchByPnoComponent implements OnInit {
@@ -56,8 +58,9 @@ export class SearchByPnoComponent implements OnInit {
     const subFormId = (claim?.codeSubFormDTO?.subFormId || row?.subFormId || '').toString();
     if (!claimId || !subFormId) return;
     const previewRoute = this.getExecutorPreviewRoute(subFormId);
+    const previewSubFormId = normalizePreviewSubFormId(subFormId);
     this.router.navigateByUrl(
-      `${this.$auth.getModuleName()}/${previewRoute}?claimId=${claimId}&subFormId=${subFormId}`
+      `${this.$auth.getModuleName()}/${previewRoute}?id=${claimId}&subFormId=${previewSubFormId}`
     );
   }
 

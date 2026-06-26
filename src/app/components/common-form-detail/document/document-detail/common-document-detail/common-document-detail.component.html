@@ -1,38 +1,46 @@
-<div *ngIf="formDocsDTOs?.length > 0">
-  <div class="row">
-    <div class="col-md-12">
-      <h4 class="folder">DOCUMENTS</h4>
-    </div>
-    <div class="col-md-12 col-lg-12">
-      <div class="table-responsive">
-        <table id="exportData" class="table table-bordered" style="width:100%">
-          <thead>
-            <tr>
-              <th class="wd-5p">SL</th>
-              <th class="wd-20p">Document Name</th>
-              <th class="wd-20p">Upload Document</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let dataObj of formDocsDTOs; let i=index">
-              <td>{{ i + 1}}</td>
-              <td>
-                {{dataObj?.codeDocInfoDTO?.docName | showHypen}}
-               <span *ngIf="dataObj?.codeDocInfoDTO?.docName == 'Other'">({{dataObj?.otherDocName}})</span>
-              </td>
-              <td>
-                <button type="button" title="View" class="btn btn-warning" (click)="$auth.viewFile(dataObj?.url)">
-                  <i class='fa fa-eye'></i>View
-                </button>
-              </td>
-            </tr>
-            <tr *ngIf="!formDocsDTOs.length" class="text-center">
-              <td colspan="20">No Records Available</td>
-            </tr>
-          </tbody>
-        </table>
+
+  <div *ngIf="formDocsDTOs?.length > 0">
+    <div class="row">
+      <div class="col-md-12">
+        <h4 class="folder">DOCUMENTS</h4>
+      </div>
+      <div class="col-md-12 col-lg-12">
+        <div class="table-responsive">
+          <table id="exportData" class="table table-bordered" style="width:100%">
+            <thead>
+              <tr>
+                <th class="wd-5p">SL</th>
+                <th class="wd-20p">Document Name</th>
+                <th class="wd-20p">Upload Document</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+                <tr *ngFor="let dataObj of formDocsDTOs; let i = index">
+                  <td>{{ i + 1}}</td>
+                  <td>
+                    {{dataObj?.codeDocInfoDTO?.docName | showHypen}}
+                    
+                      <span *ngIf="dataObj?.codeDocInfoDTO?.docName == 'Other'">({{dataObj?.otherDocName}})</span>
+                    
+                  </td>
+                  <td>
+                    <button type="button" title="View" class="btn btn-warning" (click)="$auth.viewFile(dataObj?.url)">
+                      <i class='fa fa-eye'></i>View
+                    </button>
+                  </td>
+                </tr>
+              
+              
+                <tr class="text-center" *ngIf="!formDocsDTOs.length">
+                  <td colspan="20">No Records Available</td>
+                </tr>
+              
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
-</div>
+
 

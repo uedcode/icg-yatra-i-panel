@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 declare var $: any;
@@ -7,6 +7,7 @@ declare var $: any;
     selector: 'app-creator-profile',
     templateUrl: './creator-profile.component.html',
     styleUrls: ['./creator-profile.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CreatorProfileComponent implements OnInit {

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-common-fte-detail',
   templateUrl: './common-fte-detail.component.html',
   styleUrls: ['./common-fte-detail.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CommonFteDetailComponent implements OnInit {

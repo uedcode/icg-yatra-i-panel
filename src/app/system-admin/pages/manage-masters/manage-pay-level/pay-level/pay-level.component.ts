@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { PayLevelApiService } from 'src/app/service/api/masters/pay-level-api.service';
 
@@ -8,6 +8,7 @@ declare var $: any;
   selector: 'app-pay-level',
   templateUrl: './pay-level.component.html',
   styleUrls: ['./pay-level.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class PayLevelComponent implements OnInit {

@@ -1,5 +1,5 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { Component, Inject, OnInit, DOCUMENT } from '@angular/core';
+import { Component, Inject, OnInit, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 import { RoleApiService } from 'src/app/service/api/admin/role-api.service';
 import { UserApiService } from 'src/app/service/api/admin/user-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -11,6 +11,7 @@ import { HttpParams } from '@angular/common/http';
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class HeaderComponent implements OnInit {

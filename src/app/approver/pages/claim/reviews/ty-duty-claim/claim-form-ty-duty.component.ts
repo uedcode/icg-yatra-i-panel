@@ -1,5 +1,5 @@
 import { DatePipe, Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
@@ -15,6 +15,7 @@ declare var $: any;
   selector: 'app-approver-claim-form-ty-duty',
   templateUrl: './claim-form-ty-duty.component.html',
   styleUrls: ['./claim-form-ty-duty.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ClaimFormTyDutyComponent implements OnInit {

@@ -1,31 +1,35 @@
 <div class="page-header gov-page-toolbar">
-          <div class="page-leftheader">
-            <h4 class="page-title">eSign Report</h4>
-          </div>
-        </div>
+  <div class="page-leftheader">
+    <h4 class="page-title">eSign Report</h4>
+  </div>
+</div>
 
-        <div class="card">
-          <div class="card-body table-responsive">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Claim ID</th>
-                  <th>Form</th>
-                  <th>Status</th>
-                  <th>Updated On</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let row of rows">
-                  <td>{{ row?.claimId || row?.customId || '-' }}</td>
-                  <td>{{ row?.subFormName || row?.formName || '-' }}</td>
-                  <td>{{ row?.statusName || row?.status || '-' }}</td>
-                  <td>{{ row?.updatedOn | showDate : 'medium' }}</td>
-                </tr>
-                <tr *ngIf="!rows.length">
-                  <td colspan="4" class="text-center">No eSign report data found.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Claim ID</th>
+          <th>Form</th>
+          <th>Status</th>
+          <th>Updated On</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+          <tr *ngFor="let row of rows">
+            <td>{{ row?.claimId || row?.customId || '-' }}</td>
+            <td>{{ row?.subFormName || row?.formName || '-' }}</td>
+            <td>{{ row?.statusName || row?.status || '-' }}</td>
+            <td>{{ row?.updatedOn | showDate : 'medium' }}</td>
+          </tr>
+        
+        
+          <tr *ngIf="!rows.length">
+            <td colspan="4" class="text-center">No eSign report data found.</td>
+          </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</div>

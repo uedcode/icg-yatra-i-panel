@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { BatchDiaryApiService } from 'src/app/service/api/batch/batch-diary-api.service';
@@ -9,6 +9,7 @@ declare var $: any;
     selector: 'app-batch-import-modal',
     templateUrl: './batch-import-modal.component.html',
     styleUrls: ['./batch-import-modal.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class BatchImportModalComponent implements OnInit {

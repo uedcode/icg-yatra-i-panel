@@ -1,102 +1,108 @@
 <!--Page header-->
-        <div class="page-header gov-page-toolbar">
-          <div class="page-leftheader">
-            <h4 class="page-title">Ships</h4>
-            <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Ships</li>
-            </ol>
-          </div>
-          <div style="display: flex;">
-            <div>
-              <button type="button" [routerLink]="['../dashboard']"  class="btn btn-dark request_view_back" title="Back to Page" ><i
-                  class="fa fa-chevron-left" style="display: inline-block;"></i></button>
-            </div>
-            <button type="button" class="btn btn-primary" (click)="dataObj={}" data-toggle="modal"
-              data-target="#addship" title="Add"><i class="fa fa-plus"></i></button>
-          </div>
-        </div>
+<div class="page-header gov-page-toolbar">
+  <div class="page-leftheader">
+    <h4 class="page-title">Ships</h4>
+    <ol class="breadcrumb pl-0">
+      <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
+      <li class="breadcrumb-item active" aria-current="page">
+      Ships</li>
+    </ol>
+  </div>
+  <div style="display: flex;">
+    <div>
+      <button type="button" [routerLink]="['../dashboard']"  class="btn btn-dark request_view_back" title="Back to Page" ><i
+      class="fa fa-chevron-left" style="display: inline-block;"></i></button>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="dataObj={}" data-toggle="modal"
+      data-target="#addship" title="Add"><i class="fa fa-plus"></i></button>
+    </div>
+  </div>
 
-        <!--End Page header-->
+  <!--End Page header-->
+  <div class="row">
+    <div class="card">
+      <div class="card-body">
         <div class="row">
-          <div class="card">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-sm-12 col-md-6">
-                  <div class="dataTables_length">
-                    <label>Show</label>
-                    <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
-                      (ngModelChange)="p=1">
-                      <option value="10">10</option>
-                      <option value="20">20</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                      <option value="100000">All</option>
-                    </select>
-                    <label>entries</label>
-                  </div>
-                </div>
-                <div class="col-sm-12 col-md-3 offset-3">
-                  <div class="dataTables_filter"  title="Search">
-                    <i class="fa fa-search"></i>
-                    <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
-                      [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
-                  </div>
-                </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="dataTables_length">
+              <label>Show</label>
+              <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
+                (ngModelChange)="p=1">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="100000">All</option>
+              </select>
+              <label>entries</label>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-3 offset-3">
+            <div class="dataTables_filter"  title="Search">
+              <i class="fa fa-search"></i>
+              <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1"
+                [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
               </div>
-              <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
-                <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
-                  <thead>
-                    <tr>
-                      <th class="wd-5p">SL</th>
-                      <th class="wd-20p">Unit Name <i class="fa fa-sort" (click)="sort('descr')"></i></th>
-                      <th class="wd-20p">Ship Name <i class="fa fa-sort" (click)="sort('shipName')"></i></th>
-                      <th class="wd-20p">Ship GRT No <i class="fa fa-sort" (click)="sort('unitGrtNo')"></i></th>
-                      <th class="wd-20p">Address Line 1 <i class="fa fa-sort" (click)="sort('add1')"></i></th>
-                      <th class="wd-20p">Address Line 2 <i class="fa fa-sort" (click)="sort('add2')"></i></th>
-                      <th class="wd-20p">Address Line 3 <i class="fa fa-sort" (click)="sort('add3')"></i></th>
-                      <th class="wd-20p">District <i class="fa fa-sort" (click)="sort('district')"></i></th>
-                      <th class="wd-20p">State <i class="fa fa-sort" (click)="sort('state')"></i></th>
-                      <th class="wd-20p">Pincode <i class="fa fa-sort" (click)="sort('pin')"></i></th>
-                      <th class="wd-20p">Ship call sign <i class="fa fa-sort" (click)="sort('callSign')"></i></th>
-                      <th class="wd-20p">Created On<i class="fa fa-sort" (click)="sort('createdOn')"></i></th>
-                      <th class="actionBtnWidth">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
-                      <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
-                      <td>{{dataObj?.codeUnitDTO?.descr | showHypen}}</td>
-                      <td>{{dataObj?.shipName | showHypen}}</td>
-                      <td>{{dataObj?.unitGrtNo | showHypen}}</td>
-                      <td>{{dataObj?.add1 | showHypen}}</td>
-                      <td>{{dataObj?.add2 | showHypen}}</td>
-                      <td>{{dataObj?.add3 | showHypen}}</td>
-                      <td>{{dataObj?.district | showHypen}}</td>
-                      <td>{{dataObj?.state | showHypen}}</td>
-                      <td>{{dataObj?.pin | showHypen}}</td>
-                      <td>{{dataObj?.callSign | showHypen}}</td>
-                      <td>{{dataObj?.createdOn | showDate:"medium"}}</td>
-                      <td>
-                        <button class="btn btn-primary" title="Edit" (click)="editRecord(dataObj)"><i
-                            class="fa fa-edit"></i></button>
-                        <button class="btn btn-danger" title="Delete" data-toggle="modal" data-target="#delete_modal"
-                          (click)="id=dataObj.id"><i class="fa fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+            <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
+              <thead>
+                <tr>
+                  <th class="wd-5p">SL</th>
+                  <th class="wd-20p">Unit Name <i class="fa fa-sort" (click)="sort('descr')"></i></th>
+                  <th class="wd-20p">Ship Name <i class="fa fa-sort" (click)="sort('shipName')"></i></th>
+                  <th class="wd-20p">Ship GRT No <i class="fa fa-sort" (click)="sort('unitGrtNo')"></i></th>
+                  <th class="wd-20p">Address Line 1 <i class="fa fa-sort" (click)="sort('add1')"></i></th>
+                  <th class="wd-20p">Address Line 2 <i class="fa fa-sort" (click)="sort('add2')"></i></th>
+                  <th class="wd-20p">Address Line 3 <i class="fa fa-sort" (click)="sort('add3')"></i></th>
+                  <th class="wd-20p">District <i class="fa fa-sort" (click)="sort('district')"></i></th>
+                  <th class="wd-20p">State <i class="fa fa-sort" (click)="sort('state')"></i></th>
+                  <th class="wd-20p">Pincode <i class="fa fa-sort" (click)="sort('pin')"></i></th>
+                  <th class="wd-20p">Ship call sign <i class="fa fa-sort" (click)="sort('callSign')"></i></th>
+                  <th class="wd-20p">Created On<i class="fa fa-sort" (click)="sort('createdOn')"></i></th>
+                  <th class="actionBtnWidth">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr
+                     *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                    <td>{{ (i + 1) + (p - 1) * noOfPage}}</td>
+                    <td>{{dataObj?.codeUnitDTO?.descr | showHypen}}</td>
+                    <td>{{dataObj?.shipName | showHypen}}</td>
+                    <td>{{dataObj?.unitGrtNo | showHypen}}</td>
+                    <td>{{dataObj?.add1 | showHypen}}</td>
+                    <td>{{dataObj?.add2 | showHypen}}</td>
+                    <td>{{dataObj?.add3 | showHypen}}</td>
+                    <td>{{dataObj?.district | showHypen}}</td>
+                    <td>{{dataObj?.state | showHypen}}</td>
+                    <td>{{dataObj?.pin | showHypen}}</td>
+                    <td>{{dataObj?.callSign | showHypen}}</td>
+                    <td>{{dataObj?.createdOn | showDate:"medium"}}</td>
+                    <td>
+                      <button class="btn btn-primary" title="Edit" (click)="editRecord(dataObj)"><i
+                      class="fa fa-edit"></i></button>
+                      <button class="btn btn-danger" title="Delete" data-toggle="modal" data-target="#delete_modal"
+                        (click)="id=dataObj.id"><i class="fa fa-trash"></i></button>
                       </td>
                     </tr>
-                    <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
+                  
+                  
+                    <tr class="text-center table-empty-state gov-table-empty-state" *ngIf="!dataList.length">
                       <td colspan="20">No Records Available</td>
                     </tr>
+                  
+                  
                     <tr class="noExl pagination_area" *ngIf="dataList?.length">
                       <td colspan="20">
                         <pagination-controls (pageChange)="p = $event"></pagination-controls>
                       </td>
                     </tr>
-                  </tbody>
-                </table><app-add-ship-modal [record]="dataObj" [dataList]="dataList" (setRecordData)="dataList = $event">
-</app-add-ship-modal>
-<app-delete-modal [deleteData]="id" (deleteConfirmed)="deleteList($event)"></app-delete-modal>
+                  
+                </tbody>
+              </table><app-add-ship-modal [record]="dataObj" [dataList]="dataList" (setRecordData)="dataList = $event">
+            </app-add-ship-modal>
+            <app-delete-modal [deleteData]="id" (deleteConfirmed)="deleteList($event)"></app-delete-modal>
 
 

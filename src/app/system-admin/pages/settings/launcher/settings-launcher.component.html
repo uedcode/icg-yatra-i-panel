@@ -12,16 +12,18 @@
   <div class="card-body">
     <p class="settings-intro">Manage master data</p>
     <div class="row">
-      <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let card of settingsCards">
-        <a [routerLink]="[card.route]" class="settings-card-link">
-          <div class="settings-card">
-            <div class="settings-card-icon">
-              <i [class]="card.icon" aria-hidden="true"></i>
+      
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let card of settingsCards">
+          <a [routerLink]="[card.route]" class="settings-card-link">
+            <div class="settings-card">
+              <div class="settings-card-icon">
+                <i [class]="card.icon" aria-hidden="true"></i>
+              </div>
+              <h4>{{ card.title }}</h4>
             </div>
-            <h4>{{ card.title }}</h4>
-          </div>
-        </a>
-      </div>
+          </a>
+        </div>
+      
     </div>
   </div>
 </div>

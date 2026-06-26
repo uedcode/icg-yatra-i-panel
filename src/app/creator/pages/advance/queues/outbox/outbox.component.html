@@ -1,149 +1,157 @@
 <!--Page header-->
-        <div class="page-header gov-page-toolbar">
-          <div class="page-leftheader">
-            <h4 class="page-title">Outbox</h4>
-            <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
-              <li class="breadcrumb-item active" aria-current="page">
-                Outbox
-              </li>
-            </ol>
-          </div>
-          <div>
-            <div>
-              <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
-                  class="fa fa-chevron-left" style="display: inline-block;"></i></button>
-              <button type="button" class="btn btn-dark request_view_back" title="Filter" (click)="this.toggleFilter = !this.toggleFilter"><i
-                  class="fa fa-filter" style="display: inline-block;"></i></button>
-            </div>
-          </div>
-        </div>
-        <div class="row" *ngIf="toggleFilter == true">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-body">
-                <form class="page_form" autocomplete="off"
-                  (ngSubmit)="requiredForm.form.valid && getState();" #requiredForm="ngForm"
-                  novalidate>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Form ID</label>
-                        <input type="text" class="form-control" name="formId" #formId="ngModel"
-                        [(ngModel)]="filterObj.formId" placeholder="Form ID">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">PNO</label>
-                        <input type="text" class="form-control" name="pno" #pno="ngModel"
-                        [(ngModel)]="filterObj.pno" placeholder="PNO">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Name</label>
-                        <input type="text" class="form-control" name="searchedName" #searchedName="ngModel"
-                        [(ngModel)]="filterObj.searchedName" placeholder="Name">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">From Date </label>
-                        <input type="date" class="form-control" name="fromDate" #fromDate="ngModel"
-                        [(ngModel)]="filterObj.fromDate" min="1000-01-01" max="9999-12-31">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">To Date </label>
-                        <input type="date" class="form-control" name="toDate" #toDate="ngModel"
-                        [(ngModel)]="filterObj.toDate" min="1000-01-01" max="9999-12-31">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form_page_btn">
-                    <button  type="submit" title="Submit" class="btn btn-primary" title="Submit"><i
-                        class="fa fa-check"></i>
-                      Submit</button>
-                      <button type="button" class="btn btn-danger" title="Reset"
-                      (click)="reset()"  title="Reset"><i
-                        class="fa fa-refresh"></i> Reset</button>
-                    </div>
-                </form>
+<div class="page-header gov-page-toolbar">
+  <div class="page-leftheader">
+    <h4 class="page-title">Outbox</h4>
+    <ol class="breadcrumb pl-0">
+      <li class="breadcrumb-item"><a [routerLink]="['../dashboard']">Dashboard</a></li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Outbox
+      </li>
+    </ol>
+  </div>
+  <div>
+    <div>
+      <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
+      class="fa fa-chevron-left" style="display: inline-block;"></i></button>
+      <button type="button" class="btn btn-dark request_view_back" title="Filter" (click)="this.toggleFilter = !this.toggleFilter"><i
+      class="fa fa-filter" style="display: inline-block;"></i></button>
+    </div>
+  </div>
+</div>
+
+  <div class="row" *ngIf="toggleFilter == true">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <form class="page_form" autocomplete="off"
+            (ngSubmit)="requiredForm.form.valid && getState();" #requiredForm="ngForm"
+            novalidate>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label class="form-label">Form ID</label>
+                  <input type="text" class="form-control" name="formId" #formId="ngModel"
+                    [(ngModel)]="filterObj.formId" placeholder="Form ID">
+                </div>
               </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label class="form-label">PNO</label>
+                  <input type="text" class="form-control" name="pno" #pno="ngModel"
+                    [(ngModel)]="filterObj.pno" placeholder="PNO">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label class="form-label">Name</label>
+                  <input type="text" class="form-control" name="searchedName" #searchedName="ngModel"
+                    [(ngModel)]="filterObj.searchedName" placeholder="Name">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label class="form-label">From Date </label>
+                  <input type="date" class="form-control" name="fromDate" #fromDate="ngModel"
+                    [(ngModel)]="filterObj.fromDate" min="1000-01-01" max="9999-12-31">
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label class="form-label">To Date </label>
+                    <input type="date" class="form-control" name="toDate" #toDate="ngModel"
+                      [(ngModel)]="filterObj.toDate" min="1000-01-01" max="9999-12-31">
+                    </div>
+                  </div>
+                </div>
+                <div class="form_page_btn">
+                  <button  type="submit" title="Submit" class="btn btn-primary" title="Submit"><i
+                  class="fa fa-check"></i>
+                Submit</button>
+                <button type="button" class="btn btn-danger" title="Reset"
+                  (click)="reset()"  title="Reset"><i
+                class="fa fa-refresh"></i> Reset</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  <div class="row">
+    <div class="col-md-12 col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="dataTables_length">
+                <label>Show</label>
+                <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
+                  (ngModelChange)="p=1">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              <label>entries</label>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-3 offset-3">
+            <div class="dataTables_filter"  title="Search">
+              <i class="fa fa-search"></i>
+              <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1" (keyup.enter)="applyServerSearch()" (ngModelChange)="onSearchInput()"
+                [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-12 col-lg-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-sm-12 col-md-6">
-                    <div class="dataTables_length">
-                      <label>Show</label>
-                      <select class="form-control" name="noOfPage" aria-controls="example" [(ngModel)]="noOfPage"
-                        (ngModelChange)="p=1">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                      </select>
-                      <label>entries</label>
-                    </div>
-                  </div>
+        <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
+          <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
+            <thead>
+              <tr>
+                <th>S.No.</th>
+                <th>Form Name</th>
+                <th>Occurrence Date</th>
+                <th>Form ID</th>
+                <th>Form Status</th>
+                <th>Requisition Form</th>
+                <th>View</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+                <tr
+                   *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                  <td>{{ (i + 1) + (p - 1) * noOfPage}}.</td>
+                  <td>{{dataObj?.yatClaimDTO?.codeSubFormDTO?.descr | showHypen}}</td>
+                  <td>{{ dataObj?.yatClaimDTO?.occDate | legacyDate:'queueDate' }}</td>
+                  <td>{{dataObj?.yatClaimDTO?.formId | showHypen}}</td>
+                  <td>{{dataObj?.onWork | showHypen}}</td>
+                  <td>
+                    <button type="button" class="btn btn-info" (click)="downloadRequisition(dataObj)">Download</button>
+                  </td>
+                  <td>
+                    <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
+                  </td>
+                </tr>
+              
 
-                  <div class="col-sm-12 col-md-3 offset-3">
-                    <div class="dataTables_filter"  title="Search">
-                      <i class="fa fa-search"></i>
-                      <input type="search" class="form-control form-control-sm" placeholder="Search" (keyup)="p=1" (keyup.enter)="applyServerSearch()" (ngModelChange)="onSearchInput()"
-                        [(ngModel)]="searchObj" name="searchObj" aria-controls="example">
-                    </div>
-                  </div>
-                </div>
-                <div class="table-responsive gov-table-wrap-premium table-wrap-premium">
-                  <table id="exportData" class="table table-bordered gov-table-sticky-first table-sticky-first" style="width:100%">
-                    <thead>
-                      <tr>
-                        <th>S.No.</th>
-                        <th>Form Name</th>
-                        <th>Occurrence Date</th>
-                        <th>Form ID</th>
-                        <th>Form Status</th>
-                        <th>Requisition Form</th>
-                        <th>View</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        *ngFor="let dataObj of dataList |  filterComplex : searchObj | orderBy: key: reverse |paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
-                        <td>{{ (i + 1) + (p - 1) * noOfPage}}.</td>
-                        <td>{{dataObj?.yatClaimDTO?.codeSubFormDTO?.descr | showHypen}}</td>
-                        <td>{{ dataObj?.yatClaimDTO?.occDate | legacyDate:'queueDate' }}</td>
-                        <td>{{dataObj?.yatClaimDTO?.formId | showHypen}}</td>
-                        <td>{{dataObj?.onWork | showHypen}}</td>
-                        <td>
-                          <button type="button" class="btn btn-info" (click)="downloadRequisition(dataObj)">Download</button>
-                        </td>
-                        <td>
-                          <button class="btn btn-info" title="View" (click)="viewForm(dataObj)">View</button>
-                        </td>
-                      </tr>
-
-                      <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                        <td colspan="20">No Records</td>
-                      </tr>
-                      <tr class="noExl pagination_area" *ngIf="dataList?.length">
-                        <td colspan="20">
-                          <pagination-controls (pageChange)="p = $event"></pagination-controls>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-</div>
-</div>
-</div>
+              
+                <tr class="text-center table-empty-state gov-table-empty-state" *ngIf="!dataList.length">
+                  <td colspan="20">No Records</td>
+                </tr>
+              
+              
+                <tr class="noExl pagination_area" *ngIf="dataList?.length">
+                  <td colspan="20">
+                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                  </td>
+                </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 

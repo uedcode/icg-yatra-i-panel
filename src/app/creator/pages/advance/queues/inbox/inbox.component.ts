@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
@@ -15,6 +15,7 @@ declare var $: any;
     selector: 'app-inbox',
     templateUrl: './inbox.component.html',
     styleUrls: ['./inbox.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class InboxComponent implements OnInit, OnDestroy {

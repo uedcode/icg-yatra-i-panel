@@ -1,5 +1,5 @@
 import { AuthService } from 'src/app/service/auth/auth.service';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { RoleApiService } from 'src/app/service/api/admin/role-api.service';
 
 declare var $: any;
@@ -8,6 +8,7 @@ declare var $: any;
     selector: 'app-unit-admin-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {

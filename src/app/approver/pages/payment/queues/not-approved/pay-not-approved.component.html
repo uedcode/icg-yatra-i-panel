@@ -28,7 +28,7 @@
             (keyup)="p = 1"
             [(ngModel)]="searchObj"
             name="searchObj"
-          />
+            />
         </div>
       </div>
     </div>
@@ -46,30 +46,37 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of dataList | filterComplex : searchObj | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
-            <td>{{ (i + 1) + (p - 1) * noOfPage }}.</td>
-            <td>
-              {{ row?.yatPayDetailsDTO?.pno }}/{{ row?.yatPayDetailsDTO?.name }}/{{ row?.yatPayDetailsDTO?.rank }}
-            </td>
-            <td>
-              {{ row?.yatPayDetailsDTO?.docName }}:
-              <button
-                *ngIf="row?.yatPayDetailsDTO?.docUrl"
-                type="button"
-                class="btn btn-info btn-sm ml-2"
-                (click)="downloadDocument(row)"
-              >
-                Download
-              </button>
-              <span *ngIf="!row?.yatPayDetailsDTO?.docUrl" class="ml-2">-</span>
-            </td>
-            <td>{{ row?.yatPayDetailsDTO?.verifier1Remark }}</td>
-            <td>{{ row?.yatPayDetailsDTO?.approverRemark }}</td>
-            <td><button class="btn btn-info btn-sm" (click)="viewForm(row)">View</button></td>
-          </tr>
-          <tr *ngIf="!dataList?.length">
-            <td colspan="6" class="text-center table-empty-state gov-table-empty-state">No Records</td>
-          </tr>
+          
+            <tr *ngFor="let row of dataList | filterComplex : searchObj | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+              <td>{{ (i + 1) + (p - 1) * noOfPage }}.</td>
+              <td>
+                {{ row?.yatPayDetailsDTO?.pno }}/{{ row?.yatPayDetailsDTO?.name }}/{{ row?.yatPayDetailsDTO?.rank }}
+              </td>
+              <td>
+                {{ row?.yatPayDetailsDTO?.docName }}:
+                
+                  <button
+                    type="button"
+                    class="btn btn-info btn-sm ml-2"
+                    (click)="downloadDocument(row)"
+                     *ngIf="row?.yatPayDetailsDTO?.docUrl">
+                    Download
+                  </button>
+                
+                
+                  <span class="ml-2" *ngIf="!row?.yatPayDetailsDTO?.docUrl">-</span>
+                
+              </td>
+              <td>{{ row?.yatPayDetailsDTO?.verifier1Remark }}</td>
+              <td>{{ row?.yatPayDetailsDTO?.approverRemark }}</td>
+              <td><button class="btn btn-info btn-sm" (click)="viewForm(row)">View</button></td>
+            </tr>
+          
+          
+            <tr *ngIf="!dataList?.length">
+              <td colspan="6" class="text-center table-empty-state gov-table-empty-state">No Records</td>
+            </tr>
+          
         </tbody>
       </table>
       <div class="pull-right">

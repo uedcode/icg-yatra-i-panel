@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -15,6 +15,7 @@ declare var $: any;
     selector: 'app-claim-passed',
     templateUrl: './claim-passed.component.html',
     styleUrls: ['./claim-passed.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ClaimPassedComponent implements OnInit {

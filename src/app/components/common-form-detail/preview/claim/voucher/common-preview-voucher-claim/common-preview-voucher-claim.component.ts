@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -10,6 +10,7 @@ import { unwrapNullablePreviewObject } from 'src/app/shared/utils/legacy-preview
   selector: 'app-common-preview-voucher-claim',
   templateUrl: './common-preview-voucher-claim.component.html',
   styleUrls: ['./common-preview-voucher-claim.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CommonPreviewVoucherClaimComponent implements OnInit {
@@ -26,7 +27,7 @@ export class CommonPreviewVoucherClaimComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
-      this.claimId = params.get('id');
+      this.claimId = params.get('id') || params.get('claimId') || params.get('formId');
       if (this.claimId) {
         this.loadClaim();
       } else {

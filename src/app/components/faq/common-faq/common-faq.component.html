@@ -14,25 +14,32 @@
     <div class="row">
       <div class="col-md-12 col-lg-12">
         <div id="accordion">
-          <div class="card" *ngFor="let data of dataList let i=index">
-            <div class="card-header card-header-bg2">
-              <a class="card-link faq_question_link" data-toggle="collapse" href="#coBorrTab{{i+1}}"
-                (click)="showAnswer(data?.faqId)">
-                <span class="faq_count">{{i+1}}</span> {{data?.ques}}
-                <i class="fa fa-angle-right faq_angle_icon" *ngIf="data?.isActive == false "></i>
-                <i class="fa fa-angle-down faq_angle_icon" *ngIf="data?.isActive == true "></i>
-              </a>
-            </div>
-            <div id="coBorrTab{{i+1}}" [ngClass]="i == 0 ? 'collapse show': 'collapse' " data-parent="#accordion">
-              <div class="card-body">
-                <p [innerHTML]="data?.ans"></p>
+          
+            <div class="card" *ngFor="let data of dataList; let i = index">
+              <div class="card-header card-header-bg2">
+                <a class="card-link faq_question_link" data-toggle="collapse" href="#coBorrTab{{i+1}}"
+                  (click)="showAnswer(data?.faqId)">
+                  <span class="faq_count">{{i+1}}</span> {{data?.ques}}
+                  
+                    <i class="fa fa-angle-right faq_angle_icon" *ngIf="data?.isActive == false"></i>
+                  
+                  
+                    <i class="fa fa-angle-down faq_angle_icon" *ngIf="data?.isActive == true"></i>
+                  
+                </a>
+              </div>
+              <div id="coBorrTab{{i+1}}" [ngClass]="i == 0 ? 'collapse show': 'collapse' " data-parent="#accordion">
+                <div class="card-body">
+                  <p [innerHTML]="data?.ans"></p>
+                </div>
               </div>
             </div>
-          </div>
-          <p class="text-center" *ngIf="!dataList.length">No Records</p>
+          
+          
+            <p class="text-center" *ngIf="!dataList.length">No Records</p>
+          
         </div>
       </div>
     </div>
   </div>
 </div>
-

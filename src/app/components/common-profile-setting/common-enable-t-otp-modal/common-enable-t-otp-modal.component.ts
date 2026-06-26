@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { CommonService } from 'src/app/service/core/common.service';
 import { TotpApiService } from 'src/app/service/api/security/totp-api.service';
@@ -9,6 +9,7 @@ declare var $: any;
     selector: 'app-common-enable-t-otp-modal',
     templateUrl: './common-enable-t-otp-modal.component.html',
     styleUrls: ['./common-enable-t-otp-modal.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CommonEnableTOtpModalComponent implements OnInit {

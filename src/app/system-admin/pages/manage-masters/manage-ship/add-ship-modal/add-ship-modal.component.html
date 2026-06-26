@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="manage_admin">{{formObj.id ? 'Update' :
-          'Add'}} Ship</h5>
+        'Add'}} Ship</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
@@ -21,11 +21,15 @@
                     name="unit" #unit="ngModel" [(ngModel)]="formObj.unit" [allowClear]="true" required
                     placeholder="Select Unit">
                   </ngx-select>
-                  <div *ngIf="unit.touched || (mainForm.submitted && unit.invalid)">
-                    <div *ngIf="unit.errors?.required" class="invalid-msg">
-                     unit is required
+                  
+                    <div *ngIf="unit.touched || (mainForm.submitted &amp;&amp; unit.invalid)">
+                      
+                        <div class="invalid-msg" *ngIf="unit.errors?.required">
+                          unit is required
+                        </div>
+                      
                     </div>
-                  </div>
+                  
                 </div>
               </div>
               <div class="col-md-6">
@@ -33,112 +37,148 @@
                   <label class="form-label">Ship Name<sup class="required-msg">*</sup></label>
                   <input type="text" class="form-control" placeholder="Ship Name" maxlength="100"
                     [(ngModel)]="formObj.shipName" #shipName="ngModel" name="shipName" required>
-                  <div *ngIf="shipName.touched || (mainForm.submitted && shipName.invalid)">
-                    <div *ngIf="shipName.errors?.required" class="invalid-msg">Ship Name is required
-                    </div>
+                    
+                      <div *ngIf="shipName.touched || (mainForm.submitted &amp;&amp; shipName.invalid)">
+                        
+                          <div class="invalid-msg" *ngIf="shipName.errors?.required">Ship Name is required
+                          </div>
+                        
+                      </div>
+                    
                   </div>
                 </div>
-              </div>
 
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="form-label">Ship GRT No<sup class="required-msg">*</sup></label>
-                  <input type="text" class="form-control" placeholder="Ship GRT No" maxlength="20"
-                    [(ngModel)]="formObj.unitGrtNo" #unitGrtNo="ngModel" name="unitGrtNo" required appNotSpecialCharecter>
-                  <div *ngIf="unitGrtNo.touched || (mainForm.submitted && unitGrtNo.invalid)">
-                    <div *ngIf="unitGrtNo.errors?.required" class="invalid-msg">Ship GRT No is required
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">Ship GRT No<sup class="required-msg">*</sup></label>
+                    <input type="text" class="form-control" placeholder="Ship GRT No" maxlength="20"
+                      [(ngModel)]="formObj.unitGrtNo" #unitGrtNo="ngModel" name="unitGrtNo" required appNotSpecialCharecter>
+                      
+                        <div *ngIf="unitGrtNo.touched || (mainForm.submitted &amp;&amp; unitGrtNo.invalid)">
+                          
+                            <div class="invalid-msg" *ngIf="unitGrtNo.errors?.required">Ship GRT No is required
+                            </div>
+                          
+                        </div>
+                      
                     </div>
                   </div>
-                </div>
-              </div>
 
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="form-label">Address Line 1<sup class="required-msg">*</sup></label>
-                  <input type="text" class="form-control" placeholder="Address Line 1" maxlength="200"
-                    [(ngModel)]="formObj.add1" #add1="ngModel" name="add1" required >
-                  <div *ngIf="add1.touched || (mainForm.submitted && add1.invalid)">
-                    <div *ngIf="add1.errors?.required" class="invalid-msg">Address Line 1 is required
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="form-label">Address Line 1<sup class="required-msg">*</sup></label>
+                      <input type="text" class="form-control" placeholder="Address Line 1" maxlength="200"
+                        [(ngModel)]="formObj.add1" #add1="ngModel" name="add1" required >
+                        
+                          <div *ngIf="add1.touched || (mainForm.submitted &amp;&amp; add1.invalid)">
+                            
+                              <div class="invalid-msg" *ngIf="add1.errors?.required">Address Line 1 is required
+                              </div>
+                            
+                          </div>
+                        
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="form-label">Address Line 2<sup class="required-msg">*</sup></label>
-                  <input type="text" class="form-control" placeholder="Address Line 2" maxlength="200"
-                    [(ngModel)]="formObj.add2" #add2="ngModel" name="add2" required >
-                  <div *ngIf="add2.touched || (mainForm.submitted && add2.invalid)">
-                    <div *ngIf="add2.errors?.required" class="invalid-msg">Address Line 2 is required
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="form-label">Address Line 3<sup class="required-msg">*</sup></label>
-                  <input type="text" class="form-control" placeholder="Address Line 3" maxlength="200"
-                    [(ngModel)]="formObj.add3" #add3="ngModel" name="add3" required >
-                  <div *ngIf="add3.touched || (mainForm.submitted && add3.invalid)">
-                    <div *ngIf="add3.errors?.required" class="invalid-msg">Address Line 3 is required
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="form-label">District</label>
-                  <input type="text" class="form-control" placeholder="District" maxlength="50"
-                    [(ngModel)]="formObj.district" #district="ngModel" name="district">
-                  <div *ngIf="district.touched || (mainForm.submitted && district.invalid)">
-                    <div *ngIf="district.errors?.required" class="invalid-msg">District is required
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="form-label">State<sup class="required-msg">*</sup></label>
-                  <input type="text" class="form-control" placeholder="State" maxlength="50"
-                    [(ngModel)]="formObj.state" #state="ngModel" name="state" required>
-                  <div *ngIf="state.touched || (mainForm.submitted && state.invalid)">
-                    <div *ngIf="state.errors?.required" class="invalid-msg">District is required
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="form-label">Pincode<sup class="required-msg">*</sup></label>
-                  <input type="text" class="form-control" placeholder="Pincode" maxlength="6"
-                    [(ngModel)]="formObj.pin" #pin="ngModel" name="pin" required appNumberOnly>
-                  <div *ngIf="pin.touched || (mainForm.submitted && pin.invalid)">
-                    <div *ngIf="pin.errors?.required" class="invalid-msg">Pincode is required
-                    </div>
-                  </div>
-                </div>
-              </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="form-label">Address Line 2<sup class="required-msg">*</sup></label>
+                        <input type="text" class="form-control" placeholder="Address Line 2" maxlength="200"
+                          [(ngModel)]="formObj.add2" #add2="ngModel" name="add2" required >
+                          
+                            <div *ngIf="add2.touched || (mainForm.submitted &amp;&amp; add2.invalid)">
+                              
+                                <div class="invalid-msg" *ngIf="add2.errors?.required">Address Line 2 is required
+                                </div>
+                              
+                            </div>
+                          
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="form-label">Address Line 3<sup class="required-msg">*</sup></label>
+                          <input type="text" class="form-control" placeholder="Address Line 3" maxlength="200"
+                            [(ngModel)]="formObj.add3" #add3="ngModel" name="add3" required >
+                            
+                              <div *ngIf="add3.touched || (mainForm.submitted &amp;&amp; add3.invalid)">
+                                
+                                  <div class="invalid-msg" *ngIf="add3.errors?.required">Address Line 3 is required
+                                  </div>
+                                
+                              </div>
+                            
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-label">District</label>
+                            <input type="text" class="form-control" placeholder="District" maxlength="50"
+                              [(ngModel)]="formObj.district" #district="ngModel" name="district">
+                              
+                                <div *ngIf="district.touched || (mainForm.submitted &amp;&amp; district.invalid)">
+                                  
+                                    <div class="invalid-msg" *ngIf="district.errors?.required">District is required
+                                    </div>
+                                  
+                                </div>
+                              
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="form-label">State<sup class="required-msg">*</sup></label>
+                              <input type="text" class="form-control" placeholder="State" maxlength="50"
+                                [(ngModel)]="formObj.state" #state="ngModel" name="state" required>
+                                
+                                  <div *ngIf="state.touched || (mainForm.submitted &amp;&amp; state.invalid)">
+                                    
+                                      <div class="invalid-msg" *ngIf="state.errors?.required">District is required
+                                      </div>
+                                    
+                                  </div>
+                                
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label class="form-label">Pincode<sup class="required-msg">*</sup></label>
+                                <input type="text" class="form-control" placeholder="Pincode" maxlength="6"
+                                  [(ngModel)]="formObj.pin" #pin="ngModel" name="pin" required appNumberOnly>
+                                  
+                                    <div *ngIf="pin.touched || (mainForm.submitted &amp;&amp; pin.invalid)">
+                                      
+                                        <div class="invalid-msg" *ngIf="pin.errors?.required">Pincode is required
+                                        </div>
+                                      
+                                    </div>
+                                  
+                                </div>
+                              </div>
 
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label class="form-label">Ship call sign<sup class="required-msg">*</sup></label>
-                  <input type="text" class="form-control" placeholder="Ship call sign" maxlength="10"
-                    [(ngModel)]="formObj.callSign" #callSign="ngModel" name="callSign" required>
-                  <div *ngIf="callSign.touched || (mainForm.submitted && callSign.invalid)">
-                    <div *ngIf="callSign.errors?.required" class="invalid-msg">Ship call sign is required
-                    </div>
-                  </div>
-                </div>
-              </div>
+                              <div class="col-md-6">
+                                <div class="form-group">
+                                  <label class="form-label">Ship call sign<sup class="required-msg">*</sup></label>
+                                  <input type="text" class="form-control" placeholder="Ship call sign" maxlength="10"
+                                    [(ngModel)]="formObj.callSign" #callSign="ngModel" name="callSign" required>
+                                    
+                                      <div *ngIf="callSign.touched || (mainForm.submitted &amp;&amp; callSign.invalid)">
+                                        
+                                          <div class="invalid-msg" *ngIf="callSign.errors?.required">Ship call sign is required
+                                          </div>
+                                        
+                                      </div>
+                                    
+                                  </div>
+                                </div>
 
-            </div>
-          </div>
-          <div class="modal-footer">
-            <div class="text-right">
+                              </div>
+                            </div>
+                            <div class="modal-footer">
+                              <div class="text-right">
               <button  type="submit" title="Submit" class="btn btn-primary" title="{{formObj.id ? 'Update' :
               'Submit'}}">{{formObj.id ? 'Update' :
-                'Submit'}}</button>
-              <button type="button" class="btn btn-danger" title="Reset" (click)="reset()"  title="Reset">Reset</button>
-            </div>
-          </div>
-        </form>
+                                'Submit'}}</button>
+                                <button type="button" class="btn btn-danger" title="Reset" (click)="reset()"  title="Reset">Reset</button>
+                              </div>
+                            </div>
+                          </form>

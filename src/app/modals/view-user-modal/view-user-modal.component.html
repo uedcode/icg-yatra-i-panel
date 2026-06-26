@@ -12,121 +12,133 @@
       <div class="modal-body">
         <div class="row">
           <!-- <div class="col-md-3">
-            <p><b>Id</b></p>
-          </div>
-          <div class="col-md-3">
-            <p>{{changeData?.username | showHypen}}</p>
-          </div> -->
-          <div class="col-md-3">
-            <p><b>User Id</b></p>
-          </div>
-          <div class="col-md-3">
-            <p>{{changeData?.username | showHypen}}</p>
-          </div>
-          <div class="col-md-3">
-            <p><b>Name</b></p>
-          </div>
-          <div class="col-md-3">
-            <p>{{changeData?.name | showHypen}}</p>
-          </div>
+          <p><b>Id</b></p>
+        </div>
+        <div class="col-md-3">
+          <p>{{changeData?.username | showHypen}}</p>
+        </div> -->
+        <div class="col-md-3">
+          <p><b>User Id</b></p>
+        </div>
+        <div class="col-md-3">
+          <p>{{changeData?.username | showHypen}}</p>
+        </div>
+        <div class="col-md-3">
+          <p><b>Name</b></p>
+        </div>
+        <div class="col-md-3">
+          <p>{{changeData?.name | showHypen}}</p>
+        </div>
+        
           <div class="col-md-3" *ngIf="userIdDetails.roleTypeId=='AD'">
             <p><b>Password</b></p>
           </div>
+        
+        
           <div class="col-md-3" *ngIf="userIdDetails.roleTypeId=='AD'">
             <p>{{changeData?.passwordPlain | showHypen}}</p>
           </div>
-          <div class="col-md-3">
-            <p><b>Mobile No.</b></p>
-          </div>
-          <div class="col-md-3">
-            <p>{{changeData?.mobile | showHypen}}</p>
-          </div>
+        
+        <div class="col-md-3">
+          <p><b>Mobile No.</b></p>
+        </div>
+        <div class="col-md-3">
+          <p>{{changeData?.mobile | showHypen}}</p>
+        </div>
+        
           <div class="col-md-3" *ngIf="changeData?.bankMargin">
             <p><b>Bank Magin</b></p>
           </div>
+        
+        
           <div class="col-md-3" *ngIf="changeData?.bankMargin">
             <p>{{changeData?.bankMargin | showZero}}</p>
           </div>
-          <div class="col-md-3" *ngIf="changeData?.roleName!='User' && userIdDetails.roleTypeId=='AD'">
+        
+        
+          <div class="col-md-3" *ngIf="changeData?.roleName!='User' &amp;&amp; userIdDetails.roleTypeId=='AD'">
             <p><b>Balance</b></p>
           </div>
-          <div class="col-md-3" *ngIf="changeData?.roleName!='User' && userIdDetails.roleTypeId=='AD'">
+        
+        
+          <div class="col-md-3" *ngIf="changeData?.roleName!='User' &amp;&amp; userIdDetails.roleTypeId=='AD'">
             <p>{{changeData?.balance | showZero}}</p>
           </div>
+        
 
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-12">
-                <h4 class="modal-title">Billing Address</h4>
-              </div>
-              <div class="col-md-12">
-                <div class="row">
-                  <div class="col-md-3">
-                    <p><b>Address</b></p>
-                  </div>
-                  <div class="col-md-9">
-                    <p>{{changeData?.billAddress | showHypen}}</p>
-                  </div>
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12">
+              <h4 class="modal-title">Billing Address</h4>
+            </div>
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-3">
+                  <p><b>Address</b></p>
+                </div>
+                <div class="col-md-9">
+                  <p>{{changeData?.billAddress | showHypen}}</p>
                 </div>
               </div>
-              <div class="col-md-3">
-                <p><b>City</b></p>
-              </div>
-              <div class="col-md-3">
-                <p>{{changeData?.billCity | showHypen}}</p>
-              </div>
-              <div class="col-md-3">
-                <p><b>Pincode</b></p>
-              </div>
-              <div class="col-md-3">
-                <p>{{changeData?.billPincode | showHypen}}</p>
-              </div>
+            </div>
+            <div class="col-md-3">
+              <p><b>City</b></p>
+            </div>
+            <div class="col-md-3">
+              <p>{{changeData?.billCity | showHypen}}</p>
+            </div>
+            <div class="col-md-3">
+              <p><b>Pincode</b></p>
+            </div>
+            <div class="col-md-3">
+              <p>{{changeData?.billPincode | showHypen}}</p>
             </div>
           </div>
-
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-12">
-                <h4 class="modal-title">Shipping Address</h4>
-              </div>
-              <div class="col-md-12">
-                <div class="row">
-                  <div class="col-md-3">
-                    <p><b>Address</b></p>
-                  </div>
-                  <div class="col-md-9">
-                    <p>{{changeData?.delAddress | showHypen}}</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <p><b>City</b></p>
-              </div>
-              <div class="col-md-3">
-                <p>{{changeData?.delCity | showHypen}}</p>
-              </div>
-              <div class="col-md-3">
-                <p><b>Pincode</b></p>
-              </div>
-              <div class="col-md-3">
-                <p>{{changeData?.delPincode | showHypen}}</p>
-              </div>
-            </div>
-          </div>
-          <!-- 
-          <div class="col-md-3" *ngIf="changeData?.paymentIds && changeData?.paymentIds.length > 0">
-            <p><b>Payment Modes</b></p>
-          </div>
-          <div class="col-md-3" *ngIf="changeData?.paymentIds && changeData?.paymentIds.length > 0">
-            <p> 
-              <span *ngFor=""></span>
-            </p>
-          </div> -->
         </div>
 
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12">
+              <h4 class="modal-title">Shipping Address</h4>
+            </div>
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-3">
+                  <p><b>Address</b></p>
+                </div>
+                <div class="col-md-9">
+                  <p>{{changeData?.delAddress | showHypen}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <p><b>City</b></p>
+            </div>
+            <div class="col-md-3">
+              <p>{{changeData?.delCity | showHypen}}</p>
+            </div>
+            <div class="col-md-3">
+              <p><b>Pincode</b></p>
+            </div>
+            <div class="col-md-3">
+              <p>{{changeData?.delPincode | showHypen}}</p>
+            </div>
+          </div>
+        </div>
+        <!--
+        <div class="col-md-3" *ngIf="changeData?.paymentIds && changeData?.paymentIds.length > 0">
+          <p><b>Payment Modes</b></p>
+        </div>
+        <div class="col-md-3" *ngIf="changeData?.paymentIds && changeData?.paymentIds.length > 0">
+          <p>
+            <span *ngFor=""></span>
+          </p>
+        </div> -->
       </div>
+
     </div>
   </div>
+</div>
 </div>
 <!-- View User Modal Ends -->
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
@@ -11,6 +11,7 @@ declare var $: any;
   selector: 'app-form-pay-detail',
   templateUrl: './form-pay-detail.component.html',
   styleUrls: ['./form-pay-detail.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class FormPayDetailComponent implements OnInit {

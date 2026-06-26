@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
@@ -11,6 +11,7 @@ import { UserApiService } from 'src/app/service/api/admin/user-api.service';
   selector: 'app-manage-unit-admin',
   templateUrl: './manage-unit-admin.component.html',
   styleUrls: ['./manage-unit-admin.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ManageUnitAdminComponent implements OnInit {

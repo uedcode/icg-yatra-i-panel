@@ -3,13 +3,21 @@
     <h4 class="page-title">{{ pageTitle }}</h4>
     <ol class="breadcrumb pl-0">
       <li class="breadcrumb-item">
-        <a *ngIf="homeLink; else homeText" [routerLink]="homeLink">{{ homeLabel }}</a>
-        <ng-template #homeText>{{ homeLabel }}</ng-template>
+        <ng-container *ngIf="homeLink; else legacyElse1">
+          <a [routerLink]="homeLink">{{ homeLabel }}</a>
+        </ng-container><ng-template #legacyElse1>
+          {{ homeLabel }}
+        </ng-template>
       </li>
-      <li class="breadcrumb-item" *ngIf="sectionLabel">
-        <a *ngIf="sectionLink; else sectionText" [routerLink]="sectionLink">{{ sectionLabel }}</a>
-        <ng-template #sectionText>{{ sectionLabel }}</ng-template>
-      </li>
+      
+        <li class="breadcrumb-item" *ngIf="sectionLabel">
+          <ng-container *ngIf="sectionLink; else legacyElse2">
+            <a [routerLink]="sectionLink">{{ sectionLabel }}</a>
+          </ng-container><ng-template #legacyElse2>
+            {{ sectionLabel }}
+          </ng-template>
+        </li>
+      
       <li class="breadcrumb-item active" aria-current="page">
         {{ pageTitle }}
       </li>

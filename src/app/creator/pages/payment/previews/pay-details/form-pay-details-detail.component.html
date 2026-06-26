@@ -19,8 +19,12 @@
       <div class="col-md-4 mb-2"><strong>Reason For Change:</strong> {{ payDetails?.reason || '-' }}</div>
       <div class="col-md-8 mb-2">
         <strong>{{ payDetails?.docName || 'Document' }} (PDF) (Upto 512 KB):</strong>
-        <button *ngIf="payDetails?.docUrl" type="button" class="btn btn-info btn-sm ml-2" (click)="viewDocument()">View</button>
-        <span *ngIf="!payDetails?.docUrl" class="ml-2">-</span>
+        
+          <button type="button" class="btn btn-info btn-sm ml-2" (click)="viewDocument()" *ngIf="payDetails?.docUrl">View</button>
+        
+        
+          <span class="ml-2" *ngIf="!payDetails?.docUrl">-</span>
+        
       </div>
       <div class="col-md-4 mb-2"><strong>Verifier Remarks:</strong> {{ payDetails?.verifier1Remark || '-' }}</div>
       <div class="col-md-4 mb-2"><strong>Approver Remarks:</strong> {{ payDetails?.approverRemark || '-' }}</div>

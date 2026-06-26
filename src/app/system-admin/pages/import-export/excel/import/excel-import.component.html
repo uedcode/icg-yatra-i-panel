@@ -100,29 +100,45 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let obj of excelList | filterComplex : searchObj | paginate : { id: 'excelPagination', itemsPerPage: noOfPage, currentPage: p }; let i = index">
-                <td>{{ (p - 1) * noOfPage + i + 1 }}.</td>
-                <td>{{ obj?.userName || "-" }}</td>
-                <td>{{ obj?.name || "-" }}</td>
-                <td>{{ obj?.employeeId || "-" }}</td>
-                <td>{{ obj?.esignId || "-" }}</td>
-                <td>{{ obj?.mobileNo || "-" }}</td>
-                <td>{{ obj?.emailId || "-" }}</td>
-                <td>{{ obj?.kycId || "-" }}</td>
-                <td>
-                  <span *ngIf="obj?.status === 'SUCCESS'" class="btn btn-success"><strong>{{ obj.status }}</strong></span>
-                  <span *ngIf="obj?.status === 'WARNING'" class="btn btn-warning"><strong style="color: #fff;">{{ obj.status }}</strong></span>
-                  <span *ngIf="obj?.status === 'FAILED'" class="btn btn-danger"><strong style="color: #fff;">{{ obj.status }}</strong></span>
-                  <span *ngIf="obj?.status && obj?.status !== 'SUCCESS' && obj?.status !== 'WARNING' && obj?.status !== 'FAILED'">{{ obj.status }}</span>
-                  <span *ngIf="!obj?.status">-</span>
-                </td>
-              </tr>
-              <tr *ngIf="!excelList.length" class="text-center table-empty-state gov-table-empty-state">
-                <td colspan="20">No Records</td>
-              </tr>
-              <tr class="noExl pagination_area" *ngIf="excelList?.length">
-                <td colspan="20"><pagination-controls id="excelPagination" (pageChange)="p = $event" [responsive]="true"></pagination-controls></td>
-              </tr>
+              
+                <tr *ngFor="let obj of excelList | filterComplex : searchObj | paginate : { id: 'excelPagination', itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                  <td>{{ (p - 1) * noOfPage + i + 1 }}.</td>
+                  <td>{{ obj?.userName || "-" }}</td>
+                  <td>{{ obj?.name || "-" }}</td>
+                  <td>{{ obj?.employeeId || "-" }}</td>
+                  <td>{{ obj?.esignId || "-" }}</td>
+                  <td>{{ obj?.mobileNo || "-" }}</td>
+                  <td>{{ obj?.emailId || "-" }}</td>
+                  <td>{{ obj?.kycId || "-" }}</td>
+                  <td>
+                    
+                      <span class="btn btn-success" *ngIf="obj?.status === 'SUCCESS'"><strong>{{ obj.status }}</strong></span>
+                    
+                    
+                      <span class="btn btn-warning" *ngIf="obj?.status === 'WARNING'"><strong style="color: #fff;">{{ obj.status }}</strong></span>
+                    
+                    
+                      <span class="btn btn-danger" *ngIf="obj?.status === 'FAILED'"><strong style="color: #fff;">{{ obj.status }}</strong></span>
+                    
+                    
+                      <span *ngIf="obj?.status &amp;&amp; obj?.status !== 'SUCCESS' &amp;&amp; obj?.status !== 'WARNING' &amp;&amp; obj?.status !== 'FAILED'">{{ obj.status }}</span>
+                    
+                    
+                      <span *ngIf="!obj?.status">-</span>
+                    
+                  </td>
+                </tr>
+              
+              
+                <tr class="text-center table-empty-state gov-table-empty-state" *ngIf="!excelList.length">
+                  <td colspan="20">No Records</td>
+                </tr>
+              
+              
+                <tr class="noExl pagination_area" *ngIf="excelList?.length">
+                  <td colspan="20"><pagination-controls id="excelPagination" (pageChange)="p = $event" [responsive]="true"></pagination-controls></td>
+                </tr>
+              
             </tbody>
           </table>
         </div>
@@ -146,8 +162,10 @@
               accept=".csv,.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
               (change)="onFileChange($event)"
               required
-            />
-            <div class="invalid-msg" *ngIf="fileError">{{ fileError }}</div>
+              />
+            
+              <div class="invalid-msg" *ngIf="fileError">{{ fileError }}</div>
+            
           </div>
           <div class="text-center">
             <button type="submit" class="btn btn-info" [disabled]="submitBtn || !!fileError">Import</button>

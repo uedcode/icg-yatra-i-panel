@@ -1,82 +1,39 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/service/auth/auth.service';
-import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
-import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { normalizePreviewSubFormId } from 'src/app/shared/utils/legacy-preview.util';
 @Component({
   selector: 'app-executor-claim-preview',
   templateUrl: './claim-preview.component.html',
   styleUrls: ['./claim-preview.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ClaimPreviewComponent implements OnInit {
-  claimId: string | null = null;
-  subFormId: string | null = null;
-  formObj: any = null;
-  documentDtos: any[] = [];
-  stateHistory: any[] = [];
-  userIdDetails: any;
-
   constructor(
     private route: ActivatedRoute,
     private location: Location,
-    public $auth: AuthService,
-    private $claimApi: ClaimApiService,
-    private $claimStateApi: ClaimStateApiService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.userIdDetails = this.$auth.getUserDetails();
-    this.route.queryParamMap.subscribe((params) => {
-      this.claimId = params.get('claimId') || params.get('id');
-      this.subFormId = params.get('subFormId');
-      if (this.claimId && this.subFormId) {
-        this.loadClaim();
-        this.loadStateHistory();
-      }
-    });
-  }
-
-  loadClaim(): void {
-    const config = {
-      headers: {
-        claimId: this.claimId,
-        subFormId: this.subFormId,
-        isPreview: 'true',
+    const claimId =
+      this.route.snapshot.queryParamMap.get('id') ||
+      this.route.snapshot.queryParamMap.get('claimId') ||
+      this.route.snapshot.queryParamMap.get('formId');
+    const subFormId = this.route.snapshot.queryParamMap.get('subFormId') || '';
+    const targetRoute = this.getPreviewRoute(subFormId);
+    if (!claimId || !targetRoute) {
+      return;
+    }
+    this.router.navigate([`../${targetRoute}`], {
+      relativeTo: this.route,
+      queryParams: {
+        id: claimId,
+        subFormId: normalizePreviewSubFormId(subFormId),
+        supId: this.route.snapshot.queryParamMap.get('supId') || null,
       },
-    };
-    this.$claimApi.getSingleClaimPreview(config).subscribe({
-      next: (response: any) => {
-        let obj = response?.object;
-        if (Array.isArray(obj)) obj = obj[0] || null;
-        this.formObj = obj;
-        this.documentDtos = Array.isArray(obj?.yatDocsDTOs) ? obj.yatDocsDTOs : [];
-      },
-      error: () => {
-        this.formObj = null;
-        this.documentDtos = [];
-      },
-    });
-  }
-
-  loadStateHistory(): void {
-    const config = {
-      headers: {
-        claimId: this.claimId,
-        roleTypeId: this.userIdDetails?.roleTypeId,
-        userId: this.userIdDetails?.userId,
-        unitId: this.userIdDetails?.unitId,
-      },
-    };
-
-    this.$claimStateApi.getAll(config).subscribe({
-      next: (response: any) => {
-        this.stateHistory = Array.isArray(response?.object) ? response.object : [];
-      },
-      error: () => {
-        this.stateHistory = [];
-      },
+      replaceUrl: true,
     });
   }
 
@@ -84,12 +41,16 @@ export class ClaimPreviewComponent implements OnInit {
     this.location.back();
   }
 
-  display(value: any): string {
-    if (value === null || value === undefined) return '-';
-    const str = String(value).trim();
-    return str ? str : '-';
+  private getPreviewRoute(subFormId: string): string {
+    const id = subFormId.toUpperCase();
+    if (id === 'P' || id === 'PMTA' || id === 'PMT') return 'preview-pmt-duty-claim';
+    if (id === 'T' || id === 'TYA' || id === 'TY' || id === 'TYD') return 'preview-ty-duty-claim';
+    if (id === 'F' || id === 'FTEA' || id === 'FTE') return 'preview-fte-claim';
+    if (id === 'L' || id === 'LTCA' || id === 'LTC') return 'preview-ltc-claim';
+    if (id === 'RS' || id === 'RES' || id === 'R') return 'preview-resettlement-claim';
+    if (id === 'M') return 'preview-manual-adv';
+    return '';
   }
-
 }
 
 

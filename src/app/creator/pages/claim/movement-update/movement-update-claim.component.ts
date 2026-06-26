@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
@@ -45,6 +45,7 @@ interface MovementModel {
   selector: 'app-movement-update-claim',
   templateUrl: './movement-update-claim.component.html',
   styleUrls: ['./movement-update-claim.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class MovementUpdateClaimComponent implements OnInit {
@@ -146,7 +147,7 @@ export class MovementUpdateClaimComponent implements OnInit {
     );
   }
 
-  trackByIndex(index: number): number {
+  trackByIndex(index: number, _item?: unknown): number {
     return index;
   }
 

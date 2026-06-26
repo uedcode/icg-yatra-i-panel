@@ -24,7 +24,9 @@
                 <label class="form-label">Select Cadre <sup class="required-msg">*</sup></label>
                 <select class="form-control" name="cadre" [(ngModel)]="formObj.cadre" (ngModelChange)="onCadreChange()" required>
                   <option value="">Select</option>
-                  <option *ngFor="let cadre of cadreList" [value]="cadre.id">{{ cadre.descr }}</option>
+                  
+                    <option [value]="cadre.id" *ngFor="let cadre of cadreList">{{ cadre.descr }}</option>
+                  
                 </select>
               </div>
             </div>
@@ -148,43 +150,55 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let dataObj of dataList | filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i=index">
-                <td>{{ (i + 1) + (p - 1) * noOfPage }}.</td>
-                <td>{{ dataObj?.codeUnitDTO?.descr | showHypen }}</td>
-                <td>{{ getUserName(dataObj) | showHypen }}</td>
-                <td>{{ getUserPno(dataObj) | showHypen }}</td>
-                <td>{{ getUserPhone(dataObj) | showHypen }}</td>
-                <td>{{ getUserRank(dataObj) | showHypen }}</td>
-                <td>{{ dataObj?.authNo | showHypen }}</td>
-                <td>{{ dataObj?.authDate | showDate:'short' }}</td>
-                <td>
-                  <button type="button" class="btn btn-info btn-sm" *ngIf="dataObj?.authDocUrl" (click)="viewAuthDoc(dataObj)">
-                    <i class="fa fa-eye"></i>
-                  </button>
-                  <span *ngIf="!dataObj?.authDocUrl">-</span>
-                </td>
-                <td>{{ dataObj?.fromDateTime | showDate:'medium' }}</td>
-                <td>
-                  <img src="assets/images/switch-on.png" alt=""
-                    *ngIf="dataObj.aclCodeStatusDTO?.statusId==codeStatusList.activate"
-                    (click)="openChangeStatusModal(dataObj,codeStatusList.deactivate)"
-                    data-toggle="modal" data-target="#change_status_modal" title="Deactivate"
-                    style="width: 45px; cursor: pointer;">
-                  <img src="assets/images/switch-off.png" alt=""
-                    *ngIf="dataObj.aclCodeStatusDTO?.statusId==codeStatusList.deactivate"
-                    (click)="openChangeStatusModal(dataObj,codeStatusList.activate)"
-                    data-toggle="modal" data-target="#change_status_modal" title="Activate"
-                    style="width: 45px; cursor: pointer;">
-                </td>
-              </tr>
-              <tr *ngIf="!dataList.length" class="text-center table-empty-state gov-table-empty-state">
-                <td colspan="20">No Records</td>
-              </tr>
-              <tr class="noExl pagination_area" *ngIf="dataList?.length">
-                <td colspan="20">
-                  <pagination-controls (pageChange)="p = $event"></pagination-controls>
-                </td>
-              </tr>
+              
+                <tr *ngFor="let dataObj of dataList | filterComplex : searchObj | orderBy: key: reverse | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                  <td>{{ (i + 1) + (p - 1) * noOfPage }}.</td>
+                  <td>{{ dataObj?.codeUnitDTO?.descr | showHypen }}</td>
+                  <td>{{ getUserName(dataObj) | showHypen }}</td>
+                  <td>{{ getUserPno(dataObj) | showHypen }}</td>
+                  <td>{{ getUserPhone(dataObj) | showHypen }}</td>
+                  <td>{{ getUserRank(dataObj) | showHypen }}</td>
+                  <td>{{ dataObj?.authNo | showHypen }}</td>
+                  <td>{{ dataObj?.authDate | showDate:'short' }}</td>
+                  <td>
+                    
+                      <button type="button" class="btn btn-info btn-sm" (click)="viewAuthDoc(dataObj)" *ngIf="dataObj?.authDocUrl">
+                        <i class="fa fa-eye"></i>
+                      </button>
+                    
+                    
+                      <span *ngIf="!dataObj?.authDocUrl">-</span>
+                    
+                  </td>
+                  <td>{{ dataObj?.fromDateTime | showDate:'medium' }}</td>
+                  <td>
+                    <ng-container *ngIf="dataObj.aclCodeStatusDTO?.statusId==codeStatusList.activate">
+                      <img src="assets/images/switch-on.png" alt=""
+                        (click)="openChangeStatusModal(dataObj,codeStatusList.deactivate)"
+                        data-toggle="modal" data-target="#change_status_modal" title="Deactivate"
+                        style="width: 45px; cursor: pointer;">
+                    </ng-container>
+                    <ng-container *ngIf="dataObj.aclCodeStatusDTO?.statusId==codeStatusList.deactivate">
+                      <img src="assets/images/switch-off.png" alt=""
+                        (click)="openChangeStatusModal(dataObj,codeStatusList.activate)"
+                        data-toggle="modal" data-target="#change_status_modal" title="Activate"
+                        style="width: 45px; cursor: pointer;">
+                    </ng-container>
+                  </td>
+                </tr>
+              
+              
+                <tr class="text-center table-empty-state gov-table-empty-state" *ngIf="!dataList.length">
+                  <td colspan="20">No Records</td>
+                </tr>
+              
+              
+                <tr class="noExl pagination_area" *ngIf="dataList?.length">
+                  <td colspan="20">
+                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                  </td>
+                </tr>
+              
             </tbody>
           </table>
         </div>

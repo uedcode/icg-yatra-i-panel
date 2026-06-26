@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import {
   ApproverActionRemarkModalConfig,
@@ -12,6 +12,7 @@ declare var $: any;
   selector: 'app-approver-action-remark-modal',
   templateUrl: './approver-action-remark-modal.component.html',
   styleUrls: ['./approver-action-remark-modal.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ApproverActionRemarkModalComponent implements OnInit, OnDestroy {

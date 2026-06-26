@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './pages/login/login.component';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -26,8 +26,6 @@ import { ComponentModule } from './app-component.module';
 import { VerifyOtpModalComponent } from './pages/verify-otp-modal/verify-otp-modal.component';
 import { NgOtpInputModule } from 'ng-otp-input';
 import { ForgotPasswordModalComponent } from './modals/forgot-password-modal/forgot-password-modal.component';
-import { RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings, RECAPTCHA_SETTINGS } from "ng-recaptcha";
-import { environment } from 'src/environments/environment';
 import { VerifyTotpModalComponent } from './pages/verify-totp-modal/verify-totp-modal.component';
 import { PublicFaqComponent } from './pages/public-faq/public-faq.component';
 import { PublicVersionHistoryComponent } from './pages/public-version-history/public-version-history.component';
@@ -68,9 +66,7 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         ComponentModule,
         DirectiveModule,
         PipeModule,
-        NgOtpInputModule,
-        RecaptchaModule,
-        RecaptchaFormsModule], providers: [
+        NgOtpInputModule], providers: [
         AuthGuard,
         {
             provide: HTTP_INTERCEPTORS,
@@ -79,13 +75,7 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         },
         [DatePipe],
         [FileExcelService],
-        {
-            provide: RECAPTCHA_SETTINGS,
-            useValue: {
-                siteKey: environment.recaptcha.siteKey,
-            } as RecaptchaSettings,
-        },
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withXhr(), withInterceptorsFromDi())
     ] })
 export class AppModule { }
 

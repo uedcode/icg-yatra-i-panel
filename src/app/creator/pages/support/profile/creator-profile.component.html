@@ -1,93 +1,109 @@
 ﻿<!--Page header-->
-        <div class="page-header gov-page-toolbar">
-          <div class="page-leftheader">
-            <h4 class="page-title"> PROFILE</h4>
-            <ol class="breadcrumb pl-0">
-              <li class="breadcrumb-item"><a>Profile</a></li>
-            </ol>
-          </div>
+<div class="page-header gov-page-toolbar">
+  <div class="page-leftheader">
+    <h4 class="page-title"> PROFILE</h4>
+    <ol class="breadcrumb pl-0">
+      <li class="breadcrumb-item"><a>Profile</a></li>
+    </ol>
+  </div>
 
-          <div class="text-right pr-5">
-            <div class="btn-group">
-              <!-- <div>
-                <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
-                    class="fa fa-chevron-left" style="display: inline-block;"></i></button>
-              </div> -->
-              <a type="button" class="dropdown-toggle toggle-style" data-toggle="dropdown" aria-expanded="false">
-                Admin()
-              </a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Separated link</a>
+  <div class="text-right pr-5">
+    <div class="btn-group">
+      <!-- <div>
+      <button type="button" class="btn btn-dark request_view_back" title="Back to Page" (click)="goBack()"><i
+      class="fa fa-chevron-left" style="display: inline-block;"></i></button>
+    </div> -->
+    <a type="button" class="dropdown-toggle toggle-style" data-toggle="dropdown" aria-expanded="false">
+      Admin()
+    </a>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="#">Action</a>
+      <a class="dropdown-item" href="#">Another action</a>
+      <a class="dropdown-item" href="#">Something else here</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="#">Separated link</a>
+    </div>
+  </div>
+</div>
+</div>
+<!--fields start -->
+
+<div class="row">
+  <div class="col-md-12 col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <form class="page_form" autocomplete="off" (ngSubmit)="requiredForm.form.valid && saveRecord();"
+          #requiredForm="ngForm" novalidate>
+          <div class="col-md-12">
+            <h3>Personal Details</h3>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label class="form-label">Name <sup class="required-msg">*</sup></label>
+                <input type="text" class="form-control" placeholder="Name" maxlength="50"
+                  [(ngModel)]="formObj.name" #name="ngModel" name="name" required
+                  disabled>
+                  
+                    <div *ngIf="name.touched || (requiredForm.submitted &amp;&amp; name.invalid)">
+                      
+                        <div class="invalid-msg" *ngIf="name.errors?.required">Name
+                          is
+                          required
+                        </div>
+                      
+                    </div>
+                  
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <!--fields start -->
-
-        <div class="row">
-          <div class="col-md-12 col-lg-12">
-            <div class="card">
-              <div class="card-body">
-                <form class="page_form" autocomplete="off" (ngSubmit)="requiredForm.form.valid && saveRecord();"
-                  #requiredForm="ngForm" novalidate>
-                  <div class="col-md-12">
-                    <h3>Personal Details</h3>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label class="form-label">Rank <sup class="required-msg">*</sup></label>
+                  <input type="text" class="form-control" placeholder="Rank" maxlength="50"
+                    [(ngModel)]="formObj.rank" #rank="ngModel" name="rank" required disabled>
+                    
+                      <div *ngIf="rank.touched || (requiredForm.submitted &amp;&amp; rank.invalid)">
+                        
+                          <div class="invalid-msg" *ngIf="rank.errors?.required">Rank is required
+                          </div>
+                        
+                      </div>
+                    
                   </div>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Name <sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Name" maxlength="50"
-                          [(ngModel)]="formObj.name" #name="ngModel" name="name" required
-                          disabled>
-                        <div *ngIf="name.touched || (requiredForm.submitted && name.invalid)">
-                          <div *ngIf="name.errors?.required" class="invalid-msg">Name
-                            is
-                            required
-                          </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label class="form-label">Personal No <sup class="required-msg">*</sup></label>
+                    <input type="text" class="form-control" placeholder="Personal No" maxlength="10"
+                      [(ngModel)]="formObj.pno" #pno="ngModel" name="pno" required disabled>
+                      
+                        <div *ngIf="pno.touched || (requiredForm.submitted &amp;&amp; pno.invalid)">
+                          
+                            <div class="invalid-msg" *ngIf="pno.errors?.required">Personal
+                              No is
+                              required
+                            </div>
+                          
                         </div>
-                      </div>
+                      
                     </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Rank <sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Rank" maxlength="50"
-                          [(ngModel)]="formObj.rank" #rank="ngModel" name="rank" required disabled>
-                        <div *ngIf="rank.touched || (requiredForm.submitted && rank.invalid)">
-                          <div *ngIf="rank.errors?.required" class="invalid-msg">Rank is required
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label class="form-label">Mobile No. <sup class="required-msg">*</sup></label>
+                      <input type="text" class="form-control" placeholder="Mobile No." maxlength="10"
+                        [(ngModel)]="formObj.mobileNum" #mobileNum="ngModel" name="mobileNum" required appNumberOnly
+                        disabled>
+                        
+                          <div *ngIf="mobileNum.touched || (requiredForm.submitted &amp;&amp; mobileNum.invalid)">
+                            
+                              <div class="invalid-msg" *ngIf="mobileNum.errors?.required">Mobile No.
+                                is
+                                required
+                              </div>
+                            
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Personal No <sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Personal No" maxlength="10"
-                          [(ngModel)]="formObj.pno" #pno="ngModel" name="pno" required disabled>
-                        <div *ngIf="pno.touched || (requiredForm.submitted && pno.invalid)">
-                          <div *ngIf="pno.errors?.required" class="invalid-msg">Personal
-                            No is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Mobile No. <sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Mobile No." maxlength="10"
-                          [(ngModel)]="formObj.mobileNum" #mobileNum="ngModel" name="mobileNum" required appNumberOnly
-                          disabled>
-                        <div *ngIf="mobileNum.touched || (requiredForm.submitted && mobileNum.invalid)">
-                          <div *ngIf="mobileNum.errors?.required" class="invalid-msg">Mobile No.
-                            is
-                            required
-                          </div>
-                        </div>
+                        
                       </div>
                     </div>
                     <div class="col-md-3">
@@ -96,301 +112,381 @@
                         <input type="text" class="form-control" placeholder="Cadre" maxlength="50"
                           [(ngModel)]="formObj.cadre" #cadre="ngModel" name="cadre" required
                           disabled>
-                        <div *ngIf="cadre.touched || (requiredForm.submitted && cadre.invalid)">
-                          <div *ngIf="cadre.errors?.required" class="invalid-msg">Cadre
-                            is
-                            required
-                          </div>
+                          
+                            <div *ngIf="cadre.touched || (requiredForm.submitted &amp;&amp; cadre.invalid)">
+                              
+                                <div class="invalid-msg" *ngIf="cadre.errors?.required">Cadre
+                                  is
+                                  required
+                                </div>
+                              
+                            </div>
+                          
                         </div>
                       </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Basic Pay(in Rs) <sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Basic Pay(in Rs)" maxlength="50"
-                          [(ngModel)]="formObj.basicPay" #rank="ngModel" name="rank" required disabled>
-                        <div *ngIf="rank.touched || (requiredForm.submitted && rank.invalid)">
-                          <div *ngIf="rank.errors?.required" class="invalid-msg">Basic Pay(in Rs)
-                            is
-                            required
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label class="form-label">Basic Pay(in Rs) <sup class="required-msg">*</sup></label>
+                          <input type="text" class="form-control" placeholder="Basic Pay(in Rs)" maxlength="50"
+                            [(ngModel)]="formObj.basicPay" #rank="ngModel" name="rank" required disabled>
+                            
+                              <div *ngIf="rank.touched || (requiredForm.submitted &amp;&amp; rank.invalid)">
+                                
+                                  <div class="invalid-msg" *ngIf="rank.errors?.required">Basic Pay(in Rs)
+                                    is
+                                    required
+                                  </div>
+                                
+                              </div>
+                            
                           </div>
                         </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Pay Level<sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Pay Level" maxlength="50"
-                          [(ngModel)]="formObj.payLevel" #payLevel="ngModel" name="payLevel" required appNumberOnly
-                          disabled>
-                        <div *ngIf="payLevel.touched || (requiredForm.submitted && payLevel.invalid)">
-                          <div *ngIf="payLevel.errors?.required" class="invalid-msg">Pay Level
-                            is
-                            required
+                        <div class="col-md-3">
+                          <div class="form-group">
+                            <label class="form-label">Pay Level<sup class="required-msg">*</sup></label>
+                            <input type="text" class="form-control" placeholder="Pay Level" maxlength="50"
+                              [(ngModel)]="formObj.payLevel" #payLevel="ngModel" name="payLevel" required appNumberOnly
+                              disabled>
+                              
+                                <div *ngIf="payLevel.touched || (requiredForm.submitted &amp;&amp; payLevel.invalid)">
+                                  
+                                    <div class="invalid-msg" *ngIf="payLevel.errors?.required">Pay Level
+                                      is
+                                      required
+                                    </div>
+                                  
+                                </div>
+                              
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Present Unit<sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Present Unit" maxlength="50"
-                          [(ngModel)]="formObj.presentUnit" #presentUnit="ngModel" name="presentUnit" required
-                           disabled>
-                        <div *ngIf="presentUnit.touched || (requiredForm.submitted && presentUnit.invalid)">
-                          <div *ngIf="presentUnit.errors?.required" class="invalid-msg">Present Unit
-                            is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Gx Unit<sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Gx Unit" maxlength="50"
-                          [(ngModel)]="formObj.gxUnit" #gxUnit="ngModel" name="gxUnit" required
-                          disabled>
-                        <div *ngIf="gxUnit.touched || (requiredForm.submitted && gxUnit.invalid)">
-                          <div *ngIf="gxUnit.errors?.required" class="invalid-msg">Gx Unit
-                            is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Station<sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Station" maxlength="50"
-                          [(ngModel)]="formObj.station" #station="ngModel" name="station" required
-                          disabled>
-                        <div *ngIf="station.touched || (requiredForm.submitted && station.invalid)">
-                          <div *ngIf="station.errors?.required" class="invalid-msg">Station
-                            is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Home Town<sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Home Town" maxlength="50"
-                          [(ngModel)]="formObj.homeTown" #homeTown="ngModel" name="homeTown" required
-                          disabled>
-                        <div *ngIf="homeTown.touched || (requiredForm.submitted && homeTown.invalid)">
-                          <div *ngIf="homeTown.errors?.required" class="invalid-msg">Home Town
-                            is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Selected Place of Residence <sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Selected Place of Residence "
-                          maxlength="50" [(ngModel)]="formObj.residence" #residence="ngModel" name="residence" required
-                          disabled>
-                        <div *ngIf="residence.touched || (requiredForm.submitted && residence.invalid)">
-                          <div *ngIf="residence.errors?.required" class="invalid-msg">Selected Place of Residence
-                            is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <label class="form-label">Parmanent Address<sup class="required-msg">*</sup></label>
-                        <textarea type="text" class="form-control" placeholder="Parmanent Address" maxlength="50"
-                          [(ngModel)]="formObj.parmanentAdd" #parmanentAdd="ngModel" name="parmanentAdd" required
-                          disabled></textarea>
-                        <div *ngIf="parmanentAdd.touched || (requiredForm.submitted && parmanentAdd.invalid)">
-                          <div *ngIf="parmanentAdd.errors?.required" class="invalid-msg">Parmanent Address
-                            is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Nearest Railway Station<sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Nearest Railway Station" maxlength="50"
-                          [(ngModel)]="formObj.nearestRailway" #nearestRailway="ngModel" name="nearestRailway" required
-                          disabled>
-                        <div *ngIf="nearestRailway.touched || (requiredForm.submitted && nearestRailway.invalid)">
-                          <div *ngIf="nearestRailway.errors?.required" class="invalid-msg">Nearest Railway Station
-                            is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Nearest Airport<sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Nearest Airport" maxlength="50"
-                          [(ngModel)]="formObj.nearestAirport" #nearestAirport="ngModel" name="nearestAirport" required
-                          disabled>
-                        <div *ngIf="nearestAirport.touched || (requiredForm.submitted && nearestAirport.invalid)">
-                          <div *ngIf="nearestAirport.errors?.required" class="invalid-msg">Nearest Airport
-                            is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Date of Commission<sup class="required-msg">*</sup></label>
-                        <input type="date" class="form-control" placeholder="Date of Commission"
-                          [(ngModel)]="formObj.commissionDate" #commissionDate="ngModel" name="commissionDate"
-                          [max]="today" min="1000-01-01" max="9999-12-31" [disabled]="formObj?.commissionDate" [required]="!formObj.commissionDate">
-                        <div *ngIf="commissionDate.touched || (requiredForm.submitted && commissionDate.invalid)">
-                          <div *ngIf="commissionDate.errors?.required" class="invalid-msg">Date of Commission
-                            is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Date of Birth<sup class="required-msg">*</sup></label>
-                        <input type="date" class="form-control" placeholder="Date of Birth" [(ngModel)]="formObj.dob"
-                          #dob="ngModel" name="dob" [max]="today" [disabled]="formObj?.dob" [required]="!formObj.dob">
-                        <div *ngIf="dob.touched || (requiredForm.submitted && dob.invalid)">
-                          <div *ngIf="dob.errors?.required" class="invalid-msg">Date
-                            of Birth is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Date of Retirement<sup class="required-msg">*</sup></label>
-                        <input type="date" class="form-control" placeholder="Date of Retirement"
-                          [(ngModel)]="formObj.retirementDate" #retirementDate="ngModel" name="retirementDate" required
-                          [max]="today"min="1000-01-01" max="9999-12-31"  disabled>
-                        <div *ngIf="retirementDate.touched || (requiredForm.submitted && retirementDate.invalid)">
-                          <div *ngIf="retirementDate.errors?.required" class="invalid-msg">Date of Retirement is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Email Id<sup class="required-msg">*</sup></label>
-                        <input type="email" class="form-control" placeholder="Email Id" maxlength="50" appValidateEmail
-                          [(ngModel)]="formObj.emailId" #emailId="ngModel" name="emailId" [disabled]="formObj?.emailId"
-                          [required]="!formObj.emailId" disabled>
-                        <div *ngIf="emailId.touched || (requiredForm.submitted && emailId.invalid)">
-                          <div *ngIf="emailId.errors?.required" class="invalid-msg">Email Id is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <h3>Family Details</h3>
-                    </div>
-                  </div>
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="table-responsive">
-                        <table id="exportData" class="table table-bordered" style="width:100%">
-                          <thead>
-                            <tr>
-                              <th class="wd-5p">S.No</th>
-                              <th class="wd-20p">Name</th>
-                              <th class="wd-20p">Relation</th>
-                              <th class="wd-20p">age</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr
-                              *ngFor="let dataObj of dataList |  filterComplex : searchObj | paginate: { itemsPerPage: noOfPage, currentPage: p };let i=index">
-                              <td>{{ i + 1}}</td>
-                              <td>{{dataObj?.name | showHypen}}</td>
-                              <td>{{dataObj?.relation | showHypen}}</td>
-                              <td>{{dataObj?.dob | showHypen}}</td>
-                            </tr>
-                            <tr *ngIf="!dataList.length" class="text-center">
-                              <td colspan="20">No Records Available</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <h3>Bank Details</h3>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Bank Name <sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Bank Name " maxlength="50"
-                          [(ngModel)]="formObj.bankName " #bankName="ngModel" name="bankName" required
-                          disabled>
-                        <div *ngIf="bankName.touched || (requiredForm.submitted && bankName.invalid)">
-                          <div *ngIf="bankName.errors?.required" class="invalid-msg">Bank Name
-                            is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">IFSC Code <sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="IFSC Code" maxlength="50"
-                          [(ngModel)]="formObj.ifsc" #ifsc="ngModel" name="ifsc" required 
-                          disabled>
-                        <div *ngIf="ifsc.touched || (requiredForm.submitted && ifsc.invalid)">
-                          <div *ngIf="ifsc.errors?.required" class="invalid-msg">IFSC Code
-                            is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">Account Number<sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="Account Number" appNumberOnly
-                          maxlength="10" [(ngModel)]="formObj.accNum" #accNum="ngModel" name="accNum" required disabled>
-                        <div *ngIf="accNum.touched || (requiredForm.submitted && accNum.invalid)">
-                          <div *ngIf="accNum.errors?.required" class="invalid-msg">Account Number is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="form-label">MICR <sup class="required-msg">*</sup></label>
-                        <input type="text" class="form-control" placeholder="MICR" maxlength="10"
-                          [(ngModel)]="formObj.micr" #micr="ngModel" name="micr" required  disabled>
-                        <div *ngIf="micr.touched || (requiredForm.submitted && micr.invalid)">
-                          <div *ngIf="micr.errors?.required" class="invalid-msg">MICR
-                            is
-                            required
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-</div>
-</div>
-</div>
-</div>
+                          <div class="col-md-3">
+                            <div class="form-group">
+                              <label class="form-label">Present Unit<sup class="required-msg">*</sup></label>
+                              <input type="text" class="form-control" placeholder="Present Unit" maxlength="50"
+                                [(ngModel)]="formObj.presentUnit" #presentUnit="ngModel" name="presentUnit" required
+                                disabled>
+                                
+                                  <div *ngIf="presentUnit.touched || (requiredForm.submitted &amp;&amp; presentUnit.invalid)">
+                                    
+                                      <div class="invalid-msg" *ngIf="presentUnit.errors?.required">Present Unit
+                                        is
+                                        required
+                                      </div>
+                                    
+                                  </div>
+                                
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label class="form-label">Gx Unit<sup class="required-msg">*</sup></label>
+                                <input type="text" class="form-control" placeholder="Gx Unit" maxlength="50"
+                                  [(ngModel)]="formObj.gxUnit" #gxUnit="ngModel" name="gxUnit" required
+                                  disabled>
+                                  
+                                    <div *ngIf="gxUnit.touched || (requiredForm.submitted &amp;&amp; gxUnit.invalid)">
+                                      
+                                        <div class="invalid-msg" *ngIf="gxUnit.errors?.required">Gx Unit
+                                          is
+                                          required
+                                        </div>
+                                      
+                                    </div>
+                                  
+                                </div>
+                              </div>
+                              <div class="col-md-3">
+                                <div class="form-group">
+                                  <label class="form-label">Station<sup class="required-msg">*</sup></label>
+                                  <input type="text" class="form-control" placeholder="Station" maxlength="50"
+                                    [(ngModel)]="formObj.station" #station="ngModel" name="station" required
+                                    disabled>
+                                    
+                                      <div *ngIf="station.touched || (requiredForm.submitted &amp;&amp; station.invalid)">
+                                        
+                                          <div class="invalid-msg" *ngIf="station.errors?.required">Station
+                                            is
+                                            required
+                                          </div>
+                                        
+                                      </div>
+                                    
+                                  </div>
+                                </div>
+                                <div class="col-md-3">
+                                  <div class="form-group">
+                                    <label class="form-label">Home Town<sup class="required-msg">*</sup></label>
+                                    <input type="text" class="form-control" placeholder="Home Town" maxlength="50"
+                                      [(ngModel)]="formObj.homeTown" #homeTown="ngModel" name="homeTown" required
+                                      disabled>
+                                      
+                                        <div *ngIf="homeTown.touched || (requiredForm.submitted &amp;&amp; homeTown.invalid)">
+                                          
+                                            <div class="invalid-msg" *ngIf="homeTown.errors?.required">Home Town
+                                              is
+                                              required
+                                            </div>
+                                          
+                                        </div>
+                                      
+                                    </div>
+                                  </div>
+                                  <div class="col-md-3">
+                                    <div class="form-group">
+                                      <label class="form-label">Selected Place of Residence <sup class="required-msg">*</sup></label>
+                                      <input type="text" class="form-control" placeholder="Selected Place of Residence "
+                                        maxlength="50" [(ngModel)]="formObj.residence" #residence="ngModel" name="residence" required
+                                        disabled>
+                                        
+                                          <div *ngIf="residence.touched || (requiredForm.submitted &amp;&amp; residence.invalid)">
+                                            
+                                              <div class="invalid-msg" *ngIf="residence.errors?.required">Selected Place of Residence
+                                                is
+                                                required
+                                              </div>
+                                            
+                                          </div>
+                                        
+                                      </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                      <div class="form-group">
+                                        <label class="form-label">Parmanent Address<sup class="required-msg">*</sup></label>
+                                        <textarea type="text" class="form-control" placeholder="Parmanent Address" maxlength="50"
+                                          [(ngModel)]="formObj.parmanentAdd" #parmanentAdd="ngModel" name="parmanentAdd" required
+                                        disabled></textarea>
+                                        
+                                          <div *ngIf="parmanentAdd.touched || (requiredForm.submitted &amp;&amp; parmanentAdd.invalid)">
+                                            
+                                              <div class="invalid-msg" *ngIf="parmanentAdd.errors?.required">Parmanent Address
+                                                is
+                                                required
+                                              </div>
+                                            
+                                          </div>
+                                        
+                                      </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                      <div class="form-group">
+                                        <label class="form-label">Nearest Railway Station<sup class="required-msg">*</sup></label>
+                                        <input type="text" class="form-control" placeholder="Nearest Railway Station" maxlength="50"
+                                          [(ngModel)]="formObj.nearestRailway" #nearestRailway="ngModel" name="nearestRailway" required
+                                          disabled>
+                                          
+                                            <div *ngIf="nearestRailway.touched || (requiredForm.submitted &amp;&amp; nearestRailway.invalid)">
+                                              
+                                                <div class="invalid-msg" *ngIf="nearestRailway.errors?.required">Nearest Railway Station
+                                                  is
+                                                  required
+                                                </div>
+                                              
+                                            </div>
+                                          
+                                        </div>
+                                      </div>
+                                      <div class="col-md-3">
+                                        <div class="form-group">
+                                          <label class="form-label">Nearest Airport<sup class="required-msg">*</sup></label>
+                                          <input type="text" class="form-control" placeholder="Nearest Airport" maxlength="50"
+                                            [(ngModel)]="formObj.nearestAirport" #nearestAirport="ngModel" name="nearestAirport" required
+                                            disabled>
+                                            
+                                              <div *ngIf="nearestAirport.touched || (requiredForm.submitted &amp;&amp; nearestAirport.invalid)">
+                                                
+                                                  <div class="invalid-msg" *ngIf="nearestAirport.errors?.required">Nearest Airport
+                                                    is
+                                                    required
+                                                  </div>
+                                                
+                                              </div>
+                                            
+                                          </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                          <div class="form-group">
+                                            <label class="form-label">Date of Commission<sup class="required-msg">*</sup></label>
+                                            <input type="date" class="form-control" placeholder="Date of Commission"
+                                              [(ngModel)]="formObj.commissionDate" #commissionDate="ngModel" name="commissionDate"
+                                              [max]="today" min="1000-01-01" max="9999-12-31" [disabled]="formObj?.commissionDate" [required]="!formObj.commissionDate">
+                                              
+                                                <div *ngIf="commissionDate.touched || (requiredForm.submitted &amp;&amp; commissionDate.invalid)">
+                                                  
+                                                    <div class="invalid-msg" *ngIf="commissionDate.errors?.required">Date of Commission
+                                                      is
+                                                      required
+                                                    </div>
+                                                  
+                                                </div>
+                                              
+                                            </div>
+                                          </div>
+                                          <div class="col-md-3">
+                                            <div class="form-group">
+                                              <label class="form-label">Date of Birth<sup class="required-msg">*</sup></label>
+                                              <input type="date" class="form-control" placeholder="Date of Birth" [(ngModel)]="formObj.dob"
+                                                #dob="ngModel" name="dob" [max]="today" [disabled]="formObj?.dob" [required]="!formObj.dob">
+                                                
+                                                  <div *ngIf="dob.touched || (requiredForm.submitted &amp;&amp; dob.invalid)">
+                                                    
+                                                      <div class="invalid-msg" *ngIf="dob.errors?.required">Date
+                                                        of Birth is
+                                                        required
+                                                      </div>
+                                                    
+                                                  </div>
+                                                
+                                              </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                              <div class="form-group">
+                                                <label class="form-label">Date of Retirement<sup class="required-msg">*</sup></label>
+                                                <input type="date" class="form-control" placeholder="Date of Retirement"
+                                                  [(ngModel)]="formObj.retirementDate" #retirementDate="ngModel" name="retirementDate" required
+                                                  [max]="today"min="1000-01-01" max="9999-12-31"  disabled>
+                                                  
+                                                    <div *ngIf="retirementDate.touched || (requiredForm.submitted &amp;&amp; retirementDate.invalid)">
+                                                      
+                                                        <div class="invalid-msg" *ngIf="retirementDate.errors?.required">Date of Retirement is
+                                                          required
+                                                        </div>
+                                                      
+                                                    </div>
+                                                  
+                                                </div>
+                                              </div>
+                                              <div class="col-md-3">
+                                                <div class="form-group">
+                                                  <label class="form-label">Email Id<sup class="required-msg">*</sup></label>
+                                                  <input type="email" class="form-control" placeholder="Email Id" maxlength="50" appValidateEmail
+                                                    [(ngModel)]="formObj.emailId" #emailId="ngModel" name="emailId" [disabled]="formObj?.emailId"
+                                                    [required]="!formObj.emailId" disabled>
+                                                    
+                                                      <div *ngIf="emailId.touched || (requiredForm.submitted &amp;&amp; emailId.invalid)">
+                                                        
+                                                          <div class="invalid-msg" *ngIf="emailId.errors?.required">Email Id is
+                                                            required
+                                                          </div>
+                                                        
+                                                      </div>
+                                                    
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <div class="row">
+                                                <div class="col-md-12">
+                                                  <h3>Family Details</h3>
+                                                </div>
+                                              </div>
+                                              <div class="card">
+                                                <div class="card-body">
+                                                  <div class="table-responsive">
+                                                    <table id="exportData" class="table table-bordered" style="width:100%">
+                                                      <thead>
+                                                        <tr>
+                                                          <th class="wd-5p">S.No</th>
+                                                          <th class="wd-20p">Name</th>
+                                                          <th class="wd-20p">Relation</th>
+                                                          <th class="wd-20p">age</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        
+                                                          <tr
+                                                             *ngFor="let dataObj of dataList |  filterComplex : searchObj | paginate: { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+                                                            <td>{{ i + 1}}</td>
+                                                            <td>{{dataObj?.name | showHypen}}</td>
+                                                            <td>{{dataObj?.relation | showHypen}}</td>
+                                                            <td>{{dataObj?.dob | showHypen}}</td>
+                                                          </tr>
+                                                        
+                                                        
+                                                          <tr class="text-center" *ngIf="!dataList.length">
+                                                            <td colspan="20">No Records Available</td>
+                                                          </tr>
+                                                        
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <div class="row">
+                                                <div class="col-md-12">
+                                                  <h3>Bank Details</h3>
+                                                </div>
+                                                <div class="col-md-3">
+                                                  <div class="form-group">
+                                                    <label class="form-label">Bank Name <sup class="required-msg">*</sup></label>
+                                                    <input type="text" class="form-control" placeholder="Bank Name " maxlength="50"
+                                                      [(ngModel)]="formObj.bankName " #bankName="ngModel" name="bankName" required
+                                                      disabled>
+                                                      
+                                                        <div *ngIf="bankName.touched || (requiredForm.submitted &amp;&amp; bankName.invalid)">
+                                                          
+                                                            <div class="invalid-msg" *ngIf="bankName.errors?.required">Bank Name
+                                                              is
+                                                              required
+                                                            </div>
+                                                          
+                                                        </div>
+                                                      
+                                                    </div>
+                                                  </div>
+                                                  <div class="col-md-3">
+                                                    <div class="form-group">
+                                                      <label class="form-label">IFSC Code <sup class="required-msg">*</sup></label>
+                                                      <input type="text" class="form-control" placeholder="IFSC Code" maxlength="50"
+                                                        [(ngModel)]="formObj.ifsc" #ifsc="ngModel" name="ifsc" required
+                                                        disabled>
+                                                        
+                                                          <div *ngIf="ifsc.touched || (requiredForm.submitted &amp;&amp; ifsc.invalid)">
+                                                            
+                                                              <div class="invalid-msg" *ngIf="ifsc.errors?.required">IFSC Code
+                                                                is
+                                                                required
+                                                              </div>
+                                                            
+                                                          </div>
+                                                        
+                                                      </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                      <div class="form-group">
+                                                        <label class="form-label">Account Number<sup class="required-msg">*</sup></label>
+                                                        <input type="text" class="form-control" placeholder="Account Number" appNumberOnly
+                                                          maxlength="10" [(ngModel)]="formObj.accNum" #accNum="ngModel" name="accNum" required disabled>
+                                                          
+                                                            <div *ngIf="accNum.touched || (requiredForm.submitted &amp;&amp; accNum.invalid)">
+                                                              
+                                                                <div class="invalid-msg" *ngIf="accNum.errors?.required">Account Number is
+                                                                  required
+                                                                </div>
+                                                              
+                                                            </div>
+                                                          
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-md-3">
+                                                        <div class="form-group">
+                                                          <label class="form-label">MICR <sup class="required-msg">*</sup></label>
+                                                          <input type="text" class="form-control" placeholder="MICR" maxlength="10"
+                                                            [(ngModel)]="formObj.micr" #micr="ngModel" name="micr" required  disabled>
+                                                            
+                                                              <div *ngIf="micr.touched || (requiredForm.submitted &amp;&amp; micr.invalid)">
+                                                                
+                                                                  <div class="invalid-msg" *ngIf="micr.errors?.required">MICR
+                                                                    is
+                                                                    required
+                                                                  </div>
+                                                                
+                                                              </div>
+                                                            
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </form>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
 

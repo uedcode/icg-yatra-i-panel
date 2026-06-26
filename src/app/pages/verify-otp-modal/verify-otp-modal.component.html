@@ -13,26 +13,24 @@
             <h3>Verification</h3>
             <img src="assets/images/otp-verification.png" alt="">
             <p>Enter the verification code we just send<br>on your
-              <span *ngIf="record?.phone">phone number <b>******{{record?.phone?.slice(6)}}</b></span>
-              <span *ngIf="record?.email">Email Id <b>******{{record?.email?.slice(0, 4)}}{{record?.email?.slice(-12)}}</b></span>
+              
+                <span *ngIf="record?.phone">phone number <b>******{{record?.phone?.slice(6)}}</b></span>
+              
+              
+                <span *ngIf="record?.email">Email Id <b>******{{record?.email?.slice(0, 4)}}{{record?.email?.slice(-12)}}</b></span>
+              
             </p>
             <ng-otp-input (onInputChange)="onOtpChange($event)"
-              [config]="{length:4, allowNumbersOnly:true, isPasswordInput:true}"></ng-otp-input>
-
-            <!-- <div class="form-group">
-              <div class="row">
-                <div class="col-md-12">
-                  <re-captcha id="recaptcha" name="recaptcha" #recaptcha="ngModel" [(ngModel)]="captcha" required
-                    [class.is-invalid]="recaptcha.invalid && (recaptcha.dirty || recaptcha.touched)"></re-captcha>
-                  <div *ngIf="captchaError" class="invalid-msg mb-3">Captcha is required.</div>
-                </div>
-              </div>
-            </div> -->
+            [config]="{length:4, allowNumbersOnly:true, isPasswordInput:true}"></ng-otp-input>
 
             <div class="reset_otp">
               <p>
-                <span *ngIf="seconds" class="timer">Resend OTP in 00:{{seconds}} Seconds</span>
-                <span *ngIf="!seconds" class="resetTimer" (click)="resendOtp()">Resend OTP</span>
+                
+                  <span class="timer" *ngIf="seconds">Resend OTP in 00:{{seconds}} Seconds</span>
+                
+                
+                  <span class="resetTimer" (click)="resendOtp()" *ngIf="!seconds">Resend OTP</span>
+                
               </p>
             </div>
           </div>

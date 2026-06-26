@@ -1,67 +1,79 @@
 <div class="container">
-  <div *ngIf="statusCode=='SC'">
-    <div class="row mb-4">
-      <div class="col-md-4 offset-4">
-        <div class="successFailureCard">
-          <img src="assets/images/check.png" alt="Success Icon">
-          <h3 class="mt-5">Transaction Success</h3>
-          <p class="mb-0"><strong>TRANSACTION ID</strong></p>
-          <p>{{txnId}}</p>
+  
+    <div *ngIf="statusCode=='SC'">
+      <div class="row mb-4">
+        <div class="col-md-4 offset-4">
+          <div class="successFailureCard">
+            <img src="assets/images/check.png" alt="Success Icon">
+            <h3 class="mt-5">Transaction Success</h3>
+            <p class="mb-0"><strong>TRANSACTION ID</strong></p>
+            <p>{{txnId}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table table-bordered table-hover">
+            <tr>
+              <th>S.No.</th>
+              <th>Description</th>
+              <th>View</th>
+            </tr>
+            
+              <tr *ngFor="let dataObj of getSignedDocumentList(); let i = index">
+                <td>{{ i + 1}}</td>
+                <td>{{dataObj?.docName}}</td>
+                <td>
+                  <button type="button" title="View" class="btn btn-info" (click)=
+                    "$auth.viewFile(dataObj?.url)">
+                    <i class='fa fa-eye'></i>View
+                  </button>
+                </td>
+              </tr>
+            
+          </table>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <table class="table table-bordered table-hover">
-          <tr>
-            <th>S.No.</th>
-            <th>Description</th>
-            <th>View</th>
-          </tr>
-          <tr *ngFor="let dataObj of getSignedDocumentList(); let i=index">
-            <td>{{ i + 1}}</td>
-            <td>{{dataObj?.docName}}</td>
-            <td>
-              <button type="button" title="View" class="btn btn-info" (click)=
-              "$auth.viewFile(dataObj?.url)">
-                <i class='fa fa-eye'></i>View
-              </button>
-            </td>
-          </tr>
-        </table>
+  
+  
+    <div class="row" *ngIf="statusCode=='US' || statusCode=='ER'">
+      <div class="col-md-4 offset-4">
+        <div class="successFailureCard">
+          <img src="assets/images/cancel.png" alt="Failure Icon">
+          <h3 class="mt-5">Oops</h3>
+          <p>Transaction Failed</p>
+          <p>{{statusMessage}}</p>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="row" *ngIf="statusCode=='US' || statusCode=='ER'">
-    <div class="col-md-4 offset-4">
-      <div class="successFailureCard">
-        <img src="assets/images/cancel.png" alt="Failure Icon">
-        <h3 class="mt-5">Oops</h3>
-        <p>Transaction Failed</p>
-        <p>{{statusMessage}}</p>
+  
+  
+    <div class="row" *ngIf="statusCode &amp;&amp; statusCode != 'SC' &amp;&amp; statusCode != 'US' &amp;&amp; statusCode != 'ER'">
+      <div class="col-md-4 offset-4">
+        <div class="successFailureCard">
+          <img src="assets/images/cancel.png" alt="Pending Icon">
+          <h3 class="mt-5">Transaction Update</h3>
+          <p>{{statusMessage}}</p>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="row" *ngIf="statusCode && statusCode != 'SC' && statusCode != 'US' && statusCode != 'ER'">
-    <div class="col-md-4 offset-4">
-      <div class="successFailureCard">
-        <img src="assets/images/cancel.png" alt="Pending Icon">
-        <h3 class="mt-5">Transaction Update</h3>
-        <p>{{statusMessage}}</p>
+  
+  
+    <div class="row" *ngIf="!txnId">
+      <div class="col-md-4 offset-4">
+        <div class="successFailureCard">
+          <img src="assets/images/cancel.png" alt="Missing transaction Icon">
+          <h3 class="mt-5">Missing Transaction</h3>
+          <p>{{statusMessage}}</p>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="row" *ngIf="!txnId">
-    <div class="col-md-4 offset-4">
-      <div class="successFailureCard">
-        <img src="assets/images/cancel.png" alt="Missing transaction Icon">
-        <h3 class="mt-5">Missing Transaction</h3>
-        <p>{{statusMessage}}</p>
-      </div>
-    </div>
-  </div>
+  
   <div class="text-center" style="margin-top: 15px;">
-    <p style="color: red;" *ngIf="txnId">You will be redirected to the previous workflow page in 00:{{seconds}} seconds.</p>
+    
+      <p style="color: red;" *ngIf="txnId">You will be redirected to the previous workflow page in 00:{{seconds}} seconds.</p>
+    
     <button type="button" class="btn btn-info" (click)="redirectToNextPage()">Return to Workflow</button>
     <!-- <p style="font-size: 13px;">Or it will automatically redirected to main page in 30 seconds!</p> -->
   </div>

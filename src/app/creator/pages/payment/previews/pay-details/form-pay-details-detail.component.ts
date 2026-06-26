@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
@@ -10,6 +10,7 @@ import { PreviewWindowService } from 'src/app/service/core/preview-window.servic
   selector: 'app-form-pay-details-detail',
   templateUrl: './form-pay-details-detail.component.html',
   styleUrls: ['./form-pay-details-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class FormPayDetailsDetailComponent implements OnInit {

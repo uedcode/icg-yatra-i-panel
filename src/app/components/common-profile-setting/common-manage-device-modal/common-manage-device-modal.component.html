@@ -24,20 +24,24 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let dataObj of dataList;let i=index">
-                      <td>{{i+1}}</td>
-                      <td>{{dataObj?.descr | showHypen}}</td>
-                      <td>{{dataObj?.browserName | showHypen}}</td>
-                      <td>{{dataObj?.createdOn | showDate:"medium"}}</td>
-                      <td>
-                        <button class="btn btn-danger" title="delete" data-toggle="modal" data-target="#delete_modal"
-                          (click)="id=dataObj.id" [disabled]="dataObj?.isDisabled">{{dataObj?.isDisabled ? 'Active ●' :
+                    
+                      <tr *ngFor="let dataObj of dataList; let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{dataObj?.descr | showHypen}}</td>
+                        <td>{{dataObj?.browserName | showHypen}}</td>
+                        <td>{{dataObj?.createdOn | showDate:"medium"}}</td>
+                        <td>
+                          <button class="btn btn-danger" title="delete" data-toggle="modal" data-target="#delete_modal"
+                            (click)="id=dataObj.id" [disabled]="dataObj?.isDisabled">{{dataObj?.isDisabled ? 'Active ●' :
                           'Delete'}}</button>
-                      </td>
-                    </tr>
-                    <tr *ngIf="!dataList.length" class="text-center">
-                      <td colspan="3">No Records Available</td>
-                    </tr>
+                        </td>
+                      </tr>
+                    
+                    
+                      <tr class="text-center" *ngIf="!dataList.length">
+                        <td colspan="3">No Records Available</td>
+                      </tr>
+                    
                   </tbody>
                 </table>
               </div>

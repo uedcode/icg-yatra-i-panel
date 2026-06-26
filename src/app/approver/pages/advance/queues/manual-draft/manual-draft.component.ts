@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { buildLegacyClaimStateHeaders } from 'src/app/shared/utils/legacy-api.ut
   selector: 'app-manual-draft',
   templateUrl: './manual-draft.component.html',
   styleUrls: ['./manual-draft.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ManualDraftComponent implements OnInit {

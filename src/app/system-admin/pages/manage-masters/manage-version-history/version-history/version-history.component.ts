@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonService } from 'src/app/service/core/common.service';
 import { environment } from 'src/environments/environment';
 import { VersionHistoryApiService } from 'src/app/service/api/masters/version-history-api.service';
@@ -9,6 +9,7 @@ declare var $: any;
     selector: 'app-version-history',
     templateUrl: './version-history.component.html',
     styleUrls: ['./version-history.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class VersionHistoryComponent implements OnInit {

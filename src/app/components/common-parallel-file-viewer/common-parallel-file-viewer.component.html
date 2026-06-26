@@ -1,32 +1,32 @@
-<aside class="parallel-file-viewer" *ngIf="normalizedUrl">
-  <div class="parallel-file-viewer__header">
-    <strong [title]="displayTitle">{{ displayTitle }}</strong>
-    <div class="parallel-file-viewer__actions">
-      <button type="button" class="btn btn-info btn-sm" (click)="openInNewTab()">
-        Open in new tab
-      </button>
-      <button type="button" class="btn btn-default btn-sm" (click)="close()">
-        Close
-      </button>
-    </div>
-  </div>
 
-  <ngx-extended-pdf-viewer
-    *ngIf="isPdf; else imageViewer"
-    [src]="normalizedUrl"
-    height="calc(100vh - 178px)"
-    useBrowserLocale="false"
-    [showStampEditor]="false"
-    [showTextEditor]="false"
-    [showDrawEditor]="false"
-    [showOpenFileButton]="false"
-    [showPrintButton]="false"
-    [textLayer]="true">
-  </ngx-extended-pdf-viewer>
-
-  <ng-template #imageViewer>
-    <div class="parallel-file-viewer__image-wrap">
-      <img [src]="normalizedUrl" [alt]="displayTitle" />
+  <aside class="parallel-file-viewer" *ngIf="normalizedUrl">
+    <div class="parallel-file-viewer__header">
+      <strong [title]="displayTitle">{{ displayTitle }}</strong>
+      <div class="parallel-file-viewer__actions">
+        <button type="button" class="btn btn-info btn-sm" (click)="openInNewTab()">
+          Open in new tab
+        </button>
+        <button type="button" class="btn btn-default btn-sm" (click)="close()">
+          Close
+        </button>
+      </div>
     </div>
-  </ng-template>
-</aside>
+    <ng-container *ngIf="isPdf; else legacyElse1">
+      <ngx-extended-pdf-viewer
+        [src]="normalizedUrl"
+        height="calc(100vh - 178px)"
+        useBrowserLocale="false"
+        [showStampEditor]="false"
+        [showTextEditor]="false"
+        [showDrawEditor]="false"
+        [showOpenFileButton]="false"
+        [showPrintButton]="false"
+        [textLayer]="true">
+      </ngx-extended-pdf-viewer>
+    </ng-container><ng-template #legacyElse1>
+      <div class="parallel-file-viewer__image-wrap">
+        <img [src]="normalizedUrl" [alt]="displayTitle" />
+      </div>
+    </ng-template>
+  </aside>
+

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UtilService } from 'src/app/service/core/util.service';
@@ -170,6 +170,7 @@ interface Claims {
   selector: 'app-claim-form-resettlement',
   templateUrl: './claim-form-resettlement.component.html',
   styleUrls: ['./claim-form-resettlement.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ClaimFormResettlementComponent implements OnInit {

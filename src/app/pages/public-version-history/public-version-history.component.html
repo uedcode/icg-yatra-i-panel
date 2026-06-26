@@ -13,19 +13,23 @@
     <div class="row">
       <div class="col-md-12 col-lg-12">
         <div id="accordion-public-version-history">
-          <div class="card" *ngFor="let item of dataList; let i = index">
-            <div class="card-header">
-              <h5 class="mb-0">
-                <span class="badge badge-secondary mr-2">{{ i + 1 }}</span>
-                {{ item?.title || '-' }}
-              </h5>
+          
+            <div class="card" *ngFor="let item of dataList; let i = index">
+              <div class="card-header">
+                <h5 class="mb-0">
+                  <span class="badge badge-secondary mr-2">{{ i + 1 }}</span>
+                  {{ item?.title || '-' }}
+                </h5>
+              </div>
+              <div class="card-body">
+                <p class="mb-2">{{ item?.descr || '-' }}</p>
+                <small class="text-muted">Created On: {{ item?.createdOn | showDate:'medium' }}</small>
+              </div>
             </div>
-            <div class="card-body">
-              <p class="mb-2">{{ item?.descr || '-' }}</p>
-              <small class="text-muted">Created On: {{ item?.createdOn | showDate:'medium' }}</small>
-            </div>
-          </div>
-          <p class="text-center" *ngIf="!dataList.length">No Records</p>
+          
+          
+            <p class="text-center" *ngIf="!dataList.length">No Records</p>
+          
         </div>
       </div>
     </div>

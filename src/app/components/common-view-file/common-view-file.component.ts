@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AfterViewInit } from '@angular/core';
 import { PreviewWindowService } from 'src/app/service/core/preview-window.service';
@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
     selector: 'app-common-view-file',
     templateUrl: './common-view-file.component.html',
     styleUrls: ['./common-view-file.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CommonViewFileComponent implements OnInit, AfterViewInit  {

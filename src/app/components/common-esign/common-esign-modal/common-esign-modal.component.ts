@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ESignFlowService } from 'src/app/service/core/esign-flow.service';
@@ -8,6 +8,7 @@ declare var $: any;
     selector: 'app-common-esign-modal',
     templateUrl: './common-esign-modal.component.html',
     styleUrls: ['./common-esign-modal.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CommonEsignModalComponent implements OnInit, OnChanges, OnDestroy {

@@ -23,19 +23,23 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let row of rows">
-                    <td>{{ row?.year || '-' }}</td>
-                    <td>{{ row?.ltcType || '-' }}</td>
-                    <td>{{ row?.ltcSubType || '-' }}</td>
-                    <td>{{ row?.frmLocation || '-' }}</td>
-                    <td>{{ row?.toLocation || '-' }}</td>
-                    <td>{{ row?.occDate || '-' }}</td>
-                    <td>{{ row?.reason || '-' }}</td>
-                    <td>{{ row?._bucket || '-' }}</td>
-                  </tr>
-                  <tr *ngIf="!rows?.length">
-                    <td colspan="8" class="text-center">No Records</td>
-                  </tr>
+                  
+                    <tr *ngFor="let row of rows">
+                      <td>{{ row?.year || '-' }}</td>
+                      <td>{{ row?.ltcType || '-' }}</td>
+                      <td>{{ row?.ltcSubType || '-' }}</td>
+                      <td>{{ row?.frmLocation || '-' }}</td>
+                      <td>{{ row?.toLocation || '-' }}</td>
+                      <td>{{ row?.occDate || '-' }}</td>
+                      <td>{{ row?.reason || '-' }}</td>
+                      <td>{{ row?._bucket || '-' }}</td>
+                    </tr>
+                  
+                  
+                    <tr *ngIf="!rows?.length">
+                      <td colspan="8" class="text-center">No Records</td>
+                    </tr>
+                  
                 </tbody>
               </table>
             </div>

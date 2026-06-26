@@ -4,7 +4,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ComponentModule } from '../app-component.module';
 import { DirectiveModule } from '../app-directive.module';
 import { PipeModule } from '../app-pipe.module';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -155,7 +155,7 @@ const CustomSelectOptions: INgxSelectOptions = { // Check the interface for more
         },
         [DatePipe],
         [FileExcelService],
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withXhr(), withInterceptorsFromDi())
     ] })
 export class ApproverModule { }
 

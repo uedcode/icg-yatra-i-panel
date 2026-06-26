@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ClaimStateApiService } from 'src/app/service/api/claim/claim-state-api.service';
 import { CodeUnitApiService } from 'src/app/service/api/code/code-unit-api.service';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -7,6 +7,7 @@ import { CommonService } from 'src/app/service/core/common.service';
   selector: 'app-esign-report',
   templateUrl: './esign-report.component.html',
   styleUrls: ['./esign-report.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class EsignReportComponent implements OnInit {

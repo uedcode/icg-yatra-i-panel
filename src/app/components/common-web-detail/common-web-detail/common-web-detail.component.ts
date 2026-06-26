@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { Router } from '@angular/router';
 
@@ -8,6 +8,7 @@ declare var $: any;
     selector: 'app-common-web-detail',
     templateUrl: './common-web-detail.component.html',
     styleUrls: ['./common-web-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CommonWebDetailComponent implements OnInit {

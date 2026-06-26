@@ -28,11 +28,13 @@
           name="claimMode"
           (ngModelChange)="onClaimModeChange()"
           [disabled]="movement.claimMode === yatTravelMode.yatra"
-        >
+          >
           <option [ngValue]="null" disabled>Select Mode Type</option>
-          <option *ngFor="let option of visibleModeOptions" [ngValue]="option.id">
-            {{ option.label }}
-          </option>
+          
+            <option [ngValue]="option.id" *ngFor="let option of visibleModeOptions">
+              {{ option.label }}
+            </option>
+          
         </select>
       </div>
 
@@ -44,11 +46,13 @@
           name="subFormId"
           (ngModelChange)="onPurposeChange()"
           [disabled]="movement.claimMode === yatTravelMode.yatra"
-        >
+          >
           <option [ngValue]="null" disabled>Select Purpose Type</option>
-          <option *ngFor="let option of purposeOptions" [ngValue]="option.id">
-            {{ option.label }}
-          </option>
+          
+            <option [ngValue]="option.id" *ngFor="let option of purposeOptions">
+              {{ option.label }}
+            </option>
+          
         </select>
       </div>
 
@@ -61,7 +65,7 @@
           name="voucherNo"
           [disabled]="movement.claimMode === yatTravelMode.yatra || isNilOrSupplementary"
           maxlength="30"
-        />
+          />
       </div>
 
       <div class="col-md-4 form-group">
@@ -72,7 +76,7 @@
           [(ngModel)]="movement.voucherDate"
           name="voucherDate"
           [disabled]="movement.claimMode === yatTravelMode.yatra || isNilOrSupplementary"
-        />
+          />
       </div>
 
       <div class="col-md-4 form-group">
@@ -83,43 +87,49 @@
           [(ngModel)]="movement.voucherAmt"
           name="voucherAmt"
           [disabled]="movement.claimMode === yatTravelMode.yatra || isNilOrSupplementary"
-        />
+          />
       </div>
 
       <div class="col-md-4 form-group">
         <label class="control-label">Drawn From</label>
-        <input
-          *ngIf="movement.claimMode === yatTravelMode.yatra || isNilOrSupplementary"
-          type="text"
-          class="form-control"
-          [ngModel]="movement.drawnFrom"
-          name="drawnFromReadonly"
-          disabled
-        />
-        <select
-          *ngIf="movement.claimMode !== yatTravelMode.yatra && !isNilOrSupplementary"
-          class="form-control"
-          [(ngModel)]="movement.drawnFrom"
-          name="drawnFrom"
-        >
-          <option [ngValue]="null">Select Unit</option>
-          <option *ngFor="let unit of allUnits" [ngValue]="getUnitLabel(unit)">
-            {{ getUnitLabel(unit) }}
-          </option>
-          <option [ngValue]="'Others'">Others</option>
-        </select>
+        <ng-container *ngIf="movement.claimMode === yatTravelMode.yatra || isNilOrSupplementary">
+          <input
+            type="text"
+            class="form-control"
+            [ngModel]="movement.drawnFrom"
+            name="drawnFromReadonly"
+            disabled
+            />
+        </ng-container>
+        
+          <select
+            class="form-control"
+            [(ngModel)]="movement.drawnFrom"
+            name="drawnFrom"
+             *ngIf="movement.claimMode !== yatTravelMode.yatra &amp;&amp; !isNilOrSupplementary">
+            <option [ngValue]="null">Select Unit</option>
+            
+              <option [ngValue]="getUnitLabel(unit)" *ngFor="let unit of allUnits">
+                {{ getUnitLabel(unit) }}
+              </option>
+            
+            <option [ngValue]="'Others'">Others</option>
+          </select>
+        
       </div>
 
-      <div class="col-md-4 form-group" *ngIf="movement.drawnFrom === 'Others'">
-        <label class="control-label">Other Drawn From</label>
-        <input
-          type="text"
-          class="form-control"
-          [(ngModel)]="movement.drawnFromOther"
-          name="drawnFromOther"
-          maxlength="100"
-        />
-      </div>
+      
+        <div class="col-md-4 form-group" *ngIf="movement.drawnFrom === 'Others'">
+          <label class="control-label">Other Drawn From</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="movement.drawnFromOther"
+            name="drawnFromOther"
+            maxlength="100"
+            />
+        </div>
+      
     </div>
   </div>
 </div>
@@ -134,9 +144,11 @@
         <label class="control-label">GX Type <sup>*</sup></label>
         <select class="form-control" [(ngModel)]="tempGxDetails.gxType" name="gxType">
           <option [ngValue]="null">Select GX Type</option>
-          <option *ngFor="let gxType of gxTypes" [ngValue]="gxType?.descr || gxType?.gxType">
-            {{ gxType?.descr || gxType?.gxType }}
-          </option>
+          
+            <option [ngValue]="gxType?.descr || gxType?.gxType" *ngFor="let gxType of gxTypes">
+              {{ gxType?.descr || gxType?.gxType }}
+            </option>
+          
         </select>
       </div>
 
@@ -144,9 +156,11 @@
         <label class="control-label">Unit <sup>*</sup></label>
         <select class="form-control" [(ngModel)]="tempGxDetails.unit" name="gxUnit">
           <option [ngValue]="null">Select Unit</option>
-          <option *ngFor="let unit of allUnits" [ngValue]="getUnitLabel(unit)">
-            {{ getUnitLabel(unit) }}
-          </option>
+          
+            <option [ngValue]="getUnitLabel(unit)" *ngFor="let unit of allUnits">
+              {{ getUnitLabel(unit) }}
+            </option>
+          
         </select>
       </div>
 
@@ -157,7 +171,7 @@
           class="form-control"
           [(ngModel)]="tempGxDetails.gxDate"
           name="gxDate"
-        />
+          />
       </div>
 
       <div class="col-md-2 form-group">
@@ -172,7 +186,7 @@
           class="form-control"
           [(ngModel)]="tempGxDetails.dateOfTravel"
           name="dateOfTravel"
-        />
+          />
       </div>
     </div>
 
@@ -196,160 +210,167 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of movement.yatTempDutyClaimGxDTOs; let i = index; trackBy: trackByIndex">
-            <td>{{ row?.gxType || '-' }}</td>
-            <td>{{ row?.unit || '-' }}</td>
-            <td>{{ row?.gxDate || '-' }}</td>
-            <td>{{ row?.gxNo || '-' }}</td>
-            <td>{{ row?.dateOfTravel || '-' }}</td>
-            <td class="text-nowrap">
-              <button type="button" class="btn btn-warning btn-sm mr-2" (click)="editGxDetail(row, i)">Edit</button>
-              <button type="button" class="btn btn-danger btn-sm" (click)="removeGxDetail(i)">Delete</button>
-            </td>
-          </tr>
-          <tr *ngIf="!movement.yatTempDutyClaimGxDTOs?.length">
-            <td colspan="6" class="text-center">No Record Found</td>
-          </tr>
+          
+            <tr *ngFor="let row of movement.yatTempDutyClaimGxDTOs; let i = index">
+              <td>{{ row?.gxType || '-' }}</td>
+              <td>{{ row?.unit || '-' }}</td>
+              <td>{{ row?.gxDate || '-' }}</td>
+              <td>{{ row?.gxNo || '-' }}</td>
+              <td>{{ row?.dateOfTravel || '-' }}</td>
+              <td class="text-nowrap">
+                <button type="button" class="btn btn-warning btn-sm mr-2" (click)="editGxDetail(row, i)">Edit</button>
+                <button type="button" class="btn btn-danger btn-sm" (click)="removeGxDetail(i)">Delete</button>
+              </td>
+            </tr>
+          
+          
+            <tr *ngIf="!movement.yatTempDutyClaimGxDTOs?.length">
+              <td colspan="6" class="text-center">No Record Found</td>
+            </tr>
+          
         </tbody>
       </table>
     </div>
   </div>
 </div>
 
-<div class="card mb-3" *ngIf="claimSubmitted || claimSettled">
-  <div class="card-header">
-    <strong>Manual Claim Settlement</strong>
+
+  <div class="card mb-3" *ngIf="claimSubmitted || claimSettled">
+    <div class="card-header">
+      <strong>Manual Claim Settlement</strong>
+    </div>
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-md-6 form-group mb-2">
+          <label class="control-label mb-0">
+            Have you already submitted claim manually for this amount?
+          </label>
+        </div>
+        <div class="col-md-6 form-group mb-2">
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="alreadySubmitted"
+              [value]="'1'"
+              [(ngModel)]="movement.isClaimAlreadySubmitted"
+              (ngModelChange)="onAlreadySubmittedChange()"
+              />
+            <label class="form-check-label">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="alreadySubmitted"
+              [value]="'0'"
+              [(ngModel)]="movement.isClaimAlreadySubmitted"
+              (ngModelChange)="onAlreadySubmittedChange()"
+              />
+            <label class="form-check-label">No</label>
+          </div>
+        </div>
+      </div>
+      
+        <div class="row" *ngIf="claimSubmitted">
+          <div class="col-md-4 form-group">
+            <label class="control-label">Submitted To (Unit)</label>
+            <select class="form-control" [(ngModel)]="movement.unitId" name="settlementUnitId">
+              <option [ngValue]="null">Select Unit</option>
+              
+                <option [ngValue]="getUnitLabel(unit)" *ngFor="let unit of allUnits">
+                  {{ getUnitLabel(unit) }}
+                </option>
+              
+            </select>
+          </div>
+          <div class="col-md-4 form-group">
+            <label class="control-label">Total Claimed Amount</label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="movement.claimAmt"
+              name="claimAmt"
+              />
+          </div>
+        </div>
+      
+      
+        <div class="row align-items-center" *ngIf="claimSubmitted">
+          <div class="col-md-6 form-group mb-2">
+            <label class="control-label mb-0">Whether the claim is settled?</label>
+          </div>
+          <div class="col-md-6 form-group mb-2">
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="claimSettled"
+                [value]="'1'"
+                [(ngModel)]="movement.isClaimSettle"
+                (ngModelChange)="onClaimSettledChange()"
+                />
+              <label class="form-check-label">Yes</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="claimSettled"
+                [value]="'0'"
+                [(ngModel)]="movement.isClaimSettle"
+                (ngModelChange)="onClaimSettledChange()"
+                />
+              <label class="form-check-label">No</label>
+            </div>
+          </div>
+        </div>
+      
+      
+        <div class="row" *ngIf="claimSettled">
+          <div class="col-md-3 form-group">
+            <label class="control-label">Credit/Debit No</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="movement.creditDebitNo"
+              name="creditDebitNo"
+              maxlength="30"
+              />
+          </div>
+          <div class="col-md-3 form-group">
+            <label class="control-label">Letter No</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="movement.letterNo"
+              name="letterNo"
+              maxlength="30"
+              />
+          </div>
+          <div class="col-md-3 form-group">
+            <label class="control-label">Letter Date</label>
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="movement.letterNoDated"
+              name="letterNoDated"
+              />
+          </div>
+          <div class="col-md-3 form-group">
+            <label class="control-label">Total Amount Passed</label>
+            <input
+              type="number"
+              class="form-control"
+              [(ngModel)]="movement.claimPassAmt"
+              name="claimPassAmt"
+              />
+          </div>
+        </div>
+      
+    </div>
   </div>
-  <div class="card-body">
-    <div class="row align-items-center">
-      <div class="col-md-6 form-group mb-2">
-        <label class="control-label mb-0">
-          Have you already submitted claim manually for this amount?
-        </label>
-      </div>
-      <div class="col-md-6 form-group mb-2">
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="alreadySubmitted"
-            [value]="'1'"
-            [(ngModel)]="movement.isClaimAlreadySubmitted"
-            (ngModelChange)="onAlreadySubmittedChange()"
-          />
-          <label class="form-check-label">Yes</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="alreadySubmitted"
-            [value]="'0'"
-            [(ngModel)]="movement.isClaimAlreadySubmitted"
-            (ngModelChange)="onAlreadySubmittedChange()"
-          />
-          <label class="form-check-label">No</label>
-        </div>
-      </div>
-    </div>
 
-    <div class="row" *ngIf="claimSubmitted">
-      <div class="col-md-4 form-group">
-        <label class="control-label">Submitted To (Unit)</label>
-        <select class="form-control" [(ngModel)]="movement.unitId" name="settlementUnitId">
-          <option [ngValue]="null">Select Unit</option>
-          <option *ngFor="let unit of allUnits" [ngValue]="getUnitLabel(unit)">
-            {{ getUnitLabel(unit) }}
-          </option>
-        </select>
-      </div>
-
-      <div class="col-md-4 form-group">
-        <label class="control-label">Total Claimed Amount</label>
-        <input
-          type="number"
-          class="form-control"
-          [(ngModel)]="movement.claimAmt"
-          name="claimAmt"
-        />
-      </div>
-    </div>
-
-    <div class="row align-items-center" *ngIf="claimSubmitted">
-      <div class="col-md-6 form-group mb-2">
-        <label class="control-label mb-0">Whether the claim is settled?</label>
-      </div>
-      <div class="col-md-6 form-group mb-2">
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="claimSettled"
-            [value]="'1'"
-            [(ngModel)]="movement.isClaimSettle"
-            (ngModelChange)="onClaimSettledChange()"
-          />
-          <label class="form-check-label">Yes</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="claimSettled"
-            [value]="'0'"
-            [(ngModel)]="movement.isClaimSettle"
-            (ngModelChange)="onClaimSettledChange()"
-          />
-          <label class="form-check-label">No</label>
-        </div>
-      </div>
-    </div>
-
-    <div class="row" *ngIf="claimSettled">
-      <div class="col-md-3 form-group">
-        <label class="control-label">Credit/Debit No</label>
-        <input
-          type="text"
-          class="form-control"
-          [(ngModel)]="movement.creditDebitNo"
-          name="creditDebitNo"
-          maxlength="30"
-        />
-      </div>
-
-      <div class="col-md-3 form-group">
-        <label class="control-label">Letter No</label>
-        <input
-          type="text"
-          class="form-control"
-          [(ngModel)]="movement.letterNo"
-          name="letterNo"
-          maxlength="30"
-        />
-      </div>
-
-      <div class="col-md-3 form-group">
-        <label class="control-label">Letter Date</label>
-        <input
-          type="date"
-          class="form-control"
-          [(ngModel)]="movement.letterNoDated"
-          name="letterNoDated"
-        />
-      </div>
-
-      <div class="col-md-3 form-group">
-        <label class="control-label">Total Amount Passed</label>
-        <input
-          type="number"
-          class="form-control"
-          [(ngModel)]="movement.claimPassAmt"
-          name="claimPassAmt"
-        />
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="mb-3">
   <button type="button" class="btn btn-primary mr-2" (click)="saveMovement()" [disabled]="isSaving">

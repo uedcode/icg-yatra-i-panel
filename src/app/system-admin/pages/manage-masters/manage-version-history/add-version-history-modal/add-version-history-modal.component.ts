@@ -6,6 +6,7 @@ import {
   Output,
   SimpleChanges,
   EventEmitter,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CommonService } from 'src/app/service/core/common.service';
@@ -17,6 +18,7 @@ declare var $: any;
     selector: 'app-add-version-history-modal',
     templateUrl: './add-version-history-modal.component.html',
     styleUrls: ['./add-version-history-modal.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AddVersionHistoryModalComponent implements OnInit {

@@ -23,3 +23,13 @@ export function legacySignLabel(signWith: unknown): string {
   }
   return '';
 }
+
+export function normalizePreviewSubFormId(subFormId: unknown): string {
+  const id = String(subFormId ?? '').toUpperCase();
+  if (id === 'P' || id === 'PMTA' || id === 'PMT') return 'PMT';
+  if (id === 'T' || id === 'TYA' || id === 'TY' || id === 'TYD') return 'TYD';
+  if (id === 'F' || id === 'FTEA' || id === 'FTE') return 'FTE';
+  if (id === 'L' || id === 'LTCA' || id === 'LTC') return 'LTC';
+  if (id === 'RS' || id === 'RES' || id === 'R') return 'RS';
+  return String(subFormId ?? '');
+}

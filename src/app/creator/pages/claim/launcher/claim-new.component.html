@@ -33,7 +33,7 @@
             (keyup)="p = 1"
             [(ngModel)]="searchObj"
             name="searchObj"
-          />
+            />
         </div>
       </div>
     </div>
@@ -57,49 +57,52 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            *ngFor="
-              let row of dataList
-                | filterComplex : searchObj
-                | paginate : { itemsPerPage: noOfPage, currentPage: p };
-              let i = index
-            "
-          >
-            <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
-            <td>{{ (row?.purpose || row?.yatClaimDTO?.purpose) | showHypen }}</td>
-            <td>{{ (row?.from || row?.yatClaimDTO?.from) | showHypen }}</td>
-            <td>{{ (row?.to || row?.yatClaimDTO?.to) | showHypen }}</td>
-            <td>{{ (row?.advanceMode || row?.yatClaimDTO?.advanceMode) | showHypen }}</td>
-            <td>{{ (row?.voucherNo || row?.yatClaimDTO?.voucherNo) | showHypen }}</td>
-            <td>{{ (row?.voucherDate || row?.yatClaimDTO?.voucherDate) | legacyDate:'queueDate' }}</td>
-            <td>{{ (row?.voucherAmt || row?.yatClaimDTO?.voucherAmt) | showHypen }}</td>
-            <td>{{ (row?.occDate || row?.yatClaimDTO?.occDate) | legacyDate:'queueDate' }}</td>
-            <td>{{ (row?.reportingDate || row?.yatClaimDTO?.reportingDate) | legacyDate:'queueDate' }}</td>
-            <td class="text-center">
-              <button class="btn btn-info" (click)="openMovement(row)">Update</button>
-            </td>
-            <td class="text-center">
-              <button class="btn btn-danger" (click)="openClaimForm(row)">Create</button>
-            </td>
-            <td class="text-center">
-              <button
-                *ngIf="(row?.claimMode || row?.yatClaimDTO?.claimMode) !== 'YT'"
-                class="btn btn-danger"
-                [disabled]="deleteLoadingMap[row?.claimId || row?.yatClaimDTO?.claimId || row?.id]"
-                (click)="deleteClaim(row)"
-              >
-                Delete
-              </button>
-            </td>
-          </tr>
-          <tr *ngIf="!dataList?.length" class="text-center table-empty-state gov-table-empty-state">
-            <td colspan="13">No Records Available</td>
-          </tr>
-          <tr class="noExl pagination_area" *ngIf="dataList?.length">
-            <td colspan="13">
-              <pagination-controls (pageChange)="p = $event"></pagination-controls>
-            </td>
-          </tr>
+          
+            <tr
+               *ngFor="let row of dataList
+            | filterComplex : searchObj
+            | paginate : { itemsPerPage: noOfPage, currentPage: p }; let i = index">
+              <td>{{ i + 1 + (p - 1) * noOfPage }}.</td>
+              <td>{{ (row?.purpose || row?.yatClaimDTO?.purpose) | showHypen }}</td>
+              <td>{{ (row?.from || row?.yatClaimDTO?.from) | showHypen }}</td>
+              <td>{{ (row?.to || row?.yatClaimDTO?.to) | showHypen }}</td>
+              <td>{{ (row?.advanceMode || row?.yatClaimDTO?.advanceMode) | showHypen }}</td>
+              <td>{{ (row?.voucherNo || row?.yatClaimDTO?.voucherNo) | showHypen }}</td>
+              <td>{{ (row?.voucherDate || row?.yatClaimDTO?.voucherDate) | legacyDate:'queueDate' }}</td>
+              <td>{{ (row?.voucherAmt || row?.yatClaimDTO?.voucherAmt) | showHypen }}</td>
+              <td>{{ (row?.occDate || row?.yatClaimDTO?.occDate) | legacyDate:'queueDate' }}</td>
+              <td>{{ (row?.reportingDate || row?.yatClaimDTO?.reportingDate) | legacyDate:'queueDate' }}</td>
+              <td class="text-center">
+                <button class="btn btn-info" (click)="openMovement(row)">Update</button>
+              </td>
+              <td class="text-center">
+                <button class="btn btn-danger" (click)="openClaimForm(row)">Create</button>
+              </td>
+              <td class="text-center">
+                
+                  <button
+                    class="btn btn-danger"
+                    [disabled]="deleteLoadingMap[row?.claimId || row?.yatClaimDTO?.claimId || row?.id]"
+                    (click)="deleteClaim(row)"
+                     *ngIf="(row?.claimMode || row?.yatClaimDTO?.claimMode) !== 'YT'">
+                    Delete
+                  </button>
+                
+              </td>
+            </tr>
+          
+          
+            <tr class="text-center table-empty-state gov-table-empty-state" *ngIf="!dataList?.length">
+              <td colspan="13">No Records Available</td>
+            </tr>
+          
+          
+            <tr class="noExl pagination_area" *ngIf="dataList?.length">
+              <td colspan="13">
+                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+              </td>
+            </tr>
+          
         </tbody>
       </table>
     </div>

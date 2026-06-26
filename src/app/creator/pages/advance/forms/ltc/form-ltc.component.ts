@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { DatePipe, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -133,6 +133,7 @@ interface ClaimsModel {
   selector: 'app-form-ltc',
   templateUrl: './form-ltc.component.html',
   styleUrls: ['./form-ltc.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class FormLtcAdvanceComponent implements OnInit {

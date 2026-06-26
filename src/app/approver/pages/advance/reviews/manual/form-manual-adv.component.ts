@@ -1,5 +1,5 @@
 import { DatePipe, Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth/auth.service';
 import { ClaimApiService } from 'src/app/service/api/claim/claim-api.service';
@@ -25,6 +25,7 @@ type LtcBucketGroup = {
   selector: 'app-approver-form-manual-adv',
   templateUrl: './form-manual-adv.component.html',
   styleUrls: ['./form-manual-adv.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class FormManualAdvComponent implements OnInit {
